@@ -1,10 +1,11 @@
 import { WebApp } from "n-web";
-import { HomeController } from "./controllers/home-controller";
+import { DefaultController } from "./controllers/default-controller";
 import { ConfigurationManager } from "n-config";
 
 
 const app = new WebApp(ConfigurationManager.getConfig<number>("port"))
+    .useViewResolutionRoot("test-app/controllers")    
     .registerStaticFilePaths("test-app/client/dist")
-    .registerControllers(HomeController);
+    .registerControllers(DefaultController);
 
 app.bootstrap();

@@ -7,17 +7,16 @@ var __decorate = (this && this.__decorate) || function (decorators, target, key,
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 const n_web_1 = require("n-web");
-let HomeController = class HomeController extends n_web_1.Controller {
+let DefaultController = class DefaultController extends n_web_1.Controller {
     execute() {
         let templates = new n_web_1.ClientViewTemplateBundler("test-app/client").render();
-        console.log(templates);
         return Promise.resolve({ templates: templates });
     }
 };
-HomeController = __decorate([
-    n_web_1.route("/Home"),
+DefaultController = __decorate([
+    n_web_1.route("/"),
     n_web_1.httpGet,
-    n_web_1.view("home-view.html")
-], HomeController);
-exports.HomeController = HomeController;
-//# sourceMappingURL=home-controller.js.map
+    n_web_1.view("default-view.html")
+], DefaultController);
+exports.DefaultController = DefaultController;
+//# sourceMappingURL=default-controller.js.map

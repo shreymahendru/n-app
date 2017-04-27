@@ -1,7 +1,9 @@
+const VueRouter = require("./../vendor/vue-router.js");
 import { given } from "n-defensive";
 import { Container } from "n-ject";
 import { PageRegistration } from "./page-registration";
 import { ApplicationException } from "n-exception";
+import { Utils } from "./utils";
 
 
 export class Router
@@ -9,6 +11,10 @@ export class Router
     private readonly _vue: any;
     private readonly _container: Container;
     private readonly _registrations = new Array<PageRegistration>();
+    private _vueRouter: any;
+    
+    
+    public get vueRouter(): any { return this._vueRouter; }
     
     
     public constructor(vue: any, container: Container)
@@ -28,8 +34,49 @@ export class Router
     
     public bootstrap(): void
     {
-        // for (let item of this._registrations)
-        //     this.bootstrapPage(item);
+        if (this._registrations.length === 0)
+            return;
+        
+        let routes: { [index: string]: any } = {};
+        const container = this._container;
+        
+        for (let registration of this._registrations)
+        {
+            let component = {
+                template: registration.templateId,
+                data: function ()
+                {
+                    let vueVm = this;
+                    let vm = container.resolve(registration.name);
+                    let data = { vm: vm };
+                    let methods: { [index: string]: any } = {};
+                    let computed: { [index: string]: any } = {};
+
+                    let propertyInfos = Utils.getPropertyInfos(vm);
+                    for (let info of propertyInfos)
+                    {
+                        if (typeof (info.descriptor.value) === "function")
+                            methods[info.name] = info.descriptor.value.bind(vm);
+                        else if (info.descriptor.get || info.descriptor.set)
+                        {
+                            computed[info.name] = {
+                                get: info.descriptor.get ? info.descriptor.get.bind(vm) : undefined,
+                                set: info.descriptor.set ? info.descriptor.set.bind(vm) : undefined
+                            };
+                        }
+                    }
+
+                    vueVm.$options.methods = methods;
+                    vueVm.$options.computed = computed;
+
+                    return data;
+                }
+            };
+            
+            routes[registration.route.vueRoute] = component;
+        }
+        
+        this._vueRouter = new VueRouter({ routes: routes });
     }
     
     
@@ -46,9 +93,4 @@ export class Router
         this._registrations.push(registration);
         this._container.registerTransient(registration.name, registration.viewModel);
     }
-    
-    // private bootstrapPage(registration: PageRegistration): void
-    // {
-        
-    // }
 }

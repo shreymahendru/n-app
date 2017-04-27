@@ -57,7 +57,7 @@ export class ClientApp
     
     private configureCoreServices(): void
     {
-        
+        // TODO: implement this
     }
     
     private configureComponents(): void
@@ -77,6 +77,9 @@ export class ClientApp
     
     private configureRoot(): void
     {
-        this._app = new Vue({ el: this._appElementId });
+        this._app = new Vue({
+            el: this._appElementId,
+            router: this._router.vueRouter
+        });
     }
 }
