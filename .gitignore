@@ -44,3 +44,5 @@ src/**/*.js
 src/**/*.map
 test/**/*.js
 test/**/*.map
+test-app/**/*.js
+test-app/**/*.map
