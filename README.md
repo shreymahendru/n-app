@@ -1,2 +1,2 @@
 # n-app
-Aurelia based application framework
+Vue.js based application framework
