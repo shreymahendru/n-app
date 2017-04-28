@@ -1,4 +1,3 @@
-const VueRouter = require("./../vendor/vue-router.js");
 import { given } from "n-defensive";
 import { Container } from "n-ject";
 import { PageRegistration } from "./page-registration";
@@ -8,20 +7,20 @@ import { Utils } from "./utils";
 
 export class Router
 {
-    private readonly _vue: any;
+    private readonly _vueRouter: any;
     private readonly _container: Container;
     private readonly _registrations = new Array<PageRegistration>();
-    private _vueRouter: any;
+    private _vueRouterInstance: any;
     
     
-    public get vueRouter(): any { return this._vueRouter; }
+    public get vueRouterInstance(): any { return this._vueRouterInstance; }
     
     
-    public constructor(vue: any, container: Container)
+    public constructor(vueRouter: any, container: Container)
     {
-        given(vue, "vue").ensureHasValue();
+        given(vueRouter, "vueRouter").ensureHasValue();
         given(container, "container").ensureHasValue();
-        this._vue = vue;
+        this._vueRouter = vueRouter;
         this._container = container;
     }
     
@@ -37,7 +36,7 @@ export class Router
         if (this._registrations.length === 0)
             return;
         
-        let routes: { [index: string]: any } = {};
+        let routes = new Array<any>();
         const container = this._container;
         
         for (let registration of this._registrations)
@@ -73,10 +72,16 @@ export class Router
                 }
             };
             
-            routes[registration.route.vueRoute] = component;
+            let route = {
+                path: registration.route.vueRoute,
+                component: component
+            };
+            
+            routes.push(route);
         }
         
-        this._vueRouter = new VueRouter({ routes: routes });
+        let r = this._vueRouter;
+        this._vueRouterInstance = new r({ routes: routes });
     }
     
     

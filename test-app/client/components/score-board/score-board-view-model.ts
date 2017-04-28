@@ -1,17 +1,9 @@
 import { element, view } from "./../../../../src/index";
 
 
-class BaseViewModel
-{
-    public baseMethod(): void
-    {
-        console.log("calling base method");
-    }
-}
-
 @element("score-board")
 @view("score-board-view.html")    
-export class ScoreBoardViewModel extends BaseViewModel
+export class ScoreBoardViewModel
 {
     private _playerFirstName: string = "Nivin";
     private _playerLastName: string = "Joseph";
@@ -31,15 +23,6 @@ export class ScoreBoardViewModel extends BaseViewModel
     public set playerLastName(value: string) { this._playerLastName = value; }
 
     public get playerFullName(): string { return this._playerFirstName + " " + this._playerLastName; }
-
-
-    public constructor()
-    {
-        super();
-        // this._score = initialScore;
-
-        // setInterval(() => this._score++, 2000);
-    }
 
 
     public incrementScore(currentScore: number): void

@@ -1,4 +1,7 @@
 const Vue = require("./../vendor/vue.js");
+const VueRouter = require("./../vendor/vue-router.js");
+Vue.use(VueRouter);
+
 import { given } from "n-defensive";
 import "n-ext";
 import { Container, ComponentInstaller } from "n-ject";
@@ -22,11 +25,11 @@ export class ClientApp
         this._appElementId = appElementId;
         this._container = new Container();
         this._componentManager = new ComponentManager(Vue, this._container);
-        this._router = new Router(Vue, this._container);
+        this._router = new Router(VueRouter, this._container);
     }
     
     
-    public registerInstaller(installer: ComponentInstaller): this
+    public useInstaller(installer: ComponentInstaller): this
     {
         given(installer, "installer").ensureHasValue();
         this._container.install(installer);
@@ -79,7 +82,7 @@ export class ClientApp
     {
         this._app = new Vue({
             el: this._appElementId,
-            router: this._router.vueRouter
+            router: this._router.vueRouterInstance
         });
     }
 }

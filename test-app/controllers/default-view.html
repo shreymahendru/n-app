@@ -13,39 +13,18 @@
 </head>
 
 <body>
-    <!--[if lte IE 9]>
+    <!--[if lte IE 11]>
             <p class="browserupgrade">You are using an <strong>outdated</strong> browser. Please <a href="http://browsehappy.com/">upgrade your browser</a> to improve your experience and security.</p>
         <![endif]-->
 
-    <!-- Add your site or application content here -->
+    ${vm.templates}
 
-    <!--<div id="app">
-        <root></root>
-    </div>-->
+    <div id="app">
+        <score-board></score-board>
+        <router-view></router-view>
+    </div>
 
-<div id="app">
-    <score-board></score-board>
-</div>
-
-${vm.templates}
-
-
-
-
-    <!--<script src="/systemjs/dist/system.js"></script>-->
-    <!--<script src="/vue/dist/vue.js"></script>
-    <script src="/vue-router/dist/vue-router.js"></script>-->
     <script src="/bundle.js"></script>
-
-    <!--<script>
-    System.config({
-        baseURL: '/',
-        meta: {
-            format: "cjs"
-        }
-    });
-    System.import('/aurelia-bootstrapper/dist/commonjs/aurelia-bootstrapper.js');
-</script>-->
 
 </body>
 
