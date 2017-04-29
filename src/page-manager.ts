@@ -12,6 +12,7 @@ export class PageManager
     private readonly _container: Container;
     private readonly _registrations = new Array<PageRegistration>();
     private _vueRouterInstance: any;
+    private _unknownRoute: string;
     
     
     public get vueRouterInstance(): any { return this._vueRouterInstance; }
@@ -32,6 +33,12 @@ export class PageManager
             this.registerPage(item);    
     }
     
+    public useAsUnknownRoute(route: string): void
+    {
+        given(route, "route").ensureHasValue().ensure(t => !t.isEmptyOrWhiteSpace());
+        this._unknownRoute = route.trim();
+    }
+    
     public bootstrap(): void
     {
         if (this._registrations.length === 0)
@@ -39,6 +46,8 @@ export class PageManager
         
         let pageTree = this.createPageTree();
         let vueRouterRoutes = pageTree.map(t => t.createVueRouterRoute(this._container));  
+        if (this._unknownRoute)
+            vueRouterRoutes.push({ path: "*", redirect: this._unknownRoute });    
         let router = this._vueRouter;
         this._vueRouterInstance = new router({ routes: vueRouterRoutes });
     }

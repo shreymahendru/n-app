@@ -15,7 +15,8 @@ export class ClientApp
     private readonly _appElementId: string;
     private readonly _container: Container;
     private readonly _componentManager: ComponentManager;
-    private readonly _router: PageManager;
+    private readonly _pageManager: PageManager;
+    private _initialRoute: string;
     private _app: any;
     
     
@@ -25,7 +26,7 @@ export class ClientApp
         this._appElementId = appElementId;
         this._container = new Container();
         this._componentManager = new ComponentManager(Vue, this._container);
-        this._router = new PageManager(VueRouter, this._container);
+        this._pageManager = new PageManager(VueRouter, this._container);
     }
     
     
@@ -44,7 +45,21 @@ export class ClientApp
     
     public registerPages(...pageViewModelClasses: Function[]): this
     {
-        this._router.registerPages(...pageViewModelClasses);
+        this._pageManager.registerPages(...pageViewModelClasses);
+        return this;
+    }
+    
+    public useAsInitialRoute(route: string): this
+    {
+        given(route, "route").ensureHasValue().ensure(t => !t.isEmptyOrWhiteSpace());
+        this._initialRoute = route.trim();
+        return this;
+    }
+    
+    public useAsUnknownRoute(route: string): this
+    {
+        given(route, "route").ensureHasValue().ensure(t => !t.isEmptyOrWhiteSpace());
+        this._pageManager.useAsUnknownRoute(route);
         return this;
     }
     
@@ -54,6 +69,7 @@ export class ClientApp
         this.configureContainer();
         this.configureComponents();
         this.configurePages();
+        this.configureInitialRoute();
         this.configureRoot();
     }
     
@@ -70,7 +86,7 @@ export class ClientApp
     
     private configurePages(): void
     {
-        this._router.bootstrap();
+        this._pageManager.bootstrap();
     }
     
     private configureContainer(): void
@@ -78,11 +94,38 @@ export class ClientApp
         this._container.bootstrap();
     }
     
+    private configureInitialRoute(): void
+    { 
+        if (!window.location.hash)
+        {
+            if (this._initialRoute)
+                window.location.hash = "#" + this._initialRoute;    
+        }   
+        else
+        {
+            let hashVal = window.location.hash.trim();
+            if (hashVal.length === 1)
+            {
+                if (this._initialRoute)
+                    window.location.hash = "#" + this._initialRoute;
+            }    
+            else
+            {
+                hashVal = hashVal.substr(1);
+                if (hashVal === "/")
+                {
+                    if (this._initialRoute)
+                        window.location.hash = "#" + this._initialRoute;
+                }    
+            }    
+        }
+    }
+    
     private configureRoot(): void
     {
         this._app = new Vue({
             el: this._appElementId,
-            router: this._router.vueRouterInstance
+            router: this._pageManager.vueRouterInstance
         });
     }
 }

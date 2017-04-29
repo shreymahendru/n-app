@@ -1,4 +1,5 @@
 export const dashboard = "/dashboard";
 export const todo = "/todo";
 export const listTodos = "/todo/list";
-export const createUpdateTodo = "/todo/createupdate?{id?:number}";
+export const createTodo = "/todo/create";
+export const updateTodo = "/todo/update/{id: number}";
