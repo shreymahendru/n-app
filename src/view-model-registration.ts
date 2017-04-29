@@ -14,7 +14,7 @@ export class ViewModelRegistration
     
     public get name(): string { return this._name; }
     public get viewModel(): Function { return this._viewModel; }
-    public get view(): string { return this._view; }
+    // public get view(): string { return this._view; }
     public get templateId(): string { return this._templateId; }
     
     
@@ -28,7 +28,7 @@ export class ViewModelRegistration
         if (!Reflect.hasOwnMetadata(viewSymbol, this._viewModel))
             throw new ApplicationException(`ViewModel'${this._name}' does not have @view applied.`);
         
-        this._view = Reflect.getOwnMetadata(viewSymbol, this._viewModel);
+        this._view = Reflect.getOwnMetadata(viewSymbol, this._viewModel); // does not have to include .html extension
         this._templateId = this.generateTemplateId();
     }
     

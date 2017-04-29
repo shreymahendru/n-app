@@ -7,7 +7,9 @@ export const appRouteSymbol = Symbol("appRoute");
 // public
 export function route(route: string): Function
 {
-    given(route, "route").ensureHasValue().ensure(t => !t.isEmptyOrWhiteSpace());
+    given(route, "route").ensureHasValue()
+        .ensure(t => !t.isEmptyOrWhiteSpace(), "cannot be empty or whitespace")
+        .ensure(t => t.trim().startsWith("/"), "has to begin with '/'");
 
     return (target: Function) => Reflect.defineMetadata(appRouteSymbol, route.trim(), target);
 }

@@ -1,6 +1,6 @@
 import { given } from "n-defensive";
 import "n-ext";
-import { ApplicationException } from "n-exception";
+import { ApplicationException, ArgumentException } from "n-exception";
 import { RouteParam } from "./route-param";
 
 // route format: /api/Product/{id:number}?{name?:string}&{all:boolean}
@@ -11,11 +11,15 @@ export class RouteInfo
     private readonly _routeParams = new Array<RouteParam>();
     private readonly _routeParamsRegistry: { [index: string]: RouteParam } = {};
     private readonly _vueRoute: string;
+    private readonly _pathSegments = new Array<string>();
+    private readonly _routeKey: string;
 
 
     public get route(): string { return this._routeTemplate; }
     public get vueRoute(): string { return this._vueRoute; }
     public get params(): ReadonlyArray<RouteParam> { return this._routeParams; }
+    public get pathSegments(): ReadonlyArray<string> { return this._pathSegments; }
+    public get routeKey(): string { return this._routeKey; }
 
 
     public constructor(routeTemplate: string)
@@ -25,9 +29,17 @@ export class RouteInfo
         while (routeTemplate.contains(" "))
             routeTemplate = routeTemplate.replace(" ", "");
 
+        if (routeTemplate.endsWith("/"))
+            routeTemplate = routeTemplate.substr(0, routeTemplate.length - 1);
+                
+        if (routeTemplate.contains("//"))
+            throw new ArgumentException("routeTemplate", "contains //");
+        
         this._routeTemplate = routeTemplate;
         this.populateRouteParams();
         this._vueRoute = this.generateVueRoute(this._routeTemplate);
+        this.populatePathSegments();
+        this._routeKey = this.generateRouteKey();
     }
 
 
@@ -37,20 +49,20 @@ export class RouteInfo
         return this._routeParamsRegistry[key.trim().toLowerCase()];
     }
 
-    // public generateUrl(values: any): string
-    // {
-    //     let url = this._routeTemplate;
-    //     for (let key in values)
-    //     {
-    //         let routeParam = this.findRouteParam(key);
-    //         if (!routeParam) continue;
+    public generateUrl(values: any): string
+    {
+        let url = this._routeTemplate;
+        for (let key in values)
+        {
+            let routeParam = this.findRouteParam(key);
+            if (!routeParam) continue;
 
-    //         let param = "{" + routeParam.param + "}";
-    //         let replacement = routeParam.isQuery ? "{0}={1}".format(key, values[key]) : values[key];
-    //         url = url.replace(param, replacement);
-    //     }
-    //     return url;
-    // }
+            let param = "{" + routeParam.param + "}";
+            let replacement = routeParam.isQuery ? "{0}={1}".format(key, values[key]) : values[key];
+            url = url.replace(param, replacement);
+        }
+        return url;
+    }
 
     private populateRouteParams(): void
     {
@@ -129,5 +141,31 @@ export class RouteInfo
         }
 
         return routeTemplate;
+    }
+    
+    private populatePathSegments()
+    {
+        let routeTemplate = this._vueRoute;
+        let pathSegments = new Array<string>();
+        
+        pathSegments.push("/");
+        
+        for (let item of routeTemplate.split("/"))
+        {
+            if (item === null || item.isEmptyOrWhiteSpace() || item.startsWith(":"))
+                continue;
+            
+            if (pathSegments.some(t => t === item))
+                throw new ArgumentException("routeTemplate", "cannot contain duplicate segments");    
+            
+            pathSegments.push(item);
+        } 
+        
+        this._pathSegments.push(...pathSegments);
+    }
+    
+    private generateRouteKey(): string
+    {
+        return this._pathSegments.join("/").replace("//", "/");
     }
 }

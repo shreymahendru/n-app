@@ -2,8 +2,6 @@ import { ClientApp } from "./../../src/index";
 import { ScoreBoardViewModel } from "./components/score-board/score-board-view-model";
 import { ComponentInstaller, Registry } from "n-ject";
 import { InmemoryTodoRepository } from "./services/todo-repository/inmemory-todo-repository";
-import { HomeViewModel } from "./pages/home/home-view-model";
-import { ManageViewModel } from "./pages/manage/manage-view-model";
 
 
 class Installer implements ComponentInstaller
@@ -18,7 +16,7 @@ class Installer implements ComponentInstaller
 const app = new ClientApp("#app")
     .useInstaller(new Installer())    
     .registerComponents(ScoreBoardViewModel)
-    .registerPages(HomeViewModel, ManageViewModel);
+    .registerPages();
     
 app.bootstrap();
 

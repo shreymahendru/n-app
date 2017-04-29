@@ -6,7 +6,7 @@ import { given } from "n-defensive";
 import "n-ext";
 import { Container, ComponentInstaller } from "n-ject";
 import { ComponentManager } from "./component-manager";
-import { Router } from "./router";
+import { PageManager } from "./page-manager";
 
 
 // public
@@ -15,7 +15,7 @@ export class ClientApp
     private readonly _appElementId: string;
     private readonly _container: Container;
     private readonly _componentManager: ComponentManager;
-    private readonly _router: Router;
+    private readonly _router: PageManager;
     private _app: any;
     
     
@@ -25,7 +25,7 @@ export class ClientApp
         this._appElementId = appElementId;
         this._container = new Container();
         this._componentManager = new ComponentManager(Vue, this._container);
-        this._router = new Router(VueRouter, this._container);
+        this._router = new PageManager(VueRouter, this._container);
     }
     
     

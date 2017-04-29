@@ -3,7 +3,7 @@ import { Controller, httpGet, route, view, ClientViewTemplateBundler } from "n-w
 
 @route("/")
 @httpGet
-@view("default-view.html")
+@view("default-view")
 export class DefaultController extends Controller
 {
     public execute(): Promise<any>
