@@ -28,11 +28,13 @@ export class Utils
         let prototype = Object.getPrototypeOf(val);
         if (prototype === undefined || prototype === null)  // we are dealing with Object
             return propertyInfos;
-
+            
+        let internal = ["ctx", "onCreate", "onDestroy", "executeOnCreate", "executeOnDestroy", "onEnter", "onLeave"];
         let propertyNames = Object.getOwnPropertyNames(val);
         for (let name of propertyNames)
         {
-            if (name === "constructor" || name.indexOf("_") === 0)
+            name = name.trim();
+            if (name === "constructor" || name.indexOf("_") === 0 || internal.some(t => t === name))
                 continue;
 
             let descriptor = Object.getOwnPropertyDescriptor(val, name);

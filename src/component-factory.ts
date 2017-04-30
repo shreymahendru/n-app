@@ -2,6 +2,7 @@ import { given } from "n-defensive";
 import { Container } from "n-ject";
 import { Utils } from "./utils";
 import { ViewModelRegistration } from "./view-model-registration";
+import { ComponentRegistration } from "./component-registration";
 
 
 export class ComponentFactory
@@ -20,38 +21,43 @@ export class ComponentFactory
     {
         given(registration, "registration").ensureHasValue();
         
-        const container = this._container;
+        let component: any = {};
         
-        let component: any = {
-            template: registration.templateId,
-            data: function ()
+        component.template = registration.templateId;
+        
+        const container = this._container;
+        component.data = function ()
+        {
+            let vueVm = this;
+            let vm = container.resolve<any>(registration.name);
+            let data = { vm: vm };
+            let methods: { [index: string]: any } = {};
+            let computed: { [index: string]: any } = {};
+
+            let propertyInfos = Utils.getPropertyInfos(vm);
+            for (let info of propertyInfos)
             {
-                let vueVm = this;
-                let vm = container.resolve(registration.name);
-                let data = { vm: vm };
-                let methods: { [index: string]: any } = {};
-                let computed: { [index: string]: any } = {};
-
-                let propertyInfos = Utils.getPropertyInfos(vm);
-                for (let info of propertyInfos)
+                if (typeof (info.descriptor.value) === "function")
+                    methods[info.name] = info.descriptor.value.bind(vm);
+                else if (info.descriptor.get || info.descriptor.set)
                 {
-                    if (typeof (info.descriptor.value) === "function")
-                        methods[info.name] = info.descriptor.value.bind(vm);
-                    else if (info.descriptor.get || info.descriptor.set)
-                    {
-                        computed[info.name] = {
-                            get: info.descriptor.get ? info.descriptor.get.bind(vm) : undefined,
-                            set: info.descriptor.set ? info.descriptor.set.bind(vm) : undefined
-                        };
-                    }
+                    computed[info.name] = {
+                        get: info.descriptor.get ? info.descriptor.get.bind(vm) : undefined,
+                        set: info.descriptor.set ? info.descriptor.set.bind(vm) : undefined
+                    };
                 }
-
-                vueVm.$options.methods = methods;
-                vueVm.$options.computed = computed;
-
-                return data;
             }
+
+            vueVm.$options.methods = methods;
+            vueVm.$options.computed = computed;
+            vm._ctx = vueVm;
+
+            return data;
         };
+        
+        let componentRegistration = registration as ComponentRegistration;
+        if (componentRegistration.bindings && componentRegistration.bindings.length > 0)
+            component.props = componentRegistration.bindings;    
         
         component.beforeCreate = function ()
         {

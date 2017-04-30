@@ -1,23 +1,19 @@
-import { element, view } from "./../../../../src/index";
+import { element, view, bind, ComponentViewModel } from "./../../../../src/index";
 
 
 @element("score-board")
-@view("score-board-view.html")    
-export class ScoreBoardViewModel
+@view("score-board-view.html")  
+@bind("score", "increment")    
+export class ScoreBoardViewModel extends ComponentViewModel
 {
     private _playerFirstName: string = "Nivin";
     private _playerLastName: string = "Joseph";
-    private _score: number = 5;
 
 
-    public get score(): number { return this._score; }
+    // public get score(): number { return this.ctx["score"]; }
 
     public get playerFirstName(): string { return this._playerFirstName; }
-    public set playerFirstName(value: string)
-    {
-        this._playerFirstName = value;
-        console.log(this);
-    }
+    public set playerFirstName(value: string) { this._playerFirstName = value; }
 
     public get playerLastName(): string { return this._playerLastName; }
     public set playerLastName(value: string) { this._playerLastName = value; }
@@ -25,11 +21,13 @@ export class ScoreBoardViewModel
     public get playerFullName(): string { return this._playerFirstName + " " + this._playerLastName; }
 
 
-    public incrementScore(currentScore: number): void
-    {
-        console.log(this);
-        console.log("current score", currentScore);
-        console.log("name", this.playerFullName);
-        this._score += 1;
-    }
+    // public incrementScore(): void
+    // {
+    //     // console.log(this);
+    //     // console.log("current score", currentScore);
+    //     // console.log("name", this.playerFullName);
+    //     // this.ctx["score"] += 1;
+        
+    //     this.ctx["increment"]();
+    // }
 }  
