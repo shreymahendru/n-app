@@ -48,8 +48,14 @@ export class PageManager
         let vueRouterRoutes = pageTree.map(t => t.createVueRouterRoute(this._container));  
         if (this._unknownRoute)
             vueRouterRoutes.push({ path: "*", redirect: this._unknownRoute });    
-        let router = this._vueRouter;
-        this._vueRouterInstance = new router({ routes: vueRouterRoutes });
+        let vueRouter = this._vueRouter;
+        this._vueRouterInstance = new vueRouter({
+            routes: vueRouterRoutes,
+            scrollBehavior: function(to: any, from: any, savedPosition: any)
+            {
+                return { x: 0, y: 0 };
+            }
+        });
     }
     
     

@@ -21,6 +21,7 @@ class Installer implements ComponentInstaller
 const pages = [DashboardViewModel, TodoViewModel, ListTodosViewModel, CreateTodoViewModel, UpdateTodoViewModel];
 
 const app = new ClientApp("#app")
+    .enableDevMode()    
     .useInstaller(new Installer())
     .registerComponents(ScoreBoardViewModel)
     .registerPages(...pages)
