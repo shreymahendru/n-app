@@ -22,6 +22,7 @@ const pages = [DashboardViewModel, TodoViewModel, ListTodosViewModel, CreateTodo
 
 const app = new ClientApp("#app")
     .enableDevMode()    
+    .useAccentColor("#7ab53b")
     .useInstaller(new Installer())
     .registerComponents(ScoreBoardViewModel)
     .registerPages(...pages)

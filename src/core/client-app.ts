@@ -1,5 +1,11 @@
-const Vue = require("./../vendor/vue.js");
-const VueRouter = require("./../vendor/vue-router.js");
+const Vue = require("./../../vendor/vue.js");
+if (!Vue)
+    console.log("No Vue!!!");    
+
+const VueRouter = require("./../../vendor/vue-router.js");
+if (!VueRouter)
+    console.log("No VueRouter!!!");    
+
 Vue.use(VueRouter);
 
 import { Config } from "./config";
@@ -9,8 +15,10 @@ import { Container, ComponentInstaller } from "n-ject";
 import { ComponentManager } from "./component-manager";
 import { PageManager } from "./page-manager";
 import { InvalidOperationException } from "n-exception";
-
-
+import { DefaultDialogService } from "./../services/dialog-service/default-dialog-service";
+import { DefaultEventAggregator } from "./../services/event-aggregator/default-event-aggregator";
+import { DefaultNavigationService } from "./../services/navigation-service/default-navigation-service";
+import { DefaultStorageService } from "./../services/storage-service/default-storage-service";
 
 
 // public
@@ -22,6 +30,7 @@ export class ClientApp
     private readonly _pageManager: PageManager;
     private _initialRoute: string;
     private _app: any;
+    private _accentColor: string;
     private _isbootstrapped: boolean = false;
     
     
@@ -47,6 +56,18 @@ export class ClientApp
         
         given(installer, "installer").ensureHasValue();
         this._container.install(installer);
+        return this;
+    }
+    
+    public useAccentColor(color: string): this
+    {
+        if (this._isbootstrapped)
+            throw new InvalidOperationException("useAccentColor");
+        
+        given(color, "color").ensureHasValue().ensure(t => !t.isEmptyOrWhiteSpace())
+            .ensure(t => t.trim().startsWith("#"), "must be hex value");
+        
+        this._accentColor = color.trim();
         return this;
     }
     
@@ -105,26 +126,16 @@ export class ClientApp
         if (Config.isDev)
             console.log("Bootstrapping in DEV mode.");    
         
-        this.configureCoreServices();
-        this.configureContainer();
         this.configureComponents();
         this.configurePages();
         this.configureInitialRoute();
+        this.configureCoreServices();
+        this.configureContainer();
         this.configureRoot();
         
         this._isbootstrapped = true;
     }
     
-    
-    private configureCoreServices(): void
-    {
-        // TODO: implement this
-    }
-    
-    private configureContainer(): void
-    {
-        this._container.bootstrap();
-    }
     
     private configureComponents(): void
     {
@@ -164,6 +175,21 @@ export class ClientApp
                 }    
             }    
         }
+    }
+    
+    private configureCoreServices(): void
+    {
+        this._container
+            .registerInstance("DialogService", new DefaultDialogService(this._accentColor))
+            .registerInstance("EventAggregator", new DefaultEventAggregator())
+            .registerInstance("NavigationService", new DefaultNavigationService(this._pageManager.vueRouterInstance))
+            .registerInstance("StorageService", new DefaultStorageService())
+            ;
+    }
+
+    private configureContainer(): void
+    {
+        this._container.bootstrap();
     }
     
     private configureRoot(): void
