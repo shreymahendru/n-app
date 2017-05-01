@@ -17,7 +17,7 @@
             <p class="browserupgrade">You are using an <strong>outdated</strong> browser. Please <a href="http://browsehappy.com/">upgrade your browser</a> to improve your experience and security.</p>
         <![endif]-->
 
-    ${vm.templates}
+    
 
     <div id="app">
         <router-view></router-view>
@@ -25,7 +25,9 @@
         <!--<score-board></score-board>-->
     </div>
 
-    <script src="/bundle.js"></script>
+    ${vm.templates}
+    ${vm.scripts}
+    <!--<script src="/bundle.js"></script>-->
 
 </body>
 

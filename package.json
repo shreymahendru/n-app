@@ -21,7 +21,7 @@
     "git-publish": "npm version patch",
     "postgit-publish": "git push",
     "prebundle": "npm run ts-build",
-    "bundle": "webpack ./test-app/client/app.js ./test-app/client/dist/bundle.js --progress=true --devtool='source-map'",
+    "bundle": "webpack ./test-app/client/app.js ./test-app/client/dist/bundle.js --progress=true --devtool='cheap-module-source-map'",
     "bundle-watch": "npm run bundle -- -w",
     "nodemon": "nodemon --debug ./test-app/main.js",
     "predebug": "npm run ts-build",
