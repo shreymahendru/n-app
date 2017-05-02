@@ -35,6 +35,11 @@ export class ViewModelRegistration
     
     private generateTemplateId(): string
     {
-        return "#" + this._view.replace(".html", "").split("-").join("");
+        let templateId = this._view.replace(".html", "").split("-").join("");
+        
+        if (document.getElementById(templateId) == null)
+            throw new ApplicationException(`Template with id ${templateId} not found for ViewModel ${this._name}`);    
+        
+        return "#" + templateId;
     }
 }

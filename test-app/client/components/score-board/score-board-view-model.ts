@@ -2,7 +2,7 @@ import { element, view, bind, ComponentViewModel } from "./../../../../src/index
 
 
 @element("score-board")
-@view("score-board-view.html")  
+@view("score-board-view")  
 @bind("score", "increment")    
 export class ScoreBoardViewModel extends ComponentViewModel
 {
@@ -10,7 +10,7 @@ export class ScoreBoardViewModel extends ComponentViewModel
     private _playerLastName: string = "Joseph";
 
 
-    // public get score(): number { return this.ctx["score"]; }
+    public get playerScore(): number { return this.getBound<number>("score"); }
 
     public get playerFirstName(): string { return this._playerFirstName; }
     public set playerFirstName(value: string) { this._playerFirstName = value; }
@@ -18,8 +18,19 @@ export class ScoreBoardViewModel extends ComponentViewModel
     public get playerLastName(): string { return this._playerLastName; }
     public set playerLastName(value: string) { this._playerLastName = value; }
 
-    public get playerFullName(): string { return this._playerFirstName + " " + this._playerLastName; }
+    // public get playerFullName(): string { return this._playerFirstName + " " + this._playerLastName; }
 
+
+    
+    protected onCreate(): void
+    {
+        super.onCreate();
+        
+        this.watch<number>("playerScore", (val, old) =>
+        {
+            console.log(val, old);
+        });
+    }
 
     // public incrementScore(): void
     // {
@@ -29,5 +40,14 @@ export class ScoreBoardViewModel extends ComponentViewModel
     //     // this.ctx["score"] += 1;
         
     //     this.ctx["increment"]();
+    // }
+    
+    // protected onMount(element: HTMLElement): void
+    // { 
+    //     console.log("el", element);
+    //     let hasChildren = element.hasChildNodes();
+    //     console.log("hasChildren", hasChildren);
+        
+    //     jquery(element).html("<span>replaced</span>");
     // }
 }  

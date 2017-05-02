@@ -1,7 +1,7 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-const $ = require("./../../../vendor/jquery.js");
-if (!$)
+const jquery = require("./../../../vendor/jquery.js");
+if (!jquery)
     console.log("No jquery!!!");
 const toastr = require("./../../../vendor/toastr.js");
 if (!toastr)
@@ -80,8 +80,8 @@ class DefaultDialogService {
         toastr.clear();
     }
     CreateLoadingScreen() {
-        this._loadingScreen = $("<div style='position:fixed;top:0;left:0;right:0;bottom:0;z-index:100000000;background-color:rgba(255, 255, 255, 0.1);'><div id='spinnerLocation' style='position:absolute;top:50%;left:50%;'></div></div>")
-            .appendTo($("body"));
+        this._loadingScreen = jquery("<div style='position:fixed;top:0;left:0;right:0;bottom:0;z-index:100000000;background-color:rgba(255, 255, 255, 0.1);'><div id='spinnerLocation' style='position:absolute;top:50%;left:50%;'></div></div>")
+            .appendTo(jquery("body"));
         // var opts = {
         //    lines: 13, // The number of lines to draw
         //    length: 20, // The length of each line

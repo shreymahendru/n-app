@@ -42,11 +42,11 @@ export class DashboardViewModel extends BasePageViewModel
     {
         this._score++;
         
-        this._dialogService.showLoadingScreen();
-        setTimeout(() => this._dialogService.hideLoadingScreen(), 5000);
+        // this._dialogService.showLoadingScreen();
+        // setTimeout(() => this._dialogService.hideLoadingScreen(), 5000);
         
-        this._dialogService.showErrorMessage("haha");
+        // this._dialogService.showErrorMessage("haha");
         
-        this._navigationService.navigate(Routes.updateTodo, { id: 5 });
+        // this._navigationService.navigate(Routes.updateTodo, { id: 5 });
     }
 }

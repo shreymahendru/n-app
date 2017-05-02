@@ -54,6 +54,8 @@ class ComponentFactory {
         component.mounted = function () {
             // console.log("executing mounted");
             // console.log(this.vm);
+            if (this.vm.onMount)
+                this.vm.onMount(this.$el);
         };
         component.beforeUpdate = function () {
             // console.log("executing beforeUpdate");

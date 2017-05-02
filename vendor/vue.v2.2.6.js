@@ -2658,20 +2658,35 @@ function proxy (target, sourceKey, key) {
   Object.defineProperty(target, key, sharedPropertyDefinition);
 }
 
-function initState (vm) {
-  vm._watchers = [];
-  var opts = vm.$options;
-  if (opts.props) { initProps(vm, opts.props); }
-  // if (opts.methods) { initMethods(vm, opts.methods); } // NJ (-)
-  if (opts.data) {
-    initData(vm);
-  } else {
-    observe(vm._data = {}, true /* asRootData */);
-  }
-  if (opts.computed) { initComputed(vm, opts.computed); }
-  if (opts.methods) { initMethods(vm, opts.methods); }  // NJ (+)
-  if (opts.watch) { initWatch(vm, opts.watch); }
-}
+ // NJ (-)
+// function initState (vm) {
+//   vm._watchers = [];
+//   var opts = vm.$options;
+//   if (opts.props) { initProps(vm, opts.props); }
+//   if (opts.methods) { initMethods(vm, opts.methods); }
+//   if (opts.data) {
+//     initData(vm);
+//   } else {
+//     observe(vm._data = {}, true /* asRootData */);
+//   }
+//   if (opts.computed) { initComputed(vm, opts.computed); }
+//   if (opts.watch) { initWatch(vm, opts.watch); }
+// }
+
+// NJ (+)
+function initState(vm) {
+    vm._watchers = [];
+    var opts = vm.$options;
+    if (opts.props) { initProps(vm, opts.props); }
+    if (opts.data) {
+        initData(vm);
+    } else {
+        observe(vm._data = {}, true /* asRootData */);
+    }
+    if (opts.computed) { initComputed(vm, opts.computed); }
+    if (opts.methods) { initMethods(vm, opts.methods); }
+    if (opts.watch) { initWatch(vm, opts.watch); }
+}        
 
 var isReservedProp = { key: 1, ref: 1, slot: 1 };
 

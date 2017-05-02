@@ -19,7 +19,10 @@ class ViewModelRegistration {
         this._templateId = this.generateTemplateId();
     }
     generateTemplateId() {
-        return "#" + this._view.replace(".html", "").split("-").join("");
+        let templateId = this._view.replace(".html", "").split("-").join("");
+        if (document.getElementById(templateId) == null)
+            throw new n_exception_1.ApplicationException(`Template with id ${templateId} not found for ViewModel ${this._name}`);
+        return "#" + templateId;
     }
 }
 exports.ViewModelRegistration = ViewModelRegistration;

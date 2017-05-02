@@ -1,5 +1,6 @@
 import { RouteInfo } from "./route-info";
 import { HttpException } from "./http-exception";
+import { ApplicationException } from "n-exception";
 import "n-ext";
 
 export class PropertyInfo
@@ -29,14 +30,23 @@ export class Utils
         if (prototype === undefined || prototype === null)  // we are dealing with Object
             return propertyInfos;
             
-        let internal = ["ctx", "onCreate", "onDestroy", "executeOnCreate", "executeOnDestroy", "onEnter", "onLeave"];
+        let internal = ["ctx", "onCreate", "onMount", "onDestroy", "executeOnCreate", "executeOnDestroy",
+            "watch", "unWatch", "getBound", "onEnter", "onLeave"];
+        
+        let forbidden = ["do", "if", "for", "let", "new", "try", "var", "case", "else", "with", "await", "break",
+            "catch", "class", "const", "super", "throw", "while", "yield", "delete", "export", "import", "return",
+            "switch", "default", "extends", "finally", "continue", "debugger", "function", "arguments", "typeof", "void"];
+        
         let propertyNames = Object.getOwnPropertyNames(val);
         for (let name of propertyNames)
         {
             name = name.trim();
-            if (name === "constructor" || name.indexOf("_") === 0 || internal.some(t => t === name))
+            if (name === "constructor" || name.startsWith("_") || name.startsWith("$") || internal.some(t => t === name))
                 continue;
 
+            if (forbidden.some(t => t === name))
+                throw new ApplicationException(`Class ${(<Object>val).getTypeName()} has a member with the forbidden name '${name}'. The following names are forbidden: ${forbidden}.`);    
+            
             let descriptor = Object.getOwnPropertyDescriptor(val, name);
             propertyInfos.push(new PropertyInfo(name, descriptor));
         }
