@@ -14,8 +14,4 @@ const component_view_model_1 = require("./core/component-view-model");
 exports.ComponentViewModel = component_view_model_1.ComponentViewModel;
 const page_view_model_1 = require("./core/page-view-model");
 exports.PageViewModel = page_view_model_1.PageViewModel;
-const jquery = require("./../vendor/jquery.js");
-exports.jquery = jquery;
-if (!jquery)
-    console.log("No jquery!!!");
 //# sourceMappingURL=index.js.map

@@ -1,14 +1,8 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-const jquery = require("./../../../vendor/jquery.js");
-if (!jquery)
-    console.log("No jquery!!!");
 const toastr = require("./../../../vendor/toastr.js");
-if (!toastr)
-    console.log("No toastr!!!");
 const Spinner = require("./../../../vendor/spin.js");
-if (!Spinner)
-    console.log("No Spinner!!!");
+const jquery = require("jquery");
 class DefaultDialogService {
     constructor(accentColor) {
         this._accentColor = "#000";

@@ -1,11 +1,7 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 const Vue = require("./../../vendor/vue.v2.3.2.js");
-if (!Vue)
-    console.log("No Vue!!!");
 const VueRouter = require("./../../vendor/vue-router.v2.5.3.js");
-if (!VueRouter)
-    console.log("No VueRouter!!!");
 Vue.use(VueRouter);
 const config_1 = require("./config");
 const n_defensive_1 = require("n-defensive");

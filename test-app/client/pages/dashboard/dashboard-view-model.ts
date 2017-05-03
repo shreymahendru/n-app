@@ -42,6 +42,8 @@ export class DashboardViewModel extends BasePageViewModel
     {
         this._score++;
         
+        this._dialogService.showWarningMessage("Score incremented");
+        
         // this._dialogService.showLoadingScreen();
         // setTimeout(() => this._dialogService.hideLoadingScreen(), 5000);
         

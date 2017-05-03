@@ -1,11 +1,5 @@
 const Vue = require("./../../vendor/vue.v2.3.2.js");
-if (!Vue)
-    console.log("No Vue!!!");    
-
-const VueRouter = require("./../../vendor/vue-router.v2.5.3.js");
-if (!VueRouter)
-    console.log("No VueRouter!!!");    
-
+const VueRouter = require("./../../vendor/vue-router.v2.5.3.js");   
 Vue.use(VueRouter);
 
 import { Config } from "./config";

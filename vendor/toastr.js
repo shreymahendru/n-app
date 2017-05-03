@@ -28,7 +28,7 @@
  */
 /* global define */
 ; (function (define) {
-    define(['./jquery'], function ($) {
+    define(['jquery'], function ($) {
         return (function () {
             var $container;
             var listener;

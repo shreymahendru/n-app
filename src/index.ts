@@ -10,10 +10,6 @@ import { EventAggregator, EventSubscription } from "./services/event-aggregator/
 import { NavigationService } from "./services/navigation-service/navigation-service";
 import { DialogService } from "./services/dialog-service/dialog-service";
 
-const jquery = require("./../vendor/jquery.js");
-if (!jquery)
-    console.log("No jquery!!!");
-
 export
 {
     ClientApp,
@@ -26,6 +22,5 @@ export
     StorageService,
     EventAggregator, EventSubscription,
     NavigationService,
-    DialogService,
-    jquery
+    DialogService
 }

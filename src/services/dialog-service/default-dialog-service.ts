@@ -1,17 +1,8 @@
-const jquery = require("./../../../vendor/jquery.js");
-if (!jquery)
-    console.log("No jquery!!!");
-    
 const toastr = require("./../../../vendor/toastr.js");
-if (!toastr)
-    console.log("No toastr!!!");
-    
-const Spinner = require("./../../../vendor/spin.js");
-if (!Spinner)
-    console.log("No Spinner!!!");    
-
+const Spinner = require("./../../../vendor/spin.js");   
 
 import { DialogService } from "./dialog-service";
+import * as jquery from "jquery";
 
 
 export class DefaultDialogService implements DialogService

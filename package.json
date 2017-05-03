@@ -43,6 +43,7 @@
   },
   "homepage": "https://github.com/nivinjoseph/n-app#readme",
   "devDependencies": {
+    "@types/jquery": "^2.0.42",
     "@types/mocha": "^2.2.39",
     "@types/node": "^7.0.5",
     "@types/sinon": "^1.16.35",
@@ -59,6 +60,7 @@
     "webpack": "^2.4.1"
   },
   "dependencies": {
+    "jquery": "^3.2.1",
     "n-defensive": "git+https://github.com/nivinjoseph/n-defensive.git",
     "n-exception": "git+https://github.com/nivinjoseph/n-exception.git",
     "n-ext": "git+https://github.com/nivinjoseph/n-ext.git",
