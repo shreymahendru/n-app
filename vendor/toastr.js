@@ -13,7 +13,6 @@
     head.appendChild(style);
 })();
 
-
 /*
  * Toastr
  * Copyright 2012-2015

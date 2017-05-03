@@ -9,10 +9,12 @@ export class DefaultController extends Controller
     public execute(): Promise<any>
     {
         let templates = new TemplateBundle("templates");
-        templates.includeDir("test-app/client");
+        templates.include("test-app/client");
         
-        let scripts = new ScriptBundle("scripts");
-        scripts.includeFile("test-app/client/dist/bundle.js");
+        let scripts = new ScriptBundle("scripts", "test-app/client/dist/scripts", "scripts");
+        scripts
+            // .include("node_modules/jquery/dist/jquery.js")    
+            .include("test-app/client/dist/scripts/app-bundle.js");
         
         // console.log("cwd", process.cwd());
         
