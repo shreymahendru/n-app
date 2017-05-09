@@ -4,6 +4,7 @@ export declare class DefaultDialogService implements DialogService {
     private _loadingScreenCount;
     private _loadingScreen;
     private _spinner;
+    private _toastr;
     constructor(accentColor: string);
     showLoadingScreen(): void;
     hideLoadingScreen(): void;

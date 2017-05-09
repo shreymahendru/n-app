@@ -1,22 +1,22 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-const toastr = require("./../../../vendor/toastr.js");
+const Toastr = require("./../../../vendor/toastr.js");
+if (!Toastr)
+    console.log("No Toastr!!!");
 const Spinner = require("./../../../vendor/spin.js");
-const jquery = require("jquery");
+if (!Spinner)
+    console.log("No Spinner!!!");
 class DefaultDialogService {
     constructor(accentColor) {
         this._accentColor = "#000";
         this._loadingScreenCount = 0;
         if (accentColor)
             this._accentColor = accentColor.trim();
-        toastr.options.timeOut = 4000;
-        toastr.options.positionClass = "toast-bottom-right";
-        toastr.options.newestOnTop = false;
+        this._toastr = window.toastr;
+        this._toastr.options.timeOut = 4000;
+        this._toastr.options.positionClass = "toast-bottom-right";
+        this._toastr.options.newestOnTop = false;
     }
-    // public static SetAccentColor(color: string): void
-    // {
-    //     DefaultDialogService._accentColor = color;
-    // }
     showLoadingScreen() {
         if (this._loadingScreenCount === 0) {
             if (!this._loadingScreen) {
@@ -40,38 +40,38 @@ class DefaultDialogService {
     }
     showMessage(message, title) {
         if (title) {
-            toastr.info(message, title);
+            this._toastr.info(message, title);
         }
         else {
-            toastr.info(message);
+            this._toastr.info(message);
         }
     }
     showSuccessMessage(message, title) {
         if (title) {
-            toastr.success(message, title);
+            this._toastr.success(message, title);
         }
         else {
-            toastr.success(message);
+            this._toastr.success(message);
         }
     }
     showWarningMessage(message, title) {
         if (title) {
-            toastr.warning(message, title);
+            this._toastr.warning(message, title);
         }
         else {
-            toastr.warning(message);
+            this._toastr.warning(message);
         }
     }
     showErrorMessage(message, title) {
         if (title) {
-            toastr.error(message, title);
+            this._toastr.error(message, title);
         }
         else {
-            toastr.error(message);
+            this._toastr.error(message);
         }
     }
     clearMessages() {
-        toastr.clear();
+        this._toastr.clear();
     }
     CreateLoadingScreen() {
         this._loadingScreen = jquery("<div style='position:fixed;top:0;left:0;right:0;bottom:0;z-index:100000000;background-color:rgba(255, 255, 255, 0.1);'><div id='spinnerLocation' style='position:absolute;top:50%;left:50%;'></div></div>")

@@ -1,8 +1,15 @@
-const toastr = require("./../../../vendor/toastr.js");
+const Toastr = require("./../../../vendor/toastr.js");
+if (!Toastr)
+    console.log("No Toastr!!!");    
+
 const Spinner = require("./../../../vendor/spin.js");   
+if (!Spinner)
+    console.log("No Spinner!!!");    
 
 import { DialogService } from "./dialog-service";
-import * as jquery from "jquery";
+// import * as jquery from "jquery";
+
+declare const jquery: JQueryStatic;
 
 
 export class DefaultDialogService implements DialogService
@@ -11,6 +18,7 @@ export class DefaultDialogService implements DialogService
     private _loadingScreenCount = 0;
     private _loadingScreen: any;
     private _spinner: any;
+    private _toastr: Toastr;
 
 
     constructor(accentColor: string)
@@ -18,15 +26,13 @@ export class DefaultDialogService implements DialogService
         if (accentColor)
             this._accentColor = accentColor.trim();    
         
-        toastr.options.timeOut = 4000;
-        toastr.options.positionClass = "toast-bottom-right";
-        toastr.options.newestOnTop = false;
+        this._toastr = (<any>window).toastr;
+        
+        this._toastr.options.timeOut = 4000;
+        this._toastr.options.positionClass = "toast-bottom-right";
+        this._toastr.options.newestOnTop = false;
     }
-
-    // public static SetAccentColor(color: string): void
-    // {
-    //     DefaultDialogService._accentColor = color;
-    // }
+    
 
     public showLoadingScreen(): void
     {
@@ -65,11 +71,11 @@ export class DefaultDialogService implements DialogService
     {
         if (title)
         {
-            toastr.info(message, title);
+            this._toastr.info(message, title);
         }
         else
         {
-            toastr.info(message);
+            this._toastr.info(message);
         }
     }
 
@@ -77,11 +83,11 @@ export class DefaultDialogService implements DialogService
     {
         if (title)
         {
-            toastr.success(message, title);
+            this._toastr.success(message, title);
         }
         else
         {
-            toastr.success(message);
+            this._toastr.success(message);
         }
     }
     
@@ -89,11 +95,11 @@ export class DefaultDialogService implements DialogService
     {
         if (title)
         {
-            toastr.warning(message, title);
+            this._toastr.warning(message, title);
         }
         else
         {
-            toastr.warning(message);
+            this._toastr.warning(message);
         }
     }
 
@@ -101,17 +107,17 @@ export class DefaultDialogService implements DialogService
     {
         if (title)
         {
-            toastr.error(message, title);
+            this._toastr.error(message, title);
         }
         else
         {
-            toastr.error(message);
+            this._toastr.error(message);
         }
     }
 
     public clearMessages(): void
     {
-        toastr.clear();
+        this._toastr.clear();
     }
 
 
