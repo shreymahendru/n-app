@@ -6,6 +6,7 @@ const element_1 = require("./core/element");
 exports.element = element_1.element;
 const view_1 = require("./core/view");
 exports.view = view_1.view;
+exports.viewSymbol = view_1.viewSymbol;
 const route_1 = require("./core/route");
 exports.route = route_1.route;
 const bind_1 = require("./core/bind");

@@ -2,7 +2,7 @@ import "reflect-metadata";
 import { given } from "n-defensive";
 import "n-ext";
 
-
+// public
 export const viewSymbol = Symbol("clientView");
 
 // public

@@ -3,6 +3,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 require("reflect-metadata");
 const n_defensive_1 = require("n-defensive");
 require("n-ext");
+// public
 exports.viewSymbol = Symbol("clientView");
 // public
 function view(file) {

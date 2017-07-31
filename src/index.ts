@@ -1,6 +1,6 @@
 import { ClientApp } from "./core/client-app";
 import { element } from "./core/element";
-import { view } from "./core/view";
+import { view, viewSymbol } from "./core/view";
 import { route } from "./core/route";
 import { bind } from "./core/bind";
 import { ComponentViewModel } from "./core/component-view-model";
@@ -15,7 +15,7 @@ export
     ClientApp,
     element,
     route,
-    view,
+    view, viewSymbol,
     bind,
     ComponentViewModel,
     PageViewModel,
