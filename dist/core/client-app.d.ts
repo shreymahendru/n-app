@@ -16,8 +16,8 @@ export declare class ClientApp {
     registerPages(...pageViewModelClasses: Function[]): this;
     useAsInitialRoute(route: string): this;
     useAsUnknownRoute(route: string): this;
-    enableDevMode(): this;
     bootstrap(): void;
+    private configureGlobalConfig();
     private configureComponents();
     private configurePages();
     private configureInitialRoute();

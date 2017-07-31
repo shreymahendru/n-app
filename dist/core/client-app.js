@@ -1,9 +1,8 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-const Vue = require("./../../vendor/vue.v2.3.2.js");
-const VueRouter = require("./../../vendor/vue-router.v2.5.3.js");
+const Vue = require("./../../vendor/vue.v2.4.2.js");
+const VueRouter = require("./../../vendor/vue-router.v2.7.0.js");
 Vue.use(VueRouter);
-const config_1 = require("./config");
 const n_defensive_1 = require("n-defensive");
 require("n-ext");
 const n_ject_1 = require("n-ject");
@@ -69,17 +68,17 @@ class ClientApp {
         this._pageManager.useAsUnknownRoute(route);
         return this;
     }
-    enableDevMode() {
-        if (this._isbootstrapped)
-            throw new n_exception_1.InvalidOperationException("enableDevMode");
-        config_1.Config.enableDev(Vue);
-        return this;
-    }
+    // public enableDevMode(): this
+    // {
+    //     if (this._isbootstrapped)
+    //         throw new InvalidOperationException("enableDevMode");
+    //     Config.enableDev(Vue);
+    //     return this;
+    // }
     bootstrap() {
         if (this._isbootstrapped)
             throw new n_exception_1.InvalidOperationException("bootstrap");
-        if (config_1.Config.isDev)
-            console.log("Bootstrapping in DEV mode.");
+        this.configureGlobalConfig();
         this.configureComponents();
         this.configurePages();
         this.configureInitialRoute();
@@ -87,6 +86,21 @@ class ClientApp {
         this.configureContainer();
         this.configureRoot();
         this._isbootstrapped = true;
+    }
+    configureGlobalConfig() {
+        if (window.appConfig.mode === "dev") {
+            console.log("Bootstrapping in DEV mode.");
+            Vue.config.silent = false;
+            Vue.config.devtools = true;
+            Vue.config.performance = true;
+            Vue.config.productionTip = true;
+        }
+        else {
+            Vue.config.silent = true;
+            Vue.config.devtools = false;
+            Vue.config.performance = false;
+            Vue.config.productionTip = false;
+        }
     }
     configureComponents() {
         this._componentManager.bootstrap();

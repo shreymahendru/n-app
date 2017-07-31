@@ -11,4 +11,5 @@ export class CreateTodoViewModel extends BasePageViewModel
     
     
     public get message(): string { return this._message; }
+    
 }
