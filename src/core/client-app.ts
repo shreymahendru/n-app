@@ -25,6 +25,9 @@ export class ClientApp
     private _app: any;
     private _accentColor: string;
     private _isbootstrapped: boolean = false;
+    
+    
+    public get container(): Container { return this._container; }
 
 
     public constructor(appElementId: string)

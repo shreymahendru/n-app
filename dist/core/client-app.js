@@ -27,6 +27,7 @@ class ClientApp {
         Vue.config.performance = false;
         Vue.config.productionTip = false;
     }
+    get container() { return this._container; }
     useInstaller(installer) {
         if (this._isbootstrapped)
             throw new n_exception_1.InvalidOperationException("useInstaller");

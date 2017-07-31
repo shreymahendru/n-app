@@ -1,5 +1,5 @@
 import "n-ext";
-import { ComponentInstaller } from "n-ject";
+import { Container, ComponentInstaller } from "n-ject";
 export declare class ClientApp {
     private readonly _appElementId;
     private readonly _container;
@@ -9,6 +9,7 @@ export declare class ClientApp {
     private _app;
     private _accentColor;
     private _isbootstrapped;
+    readonly container: Container;
     constructor(appElementId: string);
     useInstaller(installer: ComponentInstaller): this;
     useAccentColor(color: string): this;
