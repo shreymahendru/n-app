@@ -8,7 +8,7 @@ export declare class ClientApp {
     private _initialRoute;
     private _app;
     private _accentColor;
-    private _isbootstrapped;
+    private _isBootstrapped;
     readonly container: Container;
     constructor(appElementId: string);
     useInstaller(installer: ComponentInstaller): this;

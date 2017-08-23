@@ -3,6 +3,8 @@ Object.defineProperty(exports, "__esModule", { value: true });
 const Vue = require("./../../vendor/vue.v2.4.2.js");
 const VueRouter = require("./../../vendor/vue-router.v2.7.0.js");
 Vue.use(VueRouter);
+const ElementUI = require("./../../vendor/element-ui.v1.4.2.js");
+Vue.use(ElementUI);
 const n_defensive_1 = require("n-defensive");
 require("n-ext");
 const n_ject_1 = require("n-ject");
@@ -16,7 +18,7 @@ const default_storage_service_1 = require("./../services/storage-service/default
 // public
 class ClientApp {
     constructor(appElementId) {
-        this._isbootstrapped = false;
+        this._isBootstrapped = false;
         n_defensive_1.given(appElementId, "appElementId").ensureHasValue().ensure(t => !t.isEmptyOrWhiteSpace()).ensure(t => t.startsWith("#"));
         this._appElementId = appElementId;
         this._container = new n_ject_1.Container();
@@ -29,14 +31,14 @@ class ClientApp {
     }
     get container() { return this._container; }
     useInstaller(installer) {
-        if (this._isbootstrapped)
+        if (this._isBootstrapped)
             throw new n_exception_1.InvalidOperationException("useInstaller");
         n_defensive_1.given(installer, "installer").ensureHasValue();
         this._container.install(installer);
         return this;
     }
     useAccentColor(color) {
-        if (this._isbootstrapped)
+        if (this._isBootstrapped)
             throw new n_exception_1.InvalidOperationException("useAccentColor");
         n_defensive_1.given(color, "color").ensureHasValue().ensure(t => !t.isEmptyOrWhiteSpace())
             .ensure(t => t.trim().startsWith("#"), "must be hex value");
@@ -44,26 +46,26 @@ class ClientApp {
         return this;
     }
     registerComponents(...componentViewModelClasses) {
-        if (this._isbootstrapped)
+        if (this._isBootstrapped)
             throw new n_exception_1.InvalidOperationException("registerComponents");
         this._componentManager.registerComponents(...componentViewModelClasses);
         return this;
     }
     registerPages(...pageViewModelClasses) {
-        if (this._isbootstrapped)
+        if (this._isBootstrapped)
             throw new n_exception_1.InvalidOperationException("registerPages");
         this._pageManager.registerPages(...pageViewModelClasses);
         return this;
     }
     useAsInitialRoute(route) {
-        if (this._isbootstrapped)
+        if (this._isBootstrapped)
             throw new n_exception_1.InvalidOperationException("useAsInitialRoute");
         n_defensive_1.given(route, "route").ensureHasValue().ensure(t => !t.isEmptyOrWhiteSpace());
         this._initialRoute = route.trim();
         return this;
     }
     useAsUnknownRoute(route) {
-        if (this._isbootstrapped)
+        if (this._isBootstrapped)
             throw new n_exception_1.InvalidOperationException("useAsUnknownRoute");
         n_defensive_1.given(route, "route").ensureHasValue().ensure(t => !t.isEmptyOrWhiteSpace());
         this._pageManager.useAsUnknownRoute(route);
@@ -77,7 +79,7 @@ class ClientApp {
     //     return this;
     // }
     bootstrap() {
-        if (this._isbootstrapped)
+        if (this._isBootstrapped)
             throw new n_exception_1.InvalidOperationException("bootstrap");
         this.configureGlobalConfig();
         this.configureComponents();
@@ -86,7 +88,7 @@ class ClientApp {
         this.configureCoreServices();
         this.configureContainer();
         this.configureRoot();
-        this._isbootstrapped = true;
+        this._isBootstrapped = true;
     }
     configureGlobalConfig() {
         if (window.appConfig.mode === "dev") {

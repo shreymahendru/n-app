@@ -12,7 +12,7 @@ export class DefaultController extends Controller
             .include("test-app/client");
         
         let scripts = new ScriptBundle("scripts", "test-app/client/dist/scripts", "scripts")
-            .include("test-app/client/dist/scripts/jquery.js")    
+            // .include("test-app/client/dist/scripts/jquery.js")    
             .include("test-app/client/dist/scripts/app-bundle.js");
         
         return Promise.resolve({
