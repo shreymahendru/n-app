@@ -14,7 +14,7 @@ declare const jquery: JQueryStatic;
 
 export class DefaultDialogService implements DialogService
 {
-    private readonly _accentColor: string = "#000";
+    private readonly _accentColor: string = "#20a0ff"; // "#000";
     private _loadingScreenCount = 0;
     private _loadingScreen: any;
     private _spinner: any;
