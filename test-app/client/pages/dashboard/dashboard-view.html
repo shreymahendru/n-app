@@ -1,7 +1,6 @@
 <div>
     <h3>{{message}}</h3>
-    
+    <md-button class="md-raised md-primary" v-on:click="increment()">Primary</md-button>
     <score-board v-bind:score="score" v-bind:increment="increment"></score-board>
-    <el-button type="primary" v-on:click="increment()">Primary Button</el-button>
     <router-link to="/Todo">Go to Todo</router-link>
 </div>

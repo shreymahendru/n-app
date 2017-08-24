@@ -1,10 +1,11 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 const Vue = require("./../../vendor/vue.v2.4.2.js");
+exports.Vue = Vue;
 const VueRouter = require("./../../vendor/vue-router.v2.7.0.js");
 Vue.use(VueRouter);
-const ElementUI = require("./../../vendor/element-ui.v1.4.2.js");
-Vue.use(ElementUI);
+const VueMaterial = require("./../../vendor/vue-material.v0.7.4.js");
+Vue.use(VueMaterial);
 const n_defensive_1 = require("n-defensive");
 require("n-ext");
 const n_ject_1 = require("n-ject");

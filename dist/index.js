@@ -1,6 +1,7 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 const client_app_1 = require("./core/client-app");
+exports.Vue = client_app_1.Vue;
 exports.ClientApp = client_app_1.ClientApp;
 const element_1 = require("./core/element");
 exports.element = element_1.element;

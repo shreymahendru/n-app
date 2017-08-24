@@ -1,4 +1,4 @@
-import { ClientApp } from "./core/client-app";
+import { Vue, ClientApp } from "./core/client-app";
 import { element } from "./core/element";
 import { view, viewSymbol } from "./core/view";
 import { route } from "./core/route";
@@ -12,7 +12,7 @@ import { DialogService } from "./services/dialog-service/dialog-service";
 
 export
 {
-    ClientApp,
+    Vue, ClientApp,
     element,
     route,
     view, viewSymbol,

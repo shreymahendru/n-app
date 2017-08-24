@@ -1,3 +1,5 @@
+declare const Vue: any;
+export { Vue };
 import "n-ext";
 import { Container, ComponentInstaller } from "n-ject";
 export declare class ClientApp {
