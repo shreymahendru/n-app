@@ -8,7 +8,7 @@ if (!Spinner)
     console.log("No Spinner!!!");
 class DefaultDialogService {
     constructor(accentColor) {
-        this._accentColor = "#20a0ff"; // "#000";
+        this._accentColor = "#000";
         this._loadingScreenCount = 0;
         if (accentColor)
             this._accentColor = accentColor.trim();

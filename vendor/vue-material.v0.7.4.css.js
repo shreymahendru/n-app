@@ -6040,15 +6040,21 @@ to {
 
 /*# sourceMappingURL=vue-material.css.map*/
 `;
-    var head = document.head || document.getElementsByTagName('head')[0];
-    var style = document.createElement('style');
+    
+    var addCss = function addCss(id, style) {
+        var head = document.head;
+        var styleElement = head.querySelector('#' + id);
 
-    style.type = 'text/css';
-    if (style.styleSheet) {
-        style.styleSheet.cssText = css;
-    } else {
-        style.appendChild(document.createTextNode(css));
-    }
-
-    head.appendChild(style);
+        if (!styleElement) {
+            var newTag = document.createElement("style");
+            newTag.type = 'text/css';
+            newTag.id = id;
+            newTag.textContent = style;
+            head.appendChild(newTag);
+        } else {
+            styleElement.textContent = styleElement.textContent + "\n" + style;
+        }
+    };
+    
+    addCss("n-app-styles", css);
 })();
