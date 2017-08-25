@@ -1,4 +1,4 @@
-import { Vue, ClientApp } from "./../../src/index";
+import { ClientApp } from "./../../src/index";
 import { ScoreBoardViewModel } from "./components/score-board/score-board-view-model";
 import { ComponentInstaller, Registry } from "n-ject";
 import { InmemoryTodoRepository } from "./services/todo-repository/inmemory-todo-repository";
@@ -10,12 +10,12 @@ import { UpdateTodoViewModel } from "./pages/todo/update-todo/update-todo-view-m
 import * as Routes from "./pages/routes";
 
 
-Vue.material.registerTheme("default", {
-    primary: "blue",
-    accent: "red",
-    warn: "red",
-    background: "grey"
-});
+// Vue.material.registerTheme("default", {
+//     primary: "blue",
+//     accent: "red",
+//     warn: "red",
+//     background: "grey"
+// });
 
 class Installer implements ComponentInstaller
 {
