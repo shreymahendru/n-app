@@ -7,9 +7,8 @@ if (!Spinner)
     console.log("No Spinner!!!");    
 
 import { DialogService } from "./dialog-service";
-// import * as jquery from "jquery";
 
-declare const jquery: JQueryStatic;
+declare const $: JQueryStatic;
 
 
 export class DefaultDialogService implements DialogService
@@ -123,8 +122,8 @@ export class DefaultDialogService implements DialogService
 
     private CreateLoadingScreen(): void
     {
-        this._loadingScreen = jquery("<div style='position:fixed;top:0;left:0;right:0;bottom:0;z-index:100000000;background-color:rgba(255, 255, 255, 0.1);'><div id='spinnerLocation' style='position:absolute;top:50%;left:50%;'></div></div>")
-            .appendTo(jquery("body"));
+        this._loadingScreen = $("<div style='position:fixed;top:0;left:0;right:0;bottom:0;z-index:100000000;background-color:rgba(255, 255, 255, 0.1);'><div id='spinnerLocation' style='position:absolute;top:50%;left:50%;'></div></div>")
+            .appendTo($("body"));
 
         // var opts = {
         //    lines: 13, // The number of lines to draw
