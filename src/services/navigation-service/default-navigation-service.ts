@@ -21,6 +21,7 @@ export class DefaultNavigationService implements NavigationService
         given(route, "route").ensureHasValue().ensure(t => !t.isEmptyOrWhiteSpace());
         
         let url = params === undefined || params === null ? route : new RouteInfo(route).generateUrl(params);
+        url = url.replaceAll(" ", "");
         replaceHistory ? this._vueRouter.replace(url) : this._vueRouter.push(url);
     }
     

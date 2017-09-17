@@ -57,86 +57,142 @@ export class Utils
     
     public static createRouteArgs(route: RouteInfo, ctx: any): Array<any>
     {
-        let pathParams = ctx.params ? ctx.params : {};
-        let queryParams = ctx.query ? ctx.query : {};
+        let queryParams = ctx.query;
+        let pathParams = ctx.params;
         let model: { [index: string]: any } = {};
 
-        for (let param of route.params)
+        for (let key in queryParams)
         {
-            let lookupKey = param.paramKey.trim().toLowerCase();
-            let value = null;
-            if (param.isQuery)
+            let routeParam = route.findRouteParam(key);
+            if (routeParam)
             {
-                for (let key in queryParams)
-                {
-                    if (key.trim().toLowerCase() === lookupKey)
-                    {
-                        value = param.parseParam(queryParams[key]);
-                        break;
-                    }    
-                }
-                
-                if (value === undefined || value === null)
-                {
-                    if (!param.isOptional)
-                        throw new HttpException(404);
-                    
-                    value = null;
-                }    
+                let parsed = routeParam.parseParam(queryParams[key]);
+                model[routeParam.paramKey] = parsed;
+                queryParams[key] = parsed;
             }
             else
             {
-                for (let key in pathParams)
-                {
-                    if (key.trim().toLowerCase() === lookupKey)
-                    {
-                        value = param.parseParam(pathParams[key]);
-                        break;
-                    }
-                }
-
-                if (value === undefined || value === null)
-                    throw new HttpException(404);
+                let value = queryParams[key];
+                if (value === undefined || value == null || value.isEmptyOrWhiteSpace() || value.trim().toLowerCase() === "null")
+                    queryParams[key] = null;
             }
+        }
+
+        for (let key in pathParams)
+        {
+            let routeParam = route.findRouteParam(key);
+            // if (!routeParam)
+            //     throw new HttpException(404);
             
-            model[param.paramKey] = value;
-        }    
+            // instead we just skip it. This is because keys in pathParams will include parent page route pathParams
+            
+            if (!routeParam)
+                continue;    
 
-        
-        // for (let key in queryParams)
-        // {
-        //     let routeParam = route.findRouteParam(key);
-        //     if (!routeParam)
-        //         continue;
-
-        //     model[routeParam.paramKey] = routeParam.parseParam(queryParams[key]);
-        // }
-
-        // for (let key in pathParams) // this wont work in multi level nesting
-        // {
-        //     let routeParam = route.findRouteParam(key);
-        //     if (!routeParam)
-        //         throw new HttpException(404);
-
-        //     model[routeParam.paramKey] = routeParam.parseParam(pathParams[key]);
-        // }
+            let parsed = routeParam.parseParam(pathParams[key]);
+            model[routeParam.paramKey] = parsed;
+            pathParams[key] = parsed;
+        }
 
         let result = [];
-        for (let param of route.params.orderBy(t => t.order))
+        for (let routeParam of route.params)
         {
-            let value = model[param.paramKey];
-            // if (value === undefined || value === null)
-            // {
-            //     if (!param.isOptional)
-            //         throw new HttpException(404);
+            let value = model[routeParam.paramKey];
+            if (value === undefined || value === null)
+            {
+                if (!routeParam.isOptional)
+                    throw new HttpException(404);
 
-            //     value = null;
-            // }
+                value = null;
+            }
             result.push(value);
         }
 
         return result;
     }
+    
+    // public static createRouteArgs(route: RouteInfo, ctx: any): Array<any>
+    // {
+    //     let pathParams = ctx.params ? ctx.params : {};
+    //     let queryParams = ctx.query ? ctx.query : {};
+    //     let model: { [index: string]: any } = {};
+
+    //     for (let param of route.params)
+    //     {
+    //         let lookupKey = param.paramKey.trim().toLowerCase();
+    //         let value = null;
+    //         if (param.isQuery)
+    //         {
+    //             for (let key in queryParams)
+    //             {
+    //                 if (key.trim().toLowerCase() === lookupKey)
+    //                 {
+    //                     value = param.parseParam(queryParams[key]);
+    //                     break;
+    //                 }    
+    //             }
+                
+    //             if (value === undefined || value === null)
+    //             {
+    //                 if (!param.isOptional)
+    //                     throw new HttpException(404);
+                    
+    //                 value = null;
+    //             }    
+    //         }
+    //         else
+    //         {
+    //             for (let key in pathParams)
+    //             {
+    //                 if (key.trim().toLowerCase() === lookupKey)
+    //                 {
+    //                     value = param.parseParam(pathParams[key]);
+    //                     break;
+    //                 }
+    //             }
+
+    //             if (value === undefined || value === null)
+    //                 throw new HttpException(404);
+    //         }
+            
+    //         model[param.paramKey] = value;
+    //     }    
+
+        
+    //     // for (let key in queryParams)
+    //     // {
+    //     //     let routeParam = route.findRouteParam(key);
+    //     //     if (!routeParam)
+    //     //         continue;
+
+    //     //     model[routeParam.paramKey] = routeParam.parseParam(queryParams[key]);
+    //     // }
+
+    //     // for (let key in pathParams) // this wont work in multi level nesting
+    //     // {
+    //     //     let routeParam = route.findRouteParam(key);
+    //     //     if (!routeParam)
+    //     //         throw new HttpException(404);
+
+    //     //     model[routeParam.paramKey] = routeParam.parseParam(pathParams[key]);
+    //     // }
+
+    //     let result = [];
+    //     for (let param of route.params.orderBy(t => t.order))
+    //     {
+    //         let value = model[param.paramKey];
+    //         // if (value === undefined || value === null)
+    //         // {
+    //         //     if (!param.isOptional)
+    //         //         throw new HttpException(404);
+
+    //         //     value = null;
+    //         // }
+    //         result.push(value);
+    //     }
+
+    //     return result;
+    // }
 }
 
 
