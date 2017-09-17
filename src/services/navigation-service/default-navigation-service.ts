@@ -1,9 +1,9 @@
 import { NavigationService } from "./navigation-service";
 import { given } from "n-defensive";
 import "n-ext";
-import { RouteInfo } from "./../../core/route-info";
+import { Utils } from "../../core/utils";
 
-export class DefaultNavigationService implements NavigationService 
+export class DefaultNavigationService implements NavigationService
 {
     private readonly _vueRouter: any;
 
@@ -18,10 +18,7 @@ export class DefaultNavigationService implements NavigationService
     
     public navigate(route: string, params: Object, replaceHistory?: boolean): void
     {
-        given(route, "route").ensureHasValue().ensure(t => !t.isEmptyOrWhiteSpace());
-        
-        let url = params === undefined || params === null ? route : new RouteInfo(route).generateUrl(params);
-        url = url.replaceAll(" ", "");
+        let url = Utils.generateUrl(route, params);
         replaceHistory ? this._vueRouter.replace(url) : this._vueRouter.push(url);
     }
     

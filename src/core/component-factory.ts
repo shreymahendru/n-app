@@ -1,6 +1,6 @@
 import { given } from "n-defensive";
 import { Container } from "n-ject";
-import { Utils } from "./utils";
+import { Utilities } from "./utilities";
 import { ViewModelRegistration } from "./view-model-registration";
 import { ComponentRegistration } from "./component-registration";
 
@@ -34,7 +34,7 @@ export class ComponentFactory
             let methods: { [index: string]: any } = {};
             let computed: { [index: string]: any } = {};
 
-            let propertyInfos = Utils.getPropertyInfos(vm);
+            let propertyInfos = Utilities.getPropertyInfos(vm);
             for (let info of propertyInfos)
             {
                 if (typeof (info.descriptor.value) === "function")

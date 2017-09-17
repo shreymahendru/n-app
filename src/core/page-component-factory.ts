@@ -1,5 +1,5 @@
 import { ComponentFactory } from "./component-factory";
-import { Utils } from "./utils";
+import { Utilities } from "./utilities";
 import { PageRegistration } from "./page-registration";
 
 
@@ -36,7 +36,7 @@ export class PageComponentFactory extends ComponentFactory
             {
                 try 
                 {
-                    routeArgs = Utils.createRouteArgs(registration.route, to);
+                    routeArgs = Utilities.createRouteArgs(registration.route, to);
                 }
                 catch (error)
                 {
@@ -73,7 +73,7 @@ export class PageComponentFactory extends ComponentFactory
             let routeArgs: Array<any> = [];
             try 
             {
-                routeArgs = Utils.createRouteArgs(registration.route, to);
+                routeArgs = Utilities.createRouteArgs(registration.route, to);
             }
             catch (error)
             {
@@ -85,7 +85,7 @@ export class PageComponentFactory extends ComponentFactory
             let fromRouteArgs: Array<any> = [];
             try 
             {
-                fromRouteArgs = Utils.createRouteArgs(registration.route, from);
+                fromRouteArgs = Utilities.createRouteArgs(registration.route, from);
             }
             catch (error) 
             {
