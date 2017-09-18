@@ -16,4 +16,6 @@ const component_view_model_1 = require("./core/component-view-model");
 exports.ComponentViewModel = component_view_model_1.ComponentViewModel;
 const page_view_model_1 = require("./core/page-view-model");
 exports.PageViewModel = page_view_model_1.PageViewModel;
+const utils_1 = require("./core/utils");
+exports.Utils = utils_1.Utils;
 //# sourceMappingURL=index.js.map

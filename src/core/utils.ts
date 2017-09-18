@@ -5,12 +5,24 @@ import { given } from "n-defensive";
 // public
 export abstract class Utils // static class
 {
-    public static generateUrl(route: string, params?: object): string
+    public static generateUrl(route: string, params?: object, baseUrl?: string): string
     {
         given(route, "route").ensureHasValue().ensure(t => !t.isEmptyOrWhiteSpace());
         
-        route = route.trim();
-        let url = params === undefined || params === null ? route : new RouteInfo(route).generateUrl(params);
-        return url.replaceAll(" ", "");
+        let url = route.trim();
+
+        if (baseUrl !== undefined && baseUrl != null)
+        {
+            baseUrl = baseUrl.trim();
+            if (baseUrl.endsWith("/"))
+                baseUrl = baseUrl.substr(0, baseUrl.length - 1);
+
+            if (!url.startsWith("/"))
+                url = "/" + url;
+
+            url = baseUrl + url;
+        }
+        
+        return params ? new RouteInfo(route).generateUrl(params) : url.replaceAll(" ", "");
     }
 }

@@ -1,24 +1,6 @@
-import { RouteInfo } from "./route-info";
-import { HttpException } from "./http-exception";
 import { ApplicationException } from "n-exception";
 import "n-ext";
-
-export class PropertyInfo
-{
-    private _name: string;
-    private _descriptor: PropertyDescriptor;
-
-
-    public get name(): string { return this._name; }
-    public get descriptor(): PropertyDescriptor { return this._descriptor; }
-
-
-    public constructor(name: string, descriptor: PropertyDescriptor)
-    {
-        this._name = name;
-        this._descriptor = descriptor;
-    }
-} 
+import { PropertyInfo } from "./property-info";
 
 
 export class Utilities
@@ -53,62 +35,6 @@ export class Utilities
 
         propertyInfos.push(...Utilities.getPropertyInfos(prototype));
         return propertyInfos;
-    }
-    
-    public static createRouteArgs(route: RouteInfo, ctx: any): Array<any>
-    {
-        let queryParams = ctx.query;
-        let pathParams = ctx.params;
-        let model: { [index: string]: any } = {};
-
-        for (let key in queryParams)
-        {
-            let routeParam = route.findRouteParam(key);
-            if (routeParam)
-            {
-                let parsed = routeParam.parseParam(queryParams[key]);
-                model[routeParam.paramKey] = parsed;
-                queryParams[key] = parsed;
-            }
-            else
-            {
-                let value = queryParams[key];
-                if (value === undefined || value == null || value.isEmptyOrWhiteSpace() || value.trim().toLowerCase() === "null")
-                    queryParams[key] = null;
-            }
-        }
-
-        for (let key in pathParams)
-        {
-            let routeParam = route.findRouteParam(key);
-            // if (!routeParam)
-            //     throw new HttpException(404);
-            
-            // instead we just skip it. This is because keys in pathParams will include parent page route pathParams
-            
-            if (!routeParam)
-                continue;    
-
-            let parsed = routeParam.parseParam(pathParams[key]);
-            model[routeParam.paramKey] = parsed;
-            pathParams[key] = parsed;
-        }
-
-        let result = [];
-        for (let routeParam of route.params)
-        {
-            let value = model[routeParam.paramKey];
-            if (value === undefined || value === null)
-            {
-                if (!routeParam.isOptional)
-                    throw new HttpException(404);
-
-                value = null;
-            }
-            result.push(value);
-        }
-
-        return result;
     }
     
     // public static createRouteArgs(route: RouteInfo, ctx: any): Array<any>

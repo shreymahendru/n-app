@@ -1,6 +1,6 @@
 import { ComponentFactory } from "./component-factory";
-import { Utilities } from "./utilities";
 import { PageRegistration } from "./page-registration";
+import { RouteArgs } from "./route-args";
 
 
 export class PageComponentFactory extends ComponentFactory
@@ -30,27 +30,25 @@ export class PageComponentFactory extends ComponentFactory
             // does NOT have access to `this` component instance,
             // because it has not been created yet when this guard is called!
             
-            let routeArgs: Array<any> = [];
+            let routeArgs: RouteArgs = null;
             
-            if (registration.route.params.length > 0)
+            try 
             {
-                try 
-                {
-                    routeArgs = Utilities.createRouteArgs(registration.route, to);
-                }
-                catch (error)
-                {
-                    console.log(error);
-                    next(false);
-                    return;
-                }
-            }  
+                routeArgs = RouteArgs.create(registration.route, to);
+            }
+            catch (error)
+            {
+                console.log(error);
+                next(false);
+                return;
+            }
             
             next((vueModel: any) =>
             {
                 let vm = vueModel.vm;
+                vm.__routeArgs = routeArgs;
                 if (vm.onEnter)
-                    vm.onEnter(...routeArgs);
+                    routeArgs.routeArgs.length > 0 ? vm.onEnter(...routeArgs.routeArgs) : vm.onEnter();
             });
         };
         
@@ -64,16 +62,16 @@ export class PageComponentFactory extends ComponentFactory
             // has access to `this` component instance.
 
             
-            if (registration.route.params.length === 0)
-            {
-                next();
-                return;
-            }    
+            // if (registration.route.params.length === 0)
+            // {
+            //     next();
+            //     return;
+            // }    
             
-            let routeArgs: Array<any> = [];
+            let routeArgs: RouteArgs = null;
             try 
             {
-                routeArgs = Utilities.createRouteArgs(registration.route, to);
+                routeArgs = RouteArgs.create(registration.route, to);
             }
             catch (error)
             {
@@ -82,15 +80,15 @@ export class PageComponentFactory extends ComponentFactory
                 return;
             }
             
-            let fromRouteArgs: Array<any> = [];
+            let fromRouteArgs: RouteArgs = null;
             try 
             {
-                fromRouteArgs = Utilities.createRouteArgs(registration.route, from);
+                fromRouteArgs = RouteArgs.create(registration.route, from);
             }
             catch (error) 
             {
                 console.log(error);
-                fromRouteArgs = [];
+                fromRouteArgs = new RouteArgs({}, {}, []);
             }
 
             if (routeArgs.equals(fromRouteArgs))
@@ -103,8 +101,9 @@ export class PageComponentFactory extends ComponentFactory
             if (vm.onLeave)
                 vm.onLeave();    
             
+            vm.__routeArgs = routeArgs;
             if (vm.onEnter)
-                vm.onEnter(...routeArgs);
+                routeArgs.routeArgs.length > 0 ? vm.onEnter(...routeArgs.routeArgs) : vm.onEnter();
             
             next();
         };

@@ -1,7 +1,7 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 const component_factory_1 = require("./component-factory");
-const utils_1 = require("./utils");
+const route_args_1 = require("./route-args");
 class PageComponentFactory extends component_factory_1.ComponentFactory {
     create(registration) {
         let component = super.create(registration);
@@ -23,21 +23,20 @@ class PageComponentFactory extends component_factory_1.ComponentFactory {
             // called before the route that renders this component is confirmed.
             // does NOT have access to `this` component instance,
             // because it has not been created yet when this guard is called!
-            let routeArgs = [];
-            if (registration.route.params.length > 0) {
-                try {
-                    routeArgs = utils_1.Utils.createRouteArgs(registration.route, to);
-                }
-                catch (error) {
-                    console.log(error);
-                    next(false);
-                    return;
-                }
+            let routeArgs = null;
+            try {
+                routeArgs = route_args_1.RouteArgs.create(registration.route, to);
+            }
+            catch (error) {
+                console.log(error);
+                next(false);
+                return;
             }
             next((vueModel) => {
                 let vm = vueModel.vm;
+                vm.__routeArgs = routeArgs;
                 if (vm.onEnter)
-                    vm.onEnter(...routeArgs);
+                    routeArgs.routeArgs.length > 0 ? vm.onEnter(...routeArgs.routeArgs) : vm.onEnter();
             });
         };
         component.beforeRouteUpdate = function (to, from, next) {
@@ -47,26 +46,27 @@ class PageComponentFactory extends component_factory_1.ComponentFactory {
             // navigate between /foo/1 and /foo/2, the same Foo component instance
             // will be reused, and this hook will be called when that happens.
             // has access to `this` component instance.
-            if (registration.route.params.length === 0) {
-                next();
-                return;
-            }
-            let routeArgs = [];
+            // if (registration.route.params.length === 0)
+            // {
+            //     next();
+            //     return;
+            // }    
+            let routeArgs = null;
             try {
-                routeArgs = utils_1.Utils.createRouteArgs(registration.route, to);
+                routeArgs = route_args_1.RouteArgs.create(registration.route, to);
             }
             catch (error) {
                 console.log(error);
                 next(false);
                 return;
             }
-            let fromRouteArgs = [];
+            let fromRouteArgs = null;
             try {
-                fromRouteArgs = utils_1.Utils.createRouteArgs(registration.route, from);
+                fromRouteArgs = route_args_1.RouteArgs.create(registration.route, from);
             }
             catch (error) {
                 console.log(error);
-                fromRouteArgs = [];
+                fromRouteArgs = new route_args_1.RouteArgs({}, {}, []);
             }
             if (routeArgs.equals(fromRouteArgs)) {
                 next();
@@ -75,8 +75,9 @@ class PageComponentFactory extends component_factory_1.ComponentFactory {
             let vm = this.vm;
             if (vm.onLeave)
                 vm.onLeave();
+            vm.__routeArgs = routeArgs;
             if (vm.onEnter)
-                vm.onEnter(...routeArgs);
+                routeArgs.routeArgs.length > 0 ? vm.onEnter(...routeArgs.routeArgs) : vm.onEnter();
             next();
         };
         component.beforeRouteLeave = function (to, from, next) {

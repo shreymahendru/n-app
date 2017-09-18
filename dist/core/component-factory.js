@@ -1,7 +1,7 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 const n_defensive_1 = require("n-defensive");
-const utils_1 = require("./utils");
+const utilities_1 = require("./utilities");
 class ComponentFactory {
     constructor(container) {
         n_defensive_1.given(container, "container").ensureHasValue();
@@ -18,7 +18,7 @@ class ComponentFactory {
             let data = { vm: vm };
             let methods = {};
             let computed = {};
-            let propertyInfos = utils_1.Utils.getPropertyInfos(vm);
+            let propertyInfos = utilities_1.Utilities.getPropertyInfos(vm);
             for (let info of propertyInfos) {
                 if (typeof (info.descriptor.value) === "function")
                     methods[info.name] = info.descriptor.value.bind(vm);

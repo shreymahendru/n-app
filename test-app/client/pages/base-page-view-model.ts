@@ -14,6 +14,8 @@ export class BasePageViewModel extends PageViewModel
     {
         console.log("Entering {0}".format((<Object>this).getTypeName()));
         console.log("arg", arg);
+        console.log("pathArgs", this.pathArgs);
+        console.log("queryArgs", this.queryArgs);
     }
 
     protected onLeave(): void

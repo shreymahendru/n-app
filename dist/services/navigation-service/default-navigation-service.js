@@ -2,15 +2,14 @@
 Object.defineProperty(exports, "__esModule", { value: true });
 const n_defensive_1 = require("n-defensive");
 require("n-ext");
-const route_info_1 = require("./../../core/route-info");
+const utils_1 = require("../../core/utils");
 class DefaultNavigationService {
     constructor(vueRouter) {
         n_defensive_1.given(vueRouter, "vueRouter").ensureHasValue();
         this._vueRouter = vueRouter;
     }
     navigate(route, params, replaceHistory) {
-        n_defensive_1.given(route, "route").ensureHasValue().ensure(t => !t.isEmptyOrWhiteSpace());
-        let url = params === undefined || params === null ? route : new route_info_1.RouteInfo(route).generateUrl(params);
+        let url = utils_1.Utils.generateUrl(route, params);
         replaceHistory ? this._vueRouter.replace(url) : this._vueRouter.push(url);
     }
     navigateBack() {

@@ -35,13 +35,20 @@ class RouteInfo {
     }
     generateUrl(values) {
         let url = this._routeTemplate;
+        let hasQuery = this._hasQuery;
         for (let key in values) {
             let routeParam = this.findRouteParam(key);
-            if (!routeParam)
-                continue;
-            let param = "{" + routeParam.param + "}";
-            let replacement = routeParam.isQuery ? "{0}={1}".format(key, values[key]) : values[key];
-            url = url.replace(param, replacement);
+            if (routeParam) {
+                let param = "{" + routeParam.param + "}";
+                let replacement = routeParam.isQuery
+                    ? "{0}={1}".format(key, encodeURIComponent(values.getValue(key)))
+                    : encodeURIComponent(values.getValue(key));
+                url = url.replace(param, replacement);
+            }
+            else {
+                url = `${url}${hasQuery ? "&" : "?"}${"{0}={1}".format(key, encodeURIComponent(values.getValue(key)))}`;
+                hasQuery = true;
+            }
         }
         return url;
     }
@@ -84,6 +91,7 @@ class RouteInfo {
                 startFound = false;
             }
         }
+        this._hasQuery = queryFound;
         return templateParams;
     }
     generateVueRoute(routeTemplate) {

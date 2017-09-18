@@ -7,6 +7,7 @@ export declare class RouteInfo {
     private readonly _vueRoute;
     private readonly _pathSegments;
     private readonly _routeKey;
+    private _hasQuery;
     readonly route: string;
     readonly vueRoute: string;
     readonly params: ReadonlyArray<RouteParam>;

@@ -6,9 +6,6 @@ export { Vue }
 const VueRouter = require("./../../vendor/vue-router.v2.7.0.js");
 Vue.use(VueRouter);
 
-// const VueMaterial = require("./../../vendor/vue-material.v0.7.4.js");
-// Vue.use(VueMaterial);
-
 
 import { given } from "n-defensive";
 import "n-ext";
