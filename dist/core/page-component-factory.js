@@ -46,11 +46,6 @@ class PageComponentFactory extends component_factory_1.ComponentFactory {
             // navigate between /foo/1 and /foo/2, the same Foo component instance
             // will be reused, and this hook will be called when that happens.
             // has access to `this` component instance.
-            // if (registration.route.params.length === 0)
-            // {
-            //     next();
-            //     return;
-            // }    
             let routeArgs = null;
             try {
                 routeArgs = route_args_1.RouteArgs.create(registration.route, to);
