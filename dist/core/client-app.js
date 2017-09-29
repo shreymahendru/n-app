@@ -14,6 +14,7 @@ const default_dialog_service_1 = require("./../services/dialog-service/default-d
 const default_event_aggregator_1 = require("./../services/event-aggregator/default-event-aggregator");
 const default_navigation_service_1 = require("./../services/navigation-service/default-navigation-service");
 const default_storage_service_1 = require("./../services/storage-service/default-storage-service");
+const n_config_1 = require("n-config");
 // public
 class ClientApp {
     constructor(appElementId) {
@@ -90,7 +91,7 @@ class ClientApp {
         this._isBootstrapped = true;
     }
     configureGlobalConfig() {
-        if (window.appConfig.mode === "dev") {
+        if (n_config_1.ConfigurationManager.getConfig("mode") === "dev") {
             console.log("Bootstrapping in DEV mode.");
             Vue.config.silent = false;
             Vue.config.devtools = true;

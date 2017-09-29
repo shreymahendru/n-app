@@ -49,7 +49,6 @@
     "@types/sinon": "^1.16.35",
     "@types/toastr": "^2.1.33",
     "mocha": "^3.2.0",
-    "n-config": "git+https://github.com/nivinjoseph/n-config.git",
     "n-web": "git+https://github.com/nivinjoseph/n-web.git",
     "nodemon": "^1.11.0",
     "sinon": "^2.0.0-pre.6",
@@ -61,6 +60,7 @@
     "webpack": "^2.4.1"
   },
   "dependencies": {
+    "n-config": "git+https://github.com/nivinjoseph/n-config.git",  
     "n-defensive": "git+https://github.com/nivinjoseph/n-defensive.git",
     "n-exception": "git+https://github.com/nivinjoseph/n-exception.git",
     "n-ext": "git+https://github.com/nivinjoseph/n-ext.git",

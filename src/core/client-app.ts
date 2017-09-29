@@ -17,6 +17,7 @@ import { DefaultDialogService } from "./../services/dialog-service/default-dialo
 import { DefaultEventAggregator } from "./../services/event-aggregator/default-event-aggregator";
 import { DefaultNavigationService } from "./../services/navigation-service/default-navigation-service";
 import { DefaultStorageService } from "./../services/storage-service/default-storage-service";
+import { ConfigurationManager } from "n-config";
 
 
 // public
@@ -137,7 +138,7 @@ export class ClientApp
     
     private configureGlobalConfig(): void
     {
-        if ((<any>window).appConfig.mode === "dev")
+        if (ConfigurationManager.getConfig("mode") === "dev")
         {
             console.log("Bootstrapping in DEV mode.");
 
