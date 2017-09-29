@@ -1,6 +1,6 @@
 {
   "name": "n-app",
-  "version": "1.0.23",
+  "version": "1.0.24",
   "description": "Vue.js based application framework",
   "main": "./dist/index.js",
   "types": "./dist/index.d.ts",
@@ -60,7 +60,7 @@
     "webpack": "^2.4.1"
   },
   "dependencies": {
-    "n-config": "git+https://github.com/nivinjoseph/n-config.git",  
+    "n-config": "git+https://github.com/nivinjoseph/n-config.git",
     "n-defensive": "git+https://github.com/nivinjoseph/n-defensive.git",
     "n-exception": "git+https://github.com/nivinjoseph/n-exception.git",
     "n-ext": "git+https://github.com/nivinjoseph/n-ext.git",
