@@ -91,7 +91,7 @@ class ClientApp {
         this._isBootstrapped = true;
     }
     configureGlobalConfig() {
-        if (n_config_1.ConfigurationManager.getConfig("mode") === "dev") {
+        if (n_config_1.ConfigurationManager.getConfig("env") === "dev") {
             console.log("Bootstrapping in DEV mode.");
             Vue.config.silent = false;
             Vue.config.devtools = true;

@@ -138,7 +138,7 @@ export class ClientApp
     
     private configureGlobalConfig(): void
     {
-        if (ConfigurationManager.getConfig("mode") === "dev")
+        if (ConfigurationManager.getConfig("env") === "dev")
         {
             console.log("Bootstrapping in DEV mode.");
 
