@@ -19,23 +19,23 @@ class DefaultNavigationService {
         this._vueRouter.forward();
     }
     navigateSiteSameTab(url, replceHistory) {
-        n_defensive_1.given(url, "url").ensureHasValue().ensure(t => t.isEmptyOrWhiteSpace());
+        n_defensive_1.given(url, "url").ensureHasValue().ensure(t => !t.isEmptyOrWhiteSpace());
         url = url.trim();
         replceHistory ? window.location.replace(url) : window.location.href = url;
     }
     navigateSiteNewTab(url) {
-        n_defensive_1.given(url, "url").ensureHasValue().ensure(t => t.isEmptyOrWhiteSpace());
+        n_defensive_1.given(url, "url").ensureHasValue().ensure(t => !t.isEmptyOrWhiteSpace());
         url = url.trim();
         window.open(url);
     }
     navigateSitePostSameTab(url, value) {
-        n_defensive_1.given(url, "url").ensureHasValue().ensure(t => t.isEmptyOrWhiteSpace());
+        n_defensive_1.given(url, "url").ensureHasValue().ensure(t => !t.isEmptyOrWhiteSpace());
         url = url.trim();
         let form = this.createForm(url, value);
         form.submit();
     }
     navigateSitePostNewTab(url, value) {
-        n_defensive_1.given(url, "url").ensureHasValue().ensure(t => t.isEmptyOrWhiteSpace());
+        n_defensive_1.given(url, "url").ensureHasValue().ensure(t => !t.isEmptyOrWhiteSpace());
         url = url.trim();
         let form = this.createForm(url, value);
         let view = "view" + "_" + Math.floor((Math.random() * 9999999) + 1);
@@ -44,6 +44,7 @@ class DefaultNavigationService {
         form.submit();
     }
     getSiteQueryParam(key) {
+        n_defensive_1.given(key, "key").ensureHasValue().ensureIsString().ensure(t => !t.isEmptyOrWhiteSpace());
         key = key.replace(/[\[]/, "\\[").replace(/[\]]/, "\\]");
         let regex = new RegExp("[\\?&]" + key + "=([^&#]*)");
         let results = regex.exec(location.search);

@@ -35,7 +35,7 @@ export class DefaultNavigationService implements NavigationService
 
     public navigateSiteSameTab(url: string, replceHistory?: boolean): void
     {
-        given(url, "url").ensureHasValue().ensure(t => t.isEmptyOrWhiteSpace());
+        given(url, "url").ensureHasValue().ensure(t => !t.isEmptyOrWhiteSpace());
         url = url.trim();
 
         replceHistory ? window.location.replace(url) : window.location.href = url;
@@ -43,7 +43,7 @@ export class DefaultNavigationService implements NavigationService
 
     public navigateSiteNewTab(url: string): void
     {
-        given(url, "url").ensureHasValue().ensure(t => t.isEmptyOrWhiteSpace());
+        given(url, "url").ensureHasValue().ensure(t => !t.isEmptyOrWhiteSpace());
         url = url.trim();
         
         window.open(url);
@@ -51,7 +51,7 @@ export class DefaultNavigationService implements NavigationService
 
     public navigateSitePostSameTab(url: string, value: Object): void
     {
-        given(url, "url").ensureHasValue().ensure(t => t.isEmptyOrWhiteSpace());
+        given(url, "url").ensureHasValue().ensure(t => !t.isEmptyOrWhiteSpace());
         url = url.trim();
 
         let form = this.createForm(url, value);
@@ -60,7 +60,7 @@ export class DefaultNavigationService implements NavigationService
 
     public navigateSitePostNewTab(url: string, value: Object): void
     {
-        given(url, "url").ensureHasValue().ensure(t => t.isEmptyOrWhiteSpace());
+        given(url, "url").ensureHasValue().ensure(t => !t.isEmptyOrWhiteSpace());
         url = url.trim();
 
         let form = this.createForm(url, value);
@@ -72,6 +72,8 @@ export class DefaultNavigationService implements NavigationService
 
     public getSiteQueryParam(key: string): string
     {
+        given(key, "key").ensureHasValue().ensureIsString().ensure(t => !t.isEmptyOrWhiteSpace());
+        
         key = key.replace(/[\[]/, "\\[").replace(/[\]]/, "\\]");
         let regex = new RegExp("[\\?&]" + key + "=([^&#]*)");
         let results = regex.exec(location.search);
