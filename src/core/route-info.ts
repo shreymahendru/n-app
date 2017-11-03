@@ -3,7 +3,7 @@ import "n-ext";
 import { ApplicationException, ArgumentException } from "n-exception";
 import { RouteParam } from "./route-param";
 
-// route format: /api/Product/{id:number}?{name?:string}&{all:boolean}
+// route template format: /api/Product/{id:number}?{name?:string}&{all:boolean}
 
 export class RouteInfo
 {
@@ -23,24 +23,33 @@ export class RouteInfo
     public get routeKey(): string { return this._routeKey; }
 
 
-    public constructor(routeTemplate: string)
+    public constructor(routeTemplate: string, isUrlGenerator = false) // true if used purely for url generation (only by utils)
     {
-        given(routeTemplate, "routeTemplate").ensureHasValue().ensure(t => !t.isEmptyOrWhiteSpace());
-        routeTemplate = routeTemplate.trim();
-        while (routeTemplate.contains(" "))
-            routeTemplate = routeTemplate.replace(" ", "");
+        given(routeTemplate, "routeTemplate")
+            .ensureHasValue()
+            .ensure(t => !t.isEmptyOrWhiteSpace());
+        
+        routeTemplate = routeTemplate.trim().replaceAll(" ", "");
+        
+        if (!isUrlGenerator)
+        {
+            given(routeTemplate, "routeTemplate")
+                .ensure(t => t.startsWith("/"), "has to start with '/'")
+                .ensure(t => !t.contains("//"), "cannot contain '//'");
 
-        if (routeTemplate.endsWith("/"))
-            routeTemplate = routeTemplate.substr(0, routeTemplate.length - 1);
-                
-        if (routeTemplate.contains("//"))
-            throw new ArgumentException("routeTemplate", "contains //");
+            if (routeTemplate.length > 1 && routeTemplate.endsWith("/"))
+                routeTemplate = routeTemplate.substr(0, routeTemplate.length - 1);
+        }
         
         this._routeTemplate = routeTemplate;
         this.populateRouteParams();
-        this._vueRoute = this.generateVueRoute(this._routeTemplate);
-        this.populatePathSegments();
-        this._routeKey = this.generateRouteKey();
+        
+        if (!isUrlGenerator)
+        {
+            this._vueRoute = this.generateVueRoute(this._routeTemplate);
+            this.populatePathSegments();
+            this._routeKey = this.generateRouteKey();
+        }
     }
 
 

@@ -8,21 +8,27 @@ export abstract class Utils // static class
     public static generateUrl(route: string, params?: object, baseUrl?: string): string
     {
         given(route, "route").ensureHasValue().ensure(t => !t.isEmptyOrWhiteSpace());
-        
-        let url = route.trim();
 
-        if (baseUrl !== undefined && baseUrl != null)
+        if (params)
+            given(params, "params").ensureIsObject();
+
+        if (baseUrl)
+            given(baseUrl, "baseUrl").ensureIsString();
+
+        route = route.trim().replaceAll(" ", "");
+
+        if (baseUrl !== undefined && baseUrl != null && !baseUrl.isEmptyOrWhiteSpace())
         {
-            baseUrl = baseUrl.trim();
+            baseUrl = baseUrl.trim().replaceAll(" ", "");
             if (baseUrl.endsWith("/"))
                 baseUrl = baseUrl.substr(0, baseUrl.length - 1);
 
-            if (!url.startsWith("/"))
-                url = "/" + url;
+            if (!route.startsWith("/"))
+                route = "/" + route;
 
-            url = baseUrl + url;
+            route = baseUrl + route;
         }
-        
-        return params ? new RouteInfo(url).generateUrl(params) : url.replaceAll(" ", "");
+
+        return params ? new RouteInfo(route, true).generateUrl(params) : route;
     }
 }

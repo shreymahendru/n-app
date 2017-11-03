@@ -4,25 +4,30 @@ const n_defensive_1 = require("n-defensive");
 require("n-ext");
 const n_exception_1 = require("n-exception");
 const route_param_1 = require("./route-param");
-// route format: /api/Product/{id:number}?{name?:string}&{all:boolean}
+// route template format: /api/Product/{id:number}?{name?:string}&{all:boolean}
 class RouteInfo {
-    constructor(routeTemplate) {
+    constructor(routeTemplate, isUrlGenerator = false) {
         this._routeParams = new Array();
         this._routeParamsRegistry = {};
         this._pathSegments = new Array();
-        n_defensive_1.given(routeTemplate, "routeTemplate").ensureHasValue().ensure(t => !t.isEmptyOrWhiteSpace());
-        routeTemplate = routeTemplate.trim();
-        while (routeTemplate.contains(" "))
-            routeTemplate = routeTemplate.replace(" ", "");
-        if (routeTemplate.endsWith("/"))
-            routeTemplate = routeTemplate.substr(0, routeTemplate.length - 1);
-        if (routeTemplate.contains("//"))
-            throw new n_exception_1.ArgumentException("routeTemplate", "contains //");
+        n_defensive_1.given(routeTemplate, "routeTemplate")
+            .ensureHasValue()
+            .ensure(t => !t.isEmptyOrWhiteSpace());
+        routeTemplate = routeTemplate.trim().replaceAll(" ", "");
+        if (!isUrlGenerator) {
+            n_defensive_1.given(routeTemplate, "routeTemplate")
+                .ensure(t => t.startsWith("/"), "has to start with '/'")
+                .ensure(t => !t.contains("//"), "cannot contain '//'");
+            if (routeTemplate.length > 1 && routeTemplate.endsWith("/"))
+                routeTemplate = routeTemplate.substr(0, routeTemplate.length - 1);
+        }
         this._routeTemplate = routeTemplate;
         this.populateRouteParams();
-        this._vueRoute = this.generateVueRoute(this._routeTemplate);
-        this.populatePathSegments();
-        this._routeKey = this.generateRouteKey();
+        if (!isUrlGenerator) {
+            this._vueRoute = this.generateVueRoute(this._routeTemplate);
+            this.populatePathSegments();
+            this._routeKey = this.generateRouteKey();
+        }
     }
     get route() { return this._routeTemplate; }
     get vueRoute() { return this._vueRoute; }

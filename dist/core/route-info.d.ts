@@ -13,7 +13,7 @@ export declare class RouteInfo {
     readonly params: ReadonlyArray<RouteParam>;
     readonly pathSegments: ReadonlyArray<string>;
     readonly routeKey: string;
-    constructor(routeTemplate: string);
+    constructor(routeTemplate: string, isUrlGenerator?: boolean);
     findRouteParam(key: string): RouteParam;
     generateUrl(values: any): string;
     private populateRouteParams();
