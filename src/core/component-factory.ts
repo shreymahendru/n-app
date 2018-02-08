@@ -23,7 +23,7 @@ export class ComponentFactory
         
         let component: any = {};
         
-        component.template = registration.templateId;
+        component.template = registration.template || registration.templateId;
         
         const container = this._container;
         component.data = function ()

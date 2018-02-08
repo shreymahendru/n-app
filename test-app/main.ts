@@ -1,11 +1,14 @@
 import { WebApp } from "n-web";
-import { DefaultController } from "./controllers/default-controller";
+import { IndexController } from "./controllers/index-controller";
 import { ConfigurationManager } from "n-config";
 
 
-const app = new WebApp(ConfigurationManager.getConfig<number>("port"))
-    .useViewResolutionRoot("test-app/controllers")    
+const app = new WebApp(ConfigurationManager.getConfig<number>("port"));
+
+app
+    .enableWebPackDevMiddleware(true)
+    .useViewResolutionRoot("test-app/client/dist")
     .registerStaticFilePaths("test-app/client/dist")
-    .registerControllers(DefaultController);
+    .registerControllers(IndexController);
 
 app.bootstrap();

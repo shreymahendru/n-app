@@ -110,6 +110,15 @@ export class ClientApp
         this._pageManager.useAsUnknownRoute(route);
         return this;
     }
+    
+    public useHistoryModeRouting(): this
+    {
+        if (this._isBootstrapped)
+            throw new InvalidOperationException("useHistoryModeRouting");
+        
+        this._pageManager.useHistoryModeRouting();
+        return this;
+    }
 
     // public enableDevMode(): this
     // {

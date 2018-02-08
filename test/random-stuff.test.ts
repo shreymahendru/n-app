@@ -1,5 +1,3 @@
-// import * as assert from "assert";
-
 suite("Random stuff", () =>
 {
     test("string splitting", () =>

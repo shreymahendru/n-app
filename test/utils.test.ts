@@ -2,7 +2,7 @@ import * as Assert from "assert";
 import { Utils } from "./../src/core/utils";
 
 
-suite.only("Utils - generateUrl", () =>
+suite.skip("Utils - generateUrl", () =>
 {
     test("should return a url with given route", () =>
     {

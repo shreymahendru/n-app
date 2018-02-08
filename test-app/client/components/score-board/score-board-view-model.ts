@@ -1,9 +1,10 @@
-import { element, view, bind, ComponentViewModel } from "./../../../../src/index";
+import { element, bind, ComponentViewModel, template } from "./../../../../src/index";
+import "./score-board-view.scss";
 
 
+@template(require("./score-board-view.html"))
 @element("score-board")
-@view("score-board-view")  
-@bind("score", "increment")    
+@bind("score", "increment")        
 export class ScoreBoardViewModel extends ComponentViewModel
 {
     private _playerFirstName: string = "Nivin";

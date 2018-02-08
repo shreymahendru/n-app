@@ -46,3 +46,10 @@ test/**/*.js
 test/**/*.map
 test-app/**/*.js
 test-app/**/*.map
+
+# Client dist folder, this is a build artifact of test-app
+test-app/client/dist
+
+# Webpack config compiled artifacts
+webpack.config.js
+webpack.config.js.map

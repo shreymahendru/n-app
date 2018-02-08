@@ -13,6 +13,7 @@ export class PageManager
     private readonly _registrations = new Array<PageRegistration>();
     private _vueRouterInstance: any;
     private _unknownRoute: string;
+    private _useHistoryMode: boolean = false;
     
     
     public get vueRouterInstance(): any { return this._vueRouterInstance; }
@@ -39,6 +40,11 @@ export class PageManager
         this._unknownRoute = route.trim();
     }
     
+    public useHistoryModeRouting(): void
+    {
+        this._useHistoryMode = true;
+    }
+    
     public bootstrap(): void
     {
         if (this._registrations.length === 0)
@@ -49,13 +55,16 @@ export class PageManager
         if (this._unknownRoute)
             vueRouterRoutes.push({ path: "*", redirect: this._unknownRoute });    
         let vueRouter = this._vueRouter;
-        this._vueRouterInstance = new vueRouter({
+        const routerOptions: any = {
             routes: vueRouterRoutes,
-            scrollBehavior: function(to: any, from: any, savedPosition: any)
+            scrollBehavior: function (to: any, from: any, savedPosition: any)
             {
                 return { x: 0, y: 0 };
             }
-        });
+        };
+        if (this._useHistoryMode)
+            routerOptions.mode = "history";    
+        this._vueRouterInstance = new vueRouter(routerOptions);
     }
     
     

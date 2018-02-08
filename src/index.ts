@@ -1,6 +1,7 @@
 import { Vue, ClientApp } from "./core/client-app";
 import { element } from "./core/element";
 import { view, viewSymbol } from "./core/view";
+import { template, templateSymbol } from "./core/template";
 import { route } from "./core/route";
 import { bind } from "./core/bind";
 import { ComponentViewModel } from "./core/component-view-model";
@@ -17,6 +18,7 @@ export
     element,
     route,
     view, viewSymbol,
+    template, templateSymbol,
     bind,
     ComponentViewModel,
     PageViewModel,

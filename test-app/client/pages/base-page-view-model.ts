@@ -16,6 +16,7 @@ export class BasePageViewModel extends PageViewModel
         console.log("arg", arg);
         console.log("pathArgs", this.pathArgs);
         console.log("queryArgs", this.queryArgs);
+        console.log("something12");
     }
 
     protected onLeave(): void

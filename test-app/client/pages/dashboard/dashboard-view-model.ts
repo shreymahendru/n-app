@@ -1,11 +1,12 @@
-import { route, view, DialogService, EventAggregator, NavigationService, StorageService } from "./../../../../src/index";
+import { route, template, DialogService, EventAggregator, NavigationService, StorageService } from "./../../../../src/index";
 import * as Routes from "./../routes";
 import { BasePageViewModel } from "./../base-page-view-model";
 import { inject } from "n-ject";
+import "./dashboard-view.scss";
 
 
-@route(Routes.dashboard)
-@view("dashboard-view")    
+@template(require("./dashboard-view.html"))
+@route(Routes.dashboard)  
 @inject("DialogService", "EventAggregator", "NavigationService", "StorageService")    
 export class DashboardViewModel extends BasePageViewModel
 {
@@ -15,7 +16,7 @@ export class DashboardViewModel extends BasePageViewModel
     private readonly _storageService: StorageService;
     
     
-    private readonly _message = "Dashboard View";
+    private readonly _message = "Dashboard viewjjj";
     private _score = 10;
     
     
