@@ -14,6 +14,7 @@ class PageManager {
         this._vueRouter = vueRouter;
         this._container = container;
     }
+    get useHistoryMode() { return this._useHistoryMode; }
     get vueRouterInstance() { return this._vueRouterInstance; }
     registerPages(...pageViewModelClasses) {
         for (let item of pageViewModelClasses)

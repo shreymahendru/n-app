@@ -6,6 +6,7 @@ export declare class PageManager {
     private _vueRouterInstance;
     private _unknownRoute;
     private _useHistoryMode;
+    readonly useHistoryMode: boolean;
     readonly vueRouterInstance: any;
     constructor(vueRouter: any, container: Container);
     registerPages(...pageViewModelClasses: Function[]): void;
