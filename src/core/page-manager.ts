@@ -16,6 +16,7 @@ export class PageManager
     private _useHistoryMode: boolean = false;
     
     
+    public get useHistoryMode(): boolean { return this._useHistoryMode; }
     public get vueRouterInstance(): any { return this._vueRouterInstance; }
     
     

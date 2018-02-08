@@ -96,6 +96,9 @@ export class ClientApp
         if (this._isBootstrapped)
             throw new InvalidOperationException("useAsInitialRoute");
 
+        if (this._pageManager.useHistoryMode)
+            throw new InvalidOperationException("Cannot use initial route with history mode.");
+        
         given(route, "route").ensureHasValue().ensure(t => !t.isEmptyOrWhiteSpace());
         this._initialRoute = route.trim();
         return this;
@@ -115,6 +118,9 @@ export class ClientApp
     {
         if (this._isBootstrapped)
             throw new InvalidOperationException("useHistoryModeRouting");
+        
+        if (this._initialRoute)
+            throw new InvalidOperationException("Cannot use history mode with initial route.");
         
         this._pageManager.useHistoryModeRouting();
         return this;
@@ -178,7 +184,7 @@ export class ClientApp
 
     private configureInitialRoute(): void
     {
-        if (!this._pageManager.vueRouterInstance)
+        if (!this._pageManager.vueRouterInstance || this._pageManager.useHistoryMode)
             return;
 
         if (!window.location.hash)
