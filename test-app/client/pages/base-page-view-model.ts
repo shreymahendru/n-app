@@ -1,4 +1,4 @@
-import "n-ext";
+import "@nivinjoseph/n-ext";
 import { PageViewModel } from "../../../src/index";
 
 

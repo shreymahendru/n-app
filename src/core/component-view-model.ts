@@ -1,5 +1,5 @@
-import { given } from "n-defensive";
-import { ApplicationException, InvalidOperationException } from "n-exception";
+import { given } from "@nivinjoseph/n-defensive";
+import { ApplicationException, InvalidOperationException } from "@nivinjoseph/n-exception";
 
 
 // public

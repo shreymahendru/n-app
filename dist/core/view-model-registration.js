@@ -1,10 +1,10 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-const n_defensive_1 = require("n-defensive");
-require("n-ext");
+const n_defensive_1 = require("@nivinjoseph/n-defensive");
+require("@nivinjoseph/n-ext");
 const view_1 = require("./view");
 const template_1 = require("./template");
-const n_exception_1 = require("n-exception");
+const n_exception_1 = require("@nivinjoseph/n-exception");
 class ViewModelRegistration {
     get name() { return this._name; }
     get viewModel() { return this._viewModel; }

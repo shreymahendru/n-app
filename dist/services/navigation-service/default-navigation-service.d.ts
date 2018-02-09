@@ -1,5 +1,5 @@
 import { NavigationService } from "./navigation-service";
-import "n-ext";
+import "@nivinjoseph/n-ext";
 export declare class DefaultNavigationService implements NavigationService {
     private readonly _vueRouter;
     constructor(vueRouter: any);

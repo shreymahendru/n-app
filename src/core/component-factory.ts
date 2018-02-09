@@ -1,5 +1,5 @@
-import { given } from "n-defensive";
-import { Container } from "n-ject";
+import { given } from "@nivinjoseph/n-defensive";
+import { Container } from "@nivinjoseph/n-ject";
 import { Utilities } from "./utilities";
 import { ViewModelRegistration } from "./view-model-registration";
 import { ComponentRegistration } from "./component-registration";

@@ -3,7 +3,7 @@ const autoprefixer = require("autoprefixer");
 const htmlWebpackPlugin = require("html-webpack-plugin");
 const cleanWebpackPlugin = require("clean-webpack-plugin");
 const UglifyJSPlugin = require("uglifyjs-webpack-plugin");
-import { ConfigurationManager } from "n-config";
+import { ConfigurationManager } from "@nivinjoseph/n-config";
 
 const isDev = ConfigurationManager.getConfig<string>("env") === "dev";
 

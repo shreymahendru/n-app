@@ -1,6 +1,6 @@
 import { ClientApp } from "./../../src/index";
 import { ScoreBoardViewModel } from "./components/score-board/score-board-view-model";
-import { ComponentInstaller, Registry } from "n-ject";
+import { ComponentInstaller, Registry } from "@nivinjoseph/n-ject";
 import { InmemoryTodoRepository } from "./services/todo-repository/inmemory-todo-repository";
 import { DashboardViewModel } from "./pages/dashboard/dashboard-view-model";
 // import { TodoViewModel } from "./pages/todo/todo-view-model";

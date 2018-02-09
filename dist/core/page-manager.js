@@ -1,8 +1,8 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-const n_defensive_1 = require("n-defensive");
+const n_defensive_1 = require("@nivinjoseph/n-defensive");
 const page_registration_1 = require("./page-registration");
-const n_exception_1 = require("n-exception");
+const n_exception_1 = require("@nivinjoseph/n-exception");
 const page_1 = require("./page");
 const page_tree_builder_1 = require("./page-tree-builder");
 class PageManager {

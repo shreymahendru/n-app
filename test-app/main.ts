@@ -1,6 +1,6 @@
-import { WebApp } from "n-web";
+import { WebApp } from "@nivinjoseph/n-web";
 import { IndexController } from "./controllers/index-controller";
-import { ConfigurationManager } from "n-config";
+import { ConfigurationManager } from "@nivinjoseph/n-config";
 
 
 const app = new WebApp(ConfigurationManager.getConfig<number>("port"));

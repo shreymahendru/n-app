@@ -4,17 +4,17 @@ const Vue = require("./../../vendor/vue.v2.4.2.js");
 exports.Vue = Vue;
 const VueRouter = require("./../../vendor/vue-router.v2.7.0.js");
 Vue.use(VueRouter);
-const n_defensive_1 = require("n-defensive");
-require("n-ext");
-const n_ject_1 = require("n-ject");
+const n_defensive_1 = require("@nivinjoseph/n-defensive");
+require("@nivinjoseph/n-ext");
+const n_ject_1 = require("@nivinjoseph/n-ject");
 const component_manager_1 = require("./component-manager");
 const page_manager_1 = require("./page-manager");
-const n_exception_1 = require("n-exception");
+const n_exception_1 = require("@nivinjoseph/n-exception");
 const default_dialog_service_1 = require("./../services/dialog-service/default-dialog-service");
 const default_event_aggregator_1 = require("./../services/event-aggregator/default-event-aggregator");
 const default_navigation_service_1 = require("./../services/navigation-service/default-navigation-service");
 const default_storage_service_1 = require("./../services/storage-service/default-storage-service");
-const n_config_1 = require("n-config");
+const n_config_1 = require("@nivinjoseph/n-config");
 // public
 class ClientApp {
     constructor(appElementId) {

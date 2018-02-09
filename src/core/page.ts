@@ -1,6 +1,6 @@
-import { given } from "n-defensive";
+import { given } from "@nivinjoseph/n-defensive";
 import { PageRegistration } from "./page-registration";
-import { Container } from "n-ject";
+import { Container } from "@nivinjoseph/n-ject";
 import { PageComponentFactory } from "./page-component-factory";
 
 

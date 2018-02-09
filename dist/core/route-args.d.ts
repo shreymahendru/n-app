@@ -1,5 +1,5 @@
 import { RouteInfo } from "./route-info";
-import "n-ext";
+import "@nivinjoseph/n-ext";
 export declare class RouteArgs {
     private readonly _pathArgs;
     private readonly _queryArgs;

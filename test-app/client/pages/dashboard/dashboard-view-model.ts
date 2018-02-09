@@ -1,7 +1,7 @@
 import { route, template, DialogService, EventAggregator, NavigationService, StorageService } from "./../../../../src/index";
 import * as Routes from "./../routes";
 import { BasePageViewModel } from "./../base-page-view-model";
-import { inject } from "n-ject";
+import { inject } from "@nivinjoseph/n-ject";
 import "./dashboard-view.scss";
 
 

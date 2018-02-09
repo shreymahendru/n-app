@@ -1,5 +1,5 @@
 import { EventAggregator, EventSubscription } from "./event-aggregator";
-import { given } from "n-defensive";
+import { given } from "@nivinjoseph/n-defensive";
 
 
 export class DefaultEventAggregator implements EventAggregator

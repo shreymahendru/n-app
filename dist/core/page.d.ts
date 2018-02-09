@@ -1,5 +1,5 @@
 import { PageRegistration } from "./page-registration";
-import { Container } from "n-ject";
+import { Container } from "@nivinjoseph/n-ject";
 export declare class Page {
     private readonly _segment;
     private _parent;

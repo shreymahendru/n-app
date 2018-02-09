@@ -1,4 +1,4 @@
-import { Container } from "n-ject";
+import { Container } from "@nivinjoseph/n-ject";
 export declare class PageManager {
     private readonly _vueRouter;
     private readonly _container;

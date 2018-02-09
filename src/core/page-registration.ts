@@ -1,7 +1,7 @@
-import { given } from "n-defensive";
+import { given } from "@nivinjoseph/n-defensive";
 import { ViewModelRegistration } from "./view-model-registration";
 import { appRouteSymbol } from "./route";
-import { ApplicationException } from "n-exception";
+import { ApplicationException } from "@nivinjoseph/n-exception";
 import { RouteInfo } from "./route-info"; 
 
 

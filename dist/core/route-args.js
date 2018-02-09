@@ -1,8 +1,8 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 const http_exception_1 = require("./http-exception");
-const n_defensive_1 = require("n-defensive");
-require("n-ext");
+const n_defensive_1 = require("@nivinjoseph/n-defensive");
+require("@nivinjoseph/n-ext");
 class RouteArgs {
     get pathArgs() { return this._pathArgs; }
     get queryArgs() { return this._queryArgs; }

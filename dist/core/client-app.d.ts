@@ -1,7 +1,7 @@
 declare const Vue: any;
 export { Vue };
-import "n-ext";
-import { Container, ComponentInstaller } from "n-ject";
+import "@nivinjoseph/n-ext";
+import { Container, ComponentInstaller } from "@nivinjoseph/n-ject";
 export declare class ClientApp {
     private readonly _appElementId;
     private readonly _container;

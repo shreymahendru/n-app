@@ -1,8 +1,8 @@
 import { TodoRepository } from "./todo-repository";
 import { Todo } from "./../../models/todo";
-import "n-ext";
-import { ApplicationException } from "n-exception";
-import { given } from "n-defensive";
+import "@nivinjoseph/n-ext";
+import { ApplicationException } from "@nivinjoseph/n-exception";
+import { given } from "@nivinjoseph/n-defensive";
 
 
 export class InmemoryTodoRepository implements TodoRepository

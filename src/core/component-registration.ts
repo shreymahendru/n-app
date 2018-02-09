@@ -1,7 +1,7 @@
-import { given } from "n-defensive";
+import { given } from "@nivinjoseph/n-defensive";
 import { ViewModelRegistration } from "./view-model-registration";
 import { elementSymbol } from "./element";
-import { ApplicationException } from "n-exception";
+import { ApplicationException } from "@nivinjoseph/n-exception";
 import { bindSymbol } from "./bind";
 
 

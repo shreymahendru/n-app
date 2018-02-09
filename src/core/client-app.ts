@@ -7,17 +7,17 @@ const VueRouter = require("./../../vendor/vue-router.v2.7.0.js");
 Vue.use(VueRouter);
 
 
-import { given } from "n-defensive";
-import "n-ext";
-import { Container, ComponentInstaller } from "n-ject";
+import { given } from "@nivinjoseph/n-defensive";
+import "@nivinjoseph/n-ext";
+import { Container, ComponentInstaller } from "@nivinjoseph/n-ject";
 import { ComponentManager } from "./component-manager";
 import { PageManager } from "./page-manager";
-import { InvalidOperationException } from "n-exception";
+import { InvalidOperationException } from "@nivinjoseph/n-exception";
 import { DefaultDialogService } from "./../services/dialog-service/default-dialog-service";
 import { DefaultEventAggregator } from "./../services/event-aggregator/default-event-aggregator";
 import { DefaultNavigationService } from "./../services/navigation-service/default-navigation-service";
 import { DefaultStorageService } from "./../services/storage-service/default-storage-service";
-import { ConfigurationManager } from "n-config";
+import { ConfigurationManager } from "@nivinjoseph/n-config";
 
 
 // public

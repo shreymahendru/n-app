@@ -1,7 +1,7 @@
-import { given } from "n-defensive";
-import { Container } from "n-ject";
+import { given } from "@nivinjoseph/n-defensive";
+import { Container } from "@nivinjoseph/n-ject";
 import { ComponentRegistration } from "./component-registration";
-import { ApplicationException } from "n-exception";
+import { ApplicationException } from "@nivinjoseph/n-exception";
 import { ComponentFactory } from "./component-factory";
 
 

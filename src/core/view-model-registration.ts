@@ -1,8 +1,8 @@
-import { given } from "n-defensive";
-import "n-ext";
+import { given } from "@nivinjoseph/n-defensive";
+import "@nivinjoseph/n-ext";
 import { viewSymbol } from "./view";
 import { templateSymbol } from "./template";
-import { ApplicationException } from "n-exception";
+import { ApplicationException } from "@nivinjoseph/n-exception";
 
 
 export class ViewModelRegistration

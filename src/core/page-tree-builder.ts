@@ -1,4 +1,4 @@
-import { given } from "n-defensive";
+import { given } from "@nivinjoseph/n-defensive";
 import { Page } from "./page";
 import { PageRegistration } from "./page-registration";
 

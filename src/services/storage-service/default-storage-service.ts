@@ -1,5 +1,5 @@
 import { StorageService } from "./storage-service";
-import { given } from "n-defensive";
+import { given } from "@nivinjoseph/n-defensive";
 
 
 export class DefaultStorageService implements StorageService

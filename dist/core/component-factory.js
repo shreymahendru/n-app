@@ -1,6 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-const n_defensive_1 = require("n-defensive");
+const n_defensive_1 = require("@nivinjoseph/n-defensive");
 const utilities_1 = require("./utilities");
 class ComponentFactory {
     constructor(container) {

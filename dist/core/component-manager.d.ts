@@ -1,4 +1,4 @@
-import { Container } from "n-ject";
+import { Container } from "@nivinjoseph/n-ject";
 export declare class ComponentManager {
     private readonly _vue;
     private readonly _container;
