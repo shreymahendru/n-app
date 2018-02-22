@@ -17,7 +17,15 @@ const plugins = [
 ];
 
 if (!isDev)
-    plugins.push(new UglifyJSPlugin({ sourceMap: true }));
+    plugins.push(new UglifyJSPlugin({
+        // sourceMap: true,
+        uglifyOptions: {
+            // mangle: false,
+            keep_classnames: true
+            // keep_fnames: true,
+            // warnings: true
+        }
+    }));
 
 module.exports = {
     entry: ["./test-app/client/app.js"],

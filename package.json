@@ -23,7 +23,9 @@
     "webpack-build-watch": "npm run webpack-build -- -w",
     "nodemon": "nodemon --ignore src/ --ignore test/ --ignore test-app/client/ --inspect=4001 ./test-app/main.js env=dev",
     "predev": "npm run ts-build",
-    "dev": "npm run ts-build-watch & npm run webpack-build-watch & npm run nodemon"
+    "dev": "npm run ts-build-watch & npm run webpack-build-watch & npm run nodemon",
+    "build": "npm run ts-build && env=prod npm run webpack-build",
+    "start": "node ./test-app/main.js env=prod"
   },
   "repository": {
     "type": "git",
@@ -41,40 +43,40 @@
   },
   "homepage": "https://github.com/nivinjoseph/n-app#readme",
   "devDependencies": {
-    "@nivinjoseph/n-web": "^1.0.73",
+    "@nivinjoseph/n-web": "^1.0.75",
     "@types/jquery": "^2.0.42",
     "@types/koa-webpack": "^1.0.0",
     "@types/mocha": "^2.2.39",
-    "@types/node": "^7.0.53",
+    "@types/node": "^7.0.55",
     "@types/toastr": "^2.1.33",
     "mocha": "^3.2.0",
-    "nodemon": "^1.11.0",
+    "nodemon": "^1.15.1",
     "ts-node": "^2.1.0",
     "tslint": "^4.5.1",
-    "typescript": "^2.2.1",
+    "typescript": "^2.7.2",
     "vue": "^2.2.6",
     "vue-router": "^2.7.0"
   },
   "dependencies": {
-    "@nivinjoseph/n-config": "^1.0.13",
+    "@nivinjoseph/n-config": "^1.0.15",
     "@nivinjoseph/n-defensive": "^1.0.17",
     "@nivinjoseph/n-exception": "^1.0.13",
     "@nivinjoseph/n-ext": "^1.0.24",
     "@nivinjoseph/n-ject": "^1.0.11",
-    "autoprefixer": "^7.2.5",
+    "autoprefixer": "^7.2.6",
     "clean-webpack-plugin": "^0.1.18",
     "css-loader": "^0.28.9",
-    "file-loader": "^1.1.6",
+    "file-loader": "^1.1.9",
     "html-loader": "^0.5.5",
     "html-webpack-plugin": "^2.30.1",
     "node-sass": "^4.7.2",
-    "postcss": "^6.0.17",
+    "postcss": "^6.0.19",
     "postcss-flexbugs-fixes": "^3.3.0",
     "postcss-loader": "^2.1.0",
     "reflect-metadata": "^0.1.10",
     "sass-loader": "^6.0.6",
-    "style-loader": "^0.20.1",
-    "uglifyjs-webpack-plugin": "^1.1.8",
-    "webpack": "^3.10.0"
+    "style-loader": "^0.20.2",
+    "uglifyjs-webpack-plugin": "^1.2.0",
+    "webpack": "^3.11.0"
   }
 }
