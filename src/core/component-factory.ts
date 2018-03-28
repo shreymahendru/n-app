@@ -29,6 +29,7 @@ export class ComponentFactory
         component.data = function ()
         {
             let vueVm = this;
+            console.log("COMPONENT FACTORY ATTEMPTING TO RESOLVE", registration.name, JSON.stringify(registration));
             let vm = container.resolve<any>(registration.name);
             let data = { vm: vm };
             let methods: { [index: string]: any } = {};
