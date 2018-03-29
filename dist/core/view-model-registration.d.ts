@@ -1,5 +1,5 @@
 import "@nivinjoseph/n-ext";
-export declare class ViewModelRegistration {
+export declare abstract class ViewModelRegistration {
     private readonly _name;
     private readonly _viewModel;
     private readonly _template;
@@ -9,6 +9,6 @@ export declare class ViewModelRegistration {
     readonly viewModel: Function;
     readonly template: string;
     readonly templateId: string;
-    constructor(viewModel: Function);
+    protected constructor(viewModel: Function);
     private generateTemplateId();
 }

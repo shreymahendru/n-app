@@ -18,7 +18,7 @@ class ViewModelRegistration {
             this._template = Reflect.getOwnMetadata(template_1.templateSymbol, this._viewModel);
         else {
             if (!Reflect.hasOwnMetadata(view_1.viewSymbol, this._viewModel))
-                throw new n_exception_1.ApplicationException(`ViewModel'${this._name}' does not have @template or @view applied.`);
+                throw new n_exception_1.ApplicationException(`ViewModel'${this.name}' does not have @template or @view applied.`);
             this._view = Reflect.getOwnMetadata(view_1.viewSymbol, this._viewModel); // does not have to include .html extension
             this._templateId = this.generateTemplateId();
         }
@@ -26,7 +26,7 @@ class ViewModelRegistration {
     generateTemplateId() {
         let templateId = this._view.replace(".html", "").split("-").join("");
         if (document.getElementById(templateId) == null)
-            throw new n_exception_1.ApplicationException(`Template with id ${templateId} not found for ViewModel ${this._name}`);
+            throw new n_exception_1.ApplicationException(`Template with id ${templateId} not found for ViewModel ${this.name}`);
         return "#" + templateId;
     }
 }

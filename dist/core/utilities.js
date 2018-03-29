@@ -7,7 +7,7 @@ class Utilities {
     static getPropertyInfos(val) {
         let propertyInfos = new Array();
         let prototype = Object.getPrototypeOf(val);
-        if (prototype === undefined || prototype === null)
+        if (prototype === undefined || prototype === null) // we are dealing with Object
             return propertyInfos;
         let internal = ["ctx", "onCreate", "onMount", "onDestroy", "executeOnCreate", "executeOnDestroy",
             "watch", "unWatch", "getBound", "onEnter", "onLeave"];
