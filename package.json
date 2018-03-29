@@ -62,7 +62,7 @@
     "@nivinjoseph/n-defensive": "^1.0.17",
     "@nivinjoseph/n-exception": "^1.0.13",
     "@nivinjoseph/n-ext": "^1.0.24",
-    "@nivinjoseph/n-ject": "^1.0.20",
+    "@nivinjoseph/n-ject": "^1.0.21",
     "autoprefixer": "^8.2.0",
     "clean-webpack-plugin": "^0.1.19",
     "css-loader": "^0.28.11",
