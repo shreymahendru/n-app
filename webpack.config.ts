@@ -2,7 +2,6 @@ const path = require("path");
 const autoprefixer = require("autoprefixer");
 const htmlWebpackPlugin = require("html-webpack-plugin");
 const cleanWebpackPlugin = require("clean-webpack-plugin");
-// const webpack = require("webpack");
 const UglifyJsPlugin = require("uglifyjs-webpack-plugin");
 import { ConfigurationManager } from "@nivinjoseph/n-config";
 
@@ -57,7 +56,15 @@ module.exports = {
             }]
         },
         {
-            test: /\.(png|svg|jpg|gif)$/,
+            test: /\.css$/,
+            use: [{
+                loader: "style-loader" // creates style nodes from JS strings
+            }, {
+                loader: "css-loader" // translates CSS into CommonJS
+            }]
+        },
+        {
+            test: /\.(png|svg|jpg|jpeg|gif)$/,
             use: ["file-loader"]
         },
         {
@@ -66,7 +73,12 @@ module.exports = {
         },
         {
             test: /\.(html)$/,
-            use: ["html-loader"]
+            use: {
+                loader: "html-loader",
+                options: {
+                    attrs: ["img:src"]
+                }
+            }
         }]
     },
     plugins: [
@@ -74,7 +86,7 @@ module.exports = {
         new htmlWebpackPlugin({
             template: "test-app/controllers/index-view.html",
             hash: true,
-            favicon: "test-app/client/images/favicon.png",
+            favicon: "test-app/client/images/favicon.png"
         })
     ]
 };
