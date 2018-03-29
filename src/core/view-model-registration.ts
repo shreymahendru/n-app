@@ -24,7 +24,7 @@ export abstract class ViewModelRegistration
     {
         given(viewModel, "viewModel").ensureHasValue();
         
-        this.name = (<Object>viewModel).getTypeName();
+        this.name = (<Object>viewModel).getTypeName().trim().split("").join("");
         console.log("VIEW MODEL REGISTRATION", this.name);
         this._viewModel = viewModel;
         
