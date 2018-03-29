@@ -24,7 +24,7 @@ export class ViewModelRegistration
     {
         given(viewModel, "viewModel").ensureHasValue();
         
-        this._name = (<Object>viewModel).getTypeName();
+        this._name = (" " + (<Object>viewModel).getTypeName().trim()).substr(1); // Shrey: Safari de-optimization
         this._viewModel = viewModel;
         
         if (Reflect.hasOwnMetadata(templateSymbol, this._viewModel))
