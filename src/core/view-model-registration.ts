@@ -5,7 +5,7 @@ import { templateSymbol } from "./template";
 import { ApplicationException } from "@nivinjoseph/n-exception";
 
 
-export class ViewModelRegistration
+export abstract class ViewModelRegistration
 {
     private readonly _name: string;
     private readonly _viewModel: Function;
@@ -20,7 +20,7 @@ export class ViewModelRegistration
     public get templateId(): string { return this._templateId; }
     
     
-    public constructor(viewModel: Function)
+    protected constructor(viewModel: Function)
     {
         given(viewModel, "viewModel").ensureHasValue();
         
@@ -32,7 +32,7 @@ export class ViewModelRegistration
         else
         {
             if (!Reflect.hasOwnMetadata(viewSymbol, this._viewModel))
-                throw new ApplicationException(`ViewModel'${this._name}' does not have @template or @view applied.`);
+                throw new ApplicationException(`ViewModel'${this.name}' does not have @template or @view applied.`);
 
             this._view = Reflect.getOwnMetadata(viewSymbol, this._viewModel); // does not have to include .html extension
             this._templateId = this.generateTemplateId();
@@ -45,7 +45,7 @@ export class ViewModelRegistration
         let templateId = this._view.replace(".html", "").split("-").join("");
         
         if (document.getElementById(templateId) == null)
-            throw new ApplicationException(`Template with id ${templateId} not found for ViewModel ${this._name}`);    
+            throw new ApplicationException(`Template with id ${templateId} not found for ViewModel ${this.name}`);    
         
         return "#" + templateId;
     }

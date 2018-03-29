@@ -16,7 +16,7 @@ export class DashboardViewModel extends BasePageViewModel
     private readonly _storageService: StorageService;
     
     
-    private readonly _message = "Dashboard viewjjj";
+    private readonly _message = "Dashboard view";
     private _score = 10;
     
     
