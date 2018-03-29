@@ -12,7 +12,7 @@ class ViewModelRegistration {
     get templateId() { return this._templateId; }
     constructor(viewModel) {
         n_defensive_1.given(viewModel, "viewModel").ensureHasValue();
-        this._name = viewModel.getTypeName();
+        this._name = (" " + viewModel.getTypeName().trim()).substr(1); // Shrey: Safari de-optimization
         this._viewModel = viewModel;
         if (Reflect.hasOwnMetadata(template_1.templateSymbol, this._viewModel))
             this._template = Reflect.getOwnMetadata(template_1.templateSymbol, this._viewModel);
