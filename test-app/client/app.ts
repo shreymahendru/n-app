@@ -3,12 +3,13 @@ import { ScoreBoardViewModel } from "./components/score-board/score-board-view-m
 import { ComponentInstaller, Registry } from "@nivinjoseph/n-ject";
 import { InmemoryTodoRepository } from "./services/todo-repository/inmemory-todo-repository";
 import { DashboardViewModel } from "./pages/dashboard/dashboard-view-model";
-// import { TodoViewModel } from "./pages/todo/todo-view-model";
-// import { ListTodosViewModel } from "./pages/todo/list-todos/list-todos-view-model";
-// import { CreateTodoViewModel } from "./pages/todo/create-todo/create-todo-view-model";
-// import { UpdateTodoViewModel } from "./pages/todo/update-todo/update-todo-view-model";
-import * as Routes from "./pages/routes";
 import { TestViewModel } from "./pages/test/test-view-model";
+import { TodoViewModel } from "./pages/todo/todo-view-model";
+import { ListTodosViewModel } from "./pages/todo/list-todos/list-todos-view-model";
+import { CreateTodoViewModel } from "./pages/todo/create-todo/create-todo-view-model";
+import { UpdateTodoViewModel } from "./pages/todo/update-todo/update-todo-view-model";
+import * as Routes from "./pages/routes";
+
 
 
 // Vue.material.registerTheme("default", {
@@ -26,16 +27,17 @@ class Installer implements ComponentInstaller
     }
 }    
 
-// const pages = [DashboardViewModel, TestViewModel, TodoViewModel, ListTodosViewModel, CreateTodoViewModel, UpdateTodoViewModel];
-const pages = [DashboardViewModel, TestViewModel];
+const pages = [DashboardViewModel, TestViewModel, TodoViewModel, ListTodosViewModel, CreateTodoViewModel, UpdateTodoViewModel];
+// const pages = [DashboardViewModel, TestViewModel];
 
 const app = new ClientApp("#app")
     .useAccentColor("#7ab53b")
     .useInstaller(new Installer())
     .registerComponents(ScoreBoardViewModel)
     .registerPages(...pages)
+    .useHistoryModeRouting()
     .useAsInitialRoute(Routes.dashboard)
-    .useAsUnknownRoute(Routes.todo)
+    .useAsUnknownRoute(Routes.test)
     ;
     
 app.bootstrap();

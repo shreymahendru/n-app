@@ -9,4 +9,9 @@ suite("Random stuff", () =>
         console.log(splitted);
         console.log(splitted.map(t => t.length));
     });
+    
+    test("Page tree building", () =>
+    {
+        
+    });
 });

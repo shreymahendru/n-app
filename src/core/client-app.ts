@@ -27,7 +27,6 @@ export class ClientApp
     private readonly _container: Container;
     private readonly _componentManager: ComponentManager;
     private readonly _pageManager: PageManager;
-    private _initialRoute: string;
     private _app: any;
     private _accentColor: string;
     private _isBootstrapped: boolean = false;
@@ -95,12 +94,9 @@ export class ClientApp
     {
         if (this._isBootstrapped)
             throw new InvalidOperationException("useAsInitialRoute");
-
-        if (this._pageManager.useHistoryMode)
-            throw new InvalidOperationException("Cannot use initial route with history mode.");
         
         given(route, "route").ensureHasValue().ensure(t => !t.isEmptyOrWhiteSpace());
-        this._initialRoute = route.trim();
+        this._pageManager.useAsInitialRoute(route);
         return this;
     }
 
@@ -119,8 +115,8 @@ export class ClientApp
         if (this._isBootstrapped)
             throw new InvalidOperationException("useHistoryModeRouting");
         
-        if (this._initialRoute)
-            throw new InvalidOperationException("Cannot use history mode with initial route.");
+        // if (this._initialRoute)
+        //     throw new InvalidOperationException("Cannot use history mode with initial route.");
         
         this._pageManager.useHistoryModeRouting();
         return this;
@@ -143,7 +139,6 @@ export class ClientApp
         this.configureGlobalConfig();
         this.configureComponents();
         this.configurePages();
-        this.configureInitialRoute();
         this.configureCoreServices();
         this.configureContainer();
         this.configureRoot();
@@ -180,36 +175,6 @@ export class ClientApp
     private configurePages(): void
     {
         this._pageManager.bootstrap();
-    }
-
-    private configureInitialRoute(): void
-    {
-        if (!this._pageManager.vueRouterInstance || this._pageManager.useHistoryMode)
-            return;
-
-        if (!window.location.hash)
-        {
-            if (this._initialRoute)
-                window.location.hash = "#" + this._initialRoute;
-        }
-        else
-        {
-            let hashVal = window.location.hash.trim();
-            if (hashVal.length === 1)
-            {
-                if (this._initialRoute)
-                    window.location.hash = "#" + this._initialRoute;
-            }
-            else
-            {
-                hashVal = hashVal.substr(1);
-                if (hashVal === "/")
-                {
-                    if (this._initialRoute)
-                        window.location.hash = "#" + this._initialRoute;
-                }
-            }
-        }
     }
 
     private configureCoreServices(): void

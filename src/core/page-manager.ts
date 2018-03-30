@@ -12,6 +12,7 @@ export class PageManager
     private readonly _container: Container;
     private readonly _registrations = new Array<PageRegistration>();
     private _vueRouterInstance: any;
+    private _initialRoute: string;
     private _unknownRoute: string;
     private _useHistoryMode: boolean = false;
     
@@ -33,6 +34,12 @@ export class PageManager
     {
         for (let item of pageViewModelClasses)
             this.registerPage(item);    
+    }
+    
+    public useAsInitialRoute(route: string): void
+    {
+        given(route, "route").ensureHasValue().ensure(t => !t.isEmptyOrWhiteSpace());
+        this._initialRoute = route.trim();
     }
     
     public useAsUnknownRoute(route: string): void
@@ -66,6 +73,8 @@ export class PageManager
         if (this._useHistoryMode)
             routerOptions.mode = "history";    
         this._vueRouterInstance = new vueRouter(routerOptions);
+        
+        this.configureInitialRoute();
     }
     
     
@@ -88,6 +97,45 @@ export class PageManager
         let root = new Page("/", null);
         let treeBuilder = new PageTreeBuilder(root, this._registrations);
         return treeBuilder.build();
+    }
+    
+    private configureInitialRoute(): void
+    {
+        if (!this._initialRoute || this._initialRoute.isEmptyOrWhiteSpace())
+            return;
+
+        if (this._useHistoryMode)
+        {
+            if (!window.location.pathname || window.location.pathname.toString().isEmptyOrWhiteSpace() ||
+                window.location.pathname.toString().trim() === "/" || window.location.pathname.toString().trim() === "null")
+                this._vueRouterInstance.replace(this._initialRoute);
+            
+            return;
+        }
+
+        if (!window.location.hash)
+        {
+            if (this._initialRoute)
+                window.location.hash = "#" + this._initialRoute;
+        }
+        else
+        {
+            let hashVal = window.location.hash.trim();
+            if (hashVal.length === 1)
+            {
+                if (this._initialRoute)
+                    window.location.hash = "#" + this._initialRoute;
+            }
+            else
+            {
+                hashVal = hashVal.substr(1);
+                if (hashVal === "/")
+                {
+                    if (this._initialRoute)
+                        window.location.hash = "#" + this._initialRoute;
+                }
+            }
+        }
     }
 }
 

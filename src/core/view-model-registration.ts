@@ -1,6 +1,5 @@
 import { given } from "@nivinjoseph/n-defensive";
 import "@nivinjoseph/n-ext";
-import { viewSymbol } from "./view";
 import { templateSymbol } from "./template";
 import { ApplicationException } from "@nivinjoseph/n-exception";
 
@@ -27,26 +26,9 @@ export abstract class ViewModelRegistration
         this._name = (" " + (<Object>viewModel).getTypeName().trim()).substr(1); // Shrey: Safari de-optimization
         this._viewModel = viewModel;
         
-        if (Reflect.hasOwnMetadata(templateSymbol, this._viewModel))
-            this._template = Reflect.getOwnMetadata(templateSymbol, this._viewModel);
-        else
-        {
-            if (!Reflect.hasOwnMetadata(viewSymbol, this._viewModel))
-                throw new ApplicationException(`ViewModel'${this.name}' does not have @template or @view applied.`);
-
-            this._view = Reflect.getOwnMetadata(viewSymbol, this._viewModel); // does not have to include .html extension
-            this._templateId = this.generateTemplateId();
-        }
-    }
-    
-    
-    private generateTemplateId(): string
-    {
-        let templateId = this._view.replace(".html", "").split("-").join("");
+        if (!Reflect.hasOwnMetadata(templateSymbol, this._viewModel))
+            throw new ApplicationException(`ViewModel'${this.name}' does not have @template applied.`);    
         
-        if (document.getElementById(templateId) == null)
-            throw new ApplicationException(`Template with id ${templateId} not found for ViewModel ${this.name}`);    
-        
-        return "#" + templateId;
+        this._template = Reflect.getOwnMetadata(templateSymbol, this._viewModel);
     }
 }

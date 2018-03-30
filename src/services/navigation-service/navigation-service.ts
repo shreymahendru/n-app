@@ -4,7 +4,7 @@ export interface NavigationService
     navigateBack(): void;
     navigateForward(): void;
     
-    navigateSiteSameTab(url: string, replceHistory?: boolean): void;
+    navigateSiteSameTab(url: string, replaceHistory?: boolean): void;
     navigateSiteNewTab(url: string): void;
     navigateSitePostSameTab(url: string, value: Object): void;
     navigateSitePostNewTab(url: string, value: Object): void;

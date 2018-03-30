@@ -3,9 +3,13 @@ import { given } from "@nivinjoseph/n-defensive";
 import "@nivinjoseph/n-ext";
 import { Utils } from "../../core/utils";
 
+
 export class DefaultNavigationService implements NavigationService
 {
     private readonly _vueRouter: any;
+    
+    
+    public get currentRoutePath(): string { return this._vueRouter.currentRoute.path; }
 
 
     public constructor(vueRouter: any)
@@ -33,12 +37,12 @@ export class DefaultNavigationService implements NavigationService
     }
 
 
-    public navigateSiteSameTab(url: string, replceHistory?: boolean): void
+    public navigateSiteSameTab(url: string, replaceHistory?: boolean): void
     {
         given(url, "url").ensureHasValue().ensure(t => !t.isEmptyOrWhiteSpace());
         url = url.trim();
 
-        replceHistory ? window.location.replace(url) : window.location.href = url;
+        replaceHistory ? window.location.replace(url) : window.location.href = url;
     }
 
     public navigateSiteNewTab(url: string): void

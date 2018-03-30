@@ -8,9 +8,11 @@ import { RouteInfo } from "./route-info";
 export class PageRegistration extends ViewModelRegistration
 {
     private readonly _route: RouteInfo;
+    private readonly _redirect: string;
     
     
     public get route(): RouteInfo { return this._route; }
+    public get redirect(): string { return this._redirect; }
     
     
     public constructor(page: Function)
@@ -22,6 +24,9 @@ export class PageRegistration extends ViewModelRegistration
         if (!Reflect.hasOwnMetadata(appRouteSymbol, this.viewModel))
             throw new ApplicationException(`PageViewModel '${this.name}' does not have @route applied.`);
 
-        this._route = new RouteInfo(Reflect.getOwnMetadata(appRouteSymbol, this.viewModel));
+        const routeData = Reflect.getOwnMetadata(appRouteSymbol, this.viewModel);
+        
+        this._route = new RouteInfo(routeData.route);
+        this._redirect = routeData.redirect;
     }
 }

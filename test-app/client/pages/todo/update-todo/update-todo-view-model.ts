@@ -1,10 +1,10 @@
-import { route, view } from "./../../../../../src/index";
+import { route, template } from "./../../../../../src/index";
 import * as Routes from "./../../routes";
 import { BasePageViewModel } from "../../base-page-view-model";
 
 
+@template(require("./update-todo-view.html"))
 @route(Routes.updateTodo)
-@view("update-todo-view")
 export class UpdateTodoViewModel extends BasePageViewModel
 {
     private readonly _message = "Update Todo View";

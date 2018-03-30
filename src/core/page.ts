@@ -60,7 +60,8 @@ export class Page
         
         let vueRouterRoute: any = {
             path: this.createRoute(),
-            component: factory.create(this._registration)
+            component: factory.create(this._registration),
+            redirect: this._registration.redirect
         };
         
         if (this._children.length > 0)
