@@ -4,6 +4,7 @@ const n_defensive_1 = require("@nivinjoseph/n-defensive");
 require("@nivinjoseph/n-ext");
 const utils_1 = require("../../core/utils");
 class DefaultNavigationService {
+    get currentRoutePath() { return this._vueRouter.currentRoute.path; }
     constructor(vueRouter) {
         n_defensive_1.given(vueRouter, "vueRouter").ensureHasValue();
         this._vueRouter = vueRouter;
@@ -18,10 +19,10 @@ class DefaultNavigationService {
     navigateForward() {
         this._vueRouter.forward();
     }
-    navigateSiteSameTab(url, replceHistory) {
+    navigateSiteSameTab(url, replaceHistory) {
         n_defensive_1.given(url, "url").ensureHasValue().ensure(t => !t.isEmptyOrWhiteSpace());
         url = url.trim();
-        replceHistory ? window.location.replace(url) : window.location.href = url;
+        replaceHistory ? window.location.replace(url) : window.location.href = url;
     }
     navigateSiteNewTab(url) {
         n_defensive_1.given(url, "url").ensureHasValue().ensure(t => !t.isEmptyOrWhiteSpace());

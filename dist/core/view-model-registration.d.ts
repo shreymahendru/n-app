@@ -10,5 +10,4 @@ export declare abstract class ViewModelRegistration {
     readonly template: string;
     readonly templateId: string;
     protected constructor(viewModel: Function);
-    private generateTemplateId();
 }

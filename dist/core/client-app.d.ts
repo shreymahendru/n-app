@@ -7,7 +7,6 @@ export declare class ClientApp {
     private readonly _container;
     private readonly _componentManager;
     private readonly _pageManager;
-    private _initialRoute;
     private _app;
     private _accentColor;
     private _isBootstrapped;
@@ -24,7 +23,6 @@ export declare class ClientApp {
     private configureGlobalConfig();
     private configureComponents();
     private configurePages();
-    private configureInitialRoute();
     private configureCoreServices();
     private configureContainer();
     private configureRoot();
