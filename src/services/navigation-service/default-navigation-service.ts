@@ -10,6 +10,7 @@ export class DefaultNavigationService implements NavigationService
     
     
     public get currentRoutePath(): string { return this._vueRouter.currentRoute.path; }
+    public get currentRouteHash(): string { return this.getHash(); }
 
 
     public constructor(vueRouter: any)
@@ -109,5 +110,18 @@ export class DefaultNavigationService implements NavigationService
 
         document.body.appendChild(form);
         return form;
+    }
+    
+    private getHash(): string
+    {
+        let hash: string = this._vueRouter.currentRoute.hash;
+        if (!hash || hash.isEmptyOrWhiteSpace())
+            return null;
+        
+        hash = hash.trim();
+        if (hash.startsWith("#"))
+            hash = hash.substr(1);
+        
+        return hash.isEmptyOrWhiteSpace() ? null : hash;
     }
 }

@@ -1,6 +1,7 @@
 export interface NavigationService 
 {
     currentRoutePath: string;
+    currentRouteHash: string;
     
     navigate(route: string, params: Object, replaceHistory?: boolean): void;
     navigateBack(): void;
