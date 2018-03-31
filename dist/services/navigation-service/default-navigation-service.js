@@ -5,6 +5,7 @@ require("@nivinjoseph/n-ext");
 const utils_1 = require("../../core/utils");
 class DefaultNavigationService {
     get currentRoutePath() { return this._vueRouter.currentRoute.path; }
+    get currentRouteHash() { return this.getHash(); }
     constructor(vueRouter) {
         n_defensive_1.given(vueRouter, "vueRouter").ensureHasValue();
         this._vueRouter = vueRouter;
@@ -69,6 +70,15 @@ class DefaultNavigationService {
         }
         document.body.appendChild(form);
         return form;
+    }
+    getHash() {
+        let hash = this._vueRouter.currentRoute.hash;
+        if (!hash || hash.isEmptyOrWhiteSpace())
+            return null;
+        hash = hash.trim();
+        if (hash.startsWith("#"))
+            hash = hash.substr(1);
+        return hash.isEmptyOrWhiteSpace() ? null : hash;
     }
 }
 exports.DefaultNavigationService = DefaultNavigationService;
