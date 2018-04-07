@@ -8,7 +8,6 @@ class ViewModelRegistration {
     get name() { return this._name; }
     get viewModel() { return this._viewModel; }
     get template() { return this._template; }
-    get templateId() { return this._templateId; }
     constructor(viewModel) {
         n_defensive_1.given(viewModel, "viewModel").ensureHasValue();
         this._name = (" " + viewModel.getTypeName().trim()).substr(1); // Shrey: Safari de-optimization

@@ -1,8 +1,8 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-const component_view_model_1 = require("./component-view-model");
+const base_view_model_1 = require("./base-view-model");
 // public
-class PageViewModel extends component_view_model_1.ComponentViewModel {
+class PageViewModel extends base_view_model_1.BaseViewModel {
     get pathArgs() {
         let routeArgs = this.__routeArgs;
         return routeArgs ? routeArgs.pathArgs : null;

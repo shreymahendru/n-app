@@ -2,6 +2,7 @@
 Object.defineProperty(exports, "__esModule", { value: true });
 const n_defensive_1 = require("@nivinjoseph/n-defensive");
 const utilities_1 = require("./utilities");
+require("@nivinjoseph/n-ext");
 class ComponentFactory {
     constructor(container) {
         n_defensive_1.given(container, "container").ensureHasValue();
@@ -10,7 +11,13 @@ class ComponentFactory {
     create(registration) {
         n_defensive_1.given(registration, "registration").ensureHasValue();
         let component = {};
-        component.template = registration.template || registration.templateId;
+        component.template = registration.template;
+        let isComponent = registration.getTypeName() === "ComponentRegistration";
+        if (isComponent) {
+            let componentRegistration = registration;
+            if (componentRegistration.bindings.length > 0)
+                component.props = componentRegistration.bindings;
+        }
         const container = this._container;
         component.data = function () {
             let vueVm = this;
@@ -32,11 +39,10 @@ class ComponentFactory {
             vueVm.$options.methods = methods;
             vueVm.$options.computed = computed;
             vm._ctx = vueVm;
+            if (isComponent)
+                vm._bindings = component.props ? [...registration.bindings] : [];
             return data;
         };
-        let componentRegistration = registration;
-        if (componentRegistration.bindings && componentRegistration.bindings.length > 0)
-            component.props = componentRegistration.bindings;
         component.beforeCreate = function () {
             // console.log("executing beforeCreate");
             // console.log(this.vm);
