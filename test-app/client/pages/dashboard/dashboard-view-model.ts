@@ -18,6 +18,7 @@ export class DashboardViewModel extends BasePageViewModel
     
     private readonly _message = "Dashboard view";
     private _score = 10;
+    private _fooParentValue: string;
     
     
     public constructor(dialogService: DialogService, evenAggregator: EventAggregator,
@@ -29,6 +30,8 @@ export class DashboardViewModel extends BasePageViewModel
         this._eventAggregator = evenAggregator;
         this._navigationService = navigationService;
         this._storageService = storageService;
+        
+        this._fooParentValue = "whatever";
     }
     
     
@@ -37,6 +40,10 @@ export class DashboardViewModel extends BasePageViewModel
     
     
     public get message(): string { return this._message; }
+    
+    
+    public get fooParentValue(): string { return this._fooParentValue; }
+    public set fooParentValue(value: string) { this._fooParentValue = value; }
     
     
     public increment(): void

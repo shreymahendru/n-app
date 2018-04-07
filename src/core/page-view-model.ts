@@ -1,9 +1,9 @@
-import { ComponentViewModel } from "./component-view-model";
 import { RouteArgs } from "./route-args";
+import { BaseViewModel } from "./base-view-model";
 
 
 // public
-export class PageViewModel extends ComponentViewModel
+export class PageViewModel extends BaseViewModel
 {
     protected get pathArgs(): Object
     {

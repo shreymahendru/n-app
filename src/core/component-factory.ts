@@ -3,6 +3,7 @@ import { Container } from "@nivinjoseph/n-ject";
 import { Utilities } from "./utilities";
 import { ViewModelRegistration } from "./view-model-registration";
 import { ComponentRegistration } from "./component-registration";
+import "@nivinjoseph/n-ext";
 
 
 export class ComponentFactory
@@ -21,9 +22,17 @@ export class ComponentFactory
     {
         given(registration, "registration").ensureHasValue();
         
-        let component: any = {};
         
-        component.template = registration.template || registration.templateId;
+        
+        let component: any = {};
+        component.template = registration.template;
+        let isComponent = (<Object>registration).getTypeName() === "ComponentRegistration";
+        if (isComponent)
+        {
+            let componentRegistration = registration as ComponentRegistration;
+            if (componentRegistration.bindings.length > 0)
+                component.props = componentRegistration.bindings;
+        }    
         
         const container = this._container;
         component.data = function ()
@@ -51,13 +60,12 @@ export class ComponentFactory
             vueVm.$options.methods = methods;
             vueVm.$options.computed = computed;
             vm._ctx = vueVm;
+            if (isComponent)
+                vm._bindings = component.props ? [...(<ComponentRegistration>registration).bindings] : [];    
 
             return data;
         };
         
-        let componentRegistration = registration as ComponentRegistration;
-        if (componentRegistration.bindings && componentRegistration.bindings.length > 0)
-            component.props = componentRegistration.bindings;    
         
         component.beforeCreate = function ()
         {

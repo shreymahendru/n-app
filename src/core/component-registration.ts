@@ -9,10 +9,12 @@ export class ComponentRegistration extends ViewModelRegistration
 {
     private readonly _element: string;
     private readonly _bindings: Array<string>;
+    private readonly _hasModel: boolean;
     
     
     public get element(): string { return this._element; }
     public get bindings(): Array<string> { return this._bindings; }
+    public get hasModel(): boolean { return this._hasModel; }
     
     
     public constructor(component: Function)
@@ -29,6 +31,8 @@ export class ComponentRegistration extends ViewModelRegistration
         this._element = Reflect.getOwnMetadata(elementSymbol, this.viewModel);
         
         if (Reflect.hasOwnMetadata(bindSymbol, this.viewModel))
-            this._bindings.push(...Reflect.getOwnMetadata(bindSymbol, this.viewModel));    
+            this._bindings.push(...Reflect.getOwnMetadata(bindSymbol, this.viewModel));   
+        
+        this._hasModel = this._bindings.some(t => t === "value");
     }
 }

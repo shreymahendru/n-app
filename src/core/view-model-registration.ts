@@ -9,14 +9,11 @@ export abstract class ViewModelRegistration
     private readonly _name: string;
     private readonly _viewModel: Function;
     private readonly _template: string;
-    private readonly _view: string;
-    private readonly _templateId: string;
     
     
     public get name(): string { return this._name; }
     public get viewModel(): Function { return this._viewModel; }
     public get template(): string { return this._template; }
-    public get templateId(): string { return this._templateId; }
     
     
     protected constructor(viewModel: Function)
