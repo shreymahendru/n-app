@@ -3,17 +3,19 @@ import * as Routes from "./../routes";
 import { BasePageViewModel } from "./../base-page-view-model";
 import { inject } from "@nivinjoseph/n-ject";
 import "./dashboard-view.scss";
+import { ScopedService } from "../../services/scoped-service";
 
 
 @template(require("./dashboard-view.html"))
 @route(Routes.dashboard)  
-@inject("DialogService", "EventAggregator", "NavigationService", "StorageService")    
+@inject("DialogService", "EventAggregator", "NavigationService", "StorageService", "ScopedService")    
 export class DashboardViewModel extends BasePageViewModel
 {
     private readonly _dialogService: DialogService;
     private readonly _eventAggregator: EventAggregator;
     private readonly _navigationService: NavigationService;
     private readonly _storageService: StorageService;
+    private readonly _scopedService: ScopedService;
     
     
     private readonly _message = "Dashboard view";
@@ -22,7 +24,7 @@ export class DashboardViewModel extends BasePageViewModel
     
     
     public constructor(dialogService: DialogService, evenAggregator: EventAggregator,
-        navigationService: NavigationService, storageService: StorageService)
+        navigationService: NavigationService, storageService: StorageService, scopedService: ScopedService)
     {
         super();
         
@@ -30,6 +32,7 @@ export class DashboardViewModel extends BasePageViewModel
         this._eventAggregator = evenAggregator;
         this._navigationService = navigationService;
         this._storageService = storageService;
+        this._scopedService = scopedService;
         
         this._fooParentValue = "whatever";
     }

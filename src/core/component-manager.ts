@@ -29,7 +29,8 @@ export class ComponentManager
     
     public bootstrap(): void
     {
-        let componentFactory = new ComponentFactory(this._container);
+        // let componentFactory = new ComponentFactory(this._container);
+        let componentFactory = new ComponentFactory();
         
         for (let registration of this._registrations)
             this._vue.component(registration.element, componentFactory.create(registration));

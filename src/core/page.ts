@@ -56,7 +56,8 @@ export class Page
     
     public createVueRouterRoute(container: Container): any
     {
-        let factory = new PageComponentFactory(container);
+        // let factory = new PageComponentFactory(container);
+        let factory = new PageComponentFactory();
         
         let vueRouterRoute: any = {
             path: this.createRoute(),

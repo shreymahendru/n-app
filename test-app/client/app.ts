@@ -10,6 +10,7 @@ import { CreateTodoViewModel } from "./pages/todo/create-todo/create-todo-view-m
 import { UpdateTodoViewModel } from "./pages/todo/update-todo/update-todo-view-model";
 import * as Routes from "./pages/routes";
 import { BindingTestViewModel } from "./components/binding-test/binding-test-view-model";
+import { ScopedService } from "./services/scoped-service";
 
 
 
@@ -24,7 +25,10 @@ class Installer implements ComponentInstaller
 {
     public install(registry: Registry): void
     {
-        registry.registerSingleton("TodoRepository", InmemoryTodoRepository);
+        registry
+            .registerSingleton("TodoRepository", InmemoryTodoRepository)
+            .registerScoped("ScopedService", ScopedService)
+            ;
     }
 }    
 

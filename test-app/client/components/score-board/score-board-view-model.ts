@@ -1,12 +1,16 @@
 import { element, bind, ComponentViewModel, template } from "./../../../../src/index";
 import "./score-board-view.scss";
+import { inject } from "@nivinjoseph/n-ject";
+import { ScopedService } from "../../services/scoped-service";
 
 
 @template(require("./score-board-view.html"))
 @element("score-board")
-@bind("score", "increment")        
+@bind("score", "increment")   
+@inject("ScopedService")    
 export class ScoreBoardViewModel extends ComponentViewModel
 {
+    private readonly _scopedService: ScopedService;
     private _playerFirstName: string = "Nivin";
     private _playerLastName: string = "Joseph";
 
@@ -22,6 +26,12 @@ export class ScoreBoardViewModel extends ComponentViewModel
     // public get playerFullName(): string { return this._playerFirstName + " " + this._playerLastName; }
 
 
+    public constructor(scopedService: ScopedService)
+    {
+        super();
+        this._scopedService = scopedService;
+    }
+    
     
     protected onCreate(): void
     {

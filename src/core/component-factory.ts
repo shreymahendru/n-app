@@ -1,44 +1,35 @@
 import { given } from "@nivinjoseph/n-defensive";
-import { Container } from "@nivinjoseph/n-ject";
+import { Container, Scope } from "@nivinjoseph/n-ject";
 import { Utilities } from "./utilities";
-import { ViewModelRegistration } from "./view-model-registration";
 import { ComponentRegistration } from "./component-registration";
 import "@nivinjoseph/n-ext";
+import { ApplicationException } from "@nivinjoseph/n-exception";
 
 
 export class ComponentFactory
 {
-    private readonly _container: Container;
-    
-    
-    public constructor(container: Container)
-    {
-        given(container, "container").ensureHasValue();
-        this._container = container;
-    }
-    
-    
-    public create(registration: ViewModelRegistration): Object
+    public create(registration: ComponentRegistration): Object
     {
         given(registration, "registration").ensureHasValue();
         
+        const component: any = {};
         
-        
-        let component: any = {};
         component.template = registration.template;
-        let isComponent = (<Object>registration).getTypeName() === "ComponentRegistration";
-        if (isComponent)
-        {
-            let componentRegistration = registration as ComponentRegistration;
-            if (componentRegistration.bindings.length > 0)
-                component.props = componentRegistration.bindings;
-        }    
         
-        const container = this._container;
+        if (registration.bindings.length > 0)
+            component.props = registration.bindings;
+        
+        component.inject = ["pageScopeContainer", "rootScopeContainer"];
+        
         component.data = function ()
         {
             let vueVm = this;
+            
+            const container: Scope = vueVm.pageScopeContainer || vueVm.rootScopeContainer;
+            if (!container)
+                throw new ApplicationException("Could not get pageScopeContainer or rootScopeContainer.");
             let vm = container.resolve<any>(registration.name);
+            
             let data = { vm: vm };
             let methods: { [index: string]: any } = {};
             let computed: { [index: string]: any } = {};
@@ -60,8 +51,7 @@ export class ComponentFactory
             vueVm.$options.methods = methods;
             vueVm.$options.computed = computed;
             vm._ctx = vueVm;
-            if (isComponent)
-                vm._bindings = component.props ? [...(<ComponentRegistration>registration).bindings] : [];    
+            vm._bindings = component.props ? [...registration.bindings] : [];    
 
             return data;
         };
