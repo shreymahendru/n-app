@@ -1,5 +1,4 @@
-import { ComponentFactory } from "./component-factory";
 import { PageRegistration } from "./page-registration";
-export declare class PageComponentFactory extends ComponentFactory {
+export declare class PageComponentFactory {
     create(registration: PageRegistration): Object;
 }

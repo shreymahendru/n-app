@@ -3,24 +3,20 @@ Object.defineProperty(exports, "__esModule", { value: true });
 const n_defensive_1 = require("@nivinjoseph/n-defensive");
 const utilities_1 = require("./utilities");
 require("@nivinjoseph/n-ext");
+const n_exception_1 = require("@nivinjoseph/n-exception");
 class ComponentFactory {
-    constructor(container) {
-        n_defensive_1.given(container, "container").ensureHasValue();
-        this._container = container;
-    }
     create(registration) {
         n_defensive_1.given(registration, "registration").ensureHasValue();
-        let component = {};
+        const component = {};
         component.template = registration.template;
-        let isComponent = registration.getTypeName() === "ComponentRegistration";
-        if (isComponent) {
-            let componentRegistration = registration;
-            if (componentRegistration.bindings.length > 0)
-                component.props = componentRegistration.bindings;
-        }
-        const container = this._container;
+        if (registration.bindings.length > 0)
+            component.props = registration.bindings;
+        component.inject = ["pageScopeContainer", "rootScopeContainer"];
         component.data = function () {
             let vueVm = this;
+            const container = vueVm.pageScopeContainer || vueVm.rootScopeContainer;
+            if (!container)
+                throw new n_exception_1.ApplicationException("Could not get pageScopeContainer or rootScopeContainer.");
             let vm = container.resolve(registration.name);
             let data = { vm: vm };
             let methods = {};
@@ -39,8 +35,7 @@ class ComponentFactory {
             vueVm.$options.methods = methods;
             vueVm.$options.computed = computed;
             vm._ctx = vueVm;
-            if (isComponent)
-                vm._bindings = component.props ? [...registration.bindings] : [];
+            vm._bindings = component.props ? [...registration.bindings] : [];
             return data;
         };
         component.beforeCreate = function () {

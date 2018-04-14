@@ -129,9 +129,15 @@ class ClientApp {
         this._container.bootstrap();
     }
     configureRoot() {
+        const container = this._container;
         this._app = new Vue({
             el: this._appElementId,
-            router: this._pageManager.vueRouterInstance
+            router: this._pageManager.vueRouterInstance,
+            provide: function () {
+                return {
+                    rootScopeContainer: container
+                };
+            }
         });
     }
 }
