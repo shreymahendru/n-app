@@ -9,24 +9,24 @@ class Utilities {
         let prototype = Object.getPrototypeOf(val);
         if (prototype === undefined || prototype === null) // we are dealing with Object
             return propertyInfos;
-        let internal = ["ctx", "onCreate", "onMount", "onDestroy", "executeOnCreate", "executeOnDestroy",
-            "watch", "unWatch", "getBound", "onEnter", "onLeave"];
-        let forbidden = ["do", "if", "for", "let", "new", "try", "var", "case", "else", "with", "await", "break",
-            "catch", "class", "const", "super", "throw", "while", "yield", "delete", "export", "import", "return",
-            "switch", "default", "extends", "finally", "continue", "debugger", "function", "arguments", "typeof", "void"];
+        propertyInfos.push(...Utilities.getPropertyInfos(prototype));
         let propertyNames = Object.getOwnPropertyNames(val);
         for (let name of propertyNames) {
             name = name.trim();
-            if (name === "constructor" || name.startsWith("_") || name.startsWith("$") || internal.some(t => t === name))
+            if (name === "constructor" || name.startsWith("_") || name.startsWith("$") || Utilities.internal.some(t => t === name))
                 continue;
-            if (forbidden.some(t => t === name))
-                throw new n_exception_1.ApplicationException(`Class ${val.getTypeName()} has a member with the forbidden name '${name}'. The following names are forbidden: ${forbidden}.`);
+            if (Utilities.forbidden.some(t => t === name))
+                throw new n_exception_1.ApplicationException(`Class ${val.getTypeName()} has a member with the forbidden name '${name}'. The following names are forbidden: ${Utilities.forbidden}.`);
             let descriptor = Object.getOwnPropertyDescriptor(val, name);
             propertyInfos.push(new property_info_1.PropertyInfo(name, descriptor));
         }
-        propertyInfos.push(...Utilities.getPropertyInfos(prototype));
         return propertyInfos;
     }
 }
+Utilities.internal = ["ctx", "onCreate", "onMount", "onDestroy", "executeOnCreate", "executeOnDestroy",
+    "watch", "unWatch", "bindings", "getBound", "getBoundModel", "setBoundModel", "pathArgs", "queryArgs", "onEnter", "onLeave"];
+Utilities.forbidden = ["do", "if", "for", "let", "new", "try", "var", "case", "else", "with", "await", "break",
+    "catch", "class", "const", "super", "throw", "while", "yield", "delete", "export", "import", "return",
+    "switch", "default", "extends", "finally", "continue", "debugger", "function", "arguments", "typeof", "void"];
 exports.Utilities = Utilities;
 //# sourceMappingURL=utilities.js.map
