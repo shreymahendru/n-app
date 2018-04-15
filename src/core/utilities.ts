@@ -5,35 +5,38 @@ import { PropertyInfo } from "./property-info";
 
 export class Utilities
 {
+    private static internal = ["ctx", "onCreate", "onMount", "onDestroy", "executeOnCreate", "executeOnDestroy",
+        "watch", "unWatch", "bindings", "getBound", "getBoundModel", "setBoundModel", "pathArgs", "queryArgs", "onEnter", "onLeave"];
+    
+    private static forbidden = ["do", "if", "for", "let", "new", "try", "var", "case", "else", "with", "await", "break",
+        "catch", "class", "const", "super", "throw", "while", "yield", "delete", "export", "import", "return",
+        "switch", "default", "extends", "finally", "continue", "debugger", "function", "arguments", "typeof", "void"];
+    
+    
+    
     public static getPropertyInfos(val: any): Array<PropertyInfo>
     {
         let propertyInfos = new Array<PropertyInfo>();
         let prototype = Object.getPrototypeOf(val);
         if (prototype === undefined || prototype === null)  // we are dealing with Object
             return propertyInfos;
-            
-        let internal = ["ctx", "onCreate", "onMount", "onDestroy", "executeOnCreate", "executeOnDestroy",
-            "watch", "unWatch", "getBound", "onEnter", "onLeave"];
         
-        let forbidden = ["do", "if", "for", "let", "new", "try", "var", "case", "else", "with", "await", "break",
-            "catch", "class", "const", "super", "throw", "while", "yield", "delete", "export", "import", "return",
-            "switch", "default", "extends", "finally", "continue", "debugger", "function", "arguments", "typeof", "void"];
+        propertyInfos.push(...Utilities.getPropertyInfos(prototype));
         
         let propertyNames = Object.getOwnPropertyNames(val);
         for (let name of propertyNames)
         {
             name = name.trim();
-            if (name === "constructor" || name.startsWith("_") || name.startsWith("$") || internal.some(t => t === name))
+            if (name === "constructor" || name.startsWith("_") || name.startsWith("$") || Utilities.internal.some(t => t === name))
                 continue;
 
-            if (forbidden.some(t => t === name))
-                throw new ApplicationException(`Class ${(<Object>val).getTypeName()} has a member with the forbidden name '${name}'. The following names are forbidden: ${forbidden}.`);    
+            if (Utilities.forbidden.some(t => t === name))
+                throw new ApplicationException(`Class ${(<Object>val).getTypeName()} has a member with the forbidden name '${name}'. The following names are forbidden: ${Utilities.forbidden}.`);    
             
             let descriptor = Object.getOwnPropertyDescriptor(val, name);
             propertyInfos.push(new PropertyInfo(name, descriptor));
         }
-
-        propertyInfos.push(...Utilities.getPropertyInfos(prototype));
+        
         return propertyInfos;
     }
     
