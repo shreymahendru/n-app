@@ -45,7 +45,7 @@ export class DefaultEventAggregator implements EventAggregator
 
     
     // Called dynamically by EventSubscription class (internal)
-    protected unsubscribe(event: string, subscription: any): void
+    private unsubscribe(event: string, subscription: any): void
     {
         given(event, "event").ensureHasValue().ensure(t => !t.isEmptyOrWhiteSpace());
 
@@ -81,7 +81,7 @@ class DefaultEventSubscription implements EventSubscription
     {
         if (this._isUnsubscribed) return;
 
-        this._eventManager.Unsubscribe(this._event, this._subscription);
+        this._eventManager.unsubscribe(this._event, this._subscription);
         this._isUnsubscribed = true;
     }
 }
