@@ -85,6 +85,7 @@ module.exports = {
         new cleanWebpackPlugin(["test-app/client/dist"]),
         new htmlWebpackPlugin({
             template: "test-app/controllers/index-view.html",
+            filename: "index-view.html",
             hash: true,
             favicon: "test-app/client/images/favicon.png"
         })
