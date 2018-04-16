@@ -49,7 +49,7 @@ class DefaultEventSubscription {
     unsubscribe() {
         if (this._isUnsubscribed)
             return;
-        this._eventManager.Unsubscribe(this._event, this._subscription);
+        this._eventManager.unsubscribe(this._event, this._subscription);
         this._isUnsubscribed = true;
     }
 }
