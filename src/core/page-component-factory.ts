@@ -147,9 +147,6 @@ export class PageComponentFactory
             // does NOT have access to `this` component instance,
             // because it has not been created yet when this guard is called!
             
-            console.log("Calling beforeRouteEnter", to);
-            
-            
             let routeArgs: RouteArgs = null;
             
             try 
@@ -184,8 +181,6 @@ export class PageComponentFactory
             // navigate between /foo/1 and /foo/2, the same Foo component instance
             // will be reused, and this hook will be called when that happens.
             // has access to `this` component instance.
-  
-            console.log("Calling beforeRouteUpdate");
             
             let routeArgs: RouteArgs = null;
             try 
