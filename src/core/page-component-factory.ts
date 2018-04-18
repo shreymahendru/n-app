@@ -147,6 +147,9 @@ export class PageComponentFactory
             // does NOT have access to `this` component instance,
             // because it has not been created yet when this guard is called!
             
+            console.log("Calling beforeRouteEnter", to);
+            
+            
             let routeArgs: RouteArgs = null;
             
             try 
@@ -160,8 +163,12 @@ export class PageComponentFactory
                 return;
             }
             
+            if (registration.title)
+                window.document.title = registration.title;
             next((vueModel: any) =>
             {
+                if (registration.title)
+                    window.document.title = registration.title;
                 let vm = vueModel.vm;
                 vm.__routeArgs = routeArgs;
                 if (vm.onEnter)
@@ -178,6 +185,7 @@ export class PageComponentFactory
             // will be reused, and this hook will be called when that happens.
             // has access to `this` component instance.
   
+            console.log("Calling beforeRouteUpdate");
             
             let routeArgs: RouteArgs = null;
             try 
@@ -204,6 +212,8 @@ export class PageComponentFactory
 
             if (routeArgs.equals(fromRouteArgs))
             {
+                if (registration.title)
+                    window.document.title = registration.title;
                 next();
                 return;
             }   
@@ -216,6 +226,8 @@ export class PageComponentFactory
             if (vm.onEnter)
                 routeArgs.routeArgs.length > 0 ? vm.onEnter(...routeArgs.routeArgs) : vm.onEnter();
             
+            if (registration.title)
+                window.document.title = registration.title;
             next();
         };
         

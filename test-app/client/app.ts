@@ -43,6 +43,7 @@ const app = new ClientApp("#app")
     .useHistoryModeRouting()
     .useAsInitialRoute(Routes.dashboard)
     .useAsUnknownRoute(Routes.test)
+    .useAsDefaultPageTitle("fooo")
     ;
     
 app.bootstrap();

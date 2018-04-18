@@ -110,6 +110,16 @@ export class ClientApp
         return this;
     }
     
+    public useAsDefaultPageTitle(title: string): this
+    {
+        if (this._isBootstrapped)
+            throw new InvalidOperationException("useAsDefaultPageTitle");
+        
+        given(title, "title").ensureHasValue().ensure(t => !t.isEmptyOrWhiteSpace());
+        this._pageManager.useAsDefaultPageTitle(title);
+        return this;
+    }
+    
     public useHistoryModeRouting(): this
     {
         if (this._isBootstrapped)
@@ -144,6 +154,7 @@ export class ClientApp
         this.configureRoot();
 
         this._isBootstrapped = true;
+        // this._pageManager.configureInitialRoute();
     }
     
     private configureGlobalConfig(): void

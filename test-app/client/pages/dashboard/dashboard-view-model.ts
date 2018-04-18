@@ -1,4 +1,4 @@
-import { route, template, DialogService, EventAggregator, NavigationService, StorageService } from "./../../../../src/index";
+import { route, template, DialogService, EventAggregator, NavigationService, StorageService, title } from "./../../../../src/index";
 import * as Routes from "./../routes";
 import { BasePageViewModel } from "./../base-page-view-model";
 import { inject } from "@nivinjoseph/n-ject";
@@ -8,6 +8,7 @@ import { ScopedService } from "../../services/scoped-service";
 
 @template(require("./dashboard-view.html"))
 @route(Routes.dashboard)  
+@title("Dashboard")    
 @inject("DialogService", "EventAggregator", "NavigationService", "StorageService", "ScopedService")    
 export class DashboardViewModel extends BasePageViewModel
 {

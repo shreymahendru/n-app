@@ -2,7 +2,7 @@ import "reflect-metadata";
 import { given } from "@nivinjoseph/n-defensive";
 import "@nivinjoseph/n-ext";
 
-// public
+
 export const templateSymbol = Symbol("template");
 
 // public

@@ -10,10 +10,12 @@ export class PageManager
 {
     private readonly _vueRouter: any;
     private readonly _container: Container;
+    private readonly _pageViewModelClasses = new Array<Function>();
     private readonly _registrations = new Array<PageRegistration>();
     private _vueRouterInstance: any;
     private _initialRoute: string;
     private _unknownRoute: string;
+    private _defaultPageTitle: string;
     private _useHistoryMode: boolean = false;
     
     
@@ -32,8 +34,7 @@ export class PageManager
     
     public registerPages(...pageViewModelClasses: Function[]): void
     {
-        for (let item of pageViewModelClasses)
-            this.registerPage(item);    
+        this._pageViewModelClasses.push(...pageViewModelClasses);
     }
     
     public useAsInitialRoute(route: string): void
@@ -48,6 +49,12 @@ export class PageManager
         this._unknownRoute = route.trim();
     }
     
+    public useAsDefaultPageTitle(title: string): void
+    {
+        given(title, "title").ensureHasValue().ensure(t => !t.isEmptyOrWhiteSpace());
+        this._defaultPageTitle = title.trim();
+    }
+    
     public useHistoryModeRouting(): void
     {
         this._useHistoryMode = true;
@@ -55,11 +62,16 @@ export class PageManager
     
     public bootstrap(): void
     {
+        for (let item of this._pageViewModelClasses)
+            this.registerPage(item);    
+        
         if (this._registrations.length === 0)
             return;
         
         let pageTree = this.createPageTree();
         let vueRouterRoutes = pageTree.map(t => t.createVueRouterRoute(this._container));  
+        if (this._initialRoute)
+            vueRouterRoutes.push({ path: "/", redirect: this._initialRoute });  
         if (this._unknownRoute)
             vueRouterRoutes.push({ path: "*", redirect: this._unknownRoute });    
         let vueRouter = this._vueRouter;
@@ -73,14 +85,12 @@ export class PageManager
         if (this._useHistoryMode)
             routerOptions.mode = "history";    
         this._vueRouterInstance = new vueRouter(routerOptions);
-        
-        this.configureInitialRoute();
     }
     
     
     private registerPage(pageViewModelClass: Function): void
     {
-        let registration = new PageRegistration(pageViewModelClass);
+        let registration = new PageRegistration(pageViewModelClass, this._defaultPageTitle);
 
         if (this._registrations.some(t => t.name === registration.name))
             throw new ApplicationException(`Duplicate Page registration with name '${registration.name}'.`);
@@ -99,43 +109,43 @@ export class PageManager
         return treeBuilder.build();
     }
     
-    private configureInitialRoute(): void
-    {
-        if (!this._initialRoute || this._initialRoute.isEmptyOrWhiteSpace())
-            return;
+    // private configureInitialRoute(): void
+    // {
+    //     if (!this._initialRoute || this._initialRoute.isEmptyOrWhiteSpace())
+    //         return;
 
-        if (this._useHistoryMode)
-        {
-            if (!window.location.pathname || window.location.pathname.toString().isEmptyOrWhiteSpace() ||
-                window.location.pathname.toString().trim() === "/" || window.location.pathname.toString().trim() === "null")
-                this._vueRouterInstance.replace(this._initialRoute);
+    //     if (this._useHistoryMode)
+    //     {
+    //         if (!window.location.pathname || window.location.pathname.toString().isEmptyOrWhiteSpace() ||
+    //             window.location.pathname.toString().trim() === "/" || window.location.pathname.toString().trim() === "null")
+    //             this._vueRouterInstance.replace(this._initialRoute);
             
-            return;
-        }
+    //         return;
+    //     }
 
-        if (!window.location.hash)
-        {
-            if (this._initialRoute)
-                window.location.hash = "#" + this._initialRoute;
-        }
-        else
-        {
-            let hashVal = window.location.hash.trim();
-            if (hashVal.length === 1)
-            {
-                if (this._initialRoute)
-                    window.location.hash = "#" + this._initialRoute;
-            }
-            else
-            {
-                hashVal = hashVal.substr(1);
-                if (hashVal === "/")
-                {
-                    if (this._initialRoute)
-                        window.location.hash = "#" + this._initialRoute;
-                }
-            }
-        }
-    }
+    //     if (!window.location.hash)
+    //     {
+    //         if (this._initialRoute)
+    //             window.location.hash = "#" + this._initialRoute;
+    //     }
+    //     else
+    //     {
+    //         let hashVal = window.location.hash.trim();
+    //         if (hashVal.length === 1)
+    //         {
+    //             if (this._initialRoute)
+    //                 window.location.hash = "#" + this._initialRoute;
+    //         }
+    //         else
+    //         {
+    //             hashVal = hashVal.substr(1);
+    //             if (hashVal === "/")
+    //             {
+    //                 if (this._initialRoute)
+    //                     window.location.hash = "#" + this._initialRoute;
+    //             }
+    //         }
+    //     }
+    // }
 }
 
