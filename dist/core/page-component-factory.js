@@ -100,6 +100,7 @@ class PageComponentFactory {
             // called before the route that renders this component is confirmed.
             // does NOT have access to `this` component instance,
             // because it has not been created yet when this guard is called!
+            console.log("Calling beforeRouteEnter", to);
             let routeArgs = null;
             try {
                 routeArgs = route_args_1.RouteArgs.create(registration.route, to);
@@ -109,7 +110,11 @@ class PageComponentFactory {
                 next(false);
                 return;
             }
+            if (registration.title)
+                window.document.title = registration.title;
             next((vueModel) => {
+                if (registration.title)
+                    window.document.title = registration.title;
                 let vm = vueModel.vm;
                 vm.__routeArgs = routeArgs;
                 if (vm.onEnter)
@@ -123,6 +128,7 @@ class PageComponentFactory {
             // navigate between /foo/1 and /foo/2, the same Foo component instance
             // will be reused, and this hook will be called when that happens.
             // has access to `this` component instance.
+            console.log("Calling beforeRouteUpdate");
             let routeArgs = null;
             try {
                 routeArgs = route_args_1.RouteArgs.create(registration.route, to);
@@ -141,6 +147,8 @@ class PageComponentFactory {
                 fromRouteArgs = new route_args_1.RouteArgs({}, {}, []);
             }
             if (routeArgs.equals(fromRouteArgs)) {
+                if (registration.title)
+                    window.document.title = registration.title;
                 next();
                 return;
             }
@@ -150,6 +158,8 @@ class PageComponentFactory {
             vm.__routeArgs = routeArgs;
             if (vm.onEnter)
                 routeArgs.routeArgs.length > 0 ? vm.onEnter(...routeArgs.routeArgs) : vm.onEnter();
+            if (registration.title)
+                window.document.title = registration.title;
             next();
         };
         component.beforeRouteLeave = function (to, from, next) {

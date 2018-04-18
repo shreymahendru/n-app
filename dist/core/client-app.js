@@ -71,6 +71,13 @@ class ClientApp {
         this._pageManager.useAsUnknownRoute(route);
         return this;
     }
+    useAsDefaultPageTitle(title) {
+        if (this._isBootstrapped)
+            throw new n_exception_1.InvalidOperationException("useAsDefaultPageTitle");
+        n_defensive_1.given(title, "title").ensureHasValue().ensure(t => !t.isEmptyOrWhiteSpace());
+        this._pageManager.useAsDefaultPageTitle(title);
+        return this;
+    }
     useHistoryModeRouting() {
         if (this._isBootstrapped)
             throw new n_exception_1.InvalidOperationException("useHistoryModeRouting");
@@ -96,6 +103,7 @@ class ClientApp {
         this.configureContainer();
         this.configureRoot();
         this._isBootstrapped = true;
+        // this._pageManager.configureInitialRoute();
     }
     configureGlobalConfig() {
         if (n_config_1.ConfigurationManager.getConfig("env") === "dev") {

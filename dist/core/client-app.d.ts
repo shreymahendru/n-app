@@ -18,6 +18,7 @@ export declare class ClientApp {
     registerPages(...pageViewModelClasses: Function[]): this;
     useAsInitialRoute(route: string): this;
     useAsUnknownRoute(route: string): this;
+    useAsDefaultPageTitle(title: string): this;
     useHistoryModeRouting(): this;
     bootstrap(): void;
     private configureGlobalConfig();

@@ -2,10 +2,12 @@ import { Container } from "@nivinjoseph/n-ject";
 export declare class PageManager {
     private readonly _vueRouter;
     private readonly _container;
+    private readonly _pageViewModelClasses;
     private readonly _registrations;
     private _vueRouterInstance;
     private _initialRoute;
     private _unknownRoute;
+    private _defaultPageTitle;
     private _useHistoryMode;
     readonly useHistoryMode: boolean;
     readonly vueRouterInstance: any;
@@ -13,9 +15,9 @@ export declare class PageManager {
     registerPages(...pageViewModelClasses: Function[]): void;
     useAsInitialRoute(route: string): void;
     useAsUnknownRoute(route: string): void;
+    useAsDefaultPageTitle(title: string): void;
     useHistoryModeRouting(): void;
     bootstrap(): void;
     private registerPage(pageViewModelClass);
     private createPageTree();
-    private configureInitialRoute();
 }
