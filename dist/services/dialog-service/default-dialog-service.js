@@ -6,6 +6,7 @@ if (!Toastr)
 const Spinner = require("./../../../vendor/spin.js");
 if (!Spinner)
     console.log("No Spinner!!!");
+const $ = require("jquery");
 class DefaultDialogService {
     constructor(accentColor) {
         this._accentColor = "#000";
