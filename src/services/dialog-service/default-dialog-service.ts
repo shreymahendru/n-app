@@ -7,8 +7,7 @@ if (!Spinner)
     console.log("No Spinner!!!");    
 
 import { DialogService } from "./dialog-service";
-
-declare const $: JQueryStatic;
+import * as $ from "jquery";
 
 
 export class DefaultDialogService implements DialogService
