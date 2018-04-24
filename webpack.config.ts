@@ -25,7 +25,8 @@ module.exports = {
             new UglifyJsPlugin({
                 sourceMap: true,
                 uglifyOptions: {
-                    keep_classnames: true
+                    keep_classnames: true,
+                    safari10: true
                 }
             })
         ]
