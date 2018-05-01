@@ -19,4 +19,6 @@ const page_view_model_1 = require("./core/page-view-model");
 exports.PageViewModel = page_view_model_1.PageViewModel;
 const utils_1 = require("./core/utils");
 exports.Utils = utils_1.Utils;
+const display_type_1 = require("./services/display-service/display-type");
+exports.DisplayType = display_type_1.DisplayType;
 //# sourceMappingURL=index.js.map

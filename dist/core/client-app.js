@@ -15,6 +15,7 @@ const default_event_aggregator_1 = require("./../services/event-aggregator/defau
 const default_navigation_service_1 = require("./../services/navigation-service/default-navigation-service");
 const default_storage_service_1 = require("./../services/storage-service/default-storage-service");
 const n_config_1 = require("@nivinjoseph/n-config");
+const default_display_service_1 = require("../services/display-service/default-display-service");
 // public
 class ClientApp {
     constructor(appElementId) {
@@ -131,7 +132,8 @@ class ClientApp {
             .registerInstance("DialogService", new default_dialog_service_1.DefaultDialogService(this._accentColor))
             .registerInstance("EventAggregator", new default_event_aggregator_1.DefaultEventAggregator())
             .registerInstance("NavigationService", new default_navigation_service_1.DefaultNavigationService(this._pageManager.vueRouterInstance))
-            .registerInstance("StorageService", new default_storage_service_1.DefaultStorageService());
+            .registerInstance("StorageService", new default_storage_service_1.DefaultStorageService())
+            .registerInstance("DisplayService", new default_display_service_1.DefaultDisplayService());
     }
     configureContainer() {
         this._container.bootstrap();
