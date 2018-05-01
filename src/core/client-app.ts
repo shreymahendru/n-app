@@ -18,6 +18,7 @@ import { DefaultEventAggregator } from "./../services/event-aggregator/default-e
 import { DefaultNavigationService } from "./../services/navigation-service/default-navigation-service";
 import { DefaultStorageService } from "./../services/storage-service/default-storage-service";
 import { ConfigurationManager } from "@nivinjoseph/n-config";
+import { DefaultDisplayService } from "../services/display-service/default-display-service";
 
 
 // public
@@ -195,6 +196,7 @@ export class ClientApp
             .registerInstance("EventAggregator", new DefaultEventAggregator())
             .registerInstance("NavigationService", new DefaultNavigationService(this._pageManager.vueRouterInstance))
             .registerInstance("StorageService", new DefaultStorageService())
+            .registerInstance("DisplayService", new DefaultDisplayService())
             ;
     }
 
