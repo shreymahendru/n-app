@@ -8,6 +8,7 @@ export declare class PageManager {
     private _initialRoute;
     private _unknownRoute;
     private _defaultPageTitle;
+    private _defaultPageMetas;
     private _useHistoryMode;
     readonly useHistoryMode: boolean;
     readonly vueRouterInstance: any;
@@ -16,6 +17,10 @@ export declare class PageManager {
     useAsInitialRoute(route: string): void;
     useAsUnknownRoute(route: string): void;
     useAsDefaultPageTitle(title: string): void;
+    useAsDefaultPageMetadata(metas: ReadonlyArray<{
+        name: string;
+        content: string;
+    }>): void;
     useHistoryModeRouting(): void;
     bootstrap(): void;
     private registerPage(pageViewModelClass);

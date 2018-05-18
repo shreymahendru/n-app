@@ -4,6 +4,7 @@ const route_args_1 = require("./route-args");
 const n_defensive_1 = require("@nivinjoseph/n-defensive");
 const utilities_1 = require("./utilities");
 const n_exception_1 = require("@nivinjoseph/n-exception");
+const $ = require("jquery");
 class PageComponentFactory {
     create(registration) {
         n_defensive_1.given(registration, "registration").ensureHasValue();
@@ -82,6 +83,17 @@ class PageComponentFactory {
             if (this.vm.onDestroy)
                 this.vm.onDestroy();
         };
+        const setDocumentMetadata = () => {
+            if (registration.title)
+                window.document.title = registration.title;
+            if (registration.metadata) {
+                for (const key in registration.metadata) {
+                    const value = registration.metadata[key];
+                    $(`meta[name="${key}"]`).remove();
+                    $("head").append(`<meta name="${key}" content="${value}">`);
+                }
+            }
+        };
         /* The Full Navigation Resolution Flow
                 Navigation triggered
                 Call leave guards in deactivated components
@@ -109,11 +121,9 @@ class PageComponentFactory {
                 next(false);
                 return;
             }
-            if (registration.title)
-                window.document.title = registration.title;
+            setDocumentMetadata();
             next((vueModel) => {
-                if (registration.title)
-                    window.document.title = registration.title;
+                setDocumentMetadata();
                 let vm = vueModel.vm;
                 vm.__routeArgs = routeArgs;
                 if (vm.onEnter)
@@ -145,8 +155,7 @@ class PageComponentFactory {
                 fromRouteArgs = new route_args_1.RouteArgs({}, {}, []);
             }
             if (routeArgs.equals(fromRouteArgs)) {
-                if (registration.title)
-                    window.document.title = registration.title;
+                setDocumentMetadata();
                 next();
                 return;
             }
@@ -156,8 +165,7 @@ class PageComponentFactory {
             vm.__routeArgs = routeArgs;
             if (vm.onEnter)
                 routeArgs.routeArgs.length > 0 ? vm.onEnter(...routeArgs.routeArgs) : vm.onEnter();
-            if (registration.title)
-                window.document.title = registration.title;
+            setDocumentMetadata();
             next();
         };
         component.beforeRouteLeave = function (to, from, next) {

@@ -79,6 +79,13 @@ class ClientApp {
         this._pageManager.useAsDefaultPageTitle(title);
         return this;
     }
+    useAsDefaultPageMetadata(...metas) {
+        if (this._isBootstrapped)
+            throw new n_exception_1.InvalidOperationException("useAsDefaultPageMetadata");
+        n_defensive_1.given(metas, "metas").ensureHasValue().ensureIsArray().ensure(t => t.length > 0);
+        this._pageManager.useAsDefaultPageMetadata(metas);
+        return this;
+    }
     useHistoryModeRouting() {
         if (this._isBootstrapped)
             throw new n_exception_1.InvalidOperationException("useHistoryModeRouting");

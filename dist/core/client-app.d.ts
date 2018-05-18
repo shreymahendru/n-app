@@ -19,6 +19,10 @@ export declare class ClientApp {
     useAsInitialRoute(route: string): this;
     useAsUnknownRoute(route: string): this;
     useAsDefaultPageTitle(title: string): this;
+    useAsDefaultPageMetadata(...metas: Array<{
+        name: string;
+        content: string;
+    }>): this;
     useHistoryModeRouting(): this;
     bootstrap(): void;
     private configureGlobalConfig();

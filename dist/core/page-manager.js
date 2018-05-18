@@ -9,6 +9,11 @@ class PageManager {
     constructor(vueRouter, container) {
         this._pageViewModelClasses = new Array();
         this._registrations = new Array();
+        this._vueRouterInstance = null;
+        this._initialRoute = null;
+        this._unknownRoute = null;
+        this._defaultPageTitle = null;
+        this._defaultPageMetas = null;
         this._useHistoryMode = false;
         n_defensive_1.given(vueRouter, "vueRouter").ensureHasValue();
         n_defensive_1.given(container, "container").ensureHasValue();
@@ -31,6 +36,10 @@ class PageManager {
     useAsDefaultPageTitle(title) {
         n_defensive_1.given(title, "title").ensureHasValue().ensure(t => !t.isEmptyOrWhiteSpace());
         this._defaultPageTitle = title.trim();
+    }
+    useAsDefaultPageMetadata(metas) {
+        n_defensive_1.given(metas, "metas").ensureHasValue().ensureIsArray().ensure(t => t.length > 0);
+        this._defaultPageMetas = [...metas];
     }
     useHistoryModeRouting() {
         this._useHistoryMode = true;
@@ -58,7 +67,7 @@ class PageManager {
         this._vueRouterInstance = new vueRouter(routerOptions);
     }
     registerPage(pageViewModelClass) {
-        let registration = new page_registration_1.PageRegistration(pageViewModelClass, this._defaultPageTitle);
+        let registration = new page_registration_1.PageRegistration(pageViewModelClass, this._defaultPageTitle, this._defaultPageMetas);
         if (this._registrations.some(t => t.name === registration.name))
             throw new n_exception_1.ApplicationException(`Duplicate Page registration with name '${registration.name}'.`);
         if (this._registrations.some(t => t.route.routeKey === registration.route.routeKey))

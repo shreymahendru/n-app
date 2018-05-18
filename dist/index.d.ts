@@ -2,6 +2,7 @@ import { Vue, ClientApp } from "./core/client-app";
 import { element } from "./core/element";
 import { template } from "./core/template";
 import { title } from "./core/title";
+import { meta } from "./core/meta";
 import { route } from "./core/route";
 import { bind } from "./core/bind";
 import { ComponentViewModel } from "./core/component-view-model";
@@ -13,4 +14,4 @@ import { NavigationService } from "./services/navigation-service/navigation-serv
 import { DialogService } from "./services/dialog-service/dialog-service";
 import { DisplayService } from "./services/display-service/display-service";
 import { DisplayType } from "./services/display-service/display-type";
-export { Vue, ClientApp, element, route, template, title, bind, ComponentViewModel, PageViewModel, Utils, StorageService, EventAggregator, EventSubscription, NavigationService, DialogService, DisplayService, DisplayType };
+export { Vue, ClientApp, element, route, template, title, meta, bind, ComponentViewModel, PageViewModel, Utils, StorageService, EventAggregator, EventSubscription, NavigationService, DialogService, DisplayService, DisplayType };
