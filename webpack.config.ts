@@ -10,6 +10,77 @@ console.log("WEBPACK ENV", env);
 
 const isDev = env === "dev";
 
+const moduleRules: Array<any> = [
+    {
+        test: /\.(scss|sass)$/,
+        use: [{
+            loader: "style-loader" // creates style nodes from JS strings
+        }, {
+            loader: "css-loader" // translates CSS into CommonJS
+        }, {
+            loader: "postcss-loader", // postcss
+            options: {
+                plugins: () => [
+                    require("postcss-flexbugs-fixes"),
+                    autoprefixer({
+                        browsers: [
+                            ">1%",
+                            "not ie < 9"
+                        ],
+                        flexbox: "no-2009"
+                    })
+                ]
+            }
+        }, {
+            loader: "sass-loader" // compiles Sass to CSS -> depends on node-sass
+        }]
+    },
+    {
+        test: /\.css$/,
+        use: [{
+            loader: "style-loader" // creates style nodes from JS strings
+        }, {
+            loader: "css-loader" // translates CSS into CommonJS
+        }]
+    },
+    {
+        test: /\.(png|svg|jpg|jpeg|gif)$/,
+        use: ["file-loader"]
+    },
+    {
+        test: /\.(woff|woff2|eot|ttf|otf)$/,
+        use: ["file-loader"]
+    },
+    {
+        test: /\.(html)$/,
+        use: {
+            loader: "html-loader",
+            options: {
+                attrs: ["img:src"]
+            }
+        }
+    }
+];
+
+if (!isDev)
+{
+    moduleRules.push({
+        test: /\.js$/,
+        use: {
+            loader: "babel-loader",
+            options: {
+                presets: [["@babel/preset-env", {
+                    debug: true,
+                    targets: {
+                        browsers: ["> 1%", "Chrome >= 41"]
+                    },
+                    useBuiltIns: "entry"
+                }]]
+            }
+        }
+    });
+}  
+
 module.exports = {
     mode: isDev ? "development" : "production",
     target: "web",
@@ -26,61 +97,14 @@ module.exports = {
                 sourceMap: true,
                 uglifyOptions: {
                     keep_classnames: true,
+                    keep_fnames: true,
                     safari10: true
                 }
             })
         ]
     },
     module: {
-        rules: [{
-            test: /\.scss$/,
-            use: [{
-                loader: "style-loader" // creates style nodes from JS strings
-            }, {
-                loader: "css-loader" // translates CSS into CommonJS
-            }, {
-                loader: "postcss-loader", // postcss
-                options: {
-                    plugins: () => [
-                        require("postcss-flexbugs-fixes"),
-                        autoprefixer({
-                            browsers: [
-                                ">1%",
-                                "not ie < 9"
-                            ],
-                            flexbox: "no-2009"
-                        })
-                    ]
-                }
-            }, {
-                loader: "sass-loader" // compiles Sass to CSS -> depends on node-sass
-            }]
-        },
-        {
-            test: /\.css$/,
-            use: [{
-                loader: "style-loader" // creates style nodes from JS strings
-            }, {
-                loader: "css-loader" // translates CSS into CommonJS
-            }]
-        },
-        {
-            test: /\.(png|svg|jpg|jpeg|gif)$/,
-            use: ["file-loader"]
-        },
-        {
-            test: /\.(woff|woff2|eot|ttf|otf)$/,
-            use: ["file-loader"]
-        },
-        {
-            test: /\.(html)$/,
-            use: {
-                loader: "html-loader",
-                options: {
-                    attrs: ["img:src"]
-                }
-            }
-        }]
+        rules: moduleRules
     },
     plugins: [
         new cleanWebpackPlugin(["test-app/client/dist"]),

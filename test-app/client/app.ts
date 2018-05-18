@@ -1,3 +1,5 @@
+import "@babel/polyfill";
+
 import { ClientApp } from "./../../src/index";
 import { ScoreBoardViewModel } from "./components/score-board/score-board-view-model";
 import { ComponentInstaller, Registry } from "@nivinjoseph/n-ject";
