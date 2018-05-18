@@ -3,6 +3,8 @@ const autoprefixer = require("autoprefixer");
 const htmlWebpackPlugin = require("html-webpack-plugin");
 const cleanWebpackPlugin = require("clean-webpack-plugin");
 const UglifyJsPlugin = require("uglifyjs-webpack-plugin");
+const MiniCssExtractPlugin = require("mini-css-extract-plugin");
+const OptimizeCSSAssetsPlugin = require("optimize-css-assets-webpack-plugin");
 import { ConfigurationManager } from "@nivinjoseph/n-config";
 
 const env = ConfigurationManager.getConfig<string>("env");
@@ -14,7 +16,7 @@ const moduleRules: Array<any> = [
     {
         test: /\.(scss|sass)$/,
         use: [{
-            loader: "style-loader" // creates style nodes from JS strings
+            loader: isDev ? "style-loader" : MiniCssExtractPlugin.loader
         }, {
             loader: "css-loader" // translates CSS into CommonJS
         }, {
@@ -38,7 +40,7 @@ const moduleRules: Array<any> = [
     {
         test: /\.css$/,
         use: [{
-            loader: "style-loader" // creates style nodes from JS strings
+            loader: isDev ? "style-loader" : MiniCssExtractPlugin.loader
         }, {
             loader: "css-loader" // translates CSS into CommonJS
         }]
@@ -81,6 +83,23 @@ if (!isDev)
     });
 }  
 
+const plugins = [
+    new cleanWebpackPlugin(["test-app/client/dist"]),
+    new htmlWebpackPlugin({
+        template: "test-app/controllers/index-view.html",
+        filename: "index-view.html",
+        hash: true,
+        favicon: "test-app/client/images/favicon.png"
+    })
+];
+
+if (!isDev)
+{
+    plugins.push(new MiniCssExtractPlugin({
+        filename: "client.bundle.css"
+    }));
+}  
+
 module.exports = {
     mode: isDev ? "development" : "production",
     target: "web",
@@ -100,19 +119,12 @@ module.exports = {
                     keep_fnames: true,
                     safari10: true
                 }
-            })
+            }),
+            new OptimizeCSSAssetsPlugin({})
         ]
     },
     module: {
         rules: moduleRules
     },
-    plugins: [
-        new cleanWebpackPlugin(["test-app/client/dist"]),
-        new htmlWebpackPlugin({
-            template: "test-app/controllers/index-view.html",
-            filename: "index-view.html",
-            hash: true,
-            favicon: "test-app/client/images/favicon.png"
-        })
-    ]
+    plugins: plugins
 };
