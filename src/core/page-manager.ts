@@ -12,10 +12,11 @@ export class PageManager
     private readonly _container: Container;
     private readonly _pageViewModelClasses = new Array<Function>();
     private readonly _registrations = new Array<PageRegistration>();
-    private _vueRouterInstance: any;
-    private _initialRoute: string;
-    private _unknownRoute: string;
-    private _defaultPageTitle: string;
+    private _vueRouterInstance: any = null;
+    private _initialRoute: string = null;
+    private _unknownRoute: string = null;
+    private _defaultPageTitle: string = null;
+    private _defaultPageMetas: Array<{ name: string; content: string; }> = null;
     private _useHistoryMode: boolean = false;
     
     
@@ -55,6 +56,12 @@ export class PageManager
         this._defaultPageTitle = title.trim();
     }
     
+    public useAsDefaultPageMetadata(metas: ReadonlyArray<{ name: string; content: string; }>): void
+    {
+        given(metas, "metas").ensureHasValue().ensureIsArray().ensure(t => t.length > 0);
+        this._defaultPageMetas = [...metas];
+    }
+    
     public useHistoryModeRouting(): void
     {
         this._useHistoryMode = true;
@@ -90,7 +97,7 @@ export class PageManager
     
     private registerPage(pageViewModelClass: Function): void
     {
-        let registration = new PageRegistration(pageViewModelClass, this._defaultPageTitle);
+        let registration = new PageRegistration(pageViewModelClass, this._defaultPageTitle, this._defaultPageMetas);
 
         if (this._registrations.some(t => t.name === registration.name))
             throw new ApplicationException(`Duplicate Page registration with name '${registration.name}'.`);

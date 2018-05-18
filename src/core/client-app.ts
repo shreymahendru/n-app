@@ -121,6 +121,16 @@ export class ClientApp
         return this;
     }
     
+    public useAsDefaultPageMetadata(...metas: Array<{ name: string; content: string; }>): this
+    {
+        if (this._isBootstrapped)
+            throw new InvalidOperationException("useAsDefaultPageMetadata");
+        
+        given(metas, "metas").ensureHasValue().ensureIsArray().ensure(t => t.length > 0);
+        this._pageManager.useAsDefaultPageMetadata(metas);
+        return this;
+    }
+    
     public useHistoryModeRouting(): this
     {
         if (this._isBootstrapped)

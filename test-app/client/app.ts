@@ -46,6 +46,7 @@ const app = new ClientApp("#app")
     .useAsInitialRoute(Routes.dashboard)
     .useAsUnknownRoute(Routes.test)
     .useAsDefaultPageTitle("fooo")
+    .useAsDefaultPageMetadata({name: "description", content: "this is the default description"})
     ;
     
 app.bootstrap();

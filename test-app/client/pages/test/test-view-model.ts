@@ -1,4 +1,4 @@
-import { route, template } from "./../../../../src/index";
+import { route, template, meta } from "./../../../../src/index";
 import * as Routes from "./../routes";
 import { BasePageViewModel } from "./../base-page-view-model";
 import "./test-view.scss";
@@ -9,6 +9,7 @@ import { given } from "@nivinjoseph/n-defensive";
 
 @template(require("./test-view.html"))
 @route(Routes.test)
+@meta({name: "description", content: "This is test"})    
 @inject("TodoRepository")    
 export class TestViewModel extends BasePageViewModel
 {

@@ -5,6 +5,7 @@ import { Container, Scope } from "@nivinjoseph/n-ject";
 import { given } from "@nivinjoseph/n-defensive";
 import { Utilities } from "./utilities";
 import { ApplicationException } from "@nivinjoseph/n-exception";
+import * as $ from "jquery";
 
 
 export class PageComponentFactory
@@ -122,7 +123,21 @@ export class PageComponentFactory
         };
         
         
-        
+        const setDocumentMetadata = () =>
+        {
+            if (registration.title)
+                window.document.title = registration.title;
+            
+            if (registration.metadata)
+            {
+                for (const key in registration.metadata)
+                {
+                    const value: string = (<any>registration.metadata)[key];
+                    $(`meta[name="${key}"]`).remove();
+                    $("head").append(`<meta name="${key}" content="${value}">`);
+                }    
+            }    
+        };
         
         
         
@@ -160,12 +175,10 @@ export class PageComponentFactory
                 return;
             }
             
-            if (registration.title)
-                window.document.title = registration.title;
+            setDocumentMetadata();
             next((vueModel: any) =>
             {
-                if (registration.title)
-                    window.document.title = registration.title;
+                setDocumentMetadata();
                 let vm = vueModel.vm;
                 vm.__routeArgs = routeArgs;
                 if (vm.onEnter)
@@ -207,8 +220,7 @@ export class PageComponentFactory
 
             if (routeArgs.equals(fromRouteArgs))
             {
-                if (registration.title)
-                    window.document.title = registration.title;
+                setDocumentMetadata();
                 next();
                 return;
             }   
@@ -221,8 +233,7 @@ export class PageComponentFactory
             if (vm.onEnter)
                 routeArgs.routeArgs.length > 0 ? vm.onEnter(...routeArgs.routeArgs) : vm.onEnter();
             
-            if (registration.title)
-                window.document.title = registration.title;
+            setDocumentMetadata();
             next();
         };
         
