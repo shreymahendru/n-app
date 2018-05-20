@@ -132,7 +132,7 @@ if (!isDev)
             filename: "client.bundle.css"
         }),
         new CompressionPlugin({
-            test: /\.(js|css)$/
+            test: /\.(js|css|svg)$/
         })
     ]);
 }  
