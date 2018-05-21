@@ -113,6 +113,13 @@ class ClientApp {
         this._isBootstrapped = true;
         // this._pageManager.configureInitialRoute();
     }
+    retrieveRouterInstance() {
+        if (!this._isBootstrapped)
+            throw new n_exception_1.InvalidOperationException("calling retrieveRouterInstance before calling bootstrap");
+        if (this._pageManager.vueRouterInstance === null)
+            throw new n_exception_1.InvalidOperationException("calling retrieveRouterInstance with no page registrations");
+        return this._pageManager.vueRouterInstance;
+    }
     configureGlobalConfig() {
         if (n_config_1.ConfigurationManager.getConfig("env") === "dev") {
             console.log("Bootstrapping in DEV mode.");

@@ -25,6 +25,7 @@ export declare class ClientApp {
     }>): this;
     useHistoryModeRouting(): this;
     bootstrap(): void;
+    retrieveRouterInstance(): object;
     private configureGlobalConfig();
     private configureComponents();
     private configurePages();
