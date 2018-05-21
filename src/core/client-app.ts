@@ -168,6 +168,18 @@ export class ClientApp
         // this._pageManager.configureInitialRoute();
     }
     
+    public retrieveRouterInstance(): object
+    {
+        if (!this._isBootstrapped)
+            throw new InvalidOperationException("calling retrieveRouterInstance before calling bootstrap");
+        
+        if (this._pageManager.vueRouterInstance === null)
+            throw new InvalidOperationException("calling retrieveRouterInstance with no page registrations");
+        
+        return this._pageManager.vueRouterInstance;
+    }
+    
+    
     private configureGlobalConfig(): void
     {
         if (ConfigurationManager.getConfig("env") === "dev")
