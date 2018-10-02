@@ -33,4 +33,4 @@ export
     NavigationService,
     DialogService,
     DisplayService, DisplayType
-}
+};

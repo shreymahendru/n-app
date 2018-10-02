@@ -10,6 +10,7 @@ import { ScopedService } from "../../services/scoped-service";
 @inject("ScopedService")    
 export class ScoreBoardViewModel extends ComponentViewModel
 {
+    // @ts-ignore
     private readonly _scopedService: ScopedService;
     private _playerFirstName: string = "Nivin";
     private _playerLastName: string = "Joseph";

@@ -1,5 +1,5 @@
 import { given } from "@nivinjoseph/n-defensive";
-import { ApplicationException, InvalidOperationException } from "@nivinjoseph/n-exception";
+import { InvalidOperationException } from "@nivinjoseph/n-exception";
 import { BaseViewModel } from "./base-view-model";
 
 

@@ -1,7 +1,6 @@
-import { ComponentFactory } from "./component-factory";
 import { PageRegistration } from "./page-registration";
 import { RouteArgs } from "./route-args";
-import { Container, Scope } from "@nivinjoseph/n-ject";
+import { Scope } from "@nivinjoseph/n-ject";
 import { given } from "@nivinjoseph/n-defensive";
 import { Utilities } from "./utilities";
 import { ApplicationException } from "@nivinjoseph/n-exception";
@@ -155,7 +154,7 @@ export class PageComponentFactory
                 DOM updates triggered.
                 Call callbacks passed to next in beforeRouteEnter guards with instantiated instances.
          */
-        
+        // @ts-ignore
         component.beforeRouteEnter = function (to: any, from: any, next: any)
         {
             // called before the route that renders this component is confirmed.
@@ -236,7 +235,7 @@ export class PageComponentFactory
             setDocumentMetadata();
             next();
         };
-        
+        // @ts-ignore
         component.beforeRouteLeave = function (to: any, from: any, next: any)
         {
             // called when the route that renders this component is about to

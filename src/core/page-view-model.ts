@@ -17,10 +17,12 @@ export class PageViewModel extends BaseViewModel
         return routeArgs ? routeArgs.queryArgs : null;
     }
     
-    
+    // override
+    // @ts-ignore
     protected onEnter(...params: any[]): void
     { }
     
+    // override
     protected onLeave(): void
     { }
 }

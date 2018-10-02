@@ -8,7 +8,7 @@ const app = new WebApp(ConfigurationManager.getConfig<number>("port"));
 app
     .enableWebPackDevMiddleware()
     .useViewResolutionRoot("test-app/client/dist")
-    .registerStaticFilePaths("test-app/client/dist")
+    .registerStaticFilePath("test-app/client/dist")
     .registerControllers(IndexController);
 
 app.bootstrap();

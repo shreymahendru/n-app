@@ -1,7 +1,7 @@
 const Vue = require("./../../vendor/vue.v2.5.16.js");
 
 // public
-export { Vue }
+export { Vue };
 
 const VueRouter = require("./../../vendor/vue-router.v3.0.1.js");
 Vue.use(VueRouter);
@@ -28,6 +28,7 @@ export class ClientApp
     private readonly _container: Container;
     private readonly _componentManager: ComponentManager;
     private readonly _pageManager: PageManager;
+    // @ts-ignore
     private _app: any;
     private _accentColor: string;
     private _isBootstrapped: boolean = false;

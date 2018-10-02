@@ -84,6 +84,7 @@ export class PageManager
         let vueRouter = this._vueRouter;
         const routerOptions: any = {
             routes: vueRouterRoutes,
+            // @ts-ignore
             scrollBehavior: function (to: any, from: any, savedPosition: any)
             {
                 return { x: 0, y: 0 };

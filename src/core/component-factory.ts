@@ -1,5 +1,5 @@
 import { given } from "@nivinjoseph/n-defensive";
-import { Container, Scope } from "@nivinjoseph/n-ject";
+import { Scope } from "@nivinjoseph/n-ject";
 import { Utilities } from "./utilities";
 import { ComponentRegistration } from "./component-registration";
 import "@nivinjoseph/n-ext";

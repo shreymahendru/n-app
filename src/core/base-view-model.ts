@@ -20,6 +20,7 @@ export class BaseViewModel
     }
 
     /** Override */
+    // @ts-ignore
     protected onMount(element: HTMLElement): void
     { }
 

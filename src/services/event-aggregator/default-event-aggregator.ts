@@ -45,6 +45,7 @@ export class DefaultEventAggregator implements EventAggregator
 
     
     // Called dynamically by EventSubscription class (internal)
+    // @ts-ignore
     private unsubscribe(event: string, subscription: any): void
     {
         given(event, "event").ensureHasValue().ensure(t => !t.isEmptyOrWhiteSpace());

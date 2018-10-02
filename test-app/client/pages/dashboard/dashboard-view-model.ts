@@ -13,9 +13,13 @@ import { ScopedService } from "../../services/scoped-service";
 export class DashboardViewModel extends BasePageViewModel
 {
     private readonly _dialogService: DialogService;
+    // @ts-ignore
     private readonly _eventAggregator: EventAggregator;
+    // @ts-ignore
     private readonly _navigationService: NavigationService;
+    // @ts-ignore
     private readonly _storageService: StorageService;
+    // @ts-ignore
     private readonly _scopedService: ScopedService;
     
     

@@ -13,6 +13,7 @@ import { given } from "@nivinjoseph/n-defensive";
 @inject("TodoRepository")    
 export class TestViewModel extends BasePageViewModel
 {
+    // @ts-ignore
     private readonly _todoRepository: TodoRepository;
     
     
