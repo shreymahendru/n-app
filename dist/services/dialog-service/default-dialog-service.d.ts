@@ -13,5 +13,5 @@ export declare class DefaultDialogService implements DialogService {
     showWarningMessage(message: string, title?: string): void;
     showErrorMessage(message: string, title?: string): void;
     clearMessages(): void;
-    private CreateLoadingScreen();
+    private CreateLoadingScreen;
 }

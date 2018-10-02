@@ -26,10 +26,10 @@ export declare class ClientApp {
     useHistoryModeRouting(): this;
     bootstrap(): void;
     retrieveRouterInstance(): object;
-    private configureGlobalConfig();
-    private configureComponents();
-    private configurePages();
-    private configureCoreServices();
-    private configureContainer();
-    private configureRoot();
+    private configureGlobalConfig;
+    private configureComponents;
+    private configurePages;
+    private configureCoreServices;
+    private configureContainer;
+    private configureRoot;
 }

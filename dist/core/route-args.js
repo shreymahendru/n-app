@@ -21,7 +21,6 @@ class RouteArgs {
         return current.equals(compare);
     }
     static create(route, ctx) {
-        // console.log("ctx", ctx);
         let queryArgs = Object.assign({}, ctx.query);
         let pathArgs = Object.assign({}, ctx.params);
         let model = {};
@@ -40,9 +39,6 @@ class RouteArgs {
         }
         for (let key in pathArgs) {
             let routeParam = route.findRouteParam(key);
-            // if (!routeParam)
-            //     throw new HttpException(404);
-            // instead we just skip it. This is because keys in pathParams will include parent page route pathParams
             if (!routeParam)
                 continue;
             let parsed = routeParam.parseParam(pathArgs[key]);

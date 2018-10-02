@@ -35,7 +35,6 @@ class Page {
             this._parent.addChild(this);
     }
     createVueRouterRoute(container) {
-        // let factory = new PageComponentFactory(container);
         let factory = new page_component_factory_1.PageComponentFactory();
         let vueRouterRoute = {
             path: this.createRoute(),

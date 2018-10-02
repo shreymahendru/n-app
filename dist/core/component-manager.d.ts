@@ -6,5 +6,5 @@ export declare class ComponentManager {
     constructor(vue: any, container: Container);
     registerComponents(...componentViewModelClasses: Function[]): void;
     bootstrap(): void;
-    private registerComponent(componentViewModelClass);
+    private registerComponent;
 }

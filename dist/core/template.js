@@ -4,7 +4,6 @@ require("reflect-metadata");
 const n_defensive_1 = require("@nivinjoseph/n-defensive");
 require("@nivinjoseph/n-ext");
 exports.templateSymbol = Symbol("template");
-// public
 function template(template) {
     n_defensive_1.given(template, "template")
         .ensureHasValue()

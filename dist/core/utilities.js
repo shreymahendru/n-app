@@ -7,7 +7,7 @@ class Utilities {
     static getPropertyInfos(val) {
         let propertyInfos = new Array();
         let prototype = Object.getPrototypeOf(val);
-        if (prototype === undefined || prototype === null) // we are dealing with Object
+        if (prototype === undefined || prototype === null)
             return propertyInfos;
         propertyInfos.push(...Utilities.getPropertyInfos(prototype));
         let propertyNames = Object.getOwnPropertyNames(val);

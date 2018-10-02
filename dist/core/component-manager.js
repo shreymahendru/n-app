@@ -17,7 +17,6 @@ class ComponentManager {
             this.registerComponent(item);
     }
     bootstrap() {
-        // let componentFactory = new ComponentFactory(this._container);
         let componentFactory = new component_factory_1.ComponentFactory();
         for (let registration of this._registrations)
             this._vue.component(registration.element, componentFactory.create(registration));

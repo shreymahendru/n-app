@@ -10,5 +10,5 @@ export declare class RouteArgs {
     constructor(pathArgs: object, queryArgs: object, routeArgs: Array<any>);
     equals(comparison: RouteArgs): boolean;
     static create(route: RouteInfo, ctx: any): RouteArgs;
-    private createParamsArray(routeArgs);
+    private createParamsArray;
 }

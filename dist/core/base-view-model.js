@@ -7,14 +7,11 @@ class BaseViewModel {
         this._watches = {};
     }
     get ctx() { return this["_ctx"]; }
-    /** Override */
     onCreate() {
         if (this._executeOnCreate)
             this._executeOnCreate();
     }
-    /** Override */
     onMount(element) { }
-    /** Override */
     onDestroy() {
         for (let key in this._watches) {
             if (this._watches[key]) {

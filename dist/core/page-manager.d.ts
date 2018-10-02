@@ -23,6 +23,6 @@ export declare class PageManager {
     }>): void;
     useHistoryModeRouting(): void;
     bootstrap(): void;
-    private registerPage(pageViewModelClass);
-    private createPageTree();
+    private registerPage;
+    private createPageTree;
 }

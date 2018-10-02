@@ -8,5 +8,5 @@ export declare class DefaultDisplayService implements DisplayService {
     readonly CurrentDisplayWidth: number;
     readonly CurrentDisplayHeight: number;
     constructor();
-    private CalculateCurrentDisplayType();
+    private CalculateCurrentDisplayType;
 }

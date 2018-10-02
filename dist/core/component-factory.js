@@ -39,40 +39,24 @@ class ComponentFactory {
             return data;
         };
         component.beforeCreate = function () {
-            // console.log("executing beforeCreate");
-            // console.log(this.vm);
         };
         component.created = function () {
-            // console.log("executing created");
-            // console.log(this.vm);
             if (this.vm.onCreate)
                 this.vm.onCreate();
         };
         component.beforeMount = function () {
-            // console.log("executing beforeMount");
-            // console.log(this.vm);
         };
         component.mounted = function () {
-            // console.log("executing mounted");
-            // console.log(this.vm);
             if (this.vm.onMount)
                 this.vm.onMount(this.$el);
         };
         component.beforeUpdate = function () {
-            // console.log("executing beforeUpdate");
-            // console.log(this.vm);
         };
         component.updated = function () {
-            // console.log("executing updated");
-            // console.log(this.vm);
         };
         component.beforeDestroy = function () {
-            // console.log("executing beforeDestroy");
-            // console.log(this.vm);
         };
         component.destroyed = function () {
-            // console.log("executing destroyed");
-            // console.log(this.vm);
             if (this.vm.onDestroy)
                 this.vm.onDestroy();
         };

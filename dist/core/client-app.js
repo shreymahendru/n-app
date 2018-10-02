@@ -16,7 +16,6 @@ const default_navigation_service_1 = require("./../services/navigation-service/d
 const default_storage_service_1 = require("./../services/storage-service/default-storage-service");
 const n_config_1 = require("@nivinjoseph/n-config");
 const default_display_service_1 = require("../services/display-service/default-display-service");
-// public
 class ClientApp {
     constructor(appElementId) {
         this._isBootstrapped = false;
@@ -89,18 +88,9 @@ class ClientApp {
     useHistoryModeRouting() {
         if (this._isBootstrapped)
             throw new n_exception_1.InvalidOperationException("useHistoryModeRouting");
-        // if (this._initialRoute)
-        //     throw new InvalidOperationException("Cannot use history mode with initial route.");
         this._pageManager.useHistoryModeRouting();
         return this;
     }
-    // public enableDevMode(): this
-    // {
-    //     if (this._isbootstrapped)
-    //         throw new InvalidOperationException("enableDevMode");
-    //     Config.enableDev(Vue);
-    //     return this;
-    // }
     bootstrap() {
         if (this._isBootstrapped)
             throw new n_exception_1.InvalidOperationException("bootstrap");
@@ -111,7 +101,6 @@ class ClientApp {
         this.configureContainer();
         this.configureRoot();
         this._isBootstrapped = true;
-        // this._pageManager.configureInitialRoute();
     }
     retrieveRouterInstance() {
         if (!this._isBootstrapped)

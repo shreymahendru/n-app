@@ -3,7 +3,6 @@ Object.defineProperty(exports, "__esModule", { value: true });
 const n_defensive_1 = require("@nivinjoseph/n-defensive");
 const n_exception_1 = require("@nivinjoseph/n-exception");
 const base_view_model_1 = require("./base-view-model");
-// public
 class ComponentViewModel extends base_view_model_1.BaseViewModel {
     get bindings() { return this["_bindings"]; }
     getBound(propertyName) {

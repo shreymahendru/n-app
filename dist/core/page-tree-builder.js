@@ -29,7 +29,6 @@ class PageTreeBuilder {
     }
     shakeTree() {
         let nodesToProcess = new Array();
-        // skip root
         nodesToProcess.push(...this._root.children);
         while (nodesToProcess.length > 0) {
             let currentNode = nodesToProcess.shift();

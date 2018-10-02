@@ -28,7 +28,6 @@ class DefaultEventAggregator {
             return;
         this._subscriptions[event].forEach(t => t.handler(...eventArgs));
     }
-    // Called dynamically by EventSubscription class (internal)
     unsubscribe(event, subscription) {
         n_defensive_1.given(event, "event").ensureHasValue().ensure(t => !t.isEmptyOrWhiteSpace());
         event = event.trim();

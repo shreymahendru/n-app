@@ -13,6 +13,6 @@ export declare class DefaultNavigationService implements NavigationService {
     navigateSitePostSameTab(url: string, value: Object): void;
     navigateSitePostNewTab(url: string, value: Object): void;
     getSiteQueryParam(key: string): string;
-    private createForm(url, value);
-    private getHash();
+    private createForm;
+    private getHash;
 }

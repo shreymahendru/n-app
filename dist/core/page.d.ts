@@ -15,5 +15,5 @@ export declare class Page {
     removeChild(childPage: Page): void;
     changeParent(parent: Page): void;
     createVueRouterRoute(container: Container): any;
-    private createRoute();
+    private createRoute;
 }

@@ -3,11 +3,8 @@ export declare class BaseViewModel {
     private _executeOnCreate;
     private _executeOnDestroy;
     protected readonly ctx: any;
-    /** Override */
     protected onCreate(): void;
-    /** Override */
     protected onMount(element: HTMLElement): void;
-    /** Override */
     protected onDestroy(): void;
     protected executeOnCreate(funcToExecute: () => void): void;
     protected executeOnDestroy(funcToExecute: () => void): void;

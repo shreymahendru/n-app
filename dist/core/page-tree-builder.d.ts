@@ -5,6 +5,6 @@ export declare class PageTreeBuilder {
     private readonly _registrations;
     constructor(root: Page, pageRegistrations: ReadonlyArray<PageRegistration>);
     build(): ReadonlyArray<Page>;
-    private buildTree();
-    private shakeTree();
+    private buildTree;
+    private shakeTree;
 }
