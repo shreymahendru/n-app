@@ -16,6 +16,7 @@ const default_navigation_service_1 = require("./../services/navigation-service/d
 const default_storage_service_1 = require("./../services/storage-service/default-storage-service");
 const n_config_1 = require("@nivinjoseph/n-config");
 const default_display_service_1 = require("../services/display-service/default-display-service");
+const default_component_service_1 = require("../services/component-service/default-component-service");
 class ClientApp {
     constructor(appElementId) {
         this._isBootstrapped = false;
@@ -136,7 +137,8 @@ class ClientApp {
             .registerInstance("EventAggregator", new default_event_aggregator_1.DefaultEventAggregator())
             .registerInstance("NavigationService", new default_navigation_service_1.DefaultNavigationService(this._pageManager.vueRouterInstance))
             .registerInstance("StorageService", new default_storage_service_1.DefaultStorageService())
-            .registerInstance("DisplayService", new default_display_service_1.DefaultDisplayService());
+            .registerInstance("DisplayService", new default_display_service_1.DefaultDisplayService())
+            .registerInstance("ComponentService", new default_component_service_1.DefaultComponentService());
     }
     configureContainer() {
         this._container.bootstrap();

@@ -24,9 +24,9 @@ class DefaultDisplayService {
             return;
         this._currentDisplayWidth = displayWidth;
         let displayType = display_type_1.DisplayType.Desktop;
-        if (displayWidth <= 992)
+        if (displayWidth < 1024)
             displayType = display_type_1.DisplayType.Tablet;
-        if (displayWidth <= 768)
+        if (displayWidth < 769)
             displayType = display_type_1.DisplayType.Phone;
         this._currentDisplayType = displayType;
     }

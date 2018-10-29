@@ -14,4 +14,6 @@ import { NavigationService } from "./services/navigation-service/navigation-serv
 import { DialogService } from "./services/dialog-service/dialog-service";
 import { DisplayService } from "./services/display-service/display-service";
 import { DisplayType } from "./services/display-service/display-type";
-export { Vue, ClientApp, element, route, template, title, meta, bind, ComponentViewModel, PageViewModel, Utils, StorageService, EventAggregator, EventSubscription, NavigationService, DialogService, DisplayService, DisplayType };
+import { ComponentService } from "./services/component-service/component-service";
+import { ComponentOptions } from "./services/component-service/component-options";
+export { Vue, ClientApp, element, route, template, title, meta, bind, ComponentViewModel, PageViewModel, Utils, StorageService, EventAggregator, EventSubscription, NavigationService, DialogService, DisplayService, DisplayType, ComponentService, ComponentOptions };
