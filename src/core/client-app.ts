@@ -1,4 +1,4 @@
-const Vue = require("./../../vendor/vue.v2.5.16.js");
+const Vue = require("./../../vendor/vue.v2.5.17.js");
 
 // public
 export { Vue };
