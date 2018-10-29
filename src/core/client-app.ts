@@ -19,6 +19,7 @@ import { DefaultNavigationService } from "./../services/navigation-service/defau
 import { DefaultStorageService } from "./../services/storage-service/default-storage-service";
 import { ConfigurationManager } from "@nivinjoseph/n-config";
 import { DefaultDisplayService } from "../services/display-service/default-display-service";
+import { DefaultComponentService } from "../services/component-service/default-component-service";
 
 
 // public
@@ -220,6 +221,7 @@ export class ClientApp
             .registerInstance("NavigationService", new DefaultNavigationService(this._pageManager.vueRouterInstance))
             .registerInstance("StorageService", new DefaultStorageService())
             .registerInstance("DisplayService", new DefaultDisplayService())
+            .registerInstance("ComponentService", new DefaultComponentService())
             ;
     }
 

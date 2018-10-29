@@ -37,8 +37,8 @@ export class DefaultDisplayService implements DisplayService
         this._currentDisplayWidth = displayWidth;
 
         let displayType = DisplayType.Desktop;
-        if (displayWidth <= 992) displayType = DisplayType.Tablet;
-        if (displayWidth <= 768) displayType = DisplayType.Phone;
+        if (displayWidth < 1024) displayType = DisplayType.Tablet;
+        if (displayWidth < 769) displayType = DisplayType.Phone;
         this._currentDisplayType = displayType;
     }
 }

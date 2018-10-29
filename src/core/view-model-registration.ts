@@ -4,7 +4,7 @@ import { templateSymbol } from "./template";
 import { ApplicationException } from "@nivinjoseph/n-exception";
 
 
-export abstract class ViewModelRegistration
+export class ViewModelRegistration
 {
     private readonly _name: string;
     private readonly _viewModel: Function;
@@ -16,7 +16,7 @@ export abstract class ViewModelRegistration
     public get template(): string { return this._template; }
     
     
-    protected constructor(viewModel: Function)
+    public constructor(viewModel: Function)
     {
         given(viewModel, "viewModel").ensureHasValue();
         

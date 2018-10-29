@@ -14,6 +14,8 @@ import { NavigationService } from "./services/navigation-service/navigation-serv
 import { DialogService } from "./services/dialog-service/dialog-service";
 import { DisplayService } from "./services/display-service/display-service";
 import { DisplayType } from "./services/display-service/display-type";
+import { ComponentService } from "./services/component-service/component-service";
+import { ComponentOptions } from "./services/component-service/component-options";
 
 
 export
@@ -32,5 +34,6 @@ export
     EventAggregator, EventSubscription,
     NavigationService,
     DialogService,
-    DisplayService, DisplayType
+    DisplayService, DisplayType,
+    ComponentService, ComponentOptions
 };
