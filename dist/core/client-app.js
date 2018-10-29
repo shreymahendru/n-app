@@ -1,6 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-const Vue = require("./../../vendor/vue.v2.5.16.js");
+const Vue = require("./../../vendor/vue.v2.5.17.js");
 exports.Vue = Vue;
 const VueRouter = require("./../../vendor/vue-router.v3.0.1.js");
 Vue.use(VueRouter);
