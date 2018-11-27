@@ -71,7 +71,7 @@ const moduleRules: Array<any> = [
             {
                 loader: "image-webpack-loader",
                 options: {
-                    bypassOnDebug: true,
+                    bypassOnDebug: true
                 }
             }
         ]
