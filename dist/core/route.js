@@ -14,8 +14,8 @@ function route(route, redirect) {
         .ensure(t => !t.isEmptyOrWhiteSpace(), "cannot be empty or whitespace")
         .ensure(t => t.trim().startsWith("/"), "has to begin with '/'")
         .ensure(t => t.trim().startsWith(route.trim()), "has to be a nested route");
-    route = route.trim();
-    redirect = redirect ? redirect.trim() : null;
+    route = route.trim().replaceAll(" ", "");
+    redirect = redirect ? redirect.trim().replaceAll(" ", "") : null;
     return (target) => Reflect.defineMetadata(exports.appRouteSymbol, { route, redirect }, target);
 }
 exports.route = route;

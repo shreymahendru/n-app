@@ -38,9 +38,13 @@ class Page {
         let factory = new page_component_factory_1.PageComponentFactory();
         let vueRouterRoute = {
             path: this.createRoute(),
-            component: factory.create(this._registration),
-            redirect: this._registration.redirect
+            component: factory.create(this._registration)
         };
+        if (this._registration.redirect) {
+            vueRouterRoute.redirect = (to) => {
+                return to.path + this._registration.redirect.replace(this._registration.route.route, "");
+            };
+        }
         if (this._children.length > 0)
             vueRouterRoute.children = this._children.map(t => t.createVueRouterRoute(container));
         return vueRouterRoute;
