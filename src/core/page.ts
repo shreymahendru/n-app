@@ -61,9 +61,17 @@ export class Page
         
         let vueRouterRoute: any = {
             path: this.createRoute(),
-            component: factory.create(this._registration),
-            redirect: this._registration.redirect
+            component: factory.create(this._registration)
         };
+        
+        if (this._registration.redirect)
+        {
+            vueRouterRoute.redirect = (to: any) =>
+            {
+                // we can do this because redirect has to be a nested route
+                return to.path + this._registration.redirect.replace(this._registration.route.route, "");
+            };
+        }
         
         if (this._children.length > 0)
             vueRouterRoute.children = this._children.map(t => t.createVueRouterRoute(container));
