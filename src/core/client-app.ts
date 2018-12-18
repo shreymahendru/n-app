@@ -1,9 +1,9 @@
-const Vue = require("./../../vendor/vue.v2.5.17.js");
+const Vue = require("./../../vendor/vue.v2.5.21.js");
 
 // public
 export { Vue };
 
-const VueRouter = require("./../../vendor/vue-router.v3.0.1.js");
+const VueRouter = require("./../../vendor/vue-router.v3.0.2.js");
 Vue.use(VueRouter);
 
 
