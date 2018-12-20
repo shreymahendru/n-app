@@ -225,8 +225,18 @@ export class PageComponentFactory
             }   
             
             let vm = this.vm;
-            if (vm.onLeave)
-                vm.onLeave();    
+            if (vm.onLeave)    
+            {
+                try 
+                {
+                    vm.onLeave();
+                }
+                catch (error)
+                {
+                    next(false);   
+                    return;
+                }
+            }
             
             vm.__routeArgs = routeArgs;
             if (vm.onEnter)
@@ -244,7 +254,17 @@ export class PageComponentFactory
 
             let vm = this.vm;
             if (vm.onLeave)
-                vm.onLeave();
+            {
+                try 
+                {
+                    vm.onLeave();
+                }
+                catch (error)
+                {
+                    next(false);
+                    return;
+                }
+            }
             
             next();
         };

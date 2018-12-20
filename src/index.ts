@@ -16,6 +16,8 @@ import { DisplayService } from "./services/display-service/display-service";
 import { DisplayType } from "./services/display-service/display-type";
 import { ComponentService } from "./services/component-service/component-service";
 import { ComponentOptions } from "./services/component-service/component-options";
+import { authorize } from "./core/authorize";
+import { Authorizer } from "./core/authorizer";
 
 
 export
@@ -35,5 +37,7 @@ export
     NavigationService,
     DialogService,
     DisplayService, DisplayType,
-    ComponentService, ComponentOptions
+    ComponentService, ComponentOptions,
+    authorize,
+    Authorizer
 };

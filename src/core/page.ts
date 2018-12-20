@@ -1,6 +1,5 @@
 import { given } from "@nivinjoseph/n-defensive";
 import { PageRegistration } from "./page-registration";
-import { Container } from "@nivinjoseph/n-ject";
 import { PageComponentFactory } from "./page-component-factory";
 
 
@@ -54,12 +53,13 @@ export class Page
         if (this._parent) this._parent.addChild(this);
     }
     
-    public createVueRouterRoute(container: Container): any
+    public createVueRouterRoute(): any
     {
         // let factory = new PageComponentFactory(container);
         let factory = new PageComponentFactory();
         
         let vueRouterRoute: any = {
+            name: this._registration.name.replace("ViewModel", ""),
             path: this.createRoute(),
             component: factory.create(this._registration)
         };
@@ -74,7 +74,7 @@ export class Page
         }
         
         if (this._children.length > 0)
-            vueRouterRoute.children = this._children.map(t => t.createVueRouterRoute(container));
+            vueRouterRoute.children = this._children.map(t => t.createVueRouterRoute());
         
         return vueRouterRoute;
     }

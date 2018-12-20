@@ -92,13 +92,43 @@ export class ClientApp
         this._pageManager.registerPages(...pageViewModelClasses);
         return this;
     }
+    
+    public registerAuthorizers(...authorizerClasses: Function[]): this
+    {
+        if (this._isBootstrapped)
+            throw new InvalidOperationException("registerAuthorizers");
+        
+        this._pageManager.registerAuthorizers(...authorizerClasses);
+        return this;
+    }
+    
+    public useAsDefaultAuthorizer(authorizerClass: Function): this
+    {
+        if (this._isBootstrapped)
+            throw new InvalidOperationException("useAsDefaultAuthorizer");
+        
+        given(authorizerClass, "authorizerClass").ensureHasValue().ensureIsFunction();
+        
+        this._pageManager.useAsDefaultAuthorizer(authorizerClass);
+        return this;
+    }
+    
+    public useAsAuthorizeFailRoute(route: string): this
+    {
+        if (this._isBootstrapped)
+            throw new InvalidOperationException("useAsAuthorizeFailRoute");
+
+        given(route, "route").ensureHasValue().ensureIsString();
+        this._pageManager.useAsAuthorizeFailRoute(route);
+        return this;
+    }
 
     public useAsInitialRoute(route: string): this
     {
         if (this._isBootstrapped)
             throw new InvalidOperationException("useAsInitialRoute");
         
-        given(route, "route").ensureHasValue().ensure(t => !t.isEmptyOrWhiteSpace());
+        given(route, "route").ensureHasValue().ensureIsString();
         this._pageManager.useAsInitialRoute(route);
         return this;
     }
@@ -108,7 +138,7 @@ export class ClientApp
         if (this._isBootstrapped)
             throw new InvalidOperationException("useAsUnknownRoute");
 
-        given(route, "route").ensureHasValue().ensure(t => !t.isEmptyOrWhiteSpace());
+        given(route, "route").ensureHasValue().ensureIsString();
         this._pageManager.useAsUnknownRoute(route);
         return this;
     }
@@ -118,7 +148,7 @@ export class ClientApp
         if (this._isBootstrapped)
             throw new InvalidOperationException("useAsDefaultPageTitle");
         
-        given(title, "title").ensureHasValue().ensure(t => !t.isEmptyOrWhiteSpace());
+        given(title, "title").ensureHasValue().ensureIsString();
         this._pageManager.useAsDefaultPageTitle(title);
         return this;
     }
