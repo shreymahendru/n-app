@@ -16,6 +16,9 @@ export declare class ClientApp {
     useAccentColor(color: string): this;
     registerComponents(...componentViewModelClasses: Function[]): this;
     registerPages(...pageViewModelClasses: Function[]): this;
+    registerAuthorizers(...authorizerClasses: Function[]): this;
+    useAsDefaultAuthorizer(authorizerClass: Function): this;
+    useAsAuthorizeFailRoute(route: string): this;
     useAsInitialRoute(route: string): this;
     useAsUnknownRoute(route: string): this;
     useAsDefaultPageTitle(title: string): this;

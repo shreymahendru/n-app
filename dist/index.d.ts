@@ -16,4 +16,6 @@ import { DisplayService } from "./services/display-service/display-service";
 import { DisplayType } from "./services/display-service/display-type";
 import { ComponentService } from "./services/component-service/component-service";
 import { ComponentOptions } from "./services/component-service/component-options";
-export { Vue, ClientApp, element, route, template, title, meta, bind, ComponentViewModel, PageViewModel, Utils, StorageService, EventAggregator, EventSubscription, NavigationService, DialogService, DisplayService, DisplayType, ComponentService, ComponentOptions };
+import { authorize } from "./core/authorize";
+import { Authorizer } from "./core/authorizer";
+export { Vue, ClientApp, element, route, template, title, meta, bind, ComponentViewModel, PageViewModel, Utils, StorageService, EventAggregator, EventSubscription, NavigationService, DialogService, DisplayService, DisplayType, ComponentService, ComponentOptions, authorize, Authorizer };

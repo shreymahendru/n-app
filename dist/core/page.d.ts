@@ -1,5 +1,4 @@
 import { PageRegistration } from "./page-registration";
-import { Container } from "@nivinjoseph/n-ject";
 export declare class Page {
     private readonly _segment;
     private _parent;
@@ -14,6 +13,6 @@ export declare class Page {
     addChild(childPage: Page): void;
     removeChild(childPage: Page): void;
     changeParent(parent: Page): void;
-    createVueRouterRoute(container: Container): any;
+    createVueRouterRoute(): any;
     private createRoute;
 }

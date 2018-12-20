@@ -23,4 +23,6 @@ const utils_1 = require("./core/utils");
 exports.Utils = utils_1.Utils;
 const display_type_1 = require("./services/display-service/display-type");
 exports.DisplayType = display_type_1.DisplayType;
+const authorize_1 = require("./core/authorize");
+exports.authorize = authorize_1.authorize;
 //# sourceMappingURL=index.js.map

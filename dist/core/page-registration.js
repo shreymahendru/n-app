@@ -7,11 +7,15 @@ const n_exception_1 = require("@nivinjoseph/n-exception");
 const route_info_1 = require("./route-info");
 const title_1 = require("./title");
 const meta_1 = require("./meta");
+const authorize_1 = require("./authorize");
 class PageRegistration extends view_model_registration_1.ViewModelRegistration {
     get route() { return this._route; }
     get redirect() { return this._redirect; }
     get title() { return this._title; }
     get metadata() { return this._metadata; }
+    get hasAuthorize() { return this._hasAuthorize; }
+    get useDefaultAuthorizer() { return this._useDefaultAuthorizer; }
+    get authorizers() { return this._authorizers; }
     constructor(page, defaultPageTitle, defaultPageMetas) {
         n_defensive_1.given(page, "page").ensureHasValue().ensureIsFunction();
         n_defensive_1.given(defaultPageTitle, "defaultPageTitle").ensureIsString();
@@ -34,6 +38,23 @@ class PageRegistration extends view_model_registration_1.ViewModelRegistration {
             acc[t.name] = t.content;
             return acc;
         }, {});
+        if (Reflect.hasOwnMetadata(authorize_1.authorizeSymbol, this.viewModel)) {
+            this._hasAuthorize = true;
+            const authorizers = Reflect.getOwnMetadata(authorize_1.authorizeSymbol, this.viewModel);
+            if (authorizers.length > 0) {
+                this._useDefaultAuthorizer = false;
+                this._authorizers = authorizers;
+            }
+            else {
+                this._useDefaultAuthorizer = true;
+                this._authorizers = null;
+            }
+        }
+        else {
+            this._hasAuthorize = false;
+            this._useDefaultAuthorizer = false;
+            this._authorizers = null;
+        }
     }
 }
 exports.PageRegistration = PageRegistration;

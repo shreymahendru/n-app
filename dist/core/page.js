@@ -34,9 +34,10 @@ class Page {
         if (this._parent)
             this._parent.addChild(this);
     }
-    createVueRouterRoute(container) {
+    createVueRouterRoute() {
         let factory = new page_component_factory_1.PageComponentFactory();
         let vueRouterRoute = {
+            name: this._registration.name.replace("ViewModel", ""),
             path: this.createRoute(),
             component: factory.create(this._registration)
         };
@@ -46,7 +47,7 @@ class Page {
             };
         }
         if (this._children.length > 0)
-            vueRouterRoute.children = this._children.map(t => t.createVueRouterRoute(container));
+            vueRouterRoute.children = this._children.map(t => t.createVueRouterRoute());
         return vueRouterRoute;
     }
     createRoute() {
