@@ -21,7 +21,7 @@ export class DefaultNavigationService implements NavigationService
     }
 
     
-    public navigate(route: string, params: Object, replaceHistory?: boolean): void
+    public navigate(route: string, params?: object | null, replaceHistory?: boolean): void
     {
         let url = Utils.generateUrl(route, params);
         replaceHistory ? this._vueRouter.replace(url) : this._vueRouter.push(url);
@@ -54,7 +54,7 @@ export class DefaultNavigationService implements NavigationService
         window.open(url);
     }
 
-    public navigateSitePostSameTab(url: string, value: Object): void
+    public navigateSitePostSameTab(url: string, value: object): void
     {
         given(url, "url").ensureHasValue().ensure(t => !t.isEmptyOrWhiteSpace());
         url = url.trim();
@@ -63,7 +63,7 @@ export class DefaultNavigationService implements NavigationService
         form.submit();
     }
 
-    public navigateSitePostNewTab(url: string, value: Object): void
+    public navigateSitePostNewTab(url: string, value: object): void
     {
         given(url, "url").ensureHasValue().ensure(t => !t.isEmptyOrWhiteSpace());
         url = url.trim();
