@@ -10,10 +10,10 @@ export class BasePageViewModel extends PageViewModel
         console.log("Instantiating {0}".format((<Object>this).getTypeName()));
     }
 
-    protected onEnter(arg: any): void
+    protected onEnter(...params: any[]): void
     {
         console.log("Entering {0}".format((<Object>this).getTypeName()));
-        console.log("arg", arg);
+        console.log("arg", params);
         console.log("pathArgs", this.pathArgs);
         console.log("queryArgs", this.queryArgs);
         console.log("something12");

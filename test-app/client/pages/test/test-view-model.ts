@@ -1,29 +1,57 @@
-import { route, template, meta } from "./../../../../src/index";
+import { route, template, meta, NavigationService, resolve } from "./../../../../src/index";
 import * as Routes from "./../routes";
 import { BasePageViewModel } from "./../base-page-view-model";
 import "./test-view.scss";
 import { inject } from "@nivinjoseph/n-ject";
 import { TodoRepository } from "../../services/todo-repository/todo-repository";
 import { given } from "@nivinjoseph/n-defensive";
+import { TestResolverFoo } from "../../resolvers/test-resolver-foo";
+import { TestResolverBar } from "../../resolvers/test-resolver-bar";
 
 
 @template(require("./test-view.html"))
 @route(Routes.test)
 @meta({name: "description", content: "This is test"})    
-@inject("TodoRepository")    
+@inject("TodoRepository", "NavigationService")    
+@resolve(TestResolverBar, TestResolverFoo) 
 export class TestViewModel extends BasePageViewModel
 {
     // @ts-ignore
     private readonly _todoRepository: TodoRepository;
+    private readonly _navigationService: NavigationService;
+    private _id: number = 0;
     
     
-    public constructor(todoRepository: TodoRepository)
+    public get id(): number { return this._id; }
+    
+    
+    public constructor(todoRepository: TodoRepository, navigationService: NavigationService)
     {
-        given(todoRepository, "todoRepository").ensureHasValue().ensureIsObject();
-        
         super();
         
+        given(todoRepository, "todoRepository").ensureHasValue().ensureIsObject();
         this._todoRepository = todoRepository;
+        
+        given(navigationService, "navigationService").ensureHasValue().ensureIsObject();
+        this._navigationService = navigationService;
+    }
+    
+    
+    public go(): void
+    {
+        this._navigationService.navigate(Routes.test, { id: this._id });
+    }
+    
+    
+    protected onEnter(arg: any, resolved1: string, resolved2: string): void
+    {
+        super.onEnter(arg, resolved1, resolved2);
+           
+        // console.log("resolved", resolved1);
+        
+        console.log("id is", arg);
+        
+        this._id = ++arg;
     }
 }
 

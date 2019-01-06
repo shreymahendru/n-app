@@ -1,5 +1,5 @@
 export const dashboard = "/dashboard";
-export const test = "/test";
+export const test = "/test/{id: number}";
 
 export const todo = "/todo";
 export const listTodos = "/todo/list";

@@ -5,7 +5,8 @@ import { ApplicationException } from "@nivinjoseph/n-exception";
 import { RouteInfo } from "./route-info";
 import { titleSymbol } from "./title";
 import { metaSymbol } from "./meta";
-import { authorizeSymbol } from "./authorize";
+// import { authorizeSymbol } from "./authorize";
+import { resolveSymbol } from "./resolve";
 
 
 export class PageRegistration extends ViewModelRegistration
@@ -14,18 +15,26 @@ export class PageRegistration extends ViewModelRegistration
     private readonly _redirect: string;
     private readonly _title: string;
     private readonly _metadata: object;
-    private readonly _hasAuthorize: boolean;
-    private readonly _useDefaultAuthorizer: boolean;
-    private readonly _authorizers: ReadonlyArray<string>;
+    private readonly _resolvers: ReadonlyArray<any>;
+    private _resolvedValues: ReadonlyArray<any>;
+    // private readonly _hasAuthorize: boolean;
+    // private readonly _useDefaultAuthorizer: boolean;
+    // private readonly _authorizers: ReadonlyArray<string>;
 
 
     public get route(): RouteInfo { return this._route; }
     public get redirect(): string { return this._redirect; }
     public get title(): string { return this._title; }
     public get metadata(): object { return this._metadata; }
-    public get hasAuthorize(): boolean { return this._hasAuthorize; }
-    public get useDefaultAuthorizer(): boolean { return this._useDefaultAuthorizer; }
-    public get authorizers(): ReadonlyArray<string> { return this._authorizers; }
+    public get resolvers(): ReadonlyArray<any> { return this._resolvers; }
+    
+    public get resolvedValues(): ReadonlyArray<any> { return this._resolvedValues; }
+    public set resolvedValues(value: ReadonlyArray<any>) { this._resolvedValues = value; }
+    
+    // public get hasAuthorize(): boolean { return this._hasAuthorize; }
+    
+    // public get useDefaultAuthorizer(): boolean { return this._useDefaultAuthorizer; }
+    // public get authorizers(): ReadonlyArray<string> { return this._authorizers; }
     
 
     public constructor(page: Function, defaultPageTitle: string, defaultPageMetas: Array<{ name: string; content: string; }>)
@@ -61,26 +70,30 @@ export class PageRegistration extends ViewModelRegistration
                 return acc;
             }, {});
         
-        if (Reflect.hasOwnMetadata(authorizeSymbol, this.viewModel))
-        {
-            this._hasAuthorize = true;
-            const authorizers: Array<string> = Reflect.getOwnMetadata(authorizeSymbol, this.viewModel);
-            if (authorizers.length > 0)
-            {
-                this._useDefaultAuthorizer = false;
-                this._authorizers = authorizers;
-            }
-            else
-            {
-                this._useDefaultAuthorizer = true;
-                this._authorizers = null;
-            }
-        }
-        else
-        {
-            this._hasAuthorize = false;
-            this._useDefaultAuthorizer = false;
-            this._authorizers = null;
-        }
+        // if (Reflect.hasOwnMetadata(authorizeSymbol, this.viewModel))
+        // {
+        //     this._hasAuthorize = true;
+        //     const authorizers: Array<string> = Reflect.getOwnMetadata(authorizeSymbol, this.viewModel);
+        //     if (authorizers.length > 0)
+        //     {
+        //         this._useDefaultAuthorizer = false;
+        //         this._authorizers = authorizers;
+        //     }
+        //     else
+        //     {
+        //         this._useDefaultAuthorizer = true;
+        //         this._authorizers = null;
+        //     }
+        // }
+        // else
+        // {
+        //     this._hasAuthorize = false;
+        //     this._useDefaultAuthorizer = false;
+        //     this._authorizers = null;
+        // }
+        
+        
+        if (Reflect.hasOwnMetadata(resolveSymbol, this.viewModel))
+            this._resolvers = Reflect.getOwnMetadata(resolveSymbol, this.viewModel);
     }
 }

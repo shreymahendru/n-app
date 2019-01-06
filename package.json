@@ -45,8 +45,8 @@
   },
   "homepage": "https://github.com/nivinjoseph/n-app#readme",
   "devDependencies": {
+    "@nivinjoseph/n-util": "^1.0.21",
     "@nivinjoseph/n-web": "^2.0.19",
-    "@types/jquery": "^3.3.10",
     "@types/mocha": "^5.2.5",
     "@types/node": "^8.9.5",
     "@types/toastr": "^2.1.35",
@@ -67,6 +67,7 @@
     "@nivinjoseph/n-exception": "^1.0.15",
     "@nivinjoseph/n-ext": "^1.0.28",
     "@nivinjoseph/n-ject": "^1.0.22",
+    "@types/jquery": "^3.3.10",
     "autoprefixer": "^9.1.5",
     "babel-loader": "^8.0.4",
     "clean-webpack-plugin": "^0.1.19",

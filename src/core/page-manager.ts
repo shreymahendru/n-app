@@ -4,7 +4,7 @@ import { PageRegistration } from "./page-registration";
 import { ApplicationException } from "@nivinjoseph/n-exception";
 import { Page } from "./page";
 import { PageTreeBuilder } from "./page-tree-builder";
-import { Authorizer } from "./authorizer";
+import { Resolver, Resolution } from "./resolve";
 
 
 export class PageManager
@@ -12,24 +12,20 @@ export class PageManager
     private readonly _vueRouter: any;
     private readonly _container: Container;
     private readonly _pageViewModelClasses = new Array<Function>();
-    private readonly _authorizerClasses = new Array<Function>();
-    private readonly _authorizers = new Array<string>();
     private readonly _registrations = new Array<PageRegistration>();
+    private readonly _resolvers = new Array<string>();
     private _vueRouterInstance: any = null;
     private _initialRoute: string = null;
     private _unknownRoute: string = null;
     private _defaultPageTitle: string = null;
     private _defaultPageMetas: Array<{ name: string; content: string; }> = null;
     private _useHistoryMode: boolean = false;
-    private _defaultAuthorizerClass: Function = null;
-    private _defaultAuthorizer: string = null;
-    private _authorizeFailRoute: string = null;
-    
-    
+
+
     public get useHistoryMode(): boolean { return this._useHistoryMode; }
     public get vueRouterInstance(): any { return this._vueRouterInstance; }
-    
-    
+
+
     public constructor(vueRouter: any, container: Container)
     {
         given(vueRouter, "vueRouter").ensureHasValue();
@@ -37,87 +33,53 @@ export class PageManager
         this._vueRouter = vueRouter;
         this._container = container;
     }
-    
-    
+
+
     public registerPages(...pageViewModelClasses: Function[]): void
     {
         this._pageViewModelClasses.push(...pageViewModelClasses);
     }
-    
-    public registerAuthorizers(...authorizerClasses: Function[]): void
-    {
-        this._authorizerClasses.push(...authorizerClasses);
-    }
-    
-    public useAsDefaultAuthorizer(authorizerClass: Function): void
-    {
-        given(authorizerClass, "authorizerClass").ensureHasValue().ensureIsFunction();
-        this._defaultAuthorizerClass = authorizerClass;
-    }
-    
-    public useAsAuthorizeFailRoute(route: string): void
-    {
-        given(route, "route").ensureHasValue().ensureIsString();
-        this._authorizeFailRoute = route.trim();
-    }
-    
+
     public useAsInitialRoute(route: string): void
     {
         given(route, "route").ensureHasValue().ensureIsString();
         this._initialRoute = route.trim();
     }
-    
+
     public useAsUnknownRoute(route: string): void
     {
         given(route, "route").ensureHasValue().ensureIsString();
         this._unknownRoute = route.trim();
     }
-    
+
     public useAsDefaultPageTitle(title: string): void
     {
         given(title, "title").ensureHasValue().ensureIsString();
         this._defaultPageTitle = title.trim();
     }
-    
+
     public useAsDefaultPageMetadata(metas: ReadonlyArray<{ name: string; content: string; }>): void
     {
         given(metas, "metas").ensureHasValue().ensureIsArray().ensure(t => t.length > 0);
         this._defaultPageMetas = [...metas];
     }
-    
+
     public useHistoryModeRouting(): void
     {
         this._useHistoryMode = true;
     }
-    
+
     public bootstrap(): void
     {
-        if (this._defaultAuthorizerClass)
-        {
-            this.registerAuthorizer(this._defaultAuthorizerClass);
-            this._defaultAuthorizer = (" " + (<Object>this._defaultAuthorizerClass).getTypeName().trim()).substr(1); // Shrey: Safari de-optimization
-        }
-        this._authorizerClasses.forEach(t => this.registerAuthorizer(t));
-        
-        this._pageViewModelClasses.forEach(t => this.registerPage(t));  
+        this._pageViewModelClasses.forEach(t => this.registerPage(t));
         if (this._registrations.length === 0)
             return;
-        
+
         this.createRouting();
-        this.configureAuthorization();
+        this.configureResolves();
     }
     
-    
-    private registerAuthorizer(authorizerClass: Function): void
-    {
-        const name = (" " + (<Object>authorizerClass).getTypeName().trim()).substr(1); // Shrey: Safari de-optimization
-        if (this._authorizers.some(t => t === name))
-            throw new ApplicationException(`Duplicate Authorizer registration with name '${name}'.`);
-        
-        this._container.registerTransient(name, authorizerClass);
-        this._authorizers.push(name);
-    }
-    
+
     private registerPage(pageViewModelClass: Function): void
     {
         let registration = new PageRegistration(pageViewModelClass, this._defaultPageTitle, this._defaultPageMetas);
@@ -128,29 +90,19 @@ export class PageManager
         if (this._registrations.some(t => t.route.routeKey === registration.route.routeKey))
             throw new ApplicationException(`Route conflict detected for Page registration with name '${registration.name}'`);
 
-        if (registration.hasAuthorize)
-        {
-            if (registration.useDefaultAuthorizer)
-            {
-                if (!this._defaultAuthorizerClass)
-                    throw new ApplicationException(`Page registration with name '${registration.name}' wants to use default Authorizer but no default Authorizer is configured for use.`);
-            }
-            else
-            {
-                registration.authorizers.forEach(t =>
-                {
-                    if (this._authorizers.some(u => u === t))
-                        return;
-                    
-                    throw new ApplicationException(`Page registration with name '${registration.name}' wants to use Authorizer with name '${t}' but no such Authorizer is registered.`);
-                });
-            }
-        }
-        
         this._registrations.push(registration);
         this._container.registerTransient(registration.name, registration.viewModel);
+        if (registration.resolvers && registration.resolvers.length > 0)
+            registration.resolvers.forEach(t =>
+            {
+                if (this._resolvers.contains(t.name))
+                    return;
+
+                this._container.registerTransient(t.name, t.value);
+                this._resolvers.push(t.name);
+            });
     }
-    
+
     private createRouting(): void
     {
         let pageTree = this.createPageTree();
@@ -172,54 +124,69 @@ export class PageManager
             routerOptions.mode = "history";
         this._vueRouterInstance = new vueRouter(routerOptions);
     }
-    
-    
+
+
     private createPageTree(): ReadonlyArray<Page>
     {
         let root = new Page("/", null);
         let treeBuilder = new PageTreeBuilder(root, this._registrations);
         return treeBuilder.build();
     }
-    
-    private configureAuthorization(): void
+
+    private configureResolves(): void
     {
         // @ts-ignore
         this._vueRouterInstance.beforeEach((to: any, from: any, next: any) =>
         {
             const registrationName = to.name + "ViewModel";
             const registration = this._registrations.find(t => t.name === registrationName);
-            if (registration.hasAuthorize)
+            registration.resolvedValues = null;
+            if (registration.resolvers && registration.resolvers.length > 0)
             {
-                const authorizers = registration.useDefaultAuthorizer
-                    ? [this._container.resolve<Authorizer>(this._defaultAuthorizer)]
-                    : registration.authorizers.map(t => this._container.resolve<Authorizer>(t));
-
-                authorizers.forEach(t =>
-                {
-                    let passed = true;
-
-                    try 
+                const resolvers = registration.resolvers.map(t => this._container.resolve<Resolver>(t.name));
+                resolvers
+                    .mapAsync(async t =>
                     {
-                        passed = t.authorize();
-                    }
-                    catch (error)
+                        try 
+                        {
+                            const resolution = await t.resolve(from, to);
+                            return resolution;
+                        }
+                        catch (error)
+                        {
+                            return false;
+                        }
+                    })
+                    .then(resolutions =>
                     {
-                        console.error(`${(<Object>t).getTypeName()} Error =>`, error);
-                        passed = false;
-                    }
-
-                    if (!passed)
+                        if (resolutions.some(t => t === false))
+                        {
+                            next(false);
+                            return;
+                        }
+                        
+                        const redirectRes = resolutions.find(t => !!(<Resolution>t).redirect) as Resolution;
+                        if (redirectRes && redirectRes.redirect)
+                        {
+                            next(redirectRes.redirect);
+                            return;
+                        }
+                        
+                        registration.resolvedValues = resolutions.filter(t => (<any>t).value != null).map(t => (<any>t).value);
+                        next();
+                    })
+                    .catch(() =>
                     {
-                        next(this._authorizeFailRoute || false);
-                        return;
-                    }
-                });
+                        next(false);
+                    });
             }
-
-            next();
+            else
+            {
+                next();
+            }
         });
     }
-    
+
     // private configureInitialRoute(): void
     // {
     //     if (!this._initialRoute || this._initialRoute.isEmptyOrWhiteSpace())
@@ -230,7 +197,7 @@ export class PageManager
     //         if (!window.location.pathname || window.location.pathname.toString().isEmptyOrWhiteSpace() ||
     //             window.location.pathname.toString().trim() === "/" || window.location.pathname.toString().trim() === "null")
     //             this._vueRouterInstance.replace(this._initialRoute);
-            
+
     //         return;
     //     }
 
