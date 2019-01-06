@@ -58,26 +58,6 @@ class ClientApp {
         this._pageManager.registerPages(...pageViewModelClasses);
         return this;
     }
-    registerAuthorizers(...authorizerClasses) {
-        if (this._isBootstrapped)
-            throw new n_exception_1.InvalidOperationException("registerAuthorizers");
-        this._pageManager.registerAuthorizers(...authorizerClasses);
-        return this;
-    }
-    useAsDefaultAuthorizer(authorizerClass) {
-        if (this._isBootstrapped)
-            throw new n_exception_1.InvalidOperationException("useAsDefaultAuthorizer");
-        n_defensive_1.given(authorizerClass, "authorizerClass").ensureHasValue().ensureIsFunction();
-        this._pageManager.useAsDefaultAuthorizer(authorizerClass);
-        return this;
-    }
-    useAsAuthorizeFailRoute(route) {
-        if (this._isBootstrapped)
-            throw new n_exception_1.InvalidOperationException("useAsAuthorizeFailRoute");
-        n_defensive_1.given(route, "route").ensureHasValue().ensureIsString();
-        this._pageManager.useAsAuthorizeFailRoute(route);
-        return this;
-    }
     useAsInitialRoute(route) {
         if (this._isBootstrapped)
             throw new n_exception_1.InvalidOperationException("useAsInitialRoute");

@@ -94,7 +94,7 @@ class PageComponentFactory {
                 let vm = vueModel.vm;
                 vm.__routeArgs = routeArgs;
                 if (vm.onEnter)
-                    routeArgs.routeArgs.length > 0 ? vm.onEnter(...routeArgs.routeArgs) : vm.onEnter();
+                    routeArgs.routeArgs.length > 0 ? vm.onEnter(...routeArgs.routeArgs, ...(registration.resolvedValues ? registration.resolvedValues : [])) : vm.onEnter();
             });
         };
         component.beforeRouteUpdate = function (to, from, next) {
@@ -132,7 +132,7 @@ class PageComponentFactory {
             }
             vm.__routeArgs = routeArgs;
             if (vm.onEnter)
-                routeArgs.routeArgs.length > 0 ? vm.onEnter(...routeArgs.routeArgs) : vm.onEnter();
+                routeArgs.routeArgs.length > 0 ? vm.onEnter(...routeArgs.routeArgs, ...(registration.resolvedValues ? registration.resolvedValues : [])) : vm.onEnter();
             setDocumentMetadata();
             next();
         };

@@ -1,4 +1,12 @@
 "use strict";
+var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
+    return new (P || (P = Promise))(function (resolve, reject) {
+        function fulfilled(value) { try { step(generator.next(value)); } catch (e) { reject(e); } }
+        function rejected(value) { try { step(generator["throw"](value)); } catch (e) { reject(e); } }
+        function step(result) { result.done ? resolve(result.value) : new P(function (resolve) { resolve(result.value); }).then(fulfilled, rejected); }
+        step((generator = generator.apply(thisArg, _arguments || [])).next());
+    });
+};
 Object.defineProperty(exports, "__esModule", { value: true });
 const n_defensive_1 = require("@nivinjoseph/n-defensive");
 const page_registration_1 = require("./page-registration");
@@ -8,18 +16,14 @@ const page_tree_builder_1 = require("./page-tree-builder");
 class PageManager {
     constructor(vueRouter, container) {
         this._pageViewModelClasses = new Array();
-        this._authorizerClasses = new Array();
-        this._authorizers = new Array();
         this._registrations = new Array();
+        this._resolvers = new Array();
         this._vueRouterInstance = null;
         this._initialRoute = null;
         this._unknownRoute = null;
         this._defaultPageTitle = null;
         this._defaultPageMetas = null;
         this._useHistoryMode = false;
-        this._defaultAuthorizerClass = null;
-        this._defaultAuthorizer = null;
-        this._authorizeFailRoute = null;
         n_defensive_1.given(vueRouter, "vueRouter").ensureHasValue();
         n_defensive_1.given(container, "container").ensureHasValue();
         this._vueRouter = vueRouter;
@@ -29,17 +33,6 @@ class PageManager {
     get vueRouterInstance() { return this._vueRouterInstance; }
     registerPages(...pageViewModelClasses) {
         this._pageViewModelClasses.push(...pageViewModelClasses);
-    }
-    registerAuthorizers(...authorizerClasses) {
-        this._authorizerClasses.push(...authorizerClasses);
-    }
-    useAsDefaultAuthorizer(authorizerClass) {
-        n_defensive_1.given(authorizerClass, "authorizerClass").ensureHasValue().ensureIsFunction();
-        this._defaultAuthorizerClass = authorizerClass;
-    }
-    useAsAuthorizeFailRoute(route) {
-        n_defensive_1.given(route, "route").ensureHasValue().ensureIsString();
-        this._authorizeFailRoute = route.trim();
     }
     useAsInitialRoute(route) {
         n_defensive_1.given(route, "route").ensureHasValue().ensureIsString();
@@ -61,23 +54,11 @@ class PageManager {
         this._useHistoryMode = true;
     }
     bootstrap() {
-        if (this._defaultAuthorizerClass) {
-            this.registerAuthorizer(this._defaultAuthorizerClass);
-            this._defaultAuthorizer = (" " + this._defaultAuthorizerClass.getTypeName().trim()).substr(1);
-        }
-        this._authorizerClasses.forEach(t => this.registerAuthorizer(t));
         this._pageViewModelClasses.forEach(t => this.registerPage(t));
         if (this._registrations.length === 0)
             return;
         this.createRouting();
-        this.configureAuthorization();
-    }
-    registerAuthorizer(authorizerClass) {
-        const name = (" " + authorizerClass.getTypeName().trim()).substr(1);
-        if (this._authorizers.some(t => t === name))
-            throw new n_exception_1.ApplicationException(`Duplicate Authorizer registration with name '${name}'.`);
-        this._container.registerTransient(name, authorizerClass);
-        this._authorizers.push(name);
+        this.configureResolves();
     }
     registerPage(pageViewModelClass) {
         let registration = new page_registration_1.PageRegistration(pageViewModelClass, this._defaultPageTitle, this._defaultPageMetas);
@@ -85,21 +66,15 @@ class PageManager {
             throw new n_exception_1.ApplicationException(`Duplicate Page registration with name '${registration.name}'.`);
         if (this._registrations.some(t => t.route.routeKey === registration.route.routeKey))
             throw new n_exception_1.ApplicationException(`Route conflict detected for Page registration with name '${registration.name}'`);
-        if (registration.hasAuthorize) {
-            if (registration.useDefaultAuthorizer) {
-                if (!this._defaultAuthorizerClass)
-                    throw new n_exception_1.ApplicationException(`Page registration with name '${registration.name}' wants to use default Authorizer but no default Authorizer is configured for use.`);
-            }
-            else {
-                registration.authorizers.forEach(t => {
-                    if (this._authorizers.some(u => u === t))
-                        return;
-                    throw new n_exception_1.ApplicationException(`Page registration with name '${registration.name}' wants to use Authorizer with name '${t}' but no such Authorizer is registered.`);
-                });
-            }
-        }
         this._registrations.push(registration);
         this._container.registerTransient(registration.name, registration.viewModel);
+        if (registration.resolvers && registration.resolvers.length > 0)
+            registration.resolvers.forEach(t => {
+                if (this._resolvers.contains(t.name))
+                    return;
+                this._container.registerTransient(t.name, t.value);
+                this._resolvers.push(t.name);
+            });
     }
     createRouting() {
         let pageTree = this.createPageTree();
@@ -124,30 +99,43 @@ class PageManager {
         let treeBuilder = new page_tree_builder_1.PageTreeBuilder(root, this._registrations);
         return treeBuilder.build();
     }
-    configureAuthorization() {
+    configureResolves() {
         this._vueRouterInstance.beforeEach((to, from, next) => {
             const registrationName = to.name + "ViewModel";
             const registration = this._registrations.find(t => t.name === registrationName);
-            if (registration.hasAuthorize) {
-                const authorizers = registration.useDefaultAuthorizer
-                    ? [this._container.resolve(this._defaultAuthorizer)]
-                    : registration.authorizers.map(t => this._container.resolve(t));
-                authorizers.forEach(t => {
-                    let passed = true;
+            registration.resolvedValues = null;
+            if (registration.resolvers && registration.resolvers.length > 0) {
+                const resolvers = registration.resolvers.map(t => this._container.resolve(t.name));
+                resolvers
+                    .mapAsync((t) => __awaiter(this, void 0, void 0, function* () {
                     try {
-                        passed = t.authorize();
+                        const resolution = yield t.resolve(from, to);
+                        return resolution;
                     }
                     catch (error) {
-                        console.error(`${t.getTypeName()} Error =>`, error);
-                        passed = false;
+                        return false;
                     }
-                    if (!passed) {
-                        next(this._authorizeFailRoute || false);
+                }))
+                    .then(resolutions => {
+                    if (resolutions.some(t => t === false)) {
+                        next(false);
                         return;
                     }
+                    const redirectRes = resolutions.find(t => !!t.redirect);
+                    if (redirectRes && redirectRes.redirect) {
+                        next(redirectRes.redirect);
+                        return;
+                    }
+                    registration.resolvedValues = resolutions.filter(t => t.value != null).map(t => t.value);
+                    next();
+                })
+                    .catch(() => {
+                    next(false);
                 });
             }
-            next();
+            else {
+                next();
+            }
         });
     }
 }
