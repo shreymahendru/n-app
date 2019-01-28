@@ -64,15 +64,17 @@ let FileSelectViewModel = class FileSelectViewModel extends component_view_model
         for (let i = 0; i < files.length; i++) {
             const file = files[i];
             const fileInfo = {};
+            fileInfo.nativeFile = file;
             fileInfo.fileName = file.name;
             fileInfo.fileType = file.type;
             fileInfo.fileSize = file.size;
-            fileInfo.nativeFile = file;
             const reader = new FileReader();
             const promise = new Promise((resolve, reject) => {
                 reader.onload = function (fi, res) {
                     return function (e) {
-                        fi.fileData = e.target.result.split(",")[1];
+                        const splitted = e.target.result.split(",");
+                        fi.fileMime = splitted[0].trim().split(";")[0].substr(5);
+                        fi.fileData = splitted[1];
                         res(fi);
                     };
                 }(fileInfo, resolve);
@@ -97,8 +99,7 @@ let FileSelectViewModel = class FileSelectViewModel extends component_view_model
             });
             failedFiles.forEach(t => this._dialogService.showWarningMessage("File {0} exceeded the file size limit of {1} MB.".format(t.fileName, this.maxFileSizeValue)));
             if (processedFiles.length > 0) {
-                this.getBound("onSelection")(this.isMultiple
-                    ? { files: processedFiles } : { file: processedFiles[0] });
+                this.getBound("onSelection")(this.isMultiple ? processedFiles : processedFiles[0]);
             }
             this._dialogService.hideLoadingScreen();
         })
