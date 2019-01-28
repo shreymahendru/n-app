@@ -16,6 +16,7 @@ export interface FileInfo
     fileType: string;
     fileSize: number;
     fileData: string;
+    fileMime: string;
     nativeFile: File;
 }
 
@@ -102,10 +103,19 @@ export class FileSelectViewModel extends ComponentViewModel
         {
             const file = files[i];
             const fileInfo = {} as FileInfo;
+            fileInfo.nativeFile = file;
             fileInfo.fileName = file.name;
             fileInfo.fileType = file.type;
             fileInfo.fileSize = file.size;
-            fileInfo.nativeFile = file;
+            
+            // if (fileInfo.fileType == null || fileInfo.fileType.isEmptyOrWhiteSpace())
+            // {
+            //     if (fileInfo.fileName.contains("."))
+            //     {
+            //         const splitted = fileInfo.fileName.trim().split(".");
+            //         fileInfo.fileType = "." + splitted[splitted.length - 1].trim();
+            //     }
+            // }
 
             const reader = new FileReader();
             const promise = new Promise<FileInfo>((resolve, reject) =>
@@ -114,7 +124,9 @@ export class FileSelectViewModel extends ComponentViewModel
                 {
                     return function (e: any)
                     {
-                        fi.fileData = (<any>e).target.result.split(",")[1];
+                        const splitted: string[] = (<any>e).target.result.split(",");
+                        fi.fileMime = splitted[0].trim().split(";")[0].substr(5);
+                        fi.fileData = splitted[1];
                         res(fi);
                     };
                 }(fileInfo, resolve);
@@ -152,8 +164,7 @@ export class FileSelectViewModel extends ComponentViewModel
 
                 if (processedFiles.length > 0)
                 {
-                    this.getBound<Function>("onSelection")(this.isMultiple
-                        ? { files: processedFiles } : { file: processedFiles[0] });
+                    this.getBound<Function>("onSelection")(this.isMultiple ? processedFiles : processedFiles[0]);
                 }
                 
                 this._dialogService.hideLoadingScreen();
