@@ -7,25 +7,28 @@ import { TodoRepository } from "../../services/todo-repository/todo-repository";
 import { given } from "@nivinjoseph/n-defensive";
 import { TestResolverFoo } from "../../resolvers/test-resolver-foo";
 import { TestResolverBar } from "../../resolvers/test-resolver-bar";
+import { EventAggregator } from "../../../../dist";
 
 
 @template(require("./test-view.html"))
 @route(Routes.test)
 @meta({name: "description", content: "This is test"})    
-@inject("TodoRepository", "NavigationService")    
+@inject("TodoRepository", "NavigationService", "EventAggregator")    
 @resolve(TestResolverBar, TestResolverFoo) 
 export class TestViewModel extends BasePageViewModel
 {
     // @ts-ignore
     private readonly _todoRepository: TodoRepository;
+    // @ts-ignore
     private readonly _navigationService: NavigationService;
+    private readonly _eventAggregator: EventAggregator;
     private _id: number = 0;
     
     
     public get id(): number { return this._id; }
     
     
-    public constructor(todoRepository: TodoRepository, navigationService: NavigationService)
+    public constructor(todoRepository: TodoRepository, navigationService: NavigationService, eventAggregator: EventAggregator)
     {
         super();
         
@@ -34,12 +37,22 @@ export class TestViewModel extends BasePageViewModel
         
         given(navigationService, "navigationService").ensureHasValue().ensureIsObject();
         this._navigationService = navigationService;
+        
+        given(eventAggregator, "eventAggregator").ensureHasValue().ensureIsObject();
+        this._eventAggregator = eventAggregator;
     }
     
     
     public go(): void
     {
-        this._navigationService.navigate(Routes.test, { id: this._id });
+        // this._navigationService.navigate(Routes.test, { id: this._id });
+        
+        this._eventAggregator.publish("openFileSelect", "foo");
+    }
+    
+    public onFileSelected(val: any): void
+    {
+        console.log("File data", val);
     }
     
     

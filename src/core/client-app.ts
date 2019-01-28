@@ -20,6 +20,7 @@ import { DefaultStorageService } from "./../services/storage-service/default-sto
 import { ConfigurationManager } from "@nivinjoseph/n-config";
 import { DefaultDisplayService } from "../services/display-service/default-display-service";
 import { DefaultComponentService } from "../services/component-service/default-component-service";
+import { FileSelectViewModel } from "../components/file-select-view-model";
 
 
 // public
@@ -44,6 +45,7 @@ export class ClientApp
         this._appElementId = appElementId;
         this._container = new Container();
         this._componentManager = new ComponentManager(Vue, this._container);
+        this._componentManager.registerComponents(FileSelectViewModel);
         this._pageManager = new PageManager(VueRouter, this._container);
 
         Vue.config.silent = false;

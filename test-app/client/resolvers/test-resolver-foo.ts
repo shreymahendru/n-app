@@ -26,7 +26,7 @@ export class TestResolverFoo implements Resolver
         
         this._dialogService.showWarningMessage("In test resolver foo");
         
-        await Delay.seconds(5);
+        await Delay.seconds(1);
 
         // throw new Error("blah");
         

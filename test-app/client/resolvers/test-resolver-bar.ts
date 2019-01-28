@@ -21,7 +21,7 @@ export class TestResolverBar implements Resolver
     {
         this._dialogService.showWarningMessage("In test resolver bar");
 
-        await Delay.seconds(10);
+        await Delay.seconds(2);
 
         return {
             value: "bar",
