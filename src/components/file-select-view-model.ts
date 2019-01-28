@@ -33,14 +33,10 @@ export class FileSelectViewModel extends ComponentViewModel
     private _inputElement: any;
     private _maxFileSizeBytes: number;
 
+    
     private get mimeTypesList(): string { return this.getBound("mimeTypes"); }
-
     private get maxFileSizeValue(): number { return parseInt(this.getBound("maxFileSize")); }
-
     private get isMultiple(): boolean { return this.getBound("multiple") != null && this.getBound("multiple") === "true"; }
-
-
-    // private get IsFileDialogOpen(): boolean { return this.getBound("isFileDialogOpen"); }
 
     
     public constructor(dialogService: DialogService, eventAggregator: EventAggregator)
@@ -52,9 +48,6 @@ export class FileSelectViewModel extends ComponentViewModel
         
         given(eventAggregator, "eventAggregator").ensureHasValue().ensureIsObject();
         this._eventAggregator = eventAggregator;
-        
-        // const sub = this._eventAggregator.subscribe("openFileSelect", () => this._inputElement.click());
-        // this.executeOnDestroy(() => sub.unsubscribe());
         
         this.executeOnCreate(() =>
         {
