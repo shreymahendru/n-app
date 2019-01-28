@@ -17,6 +17,7 @@ const default_storage_service_1 = require("./../services/storage-service/default
 const n_config_1 = require("@nivinjoseph/n-config");
 const default_display_service_1 = require("../services/display-service/default-display-service");
 const default_component_service_1 = require("../services/component-service/default-component-service");
+const file_select_view_model_1 = require("../components/file-select-view-model");
 class ClientApp {
     constructor(appElementId) {
         this._isBootstrapped = false;
@@ -24,6 +25,7 @@ class ClientApp {
         this._appElementId = appElementId;
         this._container = new n_ject_1.Container();
         this._componentManager = new component_manager_1.ComponentManager(Vue, this._container);
+        this._componentManager.registerComponents(file_select_view_model_1.FileSelectViewModel);
         this._pageManager = new page_manager_1.PageManager(VueRouter, this._container);
         Vue.config.silent = false;
         Vue.config.devtools = false;
