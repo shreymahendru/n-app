@@ -109,7 +109,11 @@ const plugins = [
     })
 ];
 
-if (!isDev)
+if (isDev)
+{
+    moduleRules.push({ test: /\.js$/, loader: "source-map-loader", enforce: "pre" });
+}
+else
 {
     moduleRules.push({
         test: /\.js$/,
@@ -146,7 +150,7 @@ module.exports = {
         path: path.resolve(__dirname, "test-app/client/dist"),
         publicPath: "/"
     },
-    devtool: isDev ? "inline-source-map" : "source-map",
+    devtool: isDev ? "source-map" : false,
     optimization: {
         minimizer: [
             new UglifyJsPlugin({

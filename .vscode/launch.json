@@ -1,5 +1,5 @@
 {
-    // Use IntelliSense to learn about possible Node.js debug attributes.
+    // Use IntelliSense to learn about possible attributes.
     // Hover to view descriptions of existing attributes.
     // For more information, visit: https://go.microsoft.com/fwlink/?linkid=830387
     "version": "0.2.0",
@@ -11,8 +11,8 @@
             "program": "${workspaceRoot}/node_modules/mocha/bin/_mocha",
             "stopOnEntry": false,
             "args": [
-                "-t",
-                "10000",
+                "--timeout",
+                "0",
                 "--reporter",
                 "spec",
                 "--ui",
@@ -26,31 +26,27 @@
             "runtimeArgs": [
                 "--nolazy"
             ],
-            "console": "internalConsole",
+            "console": "integratedTerminal",
+            "internalConsoleOptions": "neverOpen",
             "sourceMaps": true
         },
         {
             "type": "node",
             "request": "attach",
-            "name": "Debug running App",
+            "name": "Debug running server",
             "address": "localhost",
-            "port": 5858,
+            "port": 4001,
             "sourceMaps": true,
             "restart": true
         },
         {
-            "type": "node",
+            "name": "Debug running client",
+            "type": "chrome",
             "request": "launch",
-            "name": "Debug launch app",
-            "program": "${workspaceRoot}/test-app/main.js",
-            "stopOnEntry": false,
-            "cwd": "${workspaceRoot}",
-            "preLaunchTask": "ts-build",
-            "runtimeArgs": [
-                "--nolazy"
-            ],
-            "console": "internalConsole",
-            "sourceMaps": true
-        }
+            "url": "http://localhost:3001",
+            "webRoot": "${workspaceFolder}",
+            "sourceMaps": true,
+            "breakOnLoad": true
+        },
     ]
 }
