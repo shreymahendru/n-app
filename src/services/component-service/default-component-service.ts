@@ -9,19 +9,21 @@ import { ComponentOptions } from "./component-options";
 
 export class DefaultComponentService implements ComponentService
 {
-    public compile(componentViewModelClass: Function): ComponentOptions
+    public compile(componentViewModelClass: Function, cache?: boolean): ComponentOptions
     {
         given(componentViewModelClass, "componentViewModelClass").ensureHasValue().ensureIsFunction();
+        given(cache, "cache").ensureIsBoolean();
 
         const registration = new ViewModelRegistration(componentViewModelClass);
 
-        return this.create(registration);
+        return this.create(registration, !!cache);
     }
 
 
-    public create(registration: ViewModelRegistration): ComponentOptions
+    public create(registration: ViewModelRegistration, cache: boolean): ComponentOptions
     {
-        given(registration, "registration").ensureHasValue();
+        given(registration, "registration").ensureHasValue().ensureIsType(ViewModelRegistration);
+        given(cache, "cache").ensureHasValue().ensureIsBoolean();
 
         const component: any = {};
 
@@ -36,7 +38,19 @@ export class DefaultComponentService implements ComponentService
             const container: Scope = vueVm.pageScopeContainer || vueVm.rootScopeContainer;
             if (!container)
                 throw new ApplicationException("Could not get pageScopeContainer or rootScopeContainer.");
-            let vm = container.resolve<any>(registration.name);
+            
+            let vm: any = null;
+            if (cache)
+            {
+                if (component._cachedVm)
+                    vm = component._cachedVm;
+                else
+                    vm = component._cachedVm = container.resolve<any>(registration.name);
+            }
+            else
+            {
+                vm = container.resolve<any>(registration.name);
+            }
 
             let data = { vm: vm };
             let methods: { [index: string]: any } = {};
