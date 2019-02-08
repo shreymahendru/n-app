@@ -5,13 +5,15 @@ const view_model_registration_1 = require("../../core/view-model-registration");
 const n_exception_1 = require("@nivinjoseph/n-exception");
 const utilities_1 = require("../../core/utilities");
 class DefaultComponentService {
-    compile(componentViewModelClass) {
+    compile(componentViewModelClass, cache) {
         n_defensive_1.given(componentViewModelClass, "componentViewModelClass").ensureHasValue().ensureIsFunction();
+        n_defensive_1.given(cache, "cache").ensureIsBoolean();
         const registration = new view_model_registration_1.ViewModelRegistration(componentViewModelClass);
-        return this.create(registration);
+        return this.create(registration, !!cache);
     }
-    create(registration) {
-        n_defensive_1.given(registration, "registration").ensureHasValue();
+    create(registration, cache) {
+        n_defensive_1.given(registration, "registration").ensureHasValue().ensureIsType(view_model_registration_1.ViewModelRegistration);
+        n_defensive_1.given(cache, "cache").ensureHasValue().ensureIsBoolean();
         const component = {};
         component.template = registration.template;
         component.inject = ["pageScopeContainer", "rootScopeContainer"];
@@ -20,7 +22,16 @@ class DefaultComponentService {
             const container = vueVm.pageScopeContainer || vueVm.rootScopeContainer;
             if (!container)
                 throw new n_exception_1.ApplicationException("Could not get pageScopeContainer or rootScopeContainer.");
-            let vm = container.resolve(registration.name);
+            let vm = null;
+            if (cache) {
+                if (component._cachedVm)
+                    vm = component._cachedVm;
+                else
+                    vm = component._cachedVm = container.resolve(registration.name);
+            }
+            else {
+                vm = container.resolve(registration.name);
+            }
             let data = { vm: vm };
             let methods = {};
             let computed = {};
