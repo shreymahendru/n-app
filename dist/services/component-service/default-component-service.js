@@ -15,6 +15,7 @@ class DefaultComponentService {
         n_defensive_1.given(registration, "registration").ensureHasValue().ensureIsType(view_model_registration_1.ViewModelRegistration);
         n_defensive_1.given(cache, "cache").ensureHasValue().ensureIsBoolean();
         const component = {};
+        component._cache = cache;
         component.template = registration.template;
         component.inject = ["pageScopeContainer", "rootScopeContainer"];
         component.data = function () {
@@ -23,7 +24,7 @@ class DefaultComponentService {
             if (!container)
                 throw new n_exception_1.ApplicationException("Could not get pageScopeContainer or rootScopeContainer.");
             let vm = null;
-            if (cache) {
+            if (component._cache) {
                 if (component._cachedVm)
                     vm = component._cachedVm;
                 else
