@@ -26,6 +26,7 @@ export class DefaultComponentService implements ComponentService
         given(cache, "cache").ensureHasValue().ensureIsBoolean();
 
         const component: any = {};
+        component._cache = cache;
 
         component.template = registration.template;
 
@@ -40,7 +41,7 @@ export class DefaultComponentService implements ComponentService
                 throw new ApplicationException("Could not get pageScopeContainer or rootScopeContainer.");
             
             let vm: any = null;
-            if (cache)
+            if (component._cache)
             {
                 if (component._cachedVm)
                     vm = component._cachedVm;
