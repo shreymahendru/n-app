@@ -7,6 +7,7 @@ export interface FileInfo {
     fileSize: number;
     fileData: string;
     fileMime: string;
+    fileDataUrl: string;
     nativeFile: File;
 }
 export declare class FileSelectViewModel extends ComponentViewModel {

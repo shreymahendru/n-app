@@ -72,6 +72,7 @@ let FileSelectViewModel = class FileSelectViewModel extends component_view_model
             const promise = new Promise((resolve, reject) => {
                 reader.onload = function (fi, res) {
                     return function (e) {
+                        fi.fileDataUrl = e.target.result;
                         const splitted = e.target.result.split(",");
                         fi.fileMime = splitted[0].trim().split(";")[0].substr(5);
                         fi.fileData = splitted[1];
