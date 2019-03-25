@@ -17,6 +17,7 @@ export interface FileInfo
     fileSize: number;
     fileData: string;
     fileMime: string;
+    fileDataUrl: string;
     nativeFile: File;
 }
 
@@ -124,6 +125,7 @@ export class FileSelectViewModel extends ComponentViewModel
                 {
                     return function (e: any)
                     {
+                        fi.fileDataUrl = (<any>e).target.result;
                         const splitted: string[] = (<any>e).target.result.split(",");
                         fi.fileMime = splitted[0].trim().split(";")[0].substr(5);
                         fi.fileData = splitted[1];
