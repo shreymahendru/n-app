@@ -28,4 +28,5 @@ export declare class PageManager {
     private createRouting;
     private createPageTree;
     private configureResolves;
+    private configureInitialRoute;
 }
