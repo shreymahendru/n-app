@@ -77,6 +77,7 @@ export class PageManager
 
         this.createRouting();
         this.configureResolves();
+        this.configureInitialRoute();
     }
     
 
@@ -107,8 +108,8 @@ export class PageManager
     {
         let pageTree = this.createPageTree();
         let vueRouterRoutes = pageTree.map(t => t.createVueRouterRoute());
-        if (this._initialRoute)
-            vueRouterRoutes.push({ path: "/", redirect: this._initialRoute });
+        // if (this._initialRoute)
+        //     vueRouterRoutes.push({ path: "/", redirect: this._initialRoute });
         if (this._unknownRoute)
             vueRouterRoutes.push({ path: "*", redirect: this._unknownRoute });
         let vueRouter = this._vueRouter;
@@ -124,7 +125,6 @@ export class PageManager
             routerOptions.mode = "history";
         this._vueRouterInstance = new vueRouter(routerOptions);
     }
-
 
     private createPageTree(): ReadonlyArray<Page>
     {
@@ -187,43 +187,43 @@ export class PageManager
         });
     }
 
-    // private configureInitialRoute(): void
-    // {
-    //     if (!this._initialRoute || this._initialRoute.isEmptyOrWhiteSpace())
-    //         return;
+    private configureInitialRoute(): void
+    {
+        if (!this._initialRoute || this._initialRoute.isEmptyOrWhiteSpace())
+            return;
 
-    //     if (this._useHistoryMode)
-    //     {
-    //         if (!window.location.pathname || window.location.pathname.toString().isEmptyOrWhiteSpace() ||
-    //             window.location.pathname.toString().trim() === "/" || window.location.pathname.toString().trim() === "null")
-    //             this._vueRouterInstance.replace(this._initialRoute);
+        if (this._useHistoryMode)
+        {
+            if (!window.location.pathname || window.location.pathname.toString().isEmptyOrWhiteSpace() ||
+                window.location.pathname.toString().trim() === "/" || window.location.pathname.toString().trim() === "null")
+                this._vueRouterInstance.replace(this._initialRoute);
 
-    //         return;
-    //     }
+            return;
+        }
 
-    //     if (!window.location.hash)
-    //     {
-    //         if (this._initialRoute)
-    //             window.location.hash = "#" + this._initialRoute;
-    //     }
-    //     else
-    //     {
-    //         let hashVal = window.location.hash.trim();
-    //         if (hashVal.length === 1)
-    //         {
-    //             if (this._initialRoute)
-    //                 window.location.hash = "#" + this._initialRoute;
-    //         }
-    //         else
-    //         {
-    //             hashVal = hashVal.substr(1);
-    //             if (hashVal === "/")
-    //             {
-    //                 if (this._initialRoute)
-    //                     window.location.hash = "#" + this._initialRoute;
-    //             }
-    //         }
-    //     }
-    // }
+        if (!window.location.hash)
+        {
+            if (this._initialRoute)
+                window.location.hash = "#" + this._initialRoute;
+        }
+        else
+        {
+            let hashVal = window.location.hash.trim();
+            if (hashVal.length === 1)
+            {
+                if (this._initialRoute)
+                    window.location.hash = "#" + this._initialRoute;
+            }
+            else
+            {
+                hashVal = hashVal.substr(1);
+                if (hashVal === "/")
+                {
+                    if (this._initialRoute)
+                        window.location.hash = "#" + this._initialRoute;
+                }
+            }
+        }
+    }
 }
 
