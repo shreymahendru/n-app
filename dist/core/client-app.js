@@ -104,7 +104,6 @@ class ClientApp {
         this.configureContainer();
         this.configureRoot();
         this._isBootstrapped = true;
-        this._pageManager.handleInitialRoute();
     }
     retrieveRouterInstance() {
         if (!this._isBootstrapped)
