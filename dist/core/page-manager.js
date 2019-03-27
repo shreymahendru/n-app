@@ -59,7 +59,6 @@ class PageManager {
             return;
         this.createRouting();
         this.configureResolves();
-        this.configureInitialRoute();
     }
     registerPage(pageViewModelClass) {
         let registration = new page_registration_1.PageRegistration(pageViewModelClass, this._defaultPageTitle, this._defaultPageMetas);
@@ -137,7 +136,7 @@ class PageManager {
             }
         });
     }
-    configureInitialRoute() {
+    handleInitialRoute() {
         if (!this._initialRoute || this._initialRoute.isEmptyOrWhiteSpace())
             return;
         if (this._useHistoryMode) {
