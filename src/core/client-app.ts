@@ -169,7 +169,7 @@ export class ClientApp
         this.configureRoot();
 
         this._isBootstrapped = true;
-        // this._pageManager.configureInitialRoute();
+        this._pageManager.handleInitialRoute();
     }
     
     public retrieveRouterInstance(): object

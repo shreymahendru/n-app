@@ -77,7 +77,7 @@ export class PageManager
 
         this.createRouting();
         this.configureResolves();
-        this.configureInitialRoute();
+        // this.configureInitialRoute();
     }
     
 
@@ -187,7 +187,7 @@ export class PageManager
         });
     }
 
-    private configureInitialRoute(): void
+    public handleInitialRoute(): void
     {
         if (!this._initialRoute || this._initialRoute.isEmptyOrWhiteSpace())
             return;
