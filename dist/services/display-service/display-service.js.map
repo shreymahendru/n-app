@@ -1,1 +1,1 @@
-{"version":3,"file":"display-service.js","sourceRoot":"","sources":["../../../src/services/display-service/display-service.ts"],"names":[],"mappings":"","sourcesContent":["import { DisplayType } from \"./display-type\";\n\n\nexport interface DisplayService\n{\n    CurrentDisplayType: DisplayType;\n    CurrentDisplayWidth: number;\n    CurrentDisplayHeight: number;\n}"]}
+{"version":3,"file":"display-service.js","sourceRoot":"","sources":["../../../src/services/display-service/display-service.ts"],"names":[],"mappings":""}

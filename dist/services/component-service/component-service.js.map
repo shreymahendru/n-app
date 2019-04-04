@@ -1,1 +1,1 @@
-{"version":3,"file":"component-service.js","sourceRoot":"","sources":["../../../src/services/component-service/component-service.ts"],"names":[],"mappings":"","sourcesContent":["import { ComponentOptions } from \"./component-options\";\n\n// public\nexport interface ComponentService\n{\n    compile(componentViewModelClass: Function, cache?: boolean): ComponentOptions;\n}"]}
+{"version":3,"file":"component-service.js","sourceRoot":"","sources":["../../../src/services/component-service/component-service.ts"],"names":[],"mappings":""}
