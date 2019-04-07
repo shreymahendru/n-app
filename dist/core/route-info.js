@@ -43,8 +43,6 @@ class RouteInfo {
         for (let key in values) {
             let routeParam = this.findRouteParam(key);
             const val = values.getValue(key);
-            if (val == null && routeParam.isQuery && routeParam.isOptional)
-                continue;
             if (routeParam) {
                 let param = "{" + routeParam.param + "}";
                 let replacement = routeParam.isQuery
