@@ -135,7 +135,6 @@ export class PageManager
 
     private configureResolves(): void
     {
-        // @ts-ignore
         this._vueRouterInstance.beforeEach((to: any, from: any, next: any) =>
         {
             const registrationName = to.name + "ViewModel";
