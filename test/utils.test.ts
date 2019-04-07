@@ -2,7 +2,7 @@ import * as Assert from "assert";
 import { Utils } from "./../src/core/utils";
 
 
-suite.only("Utils - generateUrl", () =>
+suite.skip("Utils - generateUrl", () =>
 {
     test("should return a url with given route", () =>
     {
@@ -40,11 +40,10 @@ suite.only("Utils - generateUrl", () =>
         Assert.strictEqual(url, "http://example.com/api/test");
     });
     
-    test("bug", () =>
+    test("optional query params that are null should not be rendered", () =>
     {
         const url = "/manageJet/basic?{id?: string}";
         const generatedUrl = Utils.generateUrl(url, { id: null });
-        console.log(generatedUrl);
         Assert.strictEqual(generatedUrl, "/manageJet/basic");
     });
 });
