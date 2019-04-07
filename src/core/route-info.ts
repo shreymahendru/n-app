@@ -68,8 +68,8 @@ export class RouteInfo
         {
             let routeParam = this.findRouteParam(key);
             const val = values.getValue(key);
-            if (val == null && routeParam.isQuery && routeParam.isOptional) // only query params can be optional anyway
-                continue;
+            // if (val == null && routeParam.isQuery && routeParam.isOptional) // only query params can be optional anyway
+            //     continue;
             
             if (routeParam)
             {

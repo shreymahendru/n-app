@@ -2,7 +2,7 @@ import * as Assert from "assert";
 import { Utils } from "./../src/core/utils";
 
 
-suite.skip("Utils - generateUrl", () =>
+suite.only("Utils - generateUrl", () =>
 {
     test("should return a url with given route", () =>
     {
@@ -38,5 +38,13 @@ suite.skip("Utils - generateUrl", () =>
     {
         let url = Utils.generateUrl("/api/test", {}, "http://example.com/");
         Assert.strictEqual(url, "http://example.com/api/test");
+    });
+    
+    test("bug", () =>
+    {
+        const url = "/manageJet/basic?{id?: string}";
+        const generatedUrl = Utils.generateUrl(url, { id: null });
+        console.log(generatedUrl);
+        Assert.strictEqual(generatedUrl, "/manageJet/basic");
     });
 });
