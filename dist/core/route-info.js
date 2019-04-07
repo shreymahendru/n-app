@@ -48,13 +48,20 @@ class RouteInfo {
                 let replacement = routeParam.isQuery
                     ? "{0}={1}".format(key, encodeURIComponent(val))
                     : encodeURIComponent(val);
+                if (val == null && routeParam.isQuery && routeParam.isOptional)
+                    replacement = "";
                 url = url.replace(param, replacement);
             }
             else {
+                if (val == null)
+                    continue;
                 url = `${url}${hasQuery ? "&" : "?"}${"{0}={1}".format(key, encodeURIComponent(val))}`;
                 hasQuery = true;
             }
         }
+        url = url.trim();
+        while (url.endsWith("?") || url.endsWith("&"))
+            url = url.substr(0, url.length - 1).trim();
         return url;
     }
     populateRouteParams() {
