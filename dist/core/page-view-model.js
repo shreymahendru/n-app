@@ -2,6 +2,7 @@
 Object.defineProperty(exports, "__esModule", { value: true });
 const base_view_model_1 = require("./base-view-model");
 require("@nivinjoseph/n-ext");
+const n_defensive_1 = require("@nivinjoseph/n-defensive");
 class PageViewModel extends base_view_model_1.BaseViewModel {
     get currentRoute() {
         let route = this.ctx.$route ? this.ctx.$route.fullPath : null;
@@ -20,7 +21,9 @@ class PageViewModel extends base_view_model_1.BaseViewModel {
         let routeArgs = this.__routeArgs;
         return routeArgs ? routeArgs.queryArgs : null;
     }
-    onEnter(...params) { }
+    onEnter(...params) {
+        n_defensive_1.given(params, "params").ensureHasValue().ensureIsArray();
+    }
     onLeave() { }
 }
 exports.PageViewModel = PageViewModel;

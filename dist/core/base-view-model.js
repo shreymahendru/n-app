@@ -11,7 +11,9 @@ class BaseViewModel {
         if (this._executeOnCreate)
             this._executeOnCreate();
     }
-    onMount(element) { }
+    onMount(element) {
+        n_defensive_1.given(element, "element").ensureHasValue().ensureIsObject();
+    }
     onDestroy() {
         for (let key in this._watches) {
             if (this._watches[key]) {
