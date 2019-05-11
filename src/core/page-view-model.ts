@@ -1,6 +1,7 @@
 import { RouteArgs } from "./route-args";
 import { BaseViewModel } from "./base-view-model";
 import "@nivinjoseph/n-ext";
+import { given } from "@nivinjoseph/n-defensive";
 
 
 // public
@@ -31,9 +32,10 @@ export class PageViewModel extends BaseViewModel
     }
     
     // override
-    // @ts-ignore
     protected onEnter(...params: any[]): void
-    { }
+    { 
+        given(params, "params").ensureHasValue().ensureIsArray();
+    }
     
     // override
     protected onLeave(): void

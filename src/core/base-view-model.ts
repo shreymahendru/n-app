@@ -20,9 +20,10 @@ export class BaseViewModel
     }
 
     /** Override */
-    // @ts-ignore
     protected onMount(element: HTMLElement): void
-    { }
+    { 
+        given(element, "element").ensureHasValue().ensureIsObject();
+    }
 
     /** Override */
     protected onDestroy(): void

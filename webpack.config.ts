@@ -100,7 +100,7 @@ const moduleRules: Array<any> = [
 ];
 
 const plugins = [
-    new cleanWebpackPlugin(["test-app/client/dist"]),
+    new cleanWebpackPlugin(),
     new htmlWebpackPlugin({
         template: "test-app/controllers/index-view.html",
         filename: "index-view.html",
