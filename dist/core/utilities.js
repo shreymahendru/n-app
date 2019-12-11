@@ -23,10 +23,10 @@ class Utilities {
         return propertyInfos;
     }
 }
+exports.Utilities = Utilities;
 Utilities.internal = ["ctx", "onCreate", "onMount", "onDestroy", "executeOnCreate", "executeOnDestroy",
     "watch", "unWatch", "bindings", "getBound", "getBoundModel", "setBoundModel", "pathArgs", "queryArgs", "onEnter", "onLeave"];
 Utilities.forbidden = ["do", "if", "for", "let", "new", "try", "var", "case", "else", "with", "await", "break",
     "catch", "class", "const", "super", "throw", "while", "yield", "delete", "export", "import", "return",
     "switch", "default", "extends", "finally", "continue", "debugger", "function", "arguments", "typeof", "void"];
-exports.Utilities = Utilities;
 //# sourceMappingURL=utilities.js.map

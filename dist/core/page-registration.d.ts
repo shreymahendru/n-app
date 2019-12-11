@@ -7,12 +7,13 @@ export declare class PageRegistration extends ViewModelRegistration {
     private readonly _metadata;
     private readonly _resolvers;
     private _resolvedValues;
-    readonly route: RouteInfo;
-    readonly redirect: string;
-    readonly title: string;
-    readonly metadata: object;
-    readonly resolvers: ReadonlyArray<any>;
-    resolvedValues: ReadonlyArray<any>;
+    get route(): RouteInfo;
+    get redirect(): string;
+    get title(): string;
+    get metadata(): object;
+    get resolvers(): ReadonlyArray<any>;
+    get resolvedValues(): ReadonlyArray<any>;
+    set resolvedValues(value: ReadonlyArray<any>);
     constructor(page: Function, defaultPageTitle: string, defaultPageMetas: Array<{
         name: string;
         content: string;

@@ -4,12 +4,12 @@ const n_defensive_1 = require("@nivinjoseph/n-defensive");
 require("@nivinjoseph/n-ext");
 const utils_1 = require("../../core/utils");
 class DefaultNavigationService {
-    get currentRoutePath() { return this._vueRouter.currentRoute.path; }
-    get currentRouteHash() { return this.getHash(); }
     constructor(vueRouter) {
         n_defensive_1.given(vueRouter, "vueRouter").ensureHasValue();
         this._vueRouter = vueRouter;
     }
+    get currentRoutePath() { return this._vueRouter.currentRoute.path; }
+    get currentRouteHash() { return this.getHash(); }
     navigate(route, params, replaceHistory) {
         let url = utils_1.Utils.generateUrl(route, params);
         replaceHistory ? this._vueRouter.replace(url) : this._vueRouter.push(url);

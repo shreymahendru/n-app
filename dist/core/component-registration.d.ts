@@ -3,8 +3,8 @@ export declare class ComponentRegistration extends ViewModelRegistration {
     private readonly _element;
     private readonly _bindings;
     private readonly _hasModel;
-    readonly element: string;
-    readonly bindings: Array<string>;
-    readonly hasModel: boolean;
+    get element(): string;
+    get bindings(): Array<string>;
+    get hasModel(): boolean;
     constructor(component: Function);
 }

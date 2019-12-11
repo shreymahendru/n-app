@@ -4,9 +4,6 @@ const http_exception_1 = require("./http-exception");
 const n_defensive_1 = require("@nivinjoseph/n-defensive");
 require("@nivinjoseph/n-ext");
 class RouteArgs {
-    get pathArgs() { return this._pathArgs; }
-    get queryArgs() { return this._queryArgs; }
-    get routeArgs() { return this._routeArgs; }
     constructor(pathArgs, queryArgs, routeArgs) {
         n_defensive_1.given(pathArgs, "pathArgs").ensureHasValue().ensureIsObject();
         n_defensive_1.given(queryArgs, "queryArgs").ensureHasValue().ensureIsObject();
@@ -15,6 +12,9 @@ class RouteArgs {
         this._queryArgs = queryArgs;
         this._routeArgs = routeArgs;
     }
+    get pathArgs() { return this._pathArgs; }
+    get queryArgs() { return this._queryArgs; }
+    get routeArgs() { return this._routeArgs; }
     equals(comparison) {
         let current = this.createParamsArray(this);
         let compare = this.createParamsArray(comparison);

@@ -5,9 +5,6 @@ require("@nivinjoseph/n-ext");
 const template_1 = require("./template");
 const n_exception_1 = require("@nivinjoseph/n-exception");
 class ViewModelRegistration {
-    get name() { return this._name; }
-    get viewModel() { return this._viewModel; }
-    get template() { return this._template; }
     constructor(viewModel) {
         n_defensive_1.given(viewModel, "viewModel").ensureHasValue();
         this._name = (" " + viewModel.getTypeName().trim()).substr(1);
@@ -18,6 +15,9 @@ class ViewModelRegistration {
             throw new n_exception_1.ApplicationException(`ViewModel'${this.name}' does not have @template applied.`);
         this._template = Reflect.getOwnMetadata(template_1.templateSymbol, this._viewModel);
     }
+    get name() { return this._name; }
+    get viewModel() { return this._viewModel; }
+    get template() { return this._template; }
 }
 exports.ViewModelRegistration = ViewModelRegistration;
 //# sourceMappingURL=view-model-registration.js.map

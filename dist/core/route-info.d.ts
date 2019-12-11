@@ -8,11 +8,11 @@ export declare class RouteInfo {
     private readonly _pathSegments;
     private readonly _routeKey;
     private _hasQuery;
-    readonly route: string;
-    readonly vueRoute: string;
-    readonly params: ReadonlyArray<RouteParam>;
-    readonly pathSegments: ReadonlyArray<string>;
-    readonly routeKey: string;
+    get route(): string;
+    get vueRoute(): string;
+    get params(): ReadonlyArray<RouteParam>;
+    get pathSegments(): ReadonlyArray<string>;
+    get routeKey(): string;
     constructor(routeTemplate: string, isUrlGenerator?: boolean);
     findRouteParam(key: string): RouteParam;
     generateUrl(values: any): string;

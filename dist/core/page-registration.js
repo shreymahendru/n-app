@@ -9,13 +9,6 @@ const title_1 = require("./title");
 const meta_1 = require("./meta");
 const resolve_1 = require("./resolve");
 class PageRegistration extends view_model_registration_1.ViewModelRegistration {
-    get route() { return this._route; }
-    get redirect() { return this._redirect; }
-    get title() { return this._title; }
-    get metadata() { return this._metadata; }
-    get resolvers() { return this._resolvers; }
-    get resolvedValues() { return this._resolvedValues; }
-    set resolvedValues(value) { this._resolvedValues = value; }
     constructor(page, defaultPageTitle, defaultPageMetas) {
         n_defensive_1.given(page, "page").ensureHasValue().ensureIsFunction();
         n_defensive_1.given(defaultPageTitle, "defaultPageTitle").ensureIsString();
@@ -41,6 +34,13 @@ class PageRegistration extends view_model_registration_1.ViewModelRegistration {
         if (Reflect.hasOwnMetadata(resolve_1.resolveSymbol, this.viewModel))
             this._resolvers = Reflect.getOwnMetadata(resolve_1.resolveSymbol, this.viewModel);
     }
+    get route() { return this._route; }
+    get redirect() { return this._redirect; }
+    get title() { return this._title; }
+    get metadata() { return this._metadata; }
+    get resolvers() { return this._resolvers; }
+    get resolvedValues() { return this._resolvedValues; }
+    set resolvedValues(value) { this._resolvedValues = value; }
 }
 exports.PageRegistration = PageRegistration;
 //# sourceMappingURL=page-registration.js.map

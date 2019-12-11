@@ -10,7 +10,7 @@ export declare class ClientApp {
     private _app;
     private _accentColor;
     private _isBootstrapped;
-    readonly container: Container;
+    get container(): Container;
     constructor(appElementId: string);
     useInstaller(installer: ComponentInstaller): this;
     useAccentColor(color: string): this;

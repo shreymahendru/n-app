@@ -6,9 +6,6 @@ const element_1 = require("./element");
 const n_exception_1 = require("@nivinjoseph/n-exception");
 const bind_1 = require("./bind");
 class ComponentRegistration extends view_model_registration_1.ViewModelRegistration {
-    get element() { return this._element; }
-    get bindings() { return this._bindings; }
-    get hasModel() { return this._hasModel; }
     constructor(component) {
         n_defensive_1.given(component, "component").ensureHasValue();
         super(component);
@@ -20,6 +17,9 @@ class ComponentRegistration extends view_model_registration_1.ViewModelRegistrat
             this._bindings.push(...Reflect.getOwnMetadata(bind_1.bindSymbol, this.viewModel));
         this._hasModel = this._bindings.some(t => t === "value");
     }
+    get element() { return this._element; }
+    get bindings() { return this._bindings; }
+    get hasModel() { return this._hasModel; }
 }
 exports.ComponentRegistration = ComponentRegistration;
 //# sourceMappingURL=component-registration.js.map

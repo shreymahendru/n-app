@@ -2,7 +2,7 @@ export declare class BaseViewModel {
     private readonly _watches;
     private _executeOnCreate;
     private _executeOnDestroy;
-    protected readonly ctx: any;
+    protected get ctx(): any;
     protected onCreate(): void;
     protected onMount(element: HTMLElement): void;
     protected onDestroy(): void;

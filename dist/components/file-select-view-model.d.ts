@@ -17,9 +17,9 @@ export declare class FileSelectViewModel extends ComponentViewModel {
     private readonly _inputTemplateMultiple;
     private _inputElement;
     private _maxFileSizeBytes;
-    private readonly mimeTypesList;
-    private readonly maxFileSizeValue;
-    private readonly isMultiple;
+    private get mimeTypesList();
+    private get maxFileSizeValue();
+    private get isMultiple();
     constructor(dialogService: DialogService, eventAggregator: EventAggregator);
     protected onMount(element: HTMLElement): void;
     private processFiles;

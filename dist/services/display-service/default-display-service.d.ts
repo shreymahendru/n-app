@@ -4,9 +4,9 @@ export declare class DefaultDisplayService implements DisplayService {
     private _currentDisplayType;
     private _currentDisplayWidth;
     private _currentDisplayHeight;
-    readonly CurrentDisplayType: DisplayType;
-    readonly CurrentDisplayWidth: number;
-    readonly CurrentDisplayHeight: number;
+    get CurrentDisplayType(): DisplayType;
+    get CurrentDisplayWidth(): number;
+    get CurrentDisplayHeight(): number;
     constructor();
     private CalculateCurrentDisplayType;
 }

@@ -4,10 +4,10 @@ export declare class Page {
     private _parent;
     private readonly _children;
     private _registration;
-    readonly segment: string;
-    readonly parent: Page;
-    readonly children: ReadonlyArray<Page>;
-    readonly registration: PageRegistration;
+    get segment(): string;
+    get parent(): Page;
+    get children(): ReadonlyArray<Page>;
+    get registration(): PageRegistration;
     constructor(segment: string, parent: Page);
     attachRegistration(registration: PageRegistration): void;
     addChild(childPage: Page): void;

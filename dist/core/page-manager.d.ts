@@ -11,8 +11,8 @@ export declare class PageManager {
     private _defaultPageTitle;
     private _defaultPageMetas;
     private _useHistoryMode;
-    readonly useHistoryMode: boolean;
-    readonly vueRouterInstance: any;
+    get useHistoryMode(): boolean;
+    get vueRouterInstance(): any;
     constructor(vueRouter: any, container: Container);
     registerPages(...pageViewModelClasses: Function[]): void;
     useAsInitialRoute(route: string): void;

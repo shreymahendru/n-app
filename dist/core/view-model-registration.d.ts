@@ -3,8 +3,8 @@ export declare class ViewModelRegistration {
     private readonly _name;
     private readonly _viewModel;
     private readonly _template;
-    readonly name: string;
-    readonly viewModel: Function;
-    readonly template: string;
+    get name(): string;
+    get viewModel(): Function;
+    get template(): string;
     constructor(viewModel: Function);
 }
