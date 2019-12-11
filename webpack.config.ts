@@ -1,7 +1,7 @@
 const path = require("path");
 const autoprefixer = require("autoprefixer");
 const htmlWebpackPlugin = require("html-webpack-plugin");
-const cleanWebpackPlugin = require("clean-webpack-plugin");
+const { CleanWebpackPlugin } = require("clean-webpack-plugin");
 const UglifyJsPlugin = require("uglifyjs-webpack-plugin");
 const MiniCssExtractPlugin = require("mini-css-extract-plugin");
 const OptimizeCSSAssetsPlugin = require("optimize-css-assets-webpack-plugin");
@@ -100,7 +100,7 @@ const moduleRules: Array<any> = [
 ];
 
 const plugins = [
-    new cleanWebpackPlugin(),
+    new CleanWebpackPlugin(),
     new htmlWebpackPlugin({
         template: "test-app/controllers/index-view.html",
         filename: "index-view.html",
