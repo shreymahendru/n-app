@@ -26,10 +26,10 @@ const moduleRules: Array<any> = [
                 plugins: () => [
                     require("postcss-flexbugs-fixes"),
                     autoprefixer({
-                        browsers: [
-                            ">1%",
-                            "not ie < 9"
-                        ],
+                        // browsers: [
+                        //     ">1%",
+                        //     "not ie < 9"
+                        // ],
                         flexbox: "no-2009"
                     })
                 ]
@@ -129,7 +129,8 @@ else
                 presets: [["@babel/preset-env", {
                     debug: true,
                     targets: {
-                        browsers: ["> 1%", "Chrome >= 41"]
+                        // browsers: ["> 1%", "Chrome >= 41"],
+                        chrome: "41" // this is what googles web crawler uses
                     },
                     useBuiltIns: "entry"
                 }]]
