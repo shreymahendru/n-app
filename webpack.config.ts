@@ -49,13 +49,19 @@ const moduleRules: Array<any> = [
     {
         test: /\.svg$/,
         use: [
-            isDev ? "file-loader" : {
-                loader: "url-loader",
+            isDev ? {
+                loader: "file-loader",
                 options: {
-                    limit: 9000,
-                    fallback: "file-loader"
+                    esModule: false
                 }
-            }
+            } : {
+                    loader: "url-loader",
+                    options: {
+                        limit: 9000,
+                        fallback: "file-loader",
+                        esModule: false
+                    }
+                }
         ]
     },
     {
