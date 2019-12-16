@@ -1,8 +1,8 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-const Vue = require("./../../vendor/vue.v2.5.21.js");
+const Vue = require("./../../vendor/vue.v2.6.11.js");
 exports.Vue = Vue;
-const VueRouter = require("./../../vendor/vue-router.v3.0.2.js");
+const VueRouter = require("./../../vendor/vue-router.v3.1.3.js");
 Vue.use(VueRouter);
 const n_defensive_1 = require("@nivinjoseph/n-defensive");
 require("@nivinjoseph/n-ext");
