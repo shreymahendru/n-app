@@ -99,9 +99,13 @@ const moduleRules: Array<any> = [
         use: {
             loader: "html-loader",
             options: {
-                attrs: ["img:src"]
+                attrs: ["img:src", "use:xlink:href"]
             }
         }
+    },
+    {
+        test: /\.taskworker\.js$/,
+        loader: "worker-loader"
     }
 ];
 
@@ -117,7 +121,11 @@ const plugins = [
 
 if (isDev)
 {
-    moduleRules.push({ test: /\.js$/, loader: "source-map-loader", enforce: "pre" });
+    moduleRules.push({
+        test: /\.js$/,
+        loader: "source-map-loader",
+        enforce: "pre"
+    });
 }
 else
 {
@@ -132,7 +140,9 @@ else
                         // browsers: ["> 1%", "Chrome >= 41"],
                         chrome: "41" // this is what googles web crawler uses
                     },
-                    useBuiltIns: "entry"
+                    useBuiltIns: "entry",
+                    forceAllTransforms: true,
+                    modules: "commonjs"
                 }]]
             }
         }
@@ -161,11 +171,14 @@ module.exports = {
     optimization: {
         minimizer: [
             new UglifyJsPlugin({
-                sourceMap: true,
+                sourceMap: false,
                 uglifyOptions: {
                     keep_classnames: true,
                     keep_fnames: true,
-                    safari10: true
+                    safari10: true,
+                    output: {
+                        comments: false
+                    }
                 }
             }),
             new OptimizeCSSAssetsPlugin({})
@@ -174,5 +187,11 @@ module.exports = {
     module: {
         rules: moduleRules
     },
-    plugins: plugins
+    plugins: plugins,
+    // resolve: {
+    //     alias: {
+    //         // https://feathericons.com/
+    //         feather: path.resolve(__dirname, "node_modules/feather-icons/dist/feather-sprite.svg")
+    //     }
+    // }
 };
