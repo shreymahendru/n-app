@@ -79,6 +79,7 @@ class TaskPool {
                     else
                         this._callbacks[id].resolve(result);
                     tpTaskWorker.isBusy = false;
+                    delete this._callbacks[id];
                 }
             };
             this._taskWorkers.push(tpTaskWorker);
