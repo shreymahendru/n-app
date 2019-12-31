@@ -65,8 +65,6 @@ export class TaskPool implements Disposable
                     params
                 });
             });
-
-
         });
     }
 
@@ -105,8 +103,9 @@ export class TaskPool implements Disposable
                         this._callbacks[id].reject(error);
                     else
                         this._callbacks[id].resolve(result);
-
+                    
                     tpTaskWorker.isBusy = false;
+                    delete this._callbacks[id];
                 }
             };
 
