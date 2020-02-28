@@ -1,9 +1,9 @@
-const Vue = require("./../../vendor/vue.v2.6.11.js");
+const Vue = require("@nivinjoseph/vue/dist/vue.js");
 
 // public
 export { Vue };
 
-const VueRouter = require("./../../vendor/vue-router.v3.1.3.js");
+import VueRouter from "vue-router";
 Vue.use(VueRouter);
 
 
@@ -27,6 +27,7 @@ import { FileSelectViewModel } from "../components/file-select-view-model";
 export class ClientApp
 {
     private readonly _appElementId: string;
+    private readonly _rootComponentElement: string;
     private readonly _container: Container;
     private readonly _componentManager: ComponentManager;
     private readonly _pageManager: PageManager;
@@ -39,10 +40,14 @@ export class ClientApp
     public get container(): Container { return this._container; }
 
 
-    public constructor(appElementId: string)
+    public constructor(appElementId: string, rootComponentElement: string)
     {
-        given(appElementId, "appElementId").ensureHasValue().ensure(t => !t.isEmptyOrWhiteSpace()).ensure(t => t.startsWith("#"));
+        given(appElementId, "appElementId").ensureHasValue().ensureIsString().ensure(t => t.startsWith("#"));
         this._appElementId = appElementId;
+        
+        given(rootComponentElement, "rootComponentElement").ensureHasValue().ensureIsString();
+        this._rootComponentElement = rootComponentElement;
+        
         this._container = new Container();
         this._componentManager = new ComponentManager(Vue, this._container);
         this._componentManager.registerComponents(FileSelectViewModel);
@@ -238,6 +243,7 @@ export class ClientApp
         
         this._app = new Vue({
             el: this._appElementId,
+            render: (createElement: any) => createElement(this._rootComponentElement),
             router: this._pageManager.vueRouterInstance,
             provide: function ()
             {
@@ -245,6 +251,6 @@ export class ClientApp
                     rootScopeContainer: container
                 };
             }
-        });
+        } as any);
     }
 }

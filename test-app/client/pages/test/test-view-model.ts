@@ -1,4 +1,4 @@
-import { route, template, meta, NavigationService, resolve } from "./../../../../src/index";
+import { route, template, meta, NavigationService, resolve, EventAggregator } from "./../../../../src/index";
 import * as Routes from "./../routes";
 import { BasePageViewModel } from "./../base-page-view-model";
 import "./test-view.scss";
@@ -7,7 +7,6 @@ import { TodoRepository } from "../../services/todo-repository/todo-repository";
 import { given } from "@nivinjoseph/n-defensive";
 import { TestResolverFoo } from "../../resolvers/test-resolver-foo";
 import { TestResolverBar } from "../../resolvers/test-resolver-bar";
-import { EventAggregator } from "../../../../dist";
 
 
 @template(require("./test-view.html"))

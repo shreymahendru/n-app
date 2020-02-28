@@ -37,7 +37,7 @@ class Installer implements ComponentInstaller
 const pages = [DashboardViewModel, TestViewModel, TodoViewModel, ListTodosViewModel, CreateTodoViewModel, UpdateTodoViewModel];
 // const pages = [DashboardViewModel, TestViewModel];
 
-const app = new ClientApp("#app")
+const app = new ClientApp("#app", "router-view")
     .useAccentColor("#7ab53b")
     .useInstaller(new Installer())
     .registerComponents(ScoreBoardViewModel, BindingTestViewModel)
