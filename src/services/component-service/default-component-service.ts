@@ -28,7 +28,7 @@ export class DefaultComponentService implements ComponentService
         const component: any = {};
         component._cache = cache;
 
-        component.template = registration.template;
+        // component.template = registration.template;
 
         component.inject = ["pageScopeContainer", "rootScopeContainer"];
 

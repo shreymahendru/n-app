@@ -22,7 +22,7 @@ export interface FileInfo
 }
 
 
-@template("<span></span>")
+@template(require("./file-select-view.html"))
 @element("file-select")
 @bind("id", "mimeTypes", "maxFileSize", "multiple", "onSelection")
 @inject("DialogService", "EventAggregator")    

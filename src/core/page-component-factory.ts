@@ -15,7 +15,13 @@ export class PageComponentFactory
 
         const component: any = {};
        
-        component.template = registration.template;
+        // component.template = registration.template;
+        
+        // component.render = (<any>registration.viewModel).___render;
+        // component.staticRenderFns = (<any>registration.viewModel).___staticRenderFns;
+        
+        component.render = registration.template.render;
+        component.staticRenderFns = registration.template.staticRenderFns;
 
         component.inject = ["rootScopeContainer"];
         
@@ -268,6 +274,8 @@ export class PageComponentFactory
             
             next();
         };
+        
+        (<any>registration.viewModel).___initHotReload(component);
         
         return component;
     }

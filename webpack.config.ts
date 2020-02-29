@@ -94,19 +94,53 @@ const moduleRules: Array<any> = [
             }
         ]
     },
-    {
-        test: /\.(html)$/,
-        use: {
-            loader: "html-loader",
-            options: {
-                attrs: ["img:src", "use:xlink:href"]
-            }
-        }
-    },
+    // {
+    //     test: /\.(html)$/,
+    //     use: {
+    //         loader: "html-loader",
+    //         options: {
+    //             attrs: ["img:src", "use:xlink:href"]
+    //         }
+    //     }
+    // },
     {
         test: /\.taskworker\.js$/,
         loader: "worker-loader"
-    }
+    },
+    {
+        test: /-view-model\.js$/,
+        use: [
+            {
+                loader: path.resolve("src/vue-compiler.js")
+                // options: {/* ... */ }
+            }
+        ]
+    },
+    {
+        test: /-view\.html$/,
+        exclude: [path.resolve(__dirname, "test-app/controllers")],
+        use: [
+            {
+                loader: "vue-loader/lib/loaders/templateLoader.js"
+            },
+            // {
+            //     loader: path.resolve("src/template-compiler.js"),
+            //     options: {/* ... */ }
+            // },
+            {
+                loader: "extract-loader",
+                // options: {
+                //     publicPath: path.resolve(__dirname, "test-app/client/dist") + "/",
+                // }
+            },
+            {
+                loader: "html-loader",
+                options: {
+                    attrs: ["img:src", "use:xlink:href"]
+                }
+            }
+        ]
+    },
 ];
 
 const plugins = [

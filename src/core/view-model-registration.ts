@@ -4,16 +4,18 @@ import { templateSymbol } from "./template";
 import { ApplicationException } from "@nivinjoseph/n-exception";
 
 
+type RenderInfo = { render: Function, staticRenderFns: Array<Function> };
+
 export class ViewModelRegistration
 {
     private readonly _name: string;
     private readonly _viewModel: Function;
-    private readonly _template: string;
+    private readonly _template: RenderInfo;
     
     
     public get name(): string { return this._name; }
     public get viewModel(): Function { return this._viewModel; }
-    public get template(): string { return this._template; }
+    public get template(): RenderInfo { return this._template; }
     
     
     public constructor(viewModel: Function)

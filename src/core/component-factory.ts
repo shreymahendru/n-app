@@ -14,7 +14,13 @@ export class ComponentFactory
         
         const component: any = {};
         
-        component.template = registration.template;
+        // component.template = registration.template;
+        
+        // component.render = (<any>registration.viewModel).___render;
+        // component.staticRenderFns = (<any>registration.viewModel).___staticRenderFns;
+        
+        component.render = registration.template.render;
+        component.staticRenderFns = registration.template.staticRenderFns;
         
         if (registration.bindings.length > 0)
             component.props = registration.bindings;
@@ -113,6 +119,8 @@ export class ComponentFactory
             if (this.vm.onDestroy)
                 this.vm.onDestroy(); 
         };
+        
+        (<any>registration.viewModel).___initHotReload(component);
         
         return component;
     }

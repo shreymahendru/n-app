@@ -6,12 +6,13 @@ import "@nivinjoseph/n-ext";
 export const templateSymbol = Symbol("template");
 
 // public
-export function template(template: string): Function
+export function template(template: object): Function
 {
     given(template, "template")
-        .ensureHasValue()
-        .ensure(t => !t.isEmptyOrWhiteSpace());
+        .ensureHasValue().ensureIsObject();
+        
+    console.dir(template);
 
-    return (target: Function) => Reflect.defineMetadata(templateSymbol, template.trim(), target);
+    return (target: Function) => Reflect.defineMetadata(templateSymbol, template, target);
 }
 
