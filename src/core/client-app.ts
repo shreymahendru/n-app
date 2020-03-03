@@ -1,4 +1,5 @@
-const Vue = require("@nivinjoseph/vue/dist/vue.js");
+// const Vue = require("@nivinjoseph/vue/dist/vue.js");
+import Vue from "@nivinjoseph/vue";
 
 // public
 export { Vue };
@@ -6,9 +7,8 @@ export { Vue };
 import VueRouter from "vue-router";
 Vue.use(VueRouter);
 
-
-import { given } from "@nivinjoseph/n-defensive";
 import "@nivinjoseph/n-ext";
+import { given } from "@nivinjoseph/n-defensive";
 import { Container, ComponentInstaller } from "@nivinjoseph/n-ject";
 import { ComponentManager } from "./component-manager";
 import { PageManager } from "./page-manager";
@@ -120,25 +120,31 @@ export class ClientApp
         return this;
     }
     
-    public useAsDefaultPageTitle(title: string): this
-    {
-        if (this._isBootstrapped)
-            throw new InvalidOperationException("useAsDefaultPageTitle");
+    /**
+     * @deprecated
+     */
+    // public useAsDefaultPageTitle(title: string): this
+    // {
+    //     if (this._isBootstrapped)
+    //         throw new InvalidOperationException("useAsDefaultPageTitle");
         
-        given(title, "title").ensureHasValue().ensureIsString();
-        this._pageManager.useAsDefaultPageTitle(title);
-        return this;
-    }
+    //     given(title, "title").ensureHasValue().ensureIsString();
+    //     this._pageManager.useAsDefaultPageTitle(title);
+    //     return this;
+    // }
     
-    public useAsDefaultPageMetadata(...metas: Array<{ name: string; content: string; }>): this
-    {
-        if (this._isBootstrapped)
-            throw new InvalidOperationException("useAsDefaultPageMetadata");
+    /**
+     * @deprecated
+     */
+    // public useAsDefaultPageMetadata(...metas: Array<{ name: string; content: string; }>): this
+    // {
+    //     if (this._isBootstrapped)
+    //         throw new InvalidOperationException("useAsDefaultPageMetadata");
         
-        given(metas, "metas").ensureHasValue().ensureIsArray().ensure(t => t.length > 0);
-        this._pageManager.useAsDefaultPageMetadata(metas);
-        return this;
-    }
+    //     given(metas, "metas").ensureHasValue().ensureIsArray().ensure(t => t.length > 0);
+    //     this._pageManager.useAsDefaultPageMetadata(metas);
+    //     return this;
+    // }
     
     public useHistoryModeRouting(): this
     {
@@ -207,6 +213,13 @@ export class ClientApp
             Vue.config.performance = false;
             Vue.config.productionTip = false;
         }
+        
+        // console.log(`Bootstrapping in ${ConfigurationManager.getConfig("env")} mode.`);
+
+        // Vue.config.silent = false;
+        // Vue.config.devtools = true;
+        // Vue.config.performance = true;
+        // Vue.config.productionTip = true;
     }
 
 

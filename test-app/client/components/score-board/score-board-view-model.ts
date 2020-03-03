@@ -14,6 +14,7 @@ export class ScoreBoardViewModel extends ComponentViewModel
     private readonly _scopedService: ScopedService;
     private _playerFirstName: string = "Nivin";
     private _playerLastName: string = "Joseph";
+    private readonly _time: number;
 
 
     public get playerScore(): number { return this.getBound<number>("score"); }
@@ -24,24 +25,35 @@ export class ScoreBoardViewModel extends ComponentViewModel
     public get playerLastName(): string { return this._playerLastName; }
     public set playerLastName(value: string) { this._playerLastName = value; }
 
-    // public get playerFullName(): string { return this._playerFirstName + " " + this._playerLastName; }
+    public get playerFullName(): string { return this._playerFirstName + " njj " + this._playerLastName; }
 
 
     public constructor(scopedService: ScopedService)
     {
         super();
         this._scopedService = scopedService;
+        
+        this._time = Date.now();
+        
+        console.log("scoreboard construct", this._time);
     }
     
     
     protected onCreate(): void
     {
+        console.log("scoreboard created", this._time);
+        
         super.onCreate();
         
         this.watch<number>("playerScore", (val, old) =>
         {
             console.log(val, old);
         });
+    }
+    
+    protected onDestroy(): void
+    {
+        console.log("scoreboard destroyed", this._time);
     }
 
     // public incrementScore(): void

@@ -1,5 +1,6 @@
 import "@babel/polyfill";
 
+import "@nivinjoseph/n-ext";
 import { ClientApp } from "./../../src/index";
 import { ScoreBoardViewModel } from "./components/score-board/score-board-view-model";
 import { ComponentInstaller, Registry } from "@nivinjoseph/n-ject";
@@ -45,8 +46,8 @@ const app = new ClientApp("#app", "router-view")
     .useHistoryModeRouting()
     .useAsInitialRoute(Routes.dashboard)
     .useAsUnknownRoute(Routes.test)
-    .useAsDefaultPageTitle("fooo")
-    .useAsDefaultPageMetadata({name: "description", content: "this is the default description"})
+    // .useAsDefaultPageTitle("fooo")
+    // .useAsDefaultPageMetadata({name: "description", content: "this is the default description"})
     ;
     
 app.bootstrap();

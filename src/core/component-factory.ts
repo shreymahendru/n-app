@@ -14,7 +14,13 @@ export class ComponentFactory
         
         const component: any = {};
         
-        component.template = registration.template;
+        // component.template = registration.template;
+        
+        // component.render = (<any>registration.viewModel).___render;
+        // component.staticRenderFns = (<any>registration.viewModel).___staticRenderFns;
+        
+        component.render = registration.template.render;
+        component.staticRenderFns = registration.template.staticRenderFns;
         
         if (registration.bindings.length > 0)
             component.props = registration.bindings;
@@ -25,9 +31,21 @@ export class ComponentFactory
         {
             let vueVm = this;
             
+            // console.log("INVOKED component");
+            
             const container: Scope = vueVm.pageScopeContainer || vueVm.rootScopeContainer;
             if (!container)
                 throw new ApplicationException("Could not get pageScopeContainer or rootScopeContainer.");
+            
+            if (component.___reload)
+            {
+                const c = container as any;
+                const cReg = c.componentRegistry.find(registration.name);
+                cReg._component = component.___viewModel;
+                cReg._dependencies = cReg.getDependencies();
+                registration.reload(component.___viewModel);
+            }
+            
             let vm = container.resolve<any>(registration.name);
             
             let data = { vm: vm };
