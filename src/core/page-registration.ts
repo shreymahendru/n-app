@@ -11,11 +11,11 @@ import { resolveSymbol } from "./resolve";
 
 export class PageRegistration extends ViewModelRegistration
 {
-    private readonly _route: RouteInfo;
-    private readonly _redirect: string;
-    private readonly _title: string;
-    private readonly _metadata: object;
-    private readonly _resolvers: ReadonlyArray<any>;
+    private _route: RouteInfo;
+    private _redirect: string;
+    private _title: string;
+    private _metadata: object;
+    private _resolvers: ReadonlyArray<any>;
     private _resolvedValues: ReadonlyArray<any>;
     // private readonly _hasAuthorize: boolean;
     // private readonly _useDefaultAuthorizer: boolean;
@@ -37,7 +37,7 @@ export class PageRegistration extends ViewModelRegistration
     // public get authorizers(): ReadonlyArray<string> { return this._authorizers; }
     
 
-    public constructor(page: Function, defaultPageTitle: string, defaultPageMetas: Array<{ name: string; content: string; }>)
+    public constructor(page: Function, defaultPageTitle: string, defaultPageMetas: ReadonlyArray<{ name: string; content: string; }>)
     {
         given(page, "page").ensureHasValue().ensureIsFunction();
         given(defaultPageTitle, "defaultPageTitle").ensureIsString();
@@ -59,7 +59,7 @@ export class PageRegistration extends ViewModelRegistration
 
         this._title = title;
 
-        const metas = defaultPageMetas || [];
+        const metas = defaultPageMetas ? [...defaultPageMetas] : [];
         if (Reflect.hasOwnMetadata(metaSymbol, this.viewModel))
             metas.push(...Reflect.getOwnMetadata(metaSymbol, this.viewModel));
 
@@ -93,6 +93,42 @@ export class PageRegistration extends ViewModelRegistration
         // }
         
         
+        if (Reflect.hasOwnMetadata(resolveSymbol, this.viewModel))
+            this._resolvers = Reflect.getOwnMetadata(resolveSymbol, this.viewModel);
+    }
+    
+    
+    public reload(page: Function): void
+    {
+        given(page, "page").ensureHasValue().ensureIsFunction();
+
+        super.reload(page);
+
+        if (!Reflect.hasOwnMetadata(appRouteSymbol, this.viewModel))
+            throw new ApplicationException(`PageViewModel '${this.name}' does not have @route applied.`);
+
+        const routeData = Reflect.getOwnMetadata(appRouteSymbol, this.viewModel);
+
+        this._route = new RouteInfo(routeData.route);
+        this._redirect = routeData.redirect;
+
+        let title = this._title || null;
+        if (Reflect.hasOwnMetadata(titleSymbol, this.viewModel))
+            title = Reflect.getOwnMetadata(titleSymbol, this.viewModel);
+
+        this._title = title;
+
+        const metas = this._metadata ? Object.entries(this._metadata).map(t => ({name: t[0], content: t[1]})) : [];
+        if (Reflect.hasOwnMetadata(metaSymbol, this.viewModel))
+            metas.push(...Reflect.getOwnMetadata(metaSymbol, this.viewModel));
+
+        this._metadata = metas
+            .reduce((acc: any, t) =>
+            {
+                acc[t.name] = t.content;
+                return acc;
+            }, {});
+
         if (Reflect.hasOwnMetadata(resolveSymbol, this.viewModel))
             this._resolvers = Reflect.getOwnMetadata(resolveSymbol, this.viewModel);
     }

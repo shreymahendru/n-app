@@ -31,9 +31,21 @@ export class ComponentFactory
         {
             let vueVm = this;
             
+            // console.log("INVOKED component");
+            
             const container: Scope = vueVm.pageScopeContainer || vueVm.rootScopeContainer;
             if (!container)
                 throw new ApplicationException("Could not get pageScopeContainer or rootScopeContainer.");
+            
+            if (component.___reload)
+            {
+                const c = container as any;
+                const cReg = c.componentRegistry.find(registration.name);
+                cReg._component = component.___viewModel;
+                cReg._dependencies = cReg.getDependencies();
+                registration.reload(component.___viewModel);
+            }
+            
             let vm = container.resolve<any>(registration.name);
             
             let data = { vm: vm };
@@ -119,8 +131,6 @@ export class ComponentFactory
             if (this.vm.onDestroy)
                 this.vm.onDestroy(); 
         };
-        
-        (<any>registration.viewModel).___initHotReload(component);
         
         return component;
     }

@@ -2,7 +2,7 @@ import { given } from "@nivinjoseph/n-defensive";
 import { Container } from "@nivinjoseph/n-ject";
 import { ComponentRegistration } from "./component-registration";
 import { ApplicationException } from "@nivinjoseph/n-exception";
-import { ComponentFactory } from "./component-factory";
+// import { ComponentFactory } from "./component-factory";
 
 
 export class ComponentManager
@@ -29,11 +29,14 @@ export class ComponentManager
     
     public bootstrap(): void
     {
-        // let componentFactory = new ComponentFactory(this._container);
-        let componentFactory = new ComponentFactory();
+        // let componentFactory = new ComponentFactory();
         
-        for (let registration of this._registrations)
-            this._vue.component(registration.element, componentFactory.create(registration));
+        this._registrations.forEach(registration =>
+        {
+            // this._vue.component(registration.element, componentFactory.create(registration));
+            
+            this._vue.component(registration.element, (<any>registration.viewModel).___componentOptions);
+        });
     }
     
     

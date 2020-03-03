@@ -26,7 +26,7 @@
         "nodemon": "nodemon --ignore src/ --ignore test/ --ignore test-app/client/ --inspect=4001 ./test-app/main.js env=dev",
         "predev": "npm run ts-build",
         "dev": "npm run ts-build-watch & npm run webpack-build-watch & npm run nodemon",
-        "build": "npm run ts-build && env=dev npm run webpack-build",
+        "build": "npm run ts-build && env=prod npm run webpack-build",
         "start": "node ./test-app/main.js env=prod"
     },
     "repository": {
@@ -81,6 +81,7 @@
         "html-webpack-plugin": "^3.2.0",
         "image-webpack-loader": "^6.0.0",
         "jquery": "^3.4.1",
+        "loader-utils": "^1.4.0",
         "mini-css-extract-plugin": "^0.8.0",
         "node-sass": "^4.13.0",
         "optimize-css-assets-webpack-plugin": "^5.0.3",
@@ -94,6 +95,7 @@
         "style-loader": "^1.0.1",
         "uglifyjs-webpack-plugin": "^2.2.0",
         "url-loader": "^3.0.0",
+        "vue-hot-reload-api": "^2.3.4",
         "vue-loader": "^15.9.0",
         "vue-router": "^3.1.6",
         "vue-template-compiler": "2.6.11",

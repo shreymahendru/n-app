@@ -1,6 +1,8 @@
 import { given } from "@nivinjoseph/n-defensive";
 import { InvalidOperationException } from "@nivinjoseph/n-exception";
 import { BaseViewModel } from "./base-view-model";
+import { ComponentRegistration } from "./component-registration";
+import { ComponentFactory } from "./component-factory";
 
 
 // public
@@ -40,5 +42,14 @@ export class ComponentViewModel extends BaseViewModel
             throw new InvalidOperationException("calling setBoundModel() without defining 'value' in bind");
         
         this.ctx.$emit("input", value);
+    }
+    
+    public static createComponentOptions(component: Function): object
+    {
+        given(component, "component").ensureHasValue().ensureIsFunction();
+        
+        const registration = new ComponentRegistration(component);
+        const factory = new ComponentFactory();
+        return factory.create(registration);
     }
 }

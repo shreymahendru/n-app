@@ -29,6 +29,9 @@ export class DefaultComponentService implements ComponentService
         component._cache = cache;
 
         // component.template = registration.template;
+        
+        component.render = registration.template.render;
+        component.staticRenderFns = registration.template.staticRenderFns;
 
         component.inject = ["pageScopeContainer", "rootScopeContainer"];
 
@@ -39,6 +42,15 @@ export class DefaultComponentService implements ComponentService
             const container: Scope = vueVm.pageScopeContainer || vueVm.rootScopeContainer;
             if (!container)
                 throw new ApplicationException("Could not get pageScopeContainer or rootScopeContainer.");
+            
+            if (component.___reload)
+            {
+                const c = container as any;
+                const cReg = c.componentRegistry.find(registration.name);
+                cReg._component = component.___viewModel;
+                cReg._dependencies = cReg.getDependencies();
+                registration.reload(component.___viewModel);
+            }
             
             let vm: any = null;
             if (component._cache)

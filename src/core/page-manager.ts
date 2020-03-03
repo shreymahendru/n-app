@@ -52,17 +52,23 @@ export class PageManager
         this._unknownRoute = route.trim();
     }
 
-    public useAsDefaultPageTitle(title: string): void
-    {
-        given(title, "title").ensureHasValue().ensureIsString();
-        this._defaultPageTitle = title.trim();
-    }
+    /**
+     * @deprecated
+     */
+    // public useAsDefaultPageTitle(title: string): void
+    // {
+    //     given(title, "title").ensureHasValue().ensureIsString();
+    //     this._defaultPageTitle = title.trim();
+    // }
 
-    public useAsDefaultPageMetadata(metas: ReadonlyArray<{ name: string; content: string; }>): void
-    {
-        given(metas, "metas").ensureHasValue().ensureIsArray().ensure(t => t.length > 0);
-        this._defaultPageMetas = [...metas];
-    }
+    /**
+     * @deprecated
+     */
+    // public useAsDefaultPageMetadata(metas: ReadonlyArray<{ name: string; content: string; }>): void
+    // {
+    //     given(metas, "metas").ensureHasValue().ensureIsArray().ensure(t => t.length > 0);
+    //     this._defaultPageMetas = [...metas];
+    // }
 
     public useHistoryModeRouting(): void
     {

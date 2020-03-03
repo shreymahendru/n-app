@@ -1,6 +1,6 @@
 import { given } from "@nivinjoseph/n-defensive";
 import { PageRegistration } from "./page-registration";
-import { PageComponentFactory } from "./page-component-factory";
+// import { PageComponentFactory } from "./page-component-factory";
 
 
 export class Page
@@ -56,12 +56,13 @@ export class Page
     public createVueRouterRoute(): any
     {
         // let factory = new PageComponentFactory(container);
-        let factory = new PageComponentFactory();
+        // let factory = new PageComponentFactory();
         
         let vueRouterRoute: any = {
             name: this._registration.name.replace("ViewModel", ""),
             path: this.createRoute(),
-            component: factory.create(this._registration)
+            // component: factory.create(this._registration)
+            component: (<any>this._registration.viewModel).___componentOptions
         };
         
         if (this._registration.redirect)

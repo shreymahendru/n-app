@@ -47,11 +47,12 @@ const moduleRules: Array<any> = [
         }]
     },
     {
-        test: /\.svg$/,
+        test: /\.(png|jpg|jpeg|gif|svg)$/,
         use: [
             isDev ? {
-                loader: "file-loader",
+                loader: "url-loader",
                 options: {
+                    limit: 900000,
                     esModule: false
                 }
             } : {
@@ -61,31 +62,56 @@ const moduleRules: Array<any> = [
                         fallback: "file-loader",
                         esModule: false
                     }
-                }
-        ]
-    },
-    {
-        test: /\.(png|jpg|jpeg|gif)$/,
-        use: [
-            isDev ? "file-loader" : {
-                loader: "url-loader",
-                options: {
-                    limit: 9000,
-                    fallback: "file-loader"
-                }
-            },
+                },
             {
                 loader: "image-webpack-loader",
                 options: {
-                    bypassOnDebug: true
-                }
+                    disable: false, // webpack@2.x and newer
+                },
             }
         ]
     },
+    // {
+    //     test: /\.svg$/,
+    //     use: [
+    //         {
+    //             loader: "url-loader",
+    //             options: {
+    //                 // limit: 9000,
+    //                 // fallback: "file-loader",
+    //                 esModule: false
+    //             }
+    //         }
+    //     ]
+    // },
+    // {
+    //     test: /\.(png|jpg|jpeg|gif)$/,
+    //     use: [
+    //         {
+    //             loader: "url-loader",
+    //             options: {
+    //                 // limit: 9000,
+    //                 // fallback: "file-loader",
+    //                 esModule: false
+    //             }
+    //         },
+    //         {
+    //             loader: "image-webpack-loader",
+    //             options: {
+    //                 bypassOnDebug: true
+    //             }
+    //         }
+    //     ]
+    // },
     {
         test: /\.(woff|woff2|eot|ttf|otf)$/,
         use: [
-            isDev ? "file-loader" : {
+            isDev ? {
+                loader: "file-loader",
+                options: {
+                    esModule: false
+                }
+            } : {
                 loader: "url-loader",
                 options: {
                     limit: 9000,
@@ -111,8 +137,13 @@ const moduleRules: Array<any> = [
         test: /-view-model\.js$/,
         use: [
             {
-                loader: path.resolve("src/vue-compiler.js")
-                // options: {/* ... */ }
+                loader: path.resolve("src/loaders/view-model-loader.js"),
+                options: {
+                    defaultPageTitle: "fooo",
+                    defaultPageMetadata: [
+                        { name: "description", content: "this is the default description" }
+                    ]
+                 }
             }
         ]
     },
@@ -120,6 +151,10 @@ const moduleRules: Array<any> = [
         test: /-view\.html$/,
         exclude: [path.resolve(__dirname, "test-app/controllers")],
         use: [
+            // {
+            //     loader: path.resolve("src/loaders/n-app-view-loader.js")
+            //     // options: {/* ... */ }
+            // },
             {
                 loader: "vue-loader/lib/loaders/templateLoader.js"
             },
@@ -181,7 +216,7 @@ else
             }
         }
     });
-    
+
     plugins.push(...[
         new MiniCssExtractPlugin({
             filename: "client.bundle.css"
@@ -190,7 +225,7 @@ else
             test: /\.(js|css|svg)$/
         })
     ]);
-}  
+}
 
 module.exports = {
     mode: isDev ? "development" : "production",

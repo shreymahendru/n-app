@@ -2,6 +2,8 @@ import { RouteArgs } from "./route-args";
 import { BaseViewModel } from "./base-view-model";
 import "@nivinjoseph/n-ext";
 import { given } from "@nivinjoseph/n-defensive";
+import { PageRegistration } from "./page-registration";
+import { PageComponentFactory } from "./page-component-factory";
 
 
 // public
@@ -40,4 +42,15 @@ export class PageViewModel extends BaseViewModel
     // override
     protected onLeave(): void
     { }
+    
+    public static createComponentOptions(component: Function, defaultPageTitle: string, defaultPageMetadata: ReadonlyArray<{ name: string; content: string; }>): object
+    {
+        given(component, "component").ensureHasValue().ensureIsFunction();
+        given(defaultPageTitle, "defaultPageTitle").ensureIsString();
+        given(defaultPageMetadata, "defaultPageMetadata").ensureIsArray();
+
+        const registration = new PageRegistration(component, defaultPageTitle, defaultPageMetadata);
+        const factory = new PageComponentFactory();
+        return factory.create(registration);
+    }
 }

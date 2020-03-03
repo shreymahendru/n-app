@@ -11,7 +11,7 @@ export function template(template: object): Function
     given(template, "template")
         .ensureHasValue().ensureIsObject();
         
-    console.dir(template);
+    // console.dir(template);
 
     return (target: Function) => Reflect.defineMetadata(templateSymbol, template, target);
 }

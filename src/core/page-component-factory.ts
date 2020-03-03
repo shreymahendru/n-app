@@ -27,11 +27,23 @@ export class PageComponentFactory
         
         component.data = function ()
         {
+            // console.log("INVOKED");
+            
             let vueVm = this;
             
             let container: Scope = vueVm.rootScopeContainer;
             if (!container)
                 throw new ApplicationException("Could not get rootScopeContainer.");
+            
+            if (component.___reload)
+            {
+                const c = container as any;
+                const cReg = c.componentRegistry.find(registration.name);
+                cReg._component = component.___viewModel;
+                cReg._dependencies = cReg.getDependencies();
+                registration.reload(component.___viewModel);
+            }
+            
             container = container.createScope(); // page scope
             let vm = container.resolve<any>(registration.name);
             
@@ -274,8 +286,6 @@ export class PageComponentFactory
             
             next();
         };
-        
-        (<any>registration.viewModel).___initHotReload(component);
         
         return component;
     }
