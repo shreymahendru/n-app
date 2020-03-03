@@ -163,7 +163,8 @@ const moduleRules: Array<any> = [
             //     options: {/* ... */ }
             // },
             {
-                loader: "extract-loader",
+                // loader: "extract-loader",
+                loader: path.resolve("src/loaders/view-loader.js"),
                 // options: {
                 //     publicPath: path.resolve(__dirname, "test-app/client/dist") + "/",
                 // }
@@ -257,10 +258,11 @@ module.exports = {
         rules: moduleRules
     },
     plugins: plugins,
-    // resolve: {
-    //     alias: {
-    //         // https://feathericons.com/
-    //         feather: path.resolve(__dirname, "node_modules/feather-icons/dist/feather-sprite.svg")
-    //     }
-    // }
+    resolve: {
+        alias: {
+            // https://feathericons.com/
+            feather: path.resolve(__dirname, "node_modules/feather-icons/dist/feather-sprite.svg"),
+            vue: "@nivinjoseph/vue"
+        }
+    }
 };
