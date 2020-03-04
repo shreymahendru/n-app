@@ -47,7 +47,15 @@ const moduleRules: Array<any> = [
         }]
     },
     {
-        test: /\.(png|jpg|jpeg|gif|svg)$/,
+        test: /\.(png|jpg|jpeg|gif)$/,
+        use: [
+            {
+                loader: path.resolve("src/loaders/raster-image-loader.js")
+            }
+        ]
+    },
+    {
+        test: /\.svg$/,
         use: [
             isDev ? {
                 loader: "url-loader",

@@ -26,7 +26,7 @@
         "nodemon": "nodemon --ignore src/ --ignore test/ --ignore test-app/client/ --inspect=4001 ./test-app/main.js env=dev",
         "predev": "npm run ts-build",
         "dev": "npm run ts-build-watch & npm run webpack-build-watch & npm run nodemon",
-        "build": "npm run ts-build && env=prod npm run webpack-build",
+        "build": "npm run ts-build && env=dev npm run webpack-build",
         "start": "node ./test-app/main.js env=prod"
     },
     "repository": {
@@ -48,6 +48,7 @@
         "@nivinjoseph/n-web": "^3.2.35",
         "@types/mocha": "^5.2.7",
         "@types/node": "^12.12.17",
+        "@types/sharp": "^0.24.0",
         "@types/toastr": "^2.1.37",
         "feather-icons": "^4.26.0",
         "mocha": "^6.2.2",
@@ -93,6 +94,7 @@
         "reflect-metadata": "^0.1.13",
         "sass": "^1.23.7",
         "sass-loader": "^8.0.0",
+        "sharp": "^0.24.1",
         "source-map-loader": "^0.2.4",
         "style-loader": "^1.0.1",
         "uglifyjs-webpack-plugin": "^2.2.0",
