@@ -50,7 +50,10 @@ const moduleRules: Array<any> = [
         test: /\.(png|jpg|jpeg|gif)$/,
         use: [
             {
-                loader: path.resolve("src/loaders/raster-image-loader.js")
+                loader: path.resolve("src/loaders/raster-image-loader.js"),
+                options: {
+                    limit: isDev ? 9000000 : 900000
+                }
             }
         ]
     },

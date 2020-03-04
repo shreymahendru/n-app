@@ -23,7 +23,7 @@ export class DashboardViewModel extends BasePageViewModel
     private readonly _scopedService: ScopedService;
     
     
-    private readonly _message = "Dashboard view";
+    private readonly _message = "Dashboard views";
     private _score = 10;
     private _fooParentValue: string;
     

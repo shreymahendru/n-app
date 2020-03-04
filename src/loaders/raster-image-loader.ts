@@ -41,6 +41,7 @@ function resize(filePath: string, width: number, height: number): Promise <Resiz
     return promise;
 }
 
+
 // @ts-ignore
 // tslint:disable-next-line: no-default-export
 export default function (content: any)
@@ -63,6 +64,11 @@ export default function (content: any)
     
     const { width, height } = parsedResourceQuery;
     
+    const options = loaderUtils.getOptions(this) || {};
+    const context = options.context || this.rootContext;
+    
+    const limit = options.limit;
+    
     if (width || height)
     {
         const callback = this.async();
@@ -70,17 +76,60 @@ export default function (content: any)
         resize(this.resourcePath, width, height)
             .then(resized =>
             {
-                console.log(resized.ext, resized.width, resized.height);
-                const base64 = JSON.stringify("data:" + MIMES[resized.ext] + ";" + "base64," + resized.data.toString("base64"));
-                callback(null, `module.exports = ${base64}`);
+                const size = resized.size;
+                
+                // console.log("resized size", size);
+                
+                if (limit && size > limit)
+                {                    
+                    const url = loaderUtils.interpolateName(this, `[contenthash].${resized.ext}`, {
+                        context,
+                        content: resized.data
+                    });
+
+                    const outputPath = url;
+                    const publicPath = `__webpack_public_path__ + ${JSON.stringify(outputPath)}`;
+   
+                    this.emitFile(outputPath, resized.data);
+                    
+                    callback(null, `module.exports = ${publicPath}`);
+                }
+                else
+                {
+                    // console.log(resized.ext, resized.width, resized.height);
+                    const base64 = JSON.stringify("data:" + MIMES[resized.ext] + ";" + "base64," + resized.data.toString("base64"));
+                    callback(null, `module.exports = ${base64}`);
+                }
             })
             .catch(e => callback(e));    
     }
     else
     {
-        const data = typeof content === "string" ? Buffer.from(content) : content;
-        const base64 = JSON.stringify("data:" + MIMES[ext] + ";" + "base64," + data.toString("base64"));
-        return `module.exports = ${base64}`;
+        const data = typeof content === "string" ? Buffer.from(content) : content as Buffer;
+        
+        const size = data.byteLength;
+        
+        // console.log("actual size", size);
+        
+        if (limit && size > limit)
+        {
+            const url = loaderUtils.interpolateName(this, `[contenthash].${ext}`, {
+                context,
+                content: data
+            });
+
+            const outputPath = url;
+            const publicPath = `__webpack_public_path__ + ${JSON.stringify(outputPath)}`;
+
+            this.emitFile(outputPath, data);
+
+            return `module.exports = ${publicPath}`;
+        }
+        else
+        {
+            const base64 = JSON.stringify("data:" + MIMES[ext] + ";" + "base64," + data.toString("base64"));
+            return `module.exports = ${base64}`;    
+        }
     }
 }
 
