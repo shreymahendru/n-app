@@ -63,6 +63,7 @@ export default function (content: string)
     
     const id = hash(className);
     const hotReloadAPIPath = JSON.stringify(require.resolve("vue-hot-reload-api"));
+    const vueTemplateCompilerPath = JSON.stringify(require.resolve("vue-template-compiler"));
     const hotReloadCode = `
             if(module.hot)
             {
@@ -91,8 +92,10 @@ export default function (content: string)
                     // console.log("updating record", "${id}");
                 }
                 
+                const vueTemplateCompiler = require(${vueTemplateCompilerPath});
+                
                 module.hot.accept('${relativeViewFilePath}', function () {
-                    api.rerender('${id}', require('${relativeViewFilePath}'));
+                    api.rerender('${id}', vueTemplateCompiler.compileToFunctions(require('${relativeViewFilePath}')));
                     // console.log("re-rendering record", "${id}");
                 });
             }

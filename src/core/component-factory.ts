@@ -19,8 +19,15 @@ export class ComponentFactory
         // component.render = (<any>registration.viewModel).___render;
         // component.staticRenderFns = (<any>registration.viewModel).___staticRenderFns;
         
-        component.render = registration.template.render;
-        component.staticRenderFns = registration.template.staticRenderFns;
+        if (typeof registration.template === "string")
+        {
+            component.template = registration.template;
+        }
+        else
+        {
+            component.render = registration.template.render;
+            component.staticRenderFns = registration.template.staticRenderFns;
+        }
         
         if (registration.bindings.length > 0)
             component.props = registration.bindings;

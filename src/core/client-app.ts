@@ -1,5 +1,6 @@
 // const Vue = require("@nivinjoseph/vue/dist/vue.js");
-import Vue from "@nivinjoseph/vue";
+// import Vue from "@nivinjoseph/vue";
+const Vue = require("vue");
 
 // public
 export { Vue };

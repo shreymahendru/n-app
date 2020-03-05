@@ -162,24 +162,13 @@ const moduleRules: Array<any> = [
         test: /-view\.html$/,
         exclude: [path.resolve(__dirname, "test-app/controllers")],
         use: [
-            // {
-            //     loader: path.resolve("src/loaders/n-app-view-loader.js")
-            //     // options: {/* ... */ }
-            // },
-            {
+            ...(isDev ? [] :
+            [{
                 loader: "vue-loader/lib/loaders/templateLoader.js"
             },
-            // {
-            //     loader: path.resolve("src/template-compiler.js"),
-            //     options: {/* ... */ }
-            // },
             {
-                // loader: "extract-loader",
-                loader: path.resolve("src/loaders/view-loader.js"),
-                // options: {
-                //     publicPath: path.resolve(__dirname, "test-app/client/dist") + "/",
-                // }
-            },
+                loader: path.resolve("src/loaders/view-loader.js")
+            }]),
             {
                 loader: "html-loader",
                 options: {
@@ -273,7 +262,7 @@ module.exports = {
         alias: {
             // https://feathericons.com/
             feather: path.resolve(__dirname, "node_modules/feather-icons/dist/feather-sprite.svg"),
-            vue: "@nivinjoseph/vue"
+            vue: isDev ? "@nivinjoseph/vue/dist/vue.js" : "@nivinjoseph/vue/dist/vue.runtime.common.prod.js"
         }
     }
 };

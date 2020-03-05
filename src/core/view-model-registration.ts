@@ -10,12 +10,12 @@ export class ViewModelRegistration
 {
     private _name: string;
     private _viewModel: Function;
-    private _template: RenderInfo;
+    private _template: string | RenderInfo;
     
     
     public get name(): string { return this._name; }
     public get viewModel(): Function { return this._viewModel; }
-    public get template(): RenderInfo { return this._template; }
+    public get template(): string | RenderInfo { return this._template; }
     
     
     public constructor(viewModel: Function)

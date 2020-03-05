@@ -30,8 +30,15 @@ export class DefaultComponentService implements ComponentService
 
         // component.template = registration.template;
         
-        component.render = registration.template.render;
-        component.staticRenderFns = registration.template.staticRenderFns;
+        if (typeof registration.template === "string")
+        {
+            component.template = registration.template;
+        }
+        else
+        {
+            component.render = registration.template.render;
+            component.staticRenderFns = registration.template.staticRenderFns;
+        }
 
         component.inject = ["pageScopeContainer", "rootScopeContainer"];
 
