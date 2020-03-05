@@ -49,9 +49,10 @@ export class DefaultComponentService implements ComponentService
                 const cReg = c.componentRegistry.find(registration.name);
                 cReg._component = component.___viewModel;
                 cReg._dependencies = cReg.getDependencies();
-                registration.reload(component.___viewModel);
                 
                 component._cachedVm = null;
+                
+                registration.reload(component.___viewModel);
             }
             
             let vm: any = null;
