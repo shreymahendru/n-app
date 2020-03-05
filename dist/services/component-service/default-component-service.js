@@ -16,8 +16,13 @@ class DefaultComponentService {
         n_defensive_1.given(cache, "cache").ensureHasValue().ensureIsBoolean();
         const component = {};
         component._cache = cache;
-        component.render = registration.template.render;
-        component.staticRenderFns = registration.template.staticRenderFns;
+        if (typeof registration.template === "string") {
+            component.template = registration.template;
+        }
+        else {
+            component.render = registration.template.render;
+            component.staticRenderFns = registration.template.staticRenderFns;
+        }
         component.inject = ["pageScopeContainer", "rootScopeContainer"];
         component.data = function () {
             let vueVm = this;

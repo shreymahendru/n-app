@@ -1,4 +1,4 @@
-import Vue from "@nivinjoseph/vue";
+declare const Vue: any;
 export { Vue };
 import "@nivinjoseph/n-ext";
 import { Container, ComponentInstaller } from "@nivinjoseph/n-ject";

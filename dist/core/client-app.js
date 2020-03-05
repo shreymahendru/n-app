@@ -1,9 +1,9 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-const vue_1 = require("@nivinjoseph/vue");
-exports.Vue = vue_1.default;
+const Vue = require("vue");
+exports.Vue = Vue;
 const vue_router_1 = require("vue-router");
-vue_1.default.use(vue_router_1.default);
+Vue.use(vue_router_1.default);
 require("@nivinjoseph/n-ext");
 const n_defensive_1 = require("@nivinjoseph/n-defensive");
 const n_ject_1 = require("@nivinjoseph/n-ject");
@@ -26,13 +26,13 @@ class ClientApp {
         n_defensive_1.given(rootComponentElement, "rootComponentElement").ensureHasValue().ensureIsString();
         this._rootComponentElement = rootComponentElement;
         this._container = new n_ject_1.Container();
-        this._componentManager = new component_manager_1.ComponentManager(vue_1.default, this._container);
+        this._componentManager = new component_manager_1.ComponentManager(Vue, this._container);
         this._componentManager.registerComponents(file_select_view_model_1.FileSelectViewModel);
         this._pageManager = new page_manager_1.PageManager(vue_router_1.default, this._container);
-        vue_1.default.config.silent = false;
-        vue_1.default.config.devtools = false;
-        vue_1.default.config.performance = false;
-        vue_1.default.config.productionTip = false;
+        Vue.config.silent = false;
+        Vue.config.devtools = false;
+        Vue.config.performance = false;
+        Vue.config.productionTip = false;
     }
     get container() { return this._container; }
     useInstaller(installer) {
@@ -103,16 +103,16 @@ class ClientApp {
     configureGlobalConfig() {
         if (n_config_1.ConfigurationManager.getConfig("env") === "dev") {
             console.log("Bootstrapping in DEV mode.");
-            vue_1.default.config.silent = false;
-            vue_1.default.config.devtools = true;
-            vue_1.default.config.performance = true;
-            vue_1.default.config.productionTip = true;
+            Vue.config.silent = false;
+            Vue.config.devtools = true;
+            Vue.config.performance = true;
+            Vue.config.productionTip = true;
         }
         else {
-            vue_1.default.config.silent = true;
-            vue_1.default.config.devtools = false;
-            vue_1.default.config.performance = false;
-            vue_1.default.config.productionTip = false;
+            Vue.config.silent = true;
+            Vue.config.devtools = false;
+            Vue.config.performance = false;
+            Vue.config.productionTip = false;
         }
     }
     configureComponents() {
@@ -135,7 +135,7 @@ class ClientApp {
     }
     configureRoot() {
         const container = this._container;
-        this._app = new vue_1.default({
+        this._app = new Vue({
             el: this._appElementId,
             render: (createElement) => createElement(this._rootComponentElement),
             router: this._pageManager.vueRouterInstance,

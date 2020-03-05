@@ -9,7 +9,7 @@ export declare class ViewModelRegistration {
     private _template;
     get name(): string;
     get viewModel(): Function;
-    get template(): RenderInfo;
+    get template(): string | RenderInfo;
     constructor(viewModel: Function);
     reload(viewModel: Function): void;
 }

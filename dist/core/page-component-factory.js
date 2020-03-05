@@ -9,8 +9,13 @@ class PageComponentFactory {
     create(registration) {
         n_defensive_1.given(registration, "registration").ensureHasValue();
         const component = {};
-        component.render = registration.template.render;
-        component.staticRenderFns = registration.template.staticRenderFns;
+        if (typeof registration.template === "string") {
+            component.template = registration.template;
+        }
+        else {
+            component.render = registration.template.render;
+            component.staticRenderFns = registration.template.staticRenderFns;
+        }
         component.inject = ["rootScopeContainer"];
         component.data = function () {
             let vueVm = this;

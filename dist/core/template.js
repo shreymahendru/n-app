@@ -6,7 +6,8 @@ require("@nivinjoseph/n-ext");
 exports.templateSymbol = Symbol("template");
 function template(template) {
     n_defensive_1.given(template, "template")
-        .ensureHasValue().ensureIsObject();
+        .ensureHasValue();
+    console.log(typeof template);
     return (target) => Reflect.defineMetadata(exports.templateSymbol, template, target);
 }
 exports.template = template;

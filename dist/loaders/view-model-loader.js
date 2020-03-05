@@ -28,6 +28,7 @@ function default_1(content) {
     const relativeViewFilePath = "./" + viewFileName;
     const id = hash(className);
     const hotReloadAPIPath = JSON.stringify(require.resolve("vue-hot-reload-api"));
+    const vueTemplateCompilerPath = JSON.stringify(require.resolve("vue-template-compiler"));
     const hotReloadCode = `
             if(module.hot)
             {
@@ -56,8 +57,10 @@ function default_1(content) {
                     // console.log("updating record", "${id}");
                 }
                 
+                const vueTemplateCompiler = require(${vueTemplateCompilerPath});
+                
                 module.hot.accept('${relativeViewFilePath}', function () {
-                    api.rerender('${id}', require('${relativeViewFilePath}'));
+                    api.rerender('${id}', vueTemplateCompiler.compileToFunctions(require('${relativeViewFilePath}')));
                     // console.log("re-rendering record", "${id}");
                 });
             }
