@@ -7,7 +7,10 @@ exports.templateSymbol = Symbol("template");
 function template(template) {
     n_defensive_1.given(template, "template")
         .ensureHasValue();
-    console.log(typeof template);
+    if (typeof template === "string")
+        n_defensive_1.given(template, "template").ensureIsString();
+    else
+        n_defensive_1.given(template, "template").ensureIsObject();
     return (target) => Reflect.defineMetadata(exports.templateSymbol, template, target);
 }
 exports.template = template;
