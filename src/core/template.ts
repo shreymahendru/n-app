@@ -11,7 +11,10 @@ export function template(template: string | object): Function
     given(template, "template")
         .ensureHasValue();
     
-    console.log(typeof template);
+    if (typeof template === "string")
+        given(template, "template").ensureIsString();
+    else
+        given(template, "template").ensureIsObject();
 
     return (target: Function) => Reflect.defineMetadata(templateSymbol, template, target);
 }
