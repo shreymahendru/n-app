@@ -5,6 +5,7 @@ const Sharp = require("sharp");
 const loaderUtils = require("loader-utils");
 const Path = require("path");
 const n_util_1 = require("@nivinjoseph/n-util");
+const imagemin = require("imagemin");
 function resize(filePath, width, height) {
     const promise = new Promise((resolve, reject) => {
         Sharp(filePath)
@@ -39,45 +40,58 @@ function default_1(content) {
     const options = loaderUtils.getOptions(this) || {};
     const context = options.context || this.rootContext;
     const limit = options.limit;
+    const callback = this.async();
+    const plugins = [
+        require("imagemin-gifsicle")({}),
+        require("imagemin-mozjpeg")({}),
+        require("imagemin-pngquant")({}),
+    ];
     if (width || height) {
-        const callback = this.async();
         resize(this.resourcePath, width, height)
             .then(resized => {
-            const size = resized.size;
-            if (limit && size > limit) {
-                const url = loaderUtils.interpolateName(this, `[contenthash].${resized.ext}`, {
-                    context,
-                    content: resized.data
-                });
-                const outputPath = url;
-                const publicPath = `__webpack_public_path__ + ${JSON.stringify(outputPath)}`;
-                this.emitFile(outputPath, resized.data);
-                callback(null, `module.exports = ${publicPath}`);
-            }
-            else {
-                const base64 = JSON.stringify("data:" + MIMES[resized.ext] + ";" + "base64," + resized.data.toString("base64"));
-                callback(null, `module.exports = ${base64}`);
-            }
+            imagemin.buffer(resized.data, { plugins })
+                .then((data) => {
+                const size = data.byteLength;
+                if (limit && size > limit) {
+                    const url = loaderUtils.interpolateName(this, `[contenthash].${resized.ext}`, {
+                        context,
+                        content: data
+                    });
+                    const outputPath = url;
+                    const publicPath = `__webpack_public_path__ + ${JSON.stringify(outputPath)}`;
+                    this.emitFile(outputPath, data);
+                    callback(null, `module.exports = ${publicPath}`);
+                }
+                else {
+                    const base64 = JSON.stringify("data:" + MIMES[resized.ext] + ";" + "base64," + data.toString("base64"));
+                    callback(null, `module.exports = ${base64}`);
+                }
+            })
+                .catch((e) => callback(e));
         })
             .catch(e => callback(e));
     }
     else {
-        const data = typeof content === "string" ? Buffer.from(content) : content;
-        const size = data.byteLength;
-        if (limit && size > limit) {
-            const url = loaderUtils.interpolateName(this, `[contenthash].${ext}`, {
-                context,
-                content: data
-            });
-            const outputPath = url;
-            const publicPath = `__webpack_public_path__ + ${JSON.stringify(outputPath)}`;
-            this.emitFile(outputPath, data);
-            return `module.exports = ${publicPath}`;
-        }
-        else {
-            const base64 = JSON.stringify("data:" + MIMES[ext] + ";" + "base64," + data.toString("base64"));
-            return `module.exports = ${base64}`;
-        }
+        const original = typeof content === "string" ? Buffer.from(content) : content;
+        imagemin.buffer(original, { plugins })
+            .then((data) => {
+            const size = data.byteLength;
+            if (limit && size > limit) {
+                const url = loaderUtils.interpolateName(this, `[contenthash].${ext}`, {
+                    context,
+                    content: data
+                });
+                const outputPath = url;
+                const publicPath = `__webpack_public_path__ + ${JSON.stringify(outputPath)}`;
+                this.emitFile(outputPath, data);
+                callback(null, `module.exports = ${publicPath}`);
+            }
+            else {
+                const base64 = JSON.stringify("data:" + MIMES[ext] + ";" + "base64," + data.toString("base64"));
+                callback(null, `module.exports = ${base64}`);
+            }
+        })
+            .catch((e) => callback(e));
     }
 }
 exports.default = default_1;
