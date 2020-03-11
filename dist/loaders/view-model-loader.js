@@ -14,6 +14,7 @@ function default_1(content) {
     const dirPath = this.context;
     const filePath = this.resourcePath;
     const fileName = filePath.replace(dirPath + "/", "");
+    console.log("fileName", fileName);
     const className = fileName.replace(".js", "").split("-").map(t => `${t[0].toUpperCase()}${t.substring(1)}`).join("");
     const componentCode = `
         ${className}.___componentOptions = ${className}.createComponentOptions(${className}, ${JSON.stringify(defaultPageTitle)}, ${JSON.stringify(defaultPageMetadata)});
@@ -54,13 +55,18 @@ function default_1(content) {
                 {
                     componentOptions.___reload = true;
                     api.reload('${id}', componentOptions);
+                    if(componentOptions.___$reload)
+                        componentOptions.___$reload(api, componentOptions);
                     // console.log("updating record", "${id}");
                 }
                 
                 const vueTemplateCompiler = require(${vueTemplateCompilerPath});
                 
                 module.hot.accept('${relativeViewFilePath}', function () {
-                    api.rerender('${id}', vueTemplateCompiler.compileToFunctions(require('${relativeViewFilePath}')));
+                    const renderFuncs = vueTemplateCompiler.compileToFunctions(require('${relativeViewFilePath}'));
+                    api.rerender('${id}', renderFuncs);
+                    if(componentOptions.___$rerender)
+                        componentOptions.___$rerender(api, renderFuncs);
                     // console.log("re-rendering record", "${id}");
                 });
             }
