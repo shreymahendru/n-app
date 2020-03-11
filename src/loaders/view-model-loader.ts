@@ -35,7 +35,7 @@ export default function (content: string)
     // console.log("dirPath", dirPath);
     // console.log("filePath", filePath);
     // console.log("relativeFilePath", relativeFilePath);
-    // console.log("fileName", fileName);
+    console.log("fileName", fileName);
     // console.log(content);
     // console.log("relativeViewFilePath", relativeViewFilePath);
     
@@ -89,13 +89,18 @@ export default function (content: string)
                 {
                     componentOptions.___reload = true;
                     api.reload('${id}', componentOptions);
+                    if(componentOptions.___$reload)
+                        componentOptions.___$reload(api, componentOptions);
                     // console.log("updating record", "${id}");
                 }
                 
                 const vueTemplateCompiler = require(${vueTemplateCompilerPath});
                 
                 module.hot.accept('${relativeViewFilePath}', function () {
-                    api.rerender('${id}', vueTemplateCompiler.compileToFunctions(require('${relativeViewFilePath}')));
+                    const renderFuncs = vueTemplateCompiler.compileToFunctions(require('${relativeViewFilePath}'));
+                    api.rerender('${id}', renderFuncs);
+                    if(componentOptions.___$rerender)
+                        componentOptions.___$rerender(api, renderFuncs);
                     // console.log("re-rendering record", "${id}");
                 });
             }
