@@ -88,9 +88,9 @@ export default function (content: string)
                 else 
                 {
                     componentOptions.___reload = true;
+                    if(componentOptions.___preReload)
+                        componentOptions.___preReload(api, componentOptions);
                     api.reload('${id}', componentOptions);
-                    if(componentOptions.___$reload)
-                        componentOptions.___$reload(api, componentOptions);
                     // console.log("updating record", "${id}");
                 }
                 
@@ -98,19 +98,21 @@ export default function (content: string)
                 
                 module.hot.accept('${relativeViewFilePath}', function () {
                     const renderFuncs = vueTemplateCompiler.compileToFunctions(require('${relativeViewFilePath}'));
+                    if(componentOptions.___preRerender)
+                        componentOptions.___preRerender(api, renderFuncs);
                     api.rerender('${id}', renderFuncs);
-                    if(componentOptions.___$rerender)
-                        componentOptions.___$rerender(api, renderFuncs);
                     // console.log("re-rendering record", "${id}");
                 });
             }
             
-            exports.${className} = ${className};
+            // exports.${className} = ${className};
         `;
 
-    content = content.replace(`exports.${className} = ${className};`, hotReloadCode);
+    // content = content.replace(`exports.${className} = ${className};`, hotReloadCode);
     
-    return content;
+    // return content;
+    
+    return content + hotReloadCode;
     
     
     
