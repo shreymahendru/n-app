@@ -14,7 +14,6 @@ function default_1(content) {
     const dirPath = this.context;
     const filePath = this.resourcePath;
     const fileName = filePath.replace(dirPath + "/", "");
-    console.log("fileName", fileName);
     const className = fileName.replace(".js", "").split("-").map(t => `${t[0].toUpperCase()}${t.substring(1)}`).join("");
     const componentCode = `
         ${className}.___componentOptions = ${className}.createComponentOptions(${className}, ${JSON.stringify(defaultPageTitle)}, ${JSON.stringify(defaultPageMetadata)});
