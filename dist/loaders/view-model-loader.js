@@ -53,9 +53,9 @@ function default_1(content) {
                 else 
                 {
                     componentOptions.___reload = true;
+                    if(componentOptions.___preReload)
+                        componentOptions.___preReload(api, componentOptions);
                     api.reload('${id}', componentOptions);
-                    if(componentOptions.___$reload)
-                        componentOptions.___$reload(api, componentOptions);
                     // console.log("updating record", "${id}");
                 }
                 
@@ -63,17 +63,16 @@ function default_1(content) {
                 
                 module.hot.accept('${relativeViewFilePath}', function () {
                     const renderFuncs = vueTemplateCompiler.compileToFunctions(require('${relativeViewFilePath}'));
+                    if(componentOptions.___preRerender)
+                        componentOptions.___preRerender(api, renderFuncs);
                     api.rerender('${id}', renderFuncs);
-                    if(componentOptions.___$rerender)
-                        componentOptions.___$rerender(api, renderFuncs);
                     // console.log("re-rendering record", "${id}");
                 });
             }
             
-            exports.${className} = ${className};
+            // exports.${className} = ${className};
         `;
-    content = content.replace(`exports.${className} = ${className};`, hotReloadCode);
-    return content;
+    return content + hotReloadCode;
 }
 exports.default = default_1;
 //# sourceMappingURL=view-model-loader.js.map
