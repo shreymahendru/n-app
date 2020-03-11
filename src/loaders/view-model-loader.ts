@@ -35,7 +35,7 @@ export default function (content: string)
     // console.log("dirPath", dirPath);
     // console.log("filePath", filePath);
     // console.log("relativeFilePath", relativeFilePath);
-    console.log("fileName", fileName);
+    // console.log("fileName", fileName);
     // console.log(content);
     // console.log("relativeViewFilePath", relativeViewFilePath);
     
