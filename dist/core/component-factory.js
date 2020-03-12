@@ -29,6 +29,7 @@ class ComponentFactory {
                 cReg._component = component.___viewModel;
                 cReg._dependencies = cReg.getDependencies();
                 registration.reload(component.___viewModel);
+                component.___reload = false;
             }
             let vm = container.resolve(registration.name);
             let data = { vm: vm };
