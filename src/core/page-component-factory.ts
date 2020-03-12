@@ -49,6 +49,8 @@ export class PageComponentFactory
                 cReg._component = component.___viewModel;
                 cReg._dependencies = cReg.getDependencies();
                 registration.reload(component.___viewModel);
+                
+                component.___reload = false;
             }
             
             container = container.createScope(); // page scope
