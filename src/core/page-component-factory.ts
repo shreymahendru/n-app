@@ -5,6 +5,7 @@ import { given } from "@nivinjoseph/n-defensive";
 import { Utilities } from "./utilities";
 import { ApplicationException } from "@nivinjoseph/n-exception";
 import * as $ from "jquery";
+import { PageHmrHelper } from "./page-hmr-helper";
 
 
 export class PageComponentFactory
@@ -34,7 +35,7 @@ export class PageComponentFactory
         
         component.data = function ()
         {
-            // console.log("INVOKED");
+            // console.log("INVOKED data");
             
             let vueVm = this;
             
@@ -48,9 +49,9 @@ export class PageComponentFactory
                 const cReg = c.componentRegistry.find(registration.name);
                 cReg._component = component.___viewModel;
                 cReg._dependencies = cReg.getDependencies();
-                registration.reload(component.___viewModel);
+                // registration.reload(component.___viewModel);
                 
-                component.___reload = false;
+                // component.___reload = false;
             }
             
             container = container.createScope(); // page scope
@@ -96,6 +97,22 @@ export class PageComponentFactory
             // console.log("executing beforeCreate");
             // console.log(this.vm);
         };
+        
+        const setDocumentMetadata = () =>
+        {
+            if (registration.title)
+                window.document.title = registration.title;
+
+            if (registration.metadata)
+            {
+                for (const key in registration.metadata)
+                {
+                    const value: string = (<any>registration.metadata)[key];
+                    $(`meta[name="${key}"]`).remove();
+                    $("head").append(`<meta name="${key}" content="${value}">`);
+                }
+            }
+        };
 
         component.created = function ()
         {
@@ -104,6 +121,16 @@ export class PageComponentFactory
 
             if (this.vm.onCreate)
                 this.vm.onCreate();
+            
+            if (component.___reload)
+            {
+                component.___reload = false;
+                setDocumentMetadata();
+                const routeArgs = PageHmrHelper.restore(registration);
+                this.vm.__routeArgs = routeArgs;
+                if (this.vm.onEnter)
+                    routeArgs.routeArgs.length > 0 ? this.vm.onEnter(...routeArgs.routeArgs, ...(registration.resolvedValues ? registration.resolvedValues : [])) : this.vm.onEnter();
+            }
         };
 
         component.beforeMount = function ()
@@ -149,21 +176,7 @@ export class PageComponentFactory
         };
         
         
-        const setDocumentMetadata = () =>
-        {
-            if (registration.title)
-                window.document.title = registration.title;
-            
-            if (registration.metadata)
-            {
-                for (const key in registration.metadata)
-                {
-                    const value: string = (<any>registration.metadata)[key];
-                    $(`meta[name="${key}"]`).remove();
-                    $("head").append(`<meta name="${key}" content="${value}">`);
-                }    
-            }    
-        };
+        
         
         
         
@@ -196,7 +209,7 @@ export class PageComponentFactory
             }
             catch (error)
             {
-                console.log(error);
+                console.error(error);
                 next(false);
                 return;
             }
@@ -207,6 +220,11 @@ export class PageComponentFactory
                 setDocumentMetadata();
                 let vm = vueModel.vm;
                 vm.__routeArgs = routeArgs;
+                // console.log("invoked on enter", routeArgs);
+                
+                if ((<any>module).hot)
+                    PageHmrHelper.track(registration, routeArgs);
+                
                 if (vm.onEnter)
                     routeArgs.routeArgs.length > 0 ? vm.onEnter(...routeArgs.routeArgs, ...(registration.resolvedValues ? registration.resolvedValues : [])) : vm.onEnter();
             });
@@ -228,7 +246,7 @@ export class PageComponentFactory
             }
             catch (error)
             {
-                console.log(error);
+                console.error(error);
                 next(false);
                 return;
             }
@@ -240,7 +258,7 @@ export class PageComponentFactory
             }
             catch (error) 
             {
-                console.log(error);
+                console.error(error);
                 fromRouteArgs = new RouteArgs({}, {}, []);
             }
 
@@ -266,6 +284,10 @@ export class PageComponentFactory
             }
             
             vm.__routeArgs = routeArgs;
+            // console.log("invoked on update", routeArgs);
+            if ((<any>module).hot)
+                PageHmrHelper.track(registration, routeArgs);
+            
             if (vm.onEnter)
                 routeArgs.routeArgs.length > 0 ? vm.onEnter(...routeArgs.routeArgs, ...(registration.resolvedValues ? registration.resolvedValues : [])) : vm.onEnter();
             

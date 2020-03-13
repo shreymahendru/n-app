@@ -8,9 +8,9 @@ type RenderInfo = { render: Function, staticRenderFns: Array<Function> };
 
 export class ViewModelRegistration
 {
-    private _name: string;
-    private _viewModel: Function;
-    private _template: string | RenderInfo;
+    private readonly _name: string;
+    private readonly _viewModel: Function;
+    private readonly _template: string | RenderInfo;
     
     
     public get name(): string { return this._name; }
@@ -35,19 +35,19 @@ export class ViewModelRegistration
     }
     
     
-    public reload(viewModel: Function): void
-    {
-        given(viewModel, "viewModel").ensureHasValue();
+    // public reload(viewModel: Function): void
+    // {
+    //     given(viewModel, "viewModel").ensureHasValue();
 
-        this._name = (" " + (<Object>viewModel).getTypeName().trim()).substr(1); // Shrey: Safari de-optimization
-        if (!this._name.endsWith("ViewModel"))
-            throw new ApplicationException(`Registered ViewModel '${this._name}' violates ViewModel naming convention.`);
+    //     this._name = (" " + (<Object>viewModel).getTypeName().trim()).substr(1); // Shrey: Safari de-optimization
+    //     if (!this._name.endsWith("ViewModel"))
+    //         throw new ApplicationException(`Registered ViewModel '${this._name}' violates ViewModel naming convention.`);
 
-        this._viewModel = viewModel;
+    //     this._viewModel = viewModel;
 
-        if (!Reflect.hasOwnMetadata(templateSymbol, this._viewModel))
-            throw new ApplicationException(`ViewModel'${this.name}' does not have @template applied.`);
+    //     if (!Reflect.hasOwnMetadata(templateSymbol, this._viewModel))
+    //         throw new ApplicationException(`ViewModel'${this.name}' does not have @template applied.`);
 
-        this._template = Reflect.getOwnMetadata(templateSymbol, this._viewModel);
-    }
+    //     this._template = Reflect.getOwnMetadata(templateSymbol, this._viewModel);
+    // }
 }

@@ -50,7 +50,7 @@ export class ComponentFactory
                 const cReg = c.componentRegistry.find(registration.name);
                 cReg._component = component.___viewModel;
                 cReg._dependencies = cReg.getDependencies();
-                registration.reload(component.___viewModel);
+                // registration.reload(component.___viewModel);
                 
                 component.___reload = false;
             }
