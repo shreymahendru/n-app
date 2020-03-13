@@ -41,29 +41,6 @@ class PageRegistration extends view_model_registration_1.ViewModelRegistration {
     get resolvers() { return this._resolvers; }
     get resolvedValues() { return this._resolvedValues; }
     set resolvedValues(value) { this._resolvedValues = value; }
-    reload(page) {
-        n_defensive_1.given(page, "page").ensureHasValue().ensureIsFunction();
-        super.reload(page);
-        if (!Reflect.hasOwnMetadata(route_1.appRouteSymbol, this.viewModel))
-            throw new n_exception_1.ApplicationException(`PageViewModel '${this.name}' does not have @route applied.`);
-        const routeData = Reflect.getOwnMetadata(route_1.appRouteSymbol, this.viewModel);
-        this._route = new route_info_1.RouteInfo(routeData.route);
-        this._redirect = routeData.redirect;
-        let title = this._title || null;
-        if (Reflect.hasOwnMetadata(title_1.titleSymbol, this.viewModel))
-            title = Reflect.getOwnMetadata(title_1.titleSymbol, this.viewModel);
-        this._title = title;
-        const metas = this._metadata ? Object.entries(this._metadata).map(t => ({ name: t[0], content: t[1] })) : [];
-        if (Reflect.hasOwnMetadata(meta_1.metaSymbol, this.viewModel))
-            metas.push(...Reflect.getOwnMetadata(meta_1.metaSymbol, this.viewModel));
-        this._metadata = metas
-            .reduce((acc, t) => {
-            acc[t.name] = t.content;
-            return acc;
-        }, {});
-        if (Reflect.hasOwnMetadata(resolve_1.resolveSymbol, this.viewModel))
-            this._resolvers = Reflect.getOwnMetadata(resolve_1.resolveSymbol, this.viewModel);
-    }
 }
 exports.PageRegistration = PageRegistration;
 //# sourceMappingURL=page-registration.js.map

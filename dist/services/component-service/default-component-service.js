@@ -35,7 +35,6 @@ class DefaultComponentService {
                 cReg._component = component.___viewModel;
                 cReg._dependencies = cReg.getDependencies();
                 component._cachedVm = null;
-                registration.reload(component.___viewModel);
                 component.___reload = false;
             }
             let vm = null;

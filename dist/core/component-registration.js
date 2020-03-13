@@ -20,17 +20,6 @@ class ComponentRegistration extends view_model_registration_1.ViewModelRegistrat
     get element() { return this._element; }
     get bindings() { return this._bindings; }
     get hasModel() { return this._hasModel; }
-    reload(component) {
-        n_defensive_1.given(component, "component").ensureHasValue();
-        super.reload(component);
-        this._bindings = new Array();
-        if (!Reflect.hasOwnMetadata(element_1.elementSymbol, this.viewModel))
-            throw new n_exception_1.ApplicationException(`ComponentViewModel '${this.name}' does not have @element applied.`);
-        this._element = Reflect.getOwnMetadata(element_1.elementSymbol, this.viewModel);
-        if (Reflect.hasOwnMetadata(bind_1.bindSymbol, this.viewModel))
-            this._bindings.push(...Reflect.getOwnMetadata(bind_1.bindSymbol, this.viewModel));
-        this._hasModel = this._bindings.some(t => t === "value");
-    }
 }
 exports.ComponentRegistration = ComponentRegistration;
 //# sourceMappingURL=component-registration.js.map

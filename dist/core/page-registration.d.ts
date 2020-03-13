@@ -1,11 +1,11 @@
 import { ViewModelRegistration } from "./view-model-registration";
 import { RouteInfo } from "./route-info";
 export declare class PageRegistration extends ViewModelRegistration {
-    private _route;
-    private _redirect;
-    private _title;
-    private _metadata;
-    private _resolvers;
+    private readonly _route;
+    private readonly _redirect;
+    private readonly _title;
+    private readonly _metadata;
+    private readonly _resolvers;
     private _resolvedValues;
     get route(): RouteInfo;
     get redirect(): string;
@@ -18,5 +18,4 @@ export declare class PageRegistration extends ViewModelRegistration {
         name: string;
         content: string;
     }>);
-    reload(page: Function): void;
 }

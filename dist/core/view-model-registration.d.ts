@@ -4,13 +4,12 @@ declare type RenderInfo = {
     staticRenderFns: Array<Function>;
 };
 export declare class ViewModelRegistration {
-    private _name;
-    private _viewModel;
-    private _template;
+    private readonly _name;
+    private readonly _viewModel;
+    private readonly _template;
     get name(): string;
     get viewModel(): Function;
     get template(): string | RenderInfo;
     constructor(viewModel: Function);
-    reload(viewModel: Function): void;
 }
 export {};
