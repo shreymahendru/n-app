@@ -25,7 +25,7 @@ export class ScoreBoardViewModel extends ComponentViewModel
     public get playerLastName(): string { return this._playerLastName; }
     public set playerLastName(value: string) { this._playerLastName = value; }
 
-    public get playerFullName(): string { return this._playerFirstName + " njjkk" + this._playerLastName; }
+    public get playerFullName(): string { return this._playerFirstName + " njj" + this._playerLastName; }
 
 
     public constructor(scopedService: ScopedService)

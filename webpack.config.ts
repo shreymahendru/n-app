@@ -234,11 +234,25 @@ module.exports = {
     entry: ["./test-app/client/app.js"],
     output: {
         filename: "client.bundle.js",
+        chunkFilename: "[name].bundle.js",
         path: path.resolve(__dirname, "test-app/client/dist"),
         publicPath: "/"
     },
     devtool: isDev ? "source-map" : false,
     optimization: {
+        // splitChunks: {
+        //     cacheGroups: {
+        //         vendor: {
+        //             test: /node_modules/,
+        //             chunks: "initial",
+        //             name: "vendor",
+        //             enforce: true
+        //         },
+        //     }
+        // },
+        splitChunks: {
+            chunks: "all"
+        },
         minimizer: [
             new UglifyJsPlugin({
                 sourceMap: false,
