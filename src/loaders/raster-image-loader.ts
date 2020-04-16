@@ -68,7 +68,7 @@ export default function (content: any)
     const options = loaderUtils.getOptions(this) || {};
     const context = options.context || this.rootContext;
 
-    const limit = options.limit;
+    // const limit = options.limit;
     const callback = this.async();
 
     const plugins = [
@@ -90,30 +90,44 @@ export default function (content: any)
                 imagemin.buffer(resized.data, { plugins })
                     .then((data: Buffer) =>
                     {
-                        const size = data.byteLength;
+                        // const size = data.byteLength;
 
                         // console.log("minified size", size);
 
-                        if (limit && size > limit)
-                        {
-                            const url = loaderUtils.interpolateName(this, `[contenthash].${resized.ext}`, {
-                                context,
-                                content: data
-                            });
+                        
+                        const url = loaderUtils.interpolateName(this, `[contenthash].${resized.ext}`, {
+                            context,
+                            content: data
+                        });
 
-                            const outputPath = url;
-                            const publicPath = `__webpack_public_path__ + ${JSON.stringify(outputPath)}`;
+                        const outputPath = url;
+                        const publicPath = `__webpack_public_path__ + ${JSON.stringify(outputPath)}`;
 
-                            this.emitFile(outputPath, data);
+                        this.emitFile(outputPath, data);
 
-                            callback(null, `module.exports = ${publicPath}`);
-                        }
-                        else
-                        {
-                            // console.log(resized.ext, resized.width, resized.height);
-                            const base64 = JSON.stringify("data:" + MIMES[resized.ext] + ";" + "base64," + data.toString("base64"));
-                            callback(null, `module.exports = ${base64}`);
-                        }
+                        callback(null, `module.exports = ${publicPath}`);
+                        
+                        
+                        // if (limit && size > limit)
+                        // {
+                        //     const url = loaderUtils.interpolateName(this, `[contenthash].${resized.ext}`, {
+                        //         context,
+                        //         content: data
+                        //     });
+
+                        //     const outputPath = url;
+                        //     const publicPath = `__webpack_public_path__ + ${JSON.stringify(outputPath)}`;
+
+                        //     this.emitFile(outputPath, data);
+
+                        //     callback(null, `module.exports = ${publicPath}`);
+                        // }
+                        // else
+                        // {
+                        //     // console.log(resized.ext, resized.width, resized.height);
+                        //     const base64 = JSON.stringify("data:" + MIMES[resized.ext] + ";" + "base64," + data.toString("base64"));
+                        //     callback(null, `module.exports = ${base64}`);
+                        // }
                     })
                     .catch((e: any) => callback(e));
             })
