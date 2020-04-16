@@ -75,21 +75,14 @@ function default_1(content) {
         const original = typeof content === "string" ? Buffer.from(content) : content;
         imagemin.buffer(original, { plugins })
             .then((data) => {
-            const size = data.byteLength;
-            if (limit && size > limit) {
-                const url = loaderUtils.interpolateName(this, `[contenthash].${ext}`, {
-                    context,
-                    content: data
-                });
-                const outputPath = url;
-                const publicPath = `__webpack_public_path__ + ${JSON.stringify(outputPath)}`;
-                this.emitFile(outputPath, data);
-                callback(null, `module.exports = ${publicPath}`);
-            }
-            else {
-                const base64 = JSON.stringify("data:" + MIMES[ext] + ";" + "base64," + data.toString("base64"));
-                callback(null, `module.exports = ${base64}`);
-            }
+            const url = loaderUtils.interpolateName(this, `[contenthash].${ext}`, {
+                context,
+                content: data
+            });
+            const outputPath = url;
+            const publicPath = `__webpack_public_path__ + ${JSON.stringify(outputPath)}`;
+            this.emitFile(outputPath, data);
+            callback(null, `module.exports = ${publicPath}`);
         })
             .catch((e) => callback(e));
     }
