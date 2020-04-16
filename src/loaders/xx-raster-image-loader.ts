@@ -2,7 +2,8 @@ import "@nivinjoseph/n-ext";
 import * as Sharp from "sharp";
 const loaderUtils = require("loader-utils");
 import * as Path from "path";
-import { TypeHelper } from "@nivinjoseph/n-util";
+import { TypeHelper, Uuid } from "@nivinjoseph/n-util";
+import { ConfigurationManager } from "@nivinjoseph/n-config";
 const imagemin = require("imagemin");
 
 
@@ -67,6 +68,8 @@ export default function (content: any)
 
     const options = loaderUtils.getOptions(this) || {};
     const context = options.context || this.rootContext;
+    
+    const isDev = ConfigurationManager.getConfig<string>("env") === "dev";
 
     // const limit = options.limit;
     const callback = this.async();
@@ -75,8 +78,8 @@ export default function (content: any)
         require("imagemin-gifsicle")({}),
         require("imagemin-mozjpeg")({}),
         // require("imagemin-svgo")({}),
-        require("imagemin-pngquant")({}),
-        // require("imagemin-optipng")({}),
+        // require("imagemin-pngquant")({}),
+        require("imagemin-optipng")({}),
         // require("imagemin-webp")({})
     ];
 
@@ -94,8 +97,9 @@ export default function (content: any)
 
                         // console.log("minified size", size);
 
-                        
-                        const url = loaderUtils.interpolateName(this, `[contenthash].${resized.ext}`, {
+
+                        const url = loaderUtils.interpolateName(this,
+                            `[contenthash]${isDev ? "" : Uuid.create()}.${resized.ext}`, {
                             context,
                             content: data
                         });
@@ -106,28 +110,6 @@ export default function (content: any)
                         this.emitFile(outputPath, data);
 
                         callback(null, `module.exports = ${publicPath}`);
-                        
-                        
-                        // if (limit && size > limit)
-                        // {
-                        //     const url = loaderUtils.interpolateName(this, `[contenthash].${resized.ext}`, {
-                        //         context,
-                        //         content: data
-                        //     });
-
-                        //     const outputPath = url;
-                        //     const publicPath = `__webpack_public_path__ + ${JSON.stringify(outputPath)}`;
-
-                        //     this.emitFile(outputPath, data);
-
-                        //     callback(null, `module.exports = ${publicPath}`);
-                        // }
-                        // else
-                        // {
-                        //     // console.log(resized.ext, resized.width, resized.height);
-                        //     const base64 = JSON.stringify("data:" + MIMES[resized.ext] + ";" + "base64," + data.toString("base64"));
-                        //     callback(null, `module.exports = ${base64}`);
-                        // }
                     })
                     .catch((e: any) => callback(e));
             })
@@ -146,7 +128,7 @@ export default function (content: any)
 
                 // console.log("minified size", size);
 
-                
+
                 const url = loaderUtils.interpolateName(this, `[contenthash].${ext}`, {
                     context,
                     content: data
@@ -158,8 +140,8 @@ export default function (content: any)
                 this.emitFile(outputPath, data);
 
                 callback(null, `module.exports = ${publicPath}`);
-                
-                
+
+
                 // if (limit && size > limit)
                 // {
                 //     const url = loaderUtils.interpolateName(this, `[contenthash].${ext}`, {
