@@ -18,6 +18,22 @@ const n_config_1 = require("@nivinjoseph/n-config");
 const default_display_service_1 = require("../services/display-service/default-display-service");
 const default_component_service_1 = require("../services/component-service/default-component-service");
 const file_select_view_model_1 = require("../components/file-select-view-model");
+let makeHot;
+if (module.hot) {
+    makeHot = function (options) {
+        const api = require("vue-hot-reload-api");
+        api.install(require("@nivinjoseph/vue"));
+        if (!api.compatible)
+            throw new Error("vue-hot-reload-api is not compatible with the version of Vue you are using.");
+        module.hot.accept();
+        if (!api.isRecorded("ClientAppRoot")) {
+            api.createRecord("ClientAppRoot", options);
+        }
+        else {
+            api.reload("ClientAppRoot", options);
+        }
+    };
+}
 class ClientApp {
     constructor(appElementId, rootComponentElement) {
         this._isBootstrapped = false;
@@ -135,7 +151,7 @@ class ClientApp {
     }
     configureRoot() {
         const container = this._container;
-        this._app = new Vue({
+        const componentOptions = {
             el: this._appElementId,
             render: (createElement) => createElement(this._rootComponentElement),
             router: this._pageManager.vueRouterInstance,
@@ -144,7 +160,12 @@ class ClientApp {
                     rootScopeContainer: container
                 };
             }
-        });
+        };
+        if (makeHot) {
+            makeHot(componentOptions);
+            console.log(`🔥 Hot Reload enabled`);
+        }
+        this._app = new Vue(componentOptions);
     }
 }
 exports.ClientApp = ClientApp;
