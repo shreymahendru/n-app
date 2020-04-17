@@ -45,7 +45,7 @@
     },
     "homepage": "https://github.com/nivinjoseph/n-app#readme",
     "devDependencies": {
-        "@nivinjoseph/n-web": "^3.2.39",
+        "@nivinjoseph/n-web": "^3.2.41",
         "@types/mocha": "^5.2.7",
         "@types/node": "^12.12.17",
         "@types/sharp": "^0.24.0",
