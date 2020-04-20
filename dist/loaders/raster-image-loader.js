@@ -12,6 +12,7 @@ function resize(filePath, width, height) {
         if (width || height)
             s = s.resize(width, height);
         s
+            .jpeg({ quality: 70 })
             .toBuffer((err, buf, info) => {
             err ? reject(err) : resolve({
                 ext: info.format.toLowerCase(),
