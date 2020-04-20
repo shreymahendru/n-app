@@ -72,7 +72,7 @@ export default function (content: any)
     const context = options.context || this.rootContext;
 
     const limit = options.urlEncodeLimit;
-    console.log("LIMIT", limit);
+    // console.log("LIMIT", limit);
     const callback = this.async();
 
     const plugins = [
