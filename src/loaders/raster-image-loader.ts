@@ -25,7 +25,7 @@ function resize(filePath: string, width: number, height: number): Promise<Resize
             s = s.resize(width, height);
 
         s
-            .webp()
+            // .webp()
             .toBuffer((err: any, buf: any, info) =>
             {
                 err ? reject(err) : resolve({
