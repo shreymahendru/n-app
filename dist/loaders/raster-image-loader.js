@@ -8,8 +8,11 @@ const n_util_1 = require("@nivinjoseph/n-util");
 const imagemin = require("imagemin");
 function resize(filePath, width, height) {
     const promise = new Promise((resolve, reject) => {
-        Sharp(filePath)
-            .resize(width, height)
+        let s = Sharp(filePath);
+        if (width || height)
+            s = s.resize(width, height);
+        s
+            .webp()
             .toBuffer((err, buf, info) => {
             err ? reject(err) : resolve({
                 ext: info.format.toLowerCase(),
@@ -44,30 +47,13 @@ function default_1(content) {
         require("imagemin-gifsicle")({}),
         require("imagemin-mozjpeg")({}),
         require("imagemin-pngquant")({}),
+        require("imagemin-webp")({})
     ];
-    if (width || height) {
-        resize(this.resourcePath, width, height)
-            .then(resized => {
-            imagemin.buffer(resized.data, { plugins })
-                .then((data) => {
-                const url = loaderUtils.interpolateName(this, `[contenthash].${resized.ext}`, {
-                    context,
-                    content: data
-                });
-                const outputPath = url;
-                const publicPath = `__webpack_public_path__ + ${JSON.stringify(outputPath)}`;
-                this.emitFile(outputPath, data);
-                callback(null, `module.exports = ${publicPath}`);
-            })
-                .catch((e) => callback(e));
-        })
-            .catch(e => callback(e));
-    }
-    else {
-        const original = typeof content === "string" ? Buffer.from(content) : content;
-        imagemin.buffer(original, { plugins })
+    resize(this.resourcePath, width, height)
+        .then(resized => {
+        imagemin.buffer(resized.data, { plugins })
             .then((data) => {
-            const url = loaderUtils.interpolateName(this, `[contenthash].${ext}`, {
+            const url = loaderUtils.interpolateName(this, `[contenthash].${resized.ext}`, {
                 context,
                 content: data
             });
@@ -77,7 +63,8 @@ function default_1(content) {
             callback(null, `module.exports = ${publicPath}`);
         })
             .catch((e) => callback(e));
-    }
+    })
+        .catch(e => callback(e));
 }
 exports.default = default_1;
 exports.raw = true;
