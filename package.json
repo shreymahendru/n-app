@@ -25,7 +25,8 @@
         "webpack-build-watch": "npm run webpack-build -- -w",
         "nodemon": "nodemon --ignore src/ --ignore test/ --ignore test-app/client/ --inspect=4001 ./test-app/main.js env=dev",
         "predev": "npm run ts-build",
-        "dev": "npm run ts-build-watch & npm run webpack-build-watch & npm run nodemon",
+        "x-dev": "npm run ts-build-watch & npm run nodemon",
+        "dev": "concurrently \"npm:ts-build-watch\" \"npm:nodemon\"",
         "build": "npm run ts-build && env=prod npm run webpack-build",
         "start": "node ./test-app/main.js env=prod"
     },
@@ -45,11 +46,12 @@
     },
     "homepage": "https://github.com/nivinjoseph/n-app#readme",
     "devDependencies": {
-        "@nivinjoseph/n-web": "^3.2.41",
+        "@nivinjoseph/n-web": "^3.2.42",
         "@types/mocha": "^5.2.7",
         "@types/node": "^12.12.17",
         "@types/sharp": "^0.24.0",
         "@types/toastr": "^2.1.37",
+        "concurrently": "^5.1.0",
         "feather-icons": "^4.26.0",
         "mocha": "^6.2.2",
         "nodemon": "^2.0.2",

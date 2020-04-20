@@ -17,44 +17,62 @@ const isDev = env === "dev";
 const moduleRules: Array<any> = [
     {
         test: /\.(scss|sass)$/,
-        use: [{
-            loader: isDev ? "style-loader" : MiniCssExtractPlugin.loader
-        }, {
-            loader: "css-loader" // translates CSS into CommonJS
-        }, {
-            loader: "postcss-loader", // postcss
-            options: {
-                plugins: () => [
-                    require("postcss-flexbugs-fixes"),
-                    autoprefixer({
-                        // browsers: [
-                        //     ">1%",
-                        //     "not ie < 9"
-                        // ],
-                        flexbox: "no-2009"
-                    })
-                ]
-            }
-        }, {
-            loader: "sass-loader" // compiles Sass to CSS -> depends on node-sass
-        }]
+        use: [
+            // {
+            //     loader: isDev ? "style-loader" : MiniCssExtractPlugin.loader
+            // },
+            {
+                loader: MiniCssExtractPlugin.loader,
+                options: {
+                    hmr: isDev,
+                    reloadAll: false
+                }
+            },
+            {
+                loader: "css-loader" // translates CSS into CommonJS
+            }, {
+                loader: "postcss-loader", // postcss
+                options: {
+                    plugins: () => [
+                        require("postcss-flexbugs-fixes"),
+                        autoprefixer({
+                            // browsers: [
+                            //     ">1%",
+                            //     "not ie < 9"
+                            // ],
+                            flexbox: "no-2009"
+                        })
+                    ]
+                }
+            }, {
+                loader: "sass-loader" // compiles Sass to CSS -> depends on node-sass
+            }]
     },
     {
         test: /\.css$/,
-        use: [{
-            loader: isDev ? "style-loader" : MiniCssExtractPlugin.loader
-        }, {
-            loader: "css-loader" // translates CSS into CommonJS
-        }]
+        use: [
+            // {
+            //     loader: isDev ? "style-loader" : MiniCssExtractPlugin.loader
+            // },
+            {
+                loader: MiniCssExtractPlugin.loader,
+                options: {
+                    hmr: isDev,
+                    reloadAll: false
+                }
+            },
+            {
+                loader: "css-loader" // translates CSS into CommonJS
+            }]
     },
     {
         test: /\.(png|jpg|jpeg|gif)$/,
         use: [
             {
                 loader: path.resolve("src/loaders/raster-image-loader.js"),
-                options: {
-                    limit: isDev ? 9000000 : 900000
-                }
+                // options: {
+                //     limit: isDev ? 9000000 : 900000
+                // }
             }
         ]
     },
@@ -124,12 +142,12 @@ const moduleRules: Array<any> = [
                     esModule: false
                 }
             } : {
-                loader: "url-loader",
-                options: {
-                    limit: 9000,
-                    fallback: "file-loader"
+                    loader: "url-loader",
+                    options: {
+                        limit: 9000,
+                        fallback: "file-loader"
+                    }
                 }
-            }
         ]
     },
     // {
@@ -155,7 +173,7 @@ const moduleRules: Array<any> = [
                     defaultPageMetadata: [
                         { name: "description", content: "this is the default description" }
                     ]
-                 }
+                }
             }
         ]
     },
@@ -164,12 +182,12 @@ const moduleRules: Array<any> = [
         exclude: [path.resolve(__dirname, "test-app/controllers")],
         use: [
             ...(isDev ? [] :
-            [{
-                loader: "vue-loader/lib/loaders/templateLoader.js"
-            },
-            {
-                loader: path.resolve("src/loaders/view-loader.js")
-            }]),
+                [{
+                    loader: "vue-loader/lib/loaders/templateLoader.js"
+                },
+                {
+                    loader: path.resolve("src/loaders/view-loader.js")
+                }]),
             {
                 loader: "html-loader",
                 options: {
@@ -188,6 +206,7 @@ const plugins = [
         hash: true,
         favicon: "test-app/client/images/favicon.png"
     }),
+    new MiniCssExtractPlugin({}),
     new webpack.DefinePlugin({
         APP_CONFIG: JSON.stringify({})
     })
@@ -223,9 +242,9 @@ else
     });
 
     plugins.push(...[
-        new MiniCssExtractPlugin({
-            filename: "client.bundle.css"
-        }),
+        // new MiniCssExtractPlugin({
+        //     filename: "client.bundle.css"
+        // }),
         new CompressionPlugin({
             test: /\.(js|css|svg)$/
         })

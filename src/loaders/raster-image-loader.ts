@@ -20,9 +20,12 @@ function resize(filePath: string, width: number, height: number): Promise<Resize
 {
     const promise = new Promise<ResizedImage>((resolve, reject) =>
     {
-        Sharp(filePath)
-            // .resize(width, height, {fit: "inside"})
-            .resize(width, height)
+        let s = Sharp(filePath);
+        if (width || height)
+            s = s.resize(width, height);
+
+        s
+            .webp()
             .toBuffer((err: any, buf: any, info) =>
             {
                 err ? reject(err) : resolve({
@@ -77,111 +80,174 @@ export default function (content: any)
         // require("imagemin-svgo")({}),
         require("imagemin-pngquant")({}),
         // require("imagemin-optipng")({}),
-        // require("imagemin-webp")({})
+        require("imagemin-webp")({})
     ];
 
-    if (width || height)
-    {
-        resize(this.resourcePath, width, height)
-            .then(resized =>
-            {
-                // console.log("resized size", resized.size);
+    resize(this.resourcePath, width, height)
+        .then(resized =>
+        {
+            // console.log("resized size", resized.size);
 
-                imagemin.buffer(resized.data, { plugins })
-                    .then((data: Buffer) =>
-                    {
-                        // const size = data.byteLength;
+            // const url = loaderUtils.interpolateName(this, `[contenthash].${resized.ext}`, {
+            //     context,
+            //     content: resized.data
+            // });
 
-                        // console.log("minified size", size);
+            // const outputPath = url;
+            // const publicPath = `__webpack_public_path__ + ${JSON.stringify(outputPath)}`;
 
-                        
-                        const url = loaderUtils.interpolateName(this, `[contenthash].${resized.ext}`, {
-                            context,
-                            content: data
-                        });
+            // this.emitFile(outputPath, resized.data);
 
-                        const outputPath = url;
-                        const publicPath = `__webpack_public_path__ + ${JSON.stringify(outputPath)}`;
+            // callback(null, `module.exports = ${publicPath}`);
+            
+            imagemin.buffer(resized.data, { plugins })
+                .then((data: Buffer) =>
+                {
+                    // const size = data.byteLength;
 
-                        this.emitFile(outputPath, data);
+                    // console.log("minified size", size);
 
-                        callback(null, `module.exports = ${publicPath}`);
-                        
-                        
-                        // if (limit && size > limit)
-                        // {
-                        //     const url = loaderUtils.interpolateName(this, `[contenthash].${resized.ext}`, {
-                        //         context,
-                        //         content: data
-                        //     });
 
-                        //     const outputPath = url;
-                        //     const publicPath = `__webpack_public_path__ + ${JSON.stringify(outputPath)}`;
+                    const url = loaderUtils.interpolateName(this, `[contenthash].${resized.ext}`, {
+                        context,
+                        content: data
+                    });
 
-                        //     this.emitFile(outputPath, data);
+                    const outputPath = url;
+                    const publicPath = `__webpack_public_path__ + ${JSON.stringify(outputPath)}`;
 
-                        //     callback(null, `module.exports = ${publicPath}`);
-                        // }
-                        // else
-                        // {
-                        //     // console.log(resized.ext, resized.width, resized.height);
-                        //     const base64 = JSON.stringify("data:" + MIMES[resized.ext] + ";" + "base64," + data.toString("base64"));
-                        //     callback(null, `module.exports = ${base64}`);
-                        // }
-                    })
-                    .catch((e: any) => callback(e));
-            })
-            .catch(e => callback(e));
-    }
-    else
-    {
-        const original = typeof content === "string" ? Buffer.from(content) : content as Buffer;
+                    this.emitFile(outputPath, data);
 
-        // console.log("original size", original.byteLength);
+                    callback(null, `module.exports = ${publicPath}`);
 
-        imagemin.buffer(original, { plugins })
-            .then((data: Buffer) =>
-            {
-                // const size = data.byteLength;
 
-                // console.log("minified size", size);
+                    // if (limit && size > limit)
+                    // {
+                    //     const url = loaderUtils.interpolateName(this, `[contenthash].${resized.ext}`, {
+                    //         context,
+                    //         content: data
+                    //     });
 
-                
-                const url = loaderUtils.interpolateName(this, `[contenthash].${ext}`, {
-                    context,
-                    content: data
-                });
+                    //     const outputPath = url;
+                    //     const publicPath = `__webpack_public_path__ + ${JSON.stringify(outputPath)}`;
 
-                const outputPath = url;
-                const publicPath = `__webpack_public_path__ + ${JSON.stringify(outputPath)}`;
+                    //     this.emitFile(outputPath, data);
 
-                this.emitFile(outputPath, data);
+                    //     callback(null, `module.exports = ${publicPath}`);
+                    // }
+                    // else
+                    // {
+                    //     // console.log(resized.ext, resized.width, resized.height);
+                    //     const base64 = JSON.stringify("data:" + MIMES[resized.ext] + ";" + "base64," + data.toString("base64"));
+                    //     callback(null, `module.exports = ${base64}`);
+                    // }
+                })
+                .catch((e: any) => callback(e));
+        })
+        .catch(e => callback(e));
 
-                callback(null, `module.exports = ${publicPath}`);
-                
-                
-                // if (limit && size > limit)
-                // {
-                //     const url = loaderUtils.interpolateName(this, `[contenthash].${ext}`, {
-                //         context,
-                //         content: data
-                //     });
+    // if (width || height)
+    // {
+    //     resize(this.resourcePath, width, height)
+    //         .then(resized =>
+    //         {
+    //             // console.log("resized size", resized.size);
 
-                //     const outputPath = url;
-                //     const publicPath = `__webpack_public_path__ + ${JSON.stringify(outputPath)}`;
+    //             imagemin.buffer(resized.data, { plugins })
+    //                 .then((data: Buffer) =>
+    //                 {
+    //                     // const size = data.byteLength;
 
-                //     this.emitFile(outputPath, data);
+    //                     // console.log("minified size", size);
 
-                //     callback(null, `module.exports = ${publicPath}`);
-                // }
-                // else
-                // {
-                //     const base64 = JSON.stringify("data:" + MIMES[ext] + ";" + "base64," + data.toString("base64"));
-                //     callback(null, `module.exports = ${base64}`);
-                // }
-            })
-            .catch((e: any) => callback(e));
-    }
+
+    //                     const url = loaderUtils.interpolateName(this, `[contenthash].${resized.ext}`, {
+    //                         context,
+    //                         content: data
+    //                     });
+
+    //                     const outputPath = url;
+    //                     const publicPath = `__webpack_public_path__ + ${JSON.stringify(outputPath)}`;
+
+    //                     this.emitFile(outputPath, data);
+
+    //                     callback(null, `module.exports = ${publicPath}`);
+
+
+    //                     // if (limit && size > limit)
+    //                     // {
+    //                     //     const url = loaderUtils.interpolateName(this, `[contenthash].${resized.ext}`, {
+    //                     //         context,
+    //                     //         content: data
+    //                     //     });
+
+    //                     //     const outputPath = url;
+    //                     //     const publicPath = `__webpack_public_path__ + ${JSON.stringify(outputPath)}`;
+
+    //                     //     this.emitFile(outputPath, data);
+
+    //                     //     callback(null, `module.exports = ${publicPath}`);
+    //                     // }
+    //                     // else
+    //                     // {
+    //                     //     // console.log(resized.ext, resized.width, resized.height);
+    //                     //     const base64 = JSON.stringify("data:" + MIMES[resized.ext] + ";" + "base64," + data.toString("base64"));
+    //                     //     callback(null, `module.exports = ${base64}`);
+    //                     // }
+    //                 })
+    //                 .catch((e: any) => callback(e));
+    //         })
+    //         .catch(e => callback(e));
+    // }
+    // else
+    // {
+    //     const original = typeof content === "string" ? Buffer.from(content) : content as Buffer;
+
+    //     // console.log("original size", original.byteLength);
+
+    //     imagemin.buffer(original, { plugins })
+    //         .then((data: Buffer) =>
+    //         {
+    //             // const size = data.byteLength;
+
+    //             // console.log("minified size", size);
+
+
+    //             const url = loaderUtils.interpolateName(this, `[contenthash].${ext}`, {
+    //                 context,
+    //                 content: data
+    //             });
+
+    //             const outputPath = url;
+    //             const publicPath = `__webpack_public_path__ + ${JSON.stringify(outputPath)}`;
+
+    //             this.emitFile(outputPath, data);
+
+    //             callback(null, `module.exports = ${publicPath}`);
+
+
+    //             // if (limit && size > limit)
+    //             // {
+    //             //     const url = loaderUtils.interpolateName(this, `[contenthash].${ext}`, {
+    //             //         context,
+    //             //         content: data
+    //             //     });
+
+    //             //     const outputPath = url;
+    //             //     const publicPath = `__webpack_public_path__ + ${JSON.stringify(outputPath)}`;
+
+    //             //     this.emitFile(outputPath, data);
+
+    //             //     callback(null, `module.exports = ${publicPath}`);
+    //             // }
+    //             // else
+    //             // {
+    //             //     const base64 = JSON.stringify("data:" + MIMES[ext] + ";" + "base64," + data.toString("base64"));
+    //             //     callback(null, `module.exports = ${base64}`);
+    //             // }
+    //         })
+    //         .catch((e: any) => callback(e));
+    // }
 }
 
 export const raw = true;

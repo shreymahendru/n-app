@@ -11,4 +11,14 @@
     {
         height: 100px;
     }
+    
+    .with-background
+    {
+        height: 800px;
+        background-repeat: no-repeat;
+        background-size: cover;
+        background-position-x: center;
+        background-position-y: center;
+        background-image: url("./images/carousel-1-background.png");
+    }
 }
