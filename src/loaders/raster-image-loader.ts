@@ -122,8 +122,14 @@ export default function (content: any)
                     // callback(null, `module.exports = ${publicPath}`);
 
 
-                    if (limit && size > limit)
+                    if (limit && size <= limit)
                     {
+                        // console.log(resized.ext, resized.width, resized.height);
+                        const base64 = JSON.stringify("data:" + MIMES[resized.ext] + ";" + "base64," + data.toString("base64"));
+                        callback(null, `module.exports = ${base64}`);   
+                    }
+                    else
+                    {    
                         const url = loaderUtils.interpolateName(this, `[contenthash].${resized.ext}`, {
                             context,
                             content: data
@@ -135,12 +141,6 @@ export default function (content: any)
                         this.emitFile(outputPath, data);
 
                         callback(null, `module.exports = ${publicPath}`);
-                    }
-                    else
-                    {
-                        // console.log(resized.ext, resized.width, resized.height);
-                        const base64 = JSON.stringify("data:" + MIMES[resized.ext] + ";" + "base64," + data.toString("base64"));
-                        callback(null, `module.exports = ${base64}`);
                     }
                 })
                 .catch((e: any) => callback(e));
