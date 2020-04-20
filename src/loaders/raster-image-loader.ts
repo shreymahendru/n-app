@@ -16,7 +16,7 @@ interface ResizedImage
     data: Buffer;
 }
 
-function resize(filePath: string, width: number, height: number): Promise<ResizedImage>
+function resize(filePath: string, width: number, height: number, format: string): Promise<ResizedImage>
 {
     const promise = new Promise<ResizedImage>((resolve, reject) =>
     {
@@ -24,10 +24,10 @@ function resize(filePath: string, width: number, height: number): Promise<Resize
         if (width || height)
             s = s.resize(width, height);
 
-        s
-            // .webp()
-            .jpeg({quality: 70})
-            .toBuffer((err: any, buf: any, info) =>
+        if (format === "jpeg")
+            s = s.jpeg({ quality: 70 });
+        
+        s.toBuffer((err: any, buf: any, info) =>
             {
                 err ? reject(err) : resolve({
                     // name: fileName.endsWith(info.format) ? fileName : fileName + "." + info.format,
@@ -67,7 +67,7 @@ export default function (content: any)
         .filter(t => ["width", "height"].contains(t))
         .forEach(t => parsedResourceQuery[t] = TypeHelper.parseNumber(parsedResourceQuery[t]));
 
-    const { width, height } = parsedResourceQuery;
+    const { width, height, format } = parsedResourceQuery;
 
     const options = loaderUtils.getOptions(this) || {};
     const context = options.context || this.rootContext;
@@ -85,7 +85,7 @@ export default function (content: any)
         // require("imagemin-webp")({})
     ];
 
-    resize(this.resourcePath, width, height)
+    resize(this.resourcePath, width, height, format)
         .then(resized =>
         {
             // console.log("resized size", resized.size);
