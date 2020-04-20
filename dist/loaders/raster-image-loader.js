@@ -12,7 +12,6 @@ function resize(filePath, width, height) {
         if (width || height)
             s = s.resize(width, height);
         s
-            .webp()
             .toBuffer((err, buf, info) => {
             err ? reject(err) : resolve({
                 ext: info.format.toLowerCase(),
