@@ -26,6 +26,7 @@ function resize(filePath: string, width: number, height: number): Promise<Resize
 
         s
             // .webp()
+            .jpeg({quality: 70})
             .toBuffer((err: any, buf: any, info) =>
             {
                 err ? reject(err) : resolve({

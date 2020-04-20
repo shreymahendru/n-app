@@ -70,9 +70,9 @@ const moduleRules: Array<any> = [
         use: [
             {
                 loader: path.resolve("src/loaders/raster-image-loader.js"),
-                options: {
-                    urlEncodeLimit: isDev ? 9000000000 : 900000
-                }
+                // options: {
+                //     urlEncodeLimit: isDev ? 9000000000 : 900000
+                // }
             }
         ]
     },
