@@ -6,14 +6,14 @@ const loaderUtils = require("loader-utils");
 const Path = require("path");
 const n_util_1 = require("@nivinjoseph/n-util");
 const imagemin = require("imagemin");
-function resize(filePath, width, height) {
+function resize(filePath, width, height, format) {
     const promise = new Promise((resolve, reject) => {
         let s = Sharp(filePath);
         if (width || height)
             s = s.resize(width, height);
-        s
-            .jpeg({ quality: 70 })
-            .toBuffer((err, buf, info) => {
+        if (format === "jpeg")
+            s = s.jpeg({ quality: 70 });
+        s.toBuffer((err, buf, info) => {
             err ? reject(err) : resolve({
                 ext: info.format.toLowerCase(),
                 width: info.width,
@@ -39,7 +39,7 @@ function default_1(content) {
     Object.keys(parsedResourceQuery)
         .filter(t => ["width", "height"].contains(t))
         .forEach(t => parsedResourceQuery[t] = n_util_1.TypeHelper.parseNumber(parsedResourceQuery[t]));
-    const { width, height } = parsedResourceQuery;
+    const { width, height, format } = parsedResourceQuery;
     const options = loaderUtils.getOptions(this) || {};
     const context = options.context || this.rootContext;
     const limit = options.urlEncodeLimit;
@@ -49,7 +49,7 @@ function default_1(content) {
         require("imagemin-mozjpeg")({}),
         require("imagemin-pngquant")({}),
     ];
-    resize(this.resourcePath, width, height)
+    resize(this.resourcePath, width, height, format)
         .then(resized => {
         imagemin.buffer(resized.data, { plugins })
             .then((data) => {
