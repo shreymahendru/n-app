@@ -42,7 +42,6 @@ function default_1(content) {
     const options = loaderUtils.getOptions(this) || {};
     const context = options.context || this.rootContext;
     const limit = options.urlEncodeLimit;
-    console.log("LIMIT", limit);
     const callback = this.async();
     const plugins = [
         require("imagemin-gifsicle")({}),
