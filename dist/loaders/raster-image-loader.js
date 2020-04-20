@@ -53,7 +53,11 @@ function default_1(content) {
         imagemin.buffer(resized.data, { plugins })
             .then((data) => {
             const size = data.byteLength;
-            if (limit && size > limit) {
+            if (limit && size <= limit) {
+                const base64 = JSON.stringify("data:" + MIMES[resized.ext] + ";" + "base64," + data.toString("base64"));
+                callback(null, `module.exports = ${base64}`);
+            }
+            else {
                 const url = loaderUtils.interpolateName(this, `[contenthash].${resized.ext}`, {
                     context,
                     content: data
@@ -62,10 +66,6 @@ function default_1(content) {
                 const publicPath = `__webpack_public_path__ + ${JSON.stringify(outputPath)}`;
                 this.emitFile(outputPath, data);
                 callback(null, `module.exports = ${publicPath}`);
-            }
-            else {
-                const base64 = JSON.stringify("data:" + MIMES[resized.ext] + ";" + "base64," + data.toString("base64"));
-                callback(null, `module.exports = ${base64}`);
             }
         })
             .catch((e) => callback(e));
