@@ -41,25 +41,33 @@ function default_1(content) {
     const { width, height } = parsedResourceQuery;
     const options = loaderUtils.getOptions(this) || {};
     const context = options.context || this.rootContext;
+    const limit = options.urlEncodeLimit;
+    console.log("LIMIT", limit);
     const callback = this.async();
     const plugins = [
         require("imagemin-gifsicle")({}),
         require("imagemin-mozjpeg")({}),
         require("imagemin-pngquant")({}),
-        require("imagemin-webp")({})
     ];
     resize(this.resourcePath, width, height)
         .then(resized => {
         imagemin.buffer(resized.data, { plugins })
             .then((data) => {
-            const url = loaderUtils.interpolateName(this, `[contenthash].${resized.ext}`, {
-                context,
-                content: data
-            });
-            const outputPath = url;
-            const publicPath = `__webpack_public_path__ + ${JSON.stringify(outputPath)}`;
-            this.emitFile(outputPath, data);
-            callback(null, `module.exports = ${publicPath}`);
+            const size = data.byteLength;
+            if (limit && size > limit) {
+                const url = loaderUtils.interpolateName(this, `[contenthash].${resized.ext}`, {
+                    context,
+                    content: data
+                });
+                const outputPath = url;
+                const publicPath = `__webpack_public_path__ + ${JSON.stringify(outputPath)}`;
+                this.emitFile(outputPath, data);
+                callback(null, `module.exports = ${publicPath}`);
+            }
+            else {
+                const base64 = JSON.stringify("data:" + MIMES[resized.ext] + ";" + "base64," + data.toString("base64"));
+                callback(null, `module.exports = ${base64}`);
+            }
         })
             .catch((e) => callback(e));
     })
