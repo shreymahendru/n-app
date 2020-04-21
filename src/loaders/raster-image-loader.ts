@@ -16,7 +16,7 @@ interface ResizedImage
     data: Buffer;
 }
 
-function resize(filePath: string, width: number, height: number, format: string): Promise<ResizedImage>
+function resize(filePath: string, width: number, height: number, format: string, jpegQuality: number): Promise<ResizedImage>
 {
     const promise = new Promise<ResizedImage>((resolve, reject) =>
     {
@@ -25,7 +25,7 @@ function resize(filePath: string, width: number, height: number, format: string)
             s = s.resize(width, height);
 
         if (format === "jpeg")
-            s = s.jpeg({ quality: 70 });
+            s = s.jpeg({ quality: jpegQuality });
         
         s.toBuffer((err: any, buf: any, info) =>
             {
@@ -73,19 +73,21 @@ export default function (content: any)
     const context = options.context || this.rootContext;
 
     const limit = options.urlEncodeLimit;
+    const jpegQuality = options.jpegQuality || 80;
+    const pngQuality = Number.parseFloat(((options.pngQuality || 80) / 100).toFixed(1));
     // console.log("LIMIT", limit);
     const callback = this.async();
 
     const plugins = [
         require("imagemin-gifsicle")({}),
-        require("imagemin-mozjpeg")({}),
+        require("imagemin-mozjpeg")({quality: jpegQuality}),
         // require("imagemin-svgo")({}),
-        require("imagemin-pngquant")({}),
+        require("imagemin-pngquant")({quality: [pngQuality, pngQuality]}),
         // require("imagemin-optipng")({}),
         // require("imagemin-webp")({})
     ];
 
-    resize(this.resourcePath, width, height, format)
+    resize(this.resourcePath, width, height, format, jpegQuality)
         .then(resized =>
         {
             // console.log("resized size", resized.size);
