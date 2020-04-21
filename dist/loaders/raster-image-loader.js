@@ -6,13 +6,13 @@ const loaderUtils = require("loader-utils");
 const Path = require("path");
 const n_util_1 = require("@nivinjoseph/n-util");
 const imagemin = require("imagemin");
-function resize(filePath, width, height, format) {
+function resize(filePath, width, height, format, jpegQuality) {
     const promise = new Promise((resolve, reject) => {
         let s = Sharp(filePath);
         if (width || height)
             s = s.resize(width, height);
         if (format === "jpeg")
-            s = s.jpeg({ quality: 70 });
+            s = s.jpeg({ quality: jpegQuality });
         s.toBuffer((err, buf, info) => {
             err ? reject(err) : resolve({
                 ext: info.format.toLowerCase(),
@@ -43,13 +43,15 @@ function default_1(content) {
     const options = loaderUtils.getOptions(this) || {};
     const context = options.context || this.rootContext;
     const limit = options.urlEncodeLimit;
+    const jpegQuality = options.jpegQuality || 80;
+    const pngQuality = Number.parseFloat(((options.pngQuality || 80) / 100).toFixed(1));
     const callback = this.async();
     const plugins = [
         require("imagemin-gifsicle")({}),
-        require("imagemin-mozjpeg")({}),
-        require("imagemin-pngquant")({}),
+        require("imagemin-mozjpeg")({ quality: jpegQuality }),
+        require("imagemin-pngquant")({ quality: [pngQuality, pngQuality] }),
     ];
-    resize(this.resourcePath, width, height, format)
+    resize(this.resourcePath, width, height, format, jpegQuality)
         .then(resized => {
         imagemin.buffer(resized.data, { plugins })
             .then((data) => {
