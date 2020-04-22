@@ -1,14 +1,16 @@
-import { route, template, DialogService, EventAggregator, NavigationService, StorageService, title } from "./../../../../src/index";
+import { route, template, DialogService, EventAggregator, NavigationService, StorageService, title, components } from "./../../../../src/index";
 import * as Routes from "./../routes";
 import { BasePageViewModel } from "./../base-page-view-model";
 import { inject } from "@nivinjoseph/n-ject";
 import "./dashboard-view.scss";
 import { ScopedService } from "../../services/scoped-service";
+import { BindingTestViewModel } from "../../components/binding-test/binding-test-view-model";
 
 
 @template(require("./dashboard-view.html"))
 @route(Routes.dashboard)  
 @title("Dashboard")    
+@components(BindingTestViewModel)
 @inject("DialogService", "EventAggregator", "NavigationService", "StorageService", "ScopedService")    
 export class DashboardViewModel extends BasePageViewModel
 {

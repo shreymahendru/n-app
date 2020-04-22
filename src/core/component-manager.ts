@@ -42,7 +42,7 @@ export class ComponentManager
     
     private registerComponent(componentViewModelClass: Function): void
     {
-        let registration = new ComponentRegistration(componentViewModelClass);
+        const registration = new ComponentRegistration(componentViewModelClass);
         
         if (this._registrations.some(t => t.name === registration.name))
             throw new ApplicationException(`Duplicate Component registration with name '${registration.name}'.`);
@@ -52,5 +52,8 @@ export class ComponentManager
         
         this._registrations.push(registration);
         this._container.registerTransient(registration.name, registration.viewModel);
+        
+        if (registration.components && registration.components.isNotEmpty)
+            this.registerComponents(...registration.components);
     }
 }

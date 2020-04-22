@@ -81,7 +81,7 @@ export class ClientApp
         this._container = new Container();
         this._componentManager = new ComponentManager(Vue, this._container);
         this._componentManager.registerComponents(FileSelectViewModel);
-        this._pageManager = new PageManager(VueRouter, this._container);
+        this._pageManager = new PageManager(VueRouter, this._container, this._componentManager);
 
         Vue.config.silent = false;
         Vue.config.devtools = false;
@@ -203,8 +203,8 @@ export class ClientApp
             throw new InvalidOperationException("bootstrap");
 
         this.configureGlobalConfig();
-        this.configureComponents();
         this.configurePages();
+        this.configureComponents();
         this.configureCoreServices();
         this.configureContainer();
         this.configureRoot();

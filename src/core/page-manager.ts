@@ -5,12 +5,14 @@ import { ApplicationException } from "@nivinjoseph/n-exception";
 import { Page } from "./page";
 import { PageTreeBuilder } from "./page-tree-builder";
 import { Resolver, Resolution } from "./resolve";
+import { ComponentManager } from "./component-manager";
 
 
 export class PageManager
 {
     private readonly _vueRouter: any;
     private readonly _container: Container;
+    private readonly _componentManager: ComponentManager;
     private readonly _pageViewModelClasses = new Array<Function>();
     private readonly _registrations = new Array<PageRegistration>();
     private readonly _resolvers = new Array<string>();
@@ -26,12 +28,16 @@ export class PageManager
     public get vueRouterInstance(): any { return this._vueRouterInstance; }
 
 
-    public constructor(vueRouter: any, container: Container)
+    public constructor(vueRouter: any, container: Container, componentManager: ComponentManager)
     {
         given(vueRouter, "vueRouter").ensureHasValue();
-        given(container, "container").ensureHasValue();
         this._vueRouter = vueRouter;
+        
+        given(container, "container").ensureHasValue().ensureIsObject();
         this._container = container;
+        
+        given(componentManager, "componentManager").ensureHasValue().ensureIsObject();
+        this._componentManager = componentManager;
     }
 
 
@@ -99,7 +105,7 @@ export class PageManager
 
         this._registrations.push(registration);
         this._container.registerTransient(registration.name, registration.viewModel);
-        if (registration.resolvers && registration.resolvers.length > 0)
+        if (registration.resolvers && registration.resolvers.isNotEmpty)
             registration.resolvers.forEach(t =>
             {
                 if (this._resolvers.contains(t.name))
@@ -108,6 +114,9 @@ export class PageManager
                 this._container.registerTransient(t.name, t.value);
                 this._resolvers.push(t.name);
             });
+        
+        if (registration.components && registration.components.isNotEmpty)
+            this._componentManager.registerComponents(...registration.components);
     }
 
     private createRouting(): void

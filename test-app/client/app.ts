@@ -12,7 +12,7 @@ import { ListTodosViewModel } from "./pages/todo/list-todos/list-todos-view-mode
 import { CreateTodoViewModel } from "./pages/todo/create-todo/create-todo-view-model";
 import { UpdateTodoViewModel } from "./pages/todo/update-todo/update-todo-view-model";
 import * as Routes from "./pages/routes";
-import { BindingTestViewModel } from "./components/binding-test/binding-test-view-model";
+// import { BindingTestViewModel } from "./components/binding-test/binding-test-view-model";
 import { ScopedService } from "./services/scoped-service";
 
 
@@ -41,7 +41,7 @@ const pages = [DashboardViewModel, TestViewModel, TodoViewModel, ListTodosViewMo
 const app = new ClientApp("#app", "router-view")
     .useAccentColor("#7ab53b")
     .useInstaller(new Installer())
-    .registerComponents(ScoreBoardViewModel, BindingTestViewModel)
+    .registerComponents(ScoreBoardViewModel)
     .registerPages(...pages)
     .useHistoryModeRouting()
     .useAsInitialRoute(Routes.dashboard)
