@@ -44,7 +44,7 @@ class ClientApp {
         this._container = new n_ject_1.Container();
         this._componentManager = new component_manager_1.ComponentManager(Vue, this._container);
         this._componentManager.registerComponents(file_select_view_model_1.FileSelectViewModel);
-        this._pageManager = new page_manager_1.PageManager(vue_router_1.default, this._container);
+        this._pageManager = new page_manager_1.PageManager(vue_router_1.default, this._container, this._componentManager);
         Vue.config.silent = false;
         Vue.config.devtools = false;
         Vue.config.performance = false;
@@ -102,8 +102,8 @@ class ClientApp {
         if (this._isBootstrapped)
             throw new n_exception_1.InvalidOperationException("bootstrap");
         this.configureGlobalConfig();
-        this.configureComponents();
         this.configurePages();
+        this.configureComponents();
         this.configureCoreServices();
         this.configureContainer();
         this.configureRoot();

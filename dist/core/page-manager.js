@@ -15,7 +15,7 @@ const n_exception_1 = require("@nivinjoseph/n-exception");
 const page_1 = require("./page");
 const page_tree_builder_1 = require("./page-tree-builder");
 class PageManager {
-    constructor(vueRouter, container) {
+    constructor(vueRouter, container, componentManager) {
         this._pageViewModelClasses = new Array();
         this._registrations = new Array();
         this._resolvers = new Array();
@@ -26,9 +26,11 @@ class PageManager {
         this._defaultPageMetas = null;
         this._useHistoryMode = false;
         n_defensive_1.given(vueRouter, "vueRouter").ensureHasValue();
-        n_defensive_1.given(container, "container").ensureHasValue();
         this._vueRouter = vueRouter;
+        n_defensive_1.given(container, "container").ensureHasValue().ensureIsObject();
         this._container = container;
+        n_defensive_1.given(componentManager, "componentManager").ensureHasValue().ensureIsObject();
+        this._componentManager = componentManager;
     }
     get useHistoryMode() { return this._useHistoryMode; }
     get vueRouterInstance() { return this._vueRouterInstance; }
@@ -61,13 +63,15 @@ class PageManager {
             throw new n_exception_1.ApplicationException(`Route conflict detected for Page registration with name '${registration.name}'`);
         this._registrations.push(registration);
         this._container.registerTransient(registration.name, registration.viewModel);
-        if (registration.resolvers && registration.resolvers.length > 0)
+        if (registration.resolvers && registration.resolvers.isNotEmpty)
             registration.resolvers.forEach(t => {
                 if (this._resolvers.contains(t.name))
                     return;
                 this._container.registerTransient(t.name, t.value);
                 this._resolvers.push(t.name);
             });
+        if (registration.components && registration.components.isNotEmpty)
+            this._componentManager.registerComponents(...registration.components);
     }
     createRouting() {
         let pageTree = this.createPageTree();

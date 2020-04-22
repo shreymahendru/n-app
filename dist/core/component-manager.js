@@ -21,13 +21,15 @@ class ComponentManager {
         });
     }
     registerComponent(componentViewModelClass) {
-        let registration = new component_registration_1.ComponentRegistration(componentViewModelClass);
+        const registration = new component_registration_1.ComponentRegistration(componentViewModelClass);
         if (this._registrations.some(t => t.name === registration.name))
             throw new n_exception_1.ApplicationException(`Duplicate Component registration with name '${registration.name}'.`);
         if (this._registrations.some(t => t.element === registration.element))
             throw new n_exception_1.ApplicationException(`Duplicate Component registration with element '${registration.element}'`);
         this._registrations.push(registration);
         this._container.registerTransient(registration.name, registration.viewModel);
+        if (registration.components && registration.components.isNotEmpty)
+            this.registerComponents(...registration.components);
     }
 }
 exports.ComponentManager = ComponentManager;
