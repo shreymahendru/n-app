@@ -6,6 +6,7 @@ import { meta } from "./core/meta";
 import { route } from "./core/route";
 import { bind } from "./core/bind";
 import { components } from "./core/components";
+import { pages } from "./core/pages";
 import { ComponentViewModel } from "./core/component-view-model";
 import { PageViewModel } from "./core/page-view-model";
 import { Utils } from "./core/utils";
@@ -20,4 +21,4 @@ import { ComponentOptions } from "./services/component-service/component-options
 import { resolve, Resolution, Resolver } from "./core/resolve";
 import { NavRoute } from "./core/nav-route";
 import { FileInfo } from "./components/file-select-view-model";
-export { Vue, ClientApp, element, route, template, title, meta, bind, components, ComponentViewModel, PageViewModel, Utils, StorageService, EventAggregator, EventSubscription, NavigationService, DialogService, DisplayService, DisplayType, ComponentService, ComponentOptions, resolve, Resolver, NavRoute, Resolution, FileInfo };
+export { Vue, ClientApp, element, route, template, title, meta, bind, components, pages, ComponentViewModel, PageViewModel, Utils, StorageService, EventAggregator, EventSubscription, NavigationService, DialogService, DisplayService, DisplayType, ComponentService, ComponentOptions, resolve, Resolver, NavRoute, Resolution, FileInfo };

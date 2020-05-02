@@ -8,6 +8,7 @@ const route_info_1 = require("./route-info");
 const title_1 = require("./title");
 const meta_1 = require("./meta");
 const resolve_1 = require("./resolve");
+const pages_1 = require("./pages");
 class PageRegistration extends view_model_registration_1.ViewModelRegistration {
     constructor(page, defaultPageTitle, defaultPageMetas) {
         n_defensive_1.given(page, "page").ensureHasValue().ensureIsFunction();
@@ -33,12 +34,15 @@ class PageRegistration extends view_model_registration_1.ViewModelRegistration {
         }, {});
         if (Reflect.hasOwnMetadata(resolve_1.resolveSymbol, this.viewModel))
             this._resolvers = Reflect.getOwnMetadata(resolve_1.resolveSymbol, this.viewModel);
+        if (Reflect.hasOwnMetadata(pages_1.pagesSymbol, this.viewModel))
+            this._pages = Reflect.getOwnMetadata(pages_1.pagesSymbol, this.viewModel);
     }
     get route() { return this._route; }
     get redirect() { return this._redirect; }
     get title() { return this._title; }
     get metadata() { return this._metadata; }
     get resolvers() { return this._resolvers; }
+    get pages() { return this._pages; }
     get resolvedValues() { return this._resolvedValues; }
     set resolvedValues(value) { this._resolvedValues = value; }
 }
