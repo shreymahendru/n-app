@@ -7,10 +7,10 @@ import { ScopedService } from "../../services/scoped-service";
 import { BindingTestViewModel } from "../../components/binding-test/binding-test-view-model";
 
 
+@components(BindingTestViewModel)
 @template(require("./dashboard-view.html"))
 @route(Routes.dashboard)  
 @title("Dashboard")    
-@components(BindingTestViewModel)
 @inject("DialogService", "EventAggregator", "NavigationService", "StorageService", "ScopedService")    
 export class DashboardViewModel extends BasePageViewModel
 {

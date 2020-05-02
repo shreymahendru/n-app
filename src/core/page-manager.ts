@@ -117,6 +117,9 @@ export class PageManager
         
         if (registration.components && registration.components.isNotEmpty)
             this._componentManager.registerComponents(...registration.components);
+        
+        if (registration.pages && registration.pages.isNotEmpty)
+            registration.pages.forEach(t => this.registerPage(t));
     }
 
     private createRouting(): void

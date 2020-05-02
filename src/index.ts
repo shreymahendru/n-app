@@ -6,6 +6,7 @@ import { meta } from "./core/meta";
 import { route } from "./core/route";
 import { bind } from "./core/bind";
 import { components } from "./core/components";
+import { pages } from "./core/pages";
 import { ComponentViewModel } from "./core/component-view-model";
 import { PageViewModel } from "./core/page-view-model";
 import { Utils } from "./core/utils";
@@ -32,6 +33,7 @@ export
     meta,
     bind,
     components,
+    pages,
     ComponentViewModel,
     PageViewModel,
     Utils,

@@ -8,9 +8,6 @@ import { InmemoryTodoRepository } from "./services/todo-repository/inmemory-todo
 import { DashboardViewModel } from "./pages/dashboard/dashboard-view-model";
 import { TestViewModel } from "./pages/test/test-view-model";
 import { TodoViewModel } from "./pages/todo/todo-view-model";
-import { ListTodosViewModel } from "./pages/todo/list-todos/list-todos-view-model";
-import { CreateTodoViewModel } from "./pages/todo/create-todo/create-todo-view-model";
-import { UpdateTodoViewModel } from "./pages/todo/update-todo/update-todo-view-model";
 import * as Routes from "./pages/routes";
 // import { BindingTestViewModel } from "./components/binding-test/binding-test-view-model";
 import { ScopedService } from "./services/scoped-service";
@@ -35,7 +32,7 @@ class Installer implements ComponentInstaller
     }
 }    
 
-const pages = [DashboardViewModel, TestViewModel, TodoViewModel, ListTodosViewModel, CreateTodoViewModel, UpdateTodoViewModel];
+const pages = [DashboardViewModel, TestViewModel, TodoViewModel];
 // const pages = [DashboardViewModel, TestViewModel];
 
 const app = new ClientApp("#app", "router-view")
