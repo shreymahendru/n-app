@@ -4,6 +4,7 @@ require("@nivinjoseph/n-ext");
 const n_config_1 = require("@nivinjoseph/n-config");
 const hash = require("hash-sum");
 const loaderUtils = require("loader-utils");
+const Path = require("path");
 function default_1(content) {
     if (!content.contains("__decorate"))
         return content;
@@ -13,7 +14,7 @@ function default_1(content) {
         ({ defaultPageTitle, defaultPageMetadata } = options);
     const dirPath = this.context;
     const filePath = this.resourcePath;
-    const fileName = filePath.replace(dirPath + "/", "");
+    const fileName = filePath.replace(dirPath + Path.sep, "");
     const className = fileName.replace(".js", "").split("-").map(t => `${t[0].toUpperCase()}${t.substring(1)}`).join("");
     const componentCode = `
         ${className}.___componentOptions = ${className}.createComponentOptions(${className}, ${JSON.stringify(defaultPageTitle)}, ${JSON.stringify(defaultPageMetadata)});
@@ -25,7 +26,7 @@ function default_1(content) {
     if (n_config_1.ConfigurationManager.getConfig("env") !== "dev")
         return content;
     const viewFileName = fileName.replace("-view-model.js", "-view.html");
-    const relativeViewFilePath = "./" + viewFileName;
+    const relativeViewFilePath = "." + Path.sep + viewFileName;
     const id = hash(className);
     const hotReloadAPIPath = JSON.stringify(require.resolve("vue-hot-reload-api"));
     const vueTemplateCompilerPath = JSON.stringify(require.resolve("vue-template-compiler"));
