@@ -2,7 +2,7 @@ import "@nivinjoseph/n-ext";
 import { ConfigurationManager } from "@nivinjoseph/n-config";
 const hash = require("hash-sum");
 const loaderUtils = require("loader-utils");
-// import * as Path from "path";
+import * as Path from "path";
 
 
 // tslint:disable-next-line: no-default-export
@@ -28,7 +28,7 @@ export default function (content: string)
     const dirPath = this.context as string;
     const filePath = this.resourcePath as string;
     // const relativeFilePath = "./" + Path.relative(this.rootContext, this.resourcePath).replace(/^(\.\.[\/\\])+/, "");
-    const fileName = filePath.replace(dirPath + "/", "");
+    const fileName = filePath.replace(dirPath + Path.sep, "");
     
 
     
@@ -58,7 +58,7 @@ export default function (content: string)
         return content;
     
     const viewFileName = fileName.replace("-view-model.js", "-view.html");
-    const relativeViewFilePath = "./" + viewFileName;
+    const relativeViewFilePath = "." + Path.sep + viewFileName;
     // const relativeViewFilePath = relativeFilePath.substr(0, relativeFilePath.length - "-view-model.js".length) + "-view.html";
     
     const id = hash(className);
