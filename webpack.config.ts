@@ -298,7 +298,11 @@ module.exports = {
                     keep_classnames: true,
                     keep_fnames: true,
                     safari10: true,
-                }
+                    output: {
+                        comments: false
+                    }
+                },
+                extractComments: false
             }),
             new OptimizeCSSAssetsPlugin({})
         ]
