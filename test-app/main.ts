@@ -3,7 +3,7 @@ import { IndexController } from "./controllers/index-controller";
 import { ConfigurationManager } from "@nivinjoseph/n-config";
 
 
-const app = new WebApp(ConfigurationManager.getConfig<number>("port"));
+const app = new WebApp(ConfigurationManager.getConfig<number>("port"), null);
 
 app
     .enableWebPackDevMiddleware()

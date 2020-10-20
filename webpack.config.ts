@@ -2,7 +2,8 @@ const path = require("path");
 const autoprefixer = require("autoprefixer");
 const htmlWebpackPlugin = require("html-webpack-plugin");
 const { CleanWebpackPlugin } = require("clean-webpack-plugin");
-const UglifyJsPlugin = require("uglifyjs-webpack-plugin");
+// const UglifyJsPlugin = require("uglifyjs-webpack-plugin");
+const TerserPlugin = require("terser-webpack-plugin");
 const MiniCssExtractPlugin = require("mini-css-extract-plugin");
 const OptimizeCSSAssetsPlugin = require("optimize-css-assets-webpack-plugin");
 const CompressionPlugin = require("compression-webpack-plugin");
@@ -33,16 +34,18 @@ const moduleRules: Array<any> = [
             }, {
                 loader: "postcss-loader", // postcss
                 options: {
-                    plugins: () => [
-                        require("postcss-flexbugs-fixes"),
-                        autoprefixer({
-                            // browsers: [
-                            //     ">1%",
-                            //     "not ie < 9"
-                            // ],
-                            flexbox: "no-2009"
-                        })
-                    ]
+                    postcssOptions: {
+                        plugins: [
+                            "postcss-flexbugs-fixes",
+                            autoprefixer({
+                                // browsers: [
+                                //     ">1%",
+                                //     "not ie < 9"
+                                // ],
+                                flexbox: "no-2009"
+                            })
+                        ]
+                    }
                 }
             }, {
                 loader: "sass-loader" // compiles Sass to CSS -> depends on node-sass
@@ -192,9 +195,9 @@ const moduleRules: Array<any> = [
                 }]),
             {
                 loader: "html-loader",
-                options: {
-                    attrs: ["img:src", "use:xlink:href"]
-                }
+                // options: {
+                //     attrs: ["img:src", "use:xlink:href"]
+                // }
             }
         ]
     },
@@ -279,15 +282,22 @@ module.exports = {
             chunks: "all"
         },
         minimizer: [
-            new UglifyJsPlugin({
-                sourceMap: false,
-                uglifyOptions: {
+            // new UglifyJsPlugin({
+            //     sourceMap: false,
+            //     uglifyOptions: {
+            //         keep_classnames: true,
+            //         keep_fnames: true,
+            //         safari10: true,
+            //         output: {
+            //             comments: false
+            //         }
+            //     }
+            // }),
+            new TerserPlugin({
+                terserOptions: {
                     keep_classnames: true,
                     keep_fnames: true,
                     safari10: true,
-                    output: {
-                        comments: false
-                    }
                 }
             }),
             new OptimizeCSSAssetsPlugin({})
