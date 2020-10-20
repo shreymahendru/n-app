@@ -1,5 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
+exports.DefaultDisplayService = void 0;
 const display_type_1 = require("./display-type");
 const $ = require("jquery");
 class DefaultDisplayService {

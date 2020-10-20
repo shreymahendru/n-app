@@ -1,5 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
+exports.PageHmrHelper = void 0;
 const page_registration_1 = require("./page-registration");
 const route_args_1 = require("./route-args");
 const n_defensive_1 = require("@nivinjoseph/n-defensive");

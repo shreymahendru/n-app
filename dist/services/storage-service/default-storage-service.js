@@ -1,5 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
+exports.DefaultStorageService = void 0;
 const n_defensive_1 = require("@nivinjoseph/n-defensive");
 class DefaultStorageService {
     persist(key, value) {

@@ -9,6 +9,7 @@ var __metadata = (this && this.__metadata) || function (k, v) {
     if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
 };
 Object.defineProperty(exports, "__esModule", { value: true });
+exports.FileSelectViewModel = void 0;
 const template_1 = require("../core/template");
 const element_1 = require("../core/element");
 const bind_1 = require("../core/bind");

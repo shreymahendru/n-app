@@ -1,5 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
+exports.ClientApp = exports.Vue = void 0;
 const Vue = require("vue");
 exports.Vue = Vue;
 const vue_router_1 = require("vue-router");

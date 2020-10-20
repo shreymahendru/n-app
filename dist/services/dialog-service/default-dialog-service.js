@@ -1,5 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
+exports.DefaultDialogService = void 0;
 const Toastr = require("./../../../vendor/toastr.js");
 if (!Toastr)
     console.log("No Toastr!!!");

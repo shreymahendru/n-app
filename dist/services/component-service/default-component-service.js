@@ -1,5 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
+exports.DefaultComponentService = void 0;
 const n_defensive_1 = require("@nivinjoseph/n-defensive");
 const view_model_registration_1 = require("../../core/view-model-registration");
 const n_exception_1 = require("@nivinjoseph/n-exception");

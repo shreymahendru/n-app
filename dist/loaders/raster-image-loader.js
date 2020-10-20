@@ -1,5 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
+exports.raw = void 0;
 require("@nivinjoseph/n-ext");
 const Sharp = require("sharp");
 const loaderUtils = require("loader-utils");

@@ -1,5 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
+exports.PageRegistration = void 0;
 const n_defensive_1 = require("@nivinjoseph/n-defensive");
 const view_model_registration_1 = require("./view-model-registration");
 const route_1 = require("./route");
