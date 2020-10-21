@@ -71,7 +71,6 @@ const moduleRules: Array<any> = [
     {
         test: /\.(png|jpg|jpeg|gif)$/,
         use: [
-            // "file-loader",
             {
                 loader: "url-loader",
                 options: {
@@ -204,9 +203,9 @@ const moduleRules: Array<any> = [
                 }]),
             {
                 loader: "html-loader",
-                // options: {
-                //     attrs: ["img:src", "use:xlink:href"]
-                // }
+                options: {
+                    attrs: ["img:src", "use:xlink:href"]
+                }
             }
         ]
     },
