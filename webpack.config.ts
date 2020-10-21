@@ -71,6 +71,15 @@ const moduleRules: Array<any> = [
     {
         test: /\.(png|jpg|jpeg|gif)$/,
         use: [
+            // "file-loader",
+            {
+                loader: "url-loader",
+                options: {
+                    limit: 9000,
+                    fallback: "file-loader",
+                    esModule: false
+                }
+            },
             {
                 loader: path.resolve("src/loaders/raster-image-loader.js"),
                 options: {

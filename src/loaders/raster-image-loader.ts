@@ -16,28 +16,28 @@ interface ResizedImage
     data: Buffer;
 }
 
-function resize(filePath: string, width: number, height: number, format: string, jpegQuality: number): Promise<ResizedImage>
+function resize(data: Buffer, width: number, height: number, format: string, jpegQuality: number): Promise<ResizedImage>
 {
     const promise = new Promise<ResizedImage>((resolve, reject) =>
     {
-        let s = Sharp(filePath);
+        let s = Sharp(data);
         if (width || height)
             s = s.resize(width, height);
 
         if (format === "jpeg")
             s = s.jpeg({ quality: jpegQuality });
-        
+
         s.toBuffer((err: any, buf: any, info) =>
-            {
-                err ? reject(err) : resolve({
-                    // name: fileName.endsWith(info.format) ? fileName : fileName + "." + info.format,
-                    ext: info.format.toLowerCase(),
-                    width: info.width,
-                    height: info.height,
-                    size: info.size,
-                    data: buf
-                });
+        {
+            err ? reject(err) : resolve({
+                // name: fileName.endsWith(info.format) ? fileName : fileName + "." + info.format,
+                ext: info.format.toLowerCase(),
+                width: info.width,
+                height: info.height,
+                size: info.size,
+                data: buf
             });
+        });
     });
 
     // We could optionally optimize the image here using
@@ -47,10 +47,11 @@ function resize(filePath: string, width: number, height: number, format: string,
 }
 
 
-// @ts-ignore
-// tslint:disable-next-line: no-default-export
-export default function (content: any)
+
+module.exports = function (content: any)
 {
+    this.cacheable && this.cacheable();
+    
     const MIMES: { [index: string]: string } = {
         "jpg": "image/jpeg",
         "jpeg": "image/jpeg",
@@ -70,9 +71,9 @@ export default function (content: any)
     const { width, height, format } = parsedResourceQuery;
 
     const options = loaderUtils.getOptions(this) || {};
-    const context = options.context || this.rootContext;
+    // const context = options.context || this.rootContext;
 
-    const limit = options.urlEncodeLimit;
+    // const limit = options.urlEncodeLimit;
     const jpegQuality = options.jpegQuality || 80;
     const pngQuality = Number.parseFloat(((options.pngQuality || 80) / 100).toFixed(1));
     // console.log("LIMIT", limit);
@@ -80,178 +81,17 @@ export default function (content: any)
 
     const plugins = [
         require("imagemin-gifsicle")({}),
-        require("imagemin-mozjpeg")({quality: jpegQuality}),
+        require("imagemin-mozjpeg")({ quality: jpegQuality }),
         // require("imagemin-svgo")({}),
-        require("imagemin-pngquant")({quality: [pngQuality, pngQuality]}),
+        require("imagemin-pngquant")({ quality: [pngQuality, pngQuality] }),
         // require("imagemin-optipng")({}),
         // require("imagemin-webp")({})
     ];
 
-    resize(this.resourcePath, width, height, format, jpegQuality)
-        .then(resized =>
-        {
-            // console.log("resized size", resized.size);
-
-            // const url = loaderUtils.interpolateName(this, `[contenthash].${resized.ext}`, {
-            //     context,
-            //     content: resized.data
-            // });
-
-            // const outputPath = url;
-            // const publicPath = `__webpack_public_path__ + ${JSON.stringify(outputPath)}`;
-
-            // this.emitFile(outputPath, resized.data);
-
-            // callback(null, `module.exports = ${publicPath}`);
-            
-            imagemin.buffer(resized.data, { plugins })
-                .then((data: Buffer) =>
-                {
-                    const size = data.byteLength;
-
-                    // console.log("minified size", size);
-
-
-                    // const url = loaderUtils.interpolateName(this, `[contenthash].${resized.ext}`, {
-                    //     context,
-                    //     content: data
-                    // });
-
-                    // const outputPath = url;
-                    // const publicPath = `__webpack_public_path__ + ${JSON.stringify(outputPath)}`;
-
-                    // this.emitFile(outputPath, data);
-
-                    // callback(null, `module.exports = ${publicPath}`);
-
-
-                    if (limit && size <= limit)
-                    {
-                        // console.log(resized.ext, resized.width, resized.height);
-                        const base64 = JSON.stringify("data:" + MIMES[resized.ext] + ";" + "base64," + data.toString("base64"));
-                        callback(null, `module.exports = ${base64}`);   
-                    }
-                    else
-                    {    
-                        const url = loaderUtils.interpolateName(this, `[contenthash].${resized.ext}`, {
-                            context,
-                            content: data
-                        });
-
-                        const outputPath = url;
-                        const publicPath = `__webpack_public_path__ + ${JSON.stringify(outputPath)}`;
-
-                        this.emitFile(outputPath, data);
-
-                        callback(null, `module.exports = ${publicPath}`);
-                    }
-                })
-                .catch((e: any) => callback(e));
-        })
+    resize(content, width, height, format, jpegQuality)
+        .then(resized => imagemin.buffer(resized.data, { plugins }))
+        .then(data => callback(null, data))
         .catch(e => callback(e));
+};
 
-    // if (width || height)
-    // {
-    //     resize(this.resourcePath, width, height)
-    //         .then(resized =>
-    //         {
-    //             // console.log("resized size", resized.size);
-
-    //             imagemin.buffer(resized.data, { plugins })
-    //                 .then((data: Buffer) =>
-    //                 {
-    //                     // const size = data.byteLength;
-
-    //                     // console.log("minified size", size);
-
-
-    //                     const url = loaderUtils.interpolateName(this, `[contenthash].${resized.ext}`, {
-    //                         context,
-    //                         content: data
-    //                     });
-
-    //                     const outputPath = url;
-    //                     const publicPath = `__webpack_public_path__ + ${JSON.stringify(outputPath)}`;
-
-    //                     this.emitFile(outputPath, data);
-
-    //                     callback(null, `module.exports = ${publicPath}`);
-
-
-    //                     // if (limit && size > limit)
-    //                     // {
-    //                     //     const url = loaderUtils.interpolateName(this, `[contenthash].${resized.ext}`, {
-    //                     //         context,
-    //                     //         content: data
-    //                     //     });
-
-    //                     //     const outputPath = url;
-    //                     //     const publicPath = `__webpack_public_path__ + ${JSON.stringify(outputPath)}`;
-
-    //                     //     this.emitFile(outputPath, data);
-
-    //                     //     callback(null, `module.exports = ${publicPath}`);
-    //                     // }
-    //                     // else
-    //                     // {
-    //                     //     // console.log(resized.ext, resized.width, resized.height);
-    //                     //     const base64 = JSON.stringify("data:" + MIMES[resized.ext] + ";" + "base64," + data.toString("base64"));
-    //                     //     callback(null, `module.exports = ${base64}`);
-    //                     // }
-    //                 })
-    //                 .catch((e: any) => callback(e));
-    //         })
-    //         .catch(e => callback(e));
-    // }
-    // else
-    // {
-    //     const original = typeof content === "string" ? Buffer.from(content) : content as Buffer;
-
-    //     // console.log("original size", original.byteLength);
-
-    //     imagemin.buffer(original, { plugins })
-    //         .then((data: Buffer) =>
-    //         {
-    //             // const size = data.byteLength;
-
-    //             // console.log("minified size", size);
-
-
-    //             const url = loaderUtils.interpolateName(this, `[contenthash].${ext}`, {
-    //                 context,
-    //                 content: data
-    //             });
-
-    //             const outputPath = url;
-    //             const publicPath = `__webpack_public_path__ + ${JSON.stringify(outputPath)}`;
-
-    //             this.emitFile(outputPath, data);
-
-    //             callback(null, `module.exports = ${publicPath}`);
-
-
-    //             // if (limit && size > limit)
-    //             // {
-    //             //     const url = loaderUtils.interpolateName(this, `[contenthash].${ext}`, {
-    //             //         context,
-    //             //         content: data
-    //             //     });
-
-    //             //     const outputPath = url;
-    //             //     const publicPath = `__webpack_public_path__ + ${JSON.stringify(outputPath)}`;
-
-    //             //     this.emitFile(outputPath, data);
-
-    //             //     callback(null, `module.exports = ${publicPath}`);
-    //             // }
-    //             // else
-    //             // {
-    //             //     const base64 = JSON.stringify("data:" + MIMES[ext] + ";" + "base64," + data.toString("base64"));
-    //             //     callback(null, `module.exports = ${base64}`);
-    //             // }
-    //         })
-    //         .catch((e: any) => callback(e));
-    // }
-}
-
-export const raw = true;
+module.exports.raw = true;
