@@ -57,7 +57,7 @@ class PageManager {
         this.configureResolves();
     }
     registerPage(pageViewModelClass) {
-        let registration = new page_registration_1.PageRegistration(pageViewModelClass, this._defaultPageTitle, this._defaultPageMetas);
+        const registration = new page_registration_1.PageRegistration(pageViewModelClass, this._defaultPageTitle, this._defaultPageMetas);
         if (this._registrations.some(t => t.name === registration.name))
             throw new n_exception_1.ApplicationException(`Duplicate Page registration with name '${registration.name}'.`);
         if (this._registrations.some(t => t.route.routeKey === registration.route.routeKey))

@@ -28,11 +28,7 @@ class PageRegistration extends view_model_registration_1.ViewModelRegistration {
         const metas = defaultPageMetas ? [...defaultPageMetas] : [];
         if (Reflect.hasOwnMetadata(meta_1.metaSymbol, this.viewModel))
             metas.push(...Reflect.getOwnMetadata(meta_1.metaSymbol, this.viewModel));
-        this._metadata = metas
-            .reduce((acc, t) => {
-            acc[t.name] = t.content;
-            return acc;
-        }, {});
+        this._metadata = metas;
         if (Reflect.hasOwnMetadata(resolve_1.resolveSymbol, this.viewModel))
             this._resolvers = Reflect.getOwnMetadata(resolve_1.resolveSymbol, this.viewModel);
         if (Reflect.hasOwnMetadata(pages_1.pagesSymbol, this.viewModel))

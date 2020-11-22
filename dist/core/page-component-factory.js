@@ -65,11 +65,10 @@ class PageComponentFactory {
             if (registration.title)
                 window.document.title = registration.title;
             if (registration.metadata) {
-                for (const key in registration.metadata) {
-                    const value = registration.metadata[key];
-                    $(`meta[name="${key}"]`).remove();
-                    $("head").append(`<meta name="${key}" content="${value}">`);
-                }
+                registration.metadata.forEach((metadata) => {
+                    $(`meta[${metadata.$key}="${metadata[metadata.$key]}"]`).remove();
+                    $("head").append(`<meta ${Object.keys(metadata).where(t => t !== "$key").map(t => `${t}="${metadata[t]}"`).join(" ")}>`);
+                });
             }
         };
         component.created = function () {
