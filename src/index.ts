@@ -2,7 +2,7 @@ import { Vue, ClientApp } from "./core/client-app";
 import { element } from "./core/element";
 import { template } from "./core/template";
 import { title } from "./core/title";
-import { meta } from "./core/meta";
+import { meta, MetaDetail } from "./core/meta";
 import { route } from "./core/route";
 import { bind } from "./core/bind";
 import { components } from "./core/components";
@@ -30,7 +30,7 @@ export
     route,
     template,
     title,
-    meta,
+    meta, MetaDetail as metaDetail,
     bind,
     components,
     pages,

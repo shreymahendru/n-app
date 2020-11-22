@@ -105,12 +105,12 @@ export class PageComponentFactory
 
             if (registration.metadata)
             {
-                for (const key in registration.metadata)
+                registration.metadata.forEach((metadata) =>
                 {
-                    const value: string = (<any>registration.metadata)[key];
-                    $(`meta[name="${key}"]`).remove();
-                    $("head").append(`<meta name="${key}" content="${value}">`);
-                }
+                    $(`meta[${metadata.$key}="${metadata[metadata.$key]}"]`).remove();
+                    
+                    $("head").append(`<meta ${Object.keys(metadata).where(t => t !== "$key").map(t => `${t}="${metadata[t]}"`).join(" ")}>`);
+                });
             }
         };
 

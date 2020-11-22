@@ -11,7 +11,7 @@ import { TestResolverBar } from "../../resolvers/test-resolver-bar";
 
 @template(require("./test-view.html"))
 @route(Routes.test)
-@meta({name: "description", content: "This is test"})    
+@meta({$key: "name", name: "description", content: "This is test"})    
 @inject("TodoRepository", "NavigationService", "EventAggregator")    
 @resolve(TestResolverBar, TestResolverFoo) 
 export class TestViewModel extends BasePageViewModel

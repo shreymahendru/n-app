@@ -6,7 +6,10 @@ import "@nivinjoseph/n-ext";
 export const metaSymbol = Symbol("meta");
 
 // public
-export function meta(...metas: Array<{ name: string; content: string; }>): Function
+export type MetaDetail = { $key: string } & { [index: string]: string };
+
+// public
+export function meta(...metas: ReadonlyArray<MetaDetail>): Function
 {
     given(metas, "metas")
         .ensureHasValue()

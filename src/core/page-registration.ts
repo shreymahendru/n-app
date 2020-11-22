@@ -4,7 +4,7 @@ import { appRouteSymbol } from "./route";
 import { ApplicationException } from "@nivinjoseph/n-exception";
 import { RouteInfo } from "./route-info";
 import { titleSymbol } from "./title";
-import { metaSymbol } from "./meta";
+import { metaSymbol, MetaDetail } from "./meta";
 // import { authorizeSymbol } from "./authorize";
 import { resolveSymbol } from "./resolve";
 import { pagesSymbol } from "./pages";
@@ -15,7 +15,7 @@ export class PageRegistration extends ViewModelRegistration
     private readonly _route: RouteInfo;
     private readonly _redirect: string;
     private readonly _title: string;
-    private readonly _metadata: object;
+    private readonly _metadata: ReadonlyArray<MetaDetail>;
     private readonly _resolvers: ReadonlyArray<any>;
     private readonly _pages: ReadonlyArray<Function>;
     
@@ -25,7 +25,7 @@ export class PageRegistration extends ViewModelRegistration
     public get route(): RouteInfo { return this._route; }
     public get redirect(): string { return this._redirect; }
     public get title(): string { return this._title; }
-    public get metadata(): object { return this._metadata; }
+    public get metadata(): ReadonlyArray<MetaDetail> { return this._metadata; }
     public get resolvers(): ReadonlyArray<any> { return this._resolvers; }
     public get pages(): ReadonlyArray<Function> { return this._pages; }
     
@@ -33,7 +33,7 @@ export class PageRegistration extends ViewModelRegistration
     public set resolvedValues(value: ReadonlyArray<any>) { this._resolvedValues = value; }
     
 
-    public constructor(page: Function, defaultPageTitle: string, defaultPageMetas: ReadonlyArray<{ name: string; content: string; }>)
+    public constructor(page: Function, defaultPageTitle: string, defaultPageMetas: ReadonlyArray<MetaDetail>)
     {
         given(page, "page").ensureHasValue().ensureIsFunction();
         given(defaultPageTitle, "defaultPageTitle").ensureIsString();
@@ -55,16 +55,18 @@ export class PageRegistration extends ViewModelRegistration
 
         this._title = title;
 
-        const metas = defaultPageMetas ? [...defaultPageMetas] : [];
+        const metas: Array<MetaDetail> = defaultPageMetas ? [...defaultPageMetas] : [];
         if (Reflect.hasOwnMetadata(metaSymbol, this.viewModel))
             metas.push(...Reflect.getOwnMetadata(metaSymbol, this.viewModel));
 
-        this._metadata = metas
-            .reduce((acc: any, t) =>
-            {
-                acc[t.name] = t.content;
-                return acc;
-            }, {});
+        // this._metadata = metas
+        //     .reduce((acc: any, t) =>
+        //     {
+        //         acc[t.name] = t.content;
+        //         return acc;
+        //     }, {});
+        
+        this._metadata = metas;
         
         if (Reflect.hasOwnMetadata(resolveSymbol, this.viewModel))
             this._resolvers = Reflect.getOwnMetadata(resolveSymbol, this.viewModel);

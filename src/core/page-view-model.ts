@@ -4,6 +4,7 @@ import "@nivinjoseph/n-ext";
 import { given } from "@nivinjoseph/n-defensive";
 import { PageRegistration } from "./page-registration";
 import { PageComponentFactory } from "./page-component-factory";
+import { MetaDetail } from "./meta";
 
 
 // public
@@ -43,7 +44,7 @@ export class PageViewModel extends BaseViewModel
     protected onLeave(): void
     { }
     
-    public static createComponentOptions(component: Function, defaultPageTitle: string, defaultPageMetadata: ReadonlyArray<{ name: string; content: string; }>): object
+    public static createComponentOptions(component: Function, defaultPageTitle: string, defaultPageMetadata: ReadonlyArray<MetaDetail>): object
     {
         given(component, "component").ensureHasValue().ensureIsFunction();
         given(defaultPageTitle, "defaultPageTitle").ensureIsString();

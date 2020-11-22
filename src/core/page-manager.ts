@@ -6,6 +6,7 @@ import { Page } from "./page";
 import { PageTreeBuilder } from "./page-tree-builder";
 import { Resolver, Resolution } from "./resolve";
 import { ComponentManager } from "./component-manager";
+import { MetaDetail } from "./meta";
 
 
 export class PageManager
@@ -20,7 +21,7 @@ export class PageManager
     private _initialRoute: string = null;
     private _unknownRoute: string = null;
     private _defaultPageTitle: string = null;
-    private _defaultPageMetas: Array<{ name: string; content: string; }> = null;
+    private _defaultPageMetas: ReadonlyArray<MetaDetail> = null;
     private _useHistoryMode: boolean = false;
 
 
@@ -95,7 +96,7 @@ export class PageManager
 
     private registerPage(pageViewModelClass: Function): void
     {
-        let registration = new PageRegistration(pageViewModelClass, this._defaultPageTitle, this._defaultPageMetas);
+        const registration = new PageRegistration(pageViewModelClass, this._defaultPageTitle, this._defaultPageMetas);
 
         if (this._registrations.some(t => t.name === registration.name))
             throw new ApplicationException(`Duplicate Page registration with name '${registration.name}'.`);
