@@ -2,6 +2,7 @@
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.Page = void 0;
 const n_defensive_1 = require("@nivinjoseph/n-defensive");
+// import { PageComponentFactory } from "./page-component-factory";
 class Page {
     constructor(segment, parent) {
         this._children = new Array();
@@ -35,13 +36,17 @@ class Page {
             this._parent.addChild(this);
     }
     createVueRouterRoute() {
+        // let factory = new PageComponentFactory(container);
+        // let factory = new PageComponentFactory();
         let vueRouterRoute = {
             name: this._registration.name.replace("ViewModel", ""),
             path: this.createRoute(),
+            // component: factory.create(this._registration)
             component: this._registration.viewModel.___componentOptions
         };
         if (this._registration.redirect) {
             vueRouterRoute.redirect = (to) => {
+                // we can do this because redirect has to be a nested route
                 return to.path + this._registration.redirect.replace(this._registration.route.route, "");
             };
         }

@@ -42,8 +42,8 @@ class DefaultNavigationService {
         url = url.trim();
         let form = this.createForm(url, value);
         let view = "view" + "_" + Math.floor((Math.random() * 9999999) + 1);
-        form.setAttribute("target", view);
-        window.open("", view);
+        form.setAttribute("target", view); // to open in a new Tab
+        window.open("", view); // to open in new tab
         form.submit();
     }
     getSiteQueryParam(key) {

@@ -5,6 +5,7 @@ require("reflect-metadata");
 const n_defensive_1 = require("@nivinjoseph/n-defensive");
 require("@nivinjoseph/n-ext");
 exports.appRouteSymbol = Symbol("appRoute");
+// public
 function route(route, redirect) {
     n_defensive_1.given(route, "route").ensureHasValue()
         .ensureIsString()

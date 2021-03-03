@@ -19,6 +19,12 @@ export declare class PageManager {
     registerPages(...pageViewModelClasses: Function[]): void;
     useAsInitialRoute(route: string): void;
     useAsUnknownRoute(route: string): void;
+    /**
+     * @deprecated
+     */
+    /**
+     * @deprecated
+     */
     useHistoryModeRouting(): void;
     bootstrap(): void;
     private registerPage;

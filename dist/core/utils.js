@@ -3,7 +3,9 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.Utils = void 0;
 const route_info_1 = require("./route-info");
 const n_defensive_1 = require("@nivinjoseph/n-defensive");
-class Utils {
+// public
+class Utils // static class
+ {
     static generateUrl(route, params, baseUrl) {
         n_defensive_1.given(route, "route").ensureHasValue().ensure(t => !t.isEmptyOrWhiteSpace());
         if (params)

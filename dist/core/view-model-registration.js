@@ -9,7 +9,7 @@ const components_1 = require("./components");
 class ViewModelRegistration {
     constructor(viewModel) {
         n_defensive_1.given(viewModel, "viewModel").ensureHasValue();
-        this._name = (" " + viewModel.getTypeName().trim()).substr(1);
+        this._name = (" " + viewModel.getTypeName().trim()).substr(1); // Shrey: Safari de-optimization
         if (!this._name.endsWith("ViewModel"))
             throw new n_exception_1.ApplicationException(`Registered ViewModel '${this._name}' violates ViewModel naming convention.`);
         this._viewModel = viewModel;

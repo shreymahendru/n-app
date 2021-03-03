@@ -5,6 +5,9 @@ const page_registration_1 = require("./page-registration");
 const route_args_1 = require("./route-args");
 const n_defensive_1 = require("@nivinjoseph/n-defensive");
 class PageHmrHelper {
+    /**
+     * @static
+     */
     constructor() { }
     static track(registration, routeArgs) {
         n_defensive_1.given(registration, "registration").ensureHasValue().ensureIsObject().ensureIsType(page_registration_1.PageRegistration);

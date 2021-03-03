@@ -46,6 +46,22 @@ class PageManager {
         n_defensive_1.given(route, "route").ensureHasValue().ensureIsString();
         this._unknownRoute = route.trim();
     }
+    /**
+     * @deprecated
+     */
+    // public useAsDefaultPageTitle(title: string): void
+    // {
+    //     given(title, "title").ensureHasValue().ensureIsString();
+    //     this._defaultPageTitle = title.trim();
+    // }
+    /**
+     * @deprecated
+     */
+    // public useAsDefaultPageMetadata(metas: ReadonlyArray<{ name: string; content: string; }>): void
+    // {
+    //     given(metas, "metas").ensureHasValue().ensureIsArray().ensure(t => t.length > 0);
+    //     this._defaultPageMetas = [...metas];
+    // }
     useHistoryModeRouting() {
         this._useHistoryMode = true;
     }
@@ -55,6 +71,7 @@ class PageManager {
             return;
         this.createRouting();
         this.configureResolves();
+        // this.configureInitialRoute();
     }
     registerPage(pageViewModelClass) {
         const registration = new page_registration_1.PageRegistration(pageViewModelClass, this._defaultPageTitle, this._defaultPageMetas);
@@ -86,6 +103,7 @@ class PageManager {
         let vueRouter = this._vueRouter;
         const routerOptions = {
             routes: vueRouterRoutes,
+            // @ts-ignore
             scrollBehavior: function (to, from, savedPosition) {
                 return { x: 0, y: 0 };
             }

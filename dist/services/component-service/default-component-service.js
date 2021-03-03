@@ -17,6 +17,7 @@ class DefaultComponentService {
         n_defensive_1.given(cache, "cache").ensureHasValue().ensureIsBoolean();
         const component = {};
         component._cache = cache;
+        // component.template = registration.template;
         if (typeof registration.template === "string") {
             component.template = registration.template;
         }
@@ -36,6 +37,7 @@ class DefaultComponentService {
                 cReg._component = component.___viewModel;
                 cReg._dependencies = cReg.getDependencies();
                 component._cachedVm = null;
+                // registration.reload(component.___viewModel);
                 component.___reload = false;
             }
             let vm = null;
@@ -69,24 +71,40 @@ class DefaultComponentService {
             return data;
         };
         component.beforeCreate = function () {
+            // console.log("executing beforeCreate");
+            // console.log(this.vm);
         };
         component.created = function () {
+            // console.log("executing created");
+            // console.log(this.vm);
             if (this.vm.onCreate)
                 this.vm.onCreate();
         };
         component.beforeMount = function () {
+            // console.log("executing beforeMount");
+            // console.log(this.vm);
         };
         component.mounted = function () {
+            // console.log("executing mounted");
+            // console.log(this.vm);
             if (this.vm.onMount)
                 this.vm.onMount(this.$el);
         };
         component.beforeUpdate = function () {
+            // console.log("executing beforeUpdate");
+            // console.log(this.vm);
         };
         component.updated = function () {
+            // console.log("executing updated");
+            // console.log(this.vm);
         };
         component.beforeDestroy = function () {
+            // console.log("executing beforeDestroy");
+            // console.log(this.vm);
         };
         component.destroyed = function () {
+            // console.log("executing destroyed");
+            // console.log(this.vm);
             if (this.vm.onDestroy)
                 this.vm.onDestroy();
         };

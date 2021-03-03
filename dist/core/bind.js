@@ -5,6 +5,7 @@ require("reflect-metadata");
 const n_defensive_1 = require("@nivinjoseph/n-defensive");
 require("@nivinjoseph/n-ext");
 exports.bindSymbol = Symbol("bind");
+// public
 function bind(...bindings) {
     n_defensive_1.given(bindings, "bindings")
         .ensureHasValue()

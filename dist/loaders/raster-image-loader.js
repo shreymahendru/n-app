@@ -15,6 +15,7 @@ function resize(data, width, height, format, jpegQuality) {
             s = s.jpeg({ quality: jpegQuality });
         s.toBuffer((err, buf, info) => {
             err ? reject(err) : resolve({
+                // name: fileName.endsWith(info.format) ? fileName : fileName + "." + info.format,
                 ext: info.format.toLowerCase(),
                 width: info.width,
                 height: info.height,
@@ -23,6 +24,8 @@ function resize(data, width, height, format, jpegQuality) {
             });
         });
     });
+    // We could optionally optimize the image here using
+    // https://github.com/imagemin/imagemin
     return promise;
 }
 module.exports = function (content) {
@@ -42,13 +45,19 @@ module.exports = function (content) {
         .forEach(t => parsedResourceQuery[t] = n_util_1.TypeHelper.parseNumber(parsedResourceQuery[t]));
     const { width, height, format } = parsedResourceQuery;
     const options = loaderUtils.getOptions(this) || {};
+    // const context = options.context || this.rootContext;
+    // const limit = options.urlEncodeLimit;
     const jpegQuality = options.jpegQuality || 80;
     const pngQuality = Number.parseFloat(((options.pngQuality || 80) / 100).toFixed(1));
+    // console.log("LIMIT", limit);
     const callback = this.async();
     const plugins = [
         require("imagemin-gifsicle")({}),
         require("imagemin-mozjpeg")({ quality: jpegQuality }),
+        // require("imagemin-svgo")({}),
         require("imagemin-pngquant")({ quality: [pngQuality, pngQuality] }),
+        // require("imagemin-optipng")({}),
+        // require("imagemin-webp")({})
     ];
     resize(content, width, height, format, jpegQuality)
         .then(resized => imagemin.buffer(resized.data, { plugins }))

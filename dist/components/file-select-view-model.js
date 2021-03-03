@@ -69,6 +69,14 @@ let FileSelectViewModel = class FileSelectViewModel extends component_view_model
             fileInfo.fileName = file.name;
             fileInfo.fileType = file.type;
             fileInfo.fileSize = file.size;
+            // if (fileInfo.fileType == null || fileInfo.fileType.isEmptyOrWhiteSpace())
+            // {
+            //     if (fileInfo.fileName.contains("."))
+            //     {
+            //         const splitted = fileInfo.fileName.trim().split(".");
+            //         fileInfo.fileType = "." + splitted[splitted.length - 1].trim();
+            //     }
+            // }
             const reader = new FileReader();
             const promise = new Promise((resolve, reject) => {
                 reader.onload = function (fi, res) {

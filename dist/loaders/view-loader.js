@@ -12,9 +12,27 @@ Object.defineProperty(exports, "__esModule", { value: true });
 const vm = require("vm");
 const path = require("path");
 const getOptions = require("loader-utils").getOptions;
+// const resolve = require("resolve");
 const btoa = require("btoa");
 const config = require(path.resolve(process.cwd(), "webpack.config.js"));
 const resolve = require("enhanced-resolve").create.sync({ alias: config.resolve && config.resolve.alias || [] });
+/**
+ * @typedef {Object} LoaderContext
+ * @property {function} cacheable
+ * @property {function} async
+ * @property {function} addDependency
+ * @property {function} loadModule
+ * @property {string} resourcePath
+ * @property {object} options
+ */
+/**
+ * Executes the given module's src in a fake context in order to get the resulting string.
+ *
+ * @this LoaderContext
+ * @param {string} src
+ * @throws Error
+ */
+// tslint:disable-next-line: no-default-export
 function extractLoader(src) {
     return __awaiter(this, void 0, void 0, function* () {
         const done = this.async();
@@ -39,6 +57,7 @@ function evalDependencyGraph({ loaderContext, src, filename, publicPath = "" }) 
     const moduleCache = new Map();
     function loadModule(filename) {
         return new Promise((resolve, reject) => {
+            // loaderContext.loadModule automatically calls loaderContext.addDependency for all requested modules
             loaderContext.loadModule(filename, (error, src) => {
                 if (error) {
                     reject(error);
@@ -103,14 +122,21 @@ function evalDependencyGraph({ loaderContext, src, filename, publicPath = "" }) 
                     const indexOfLastExclMark = relativePathWithoutQuery.lastIndexOf("!");
                     const loaders = givenRelativePath.slice(0, indexOfLastExclMark + 1);
                     const relativePath = relativePathWithoutQuery.slice(indexOfLastExclMark + 1);
+                    // const absolutePath = resolve.sync(relativePath, {
+                    //     basedir: path.dirname(filename),
+                    // });
                     const absolutePath = resolve(path.dirname(filename), relativePath);
                     const ext = path.extname(absolutePath);
                     if (moduleCache.has(absolutePath)) {
                         return moduleCache.get(absolutePath);
                     }
+                    // If the required file is a js file, we just require it with node's require.
+                    // If the required file should be processed by a loader we do not touch it (even if it is a .js file).
                     if (loaders === "" && ext === ".js") {
+                        // Mark the file as dependency so webpack's watcher is working for the css-loader helper.
+                        // Other dependencies are automatically added by loadModule() below
                         loaderContext.addDependency(absolutePath);
-                        const exports = require(absolutePath);
+                        const exports = require(absolutePath); // eslint-disable-line import/no-dynamic-require
                         moduleCache.set(absolutePath, exports);
                         return exports;
                     }
@@ -134,11 +160,27 @@ function evalDependencyGraph({ loaderContext, src, filename, publicPath = "" }) 
     }
     return evalModule(src, filename);
 }
+/**
+ * @returns {string}
+ */
 function rndNumber() {
     return Math.random()
         .toString()
         .slice(2);
 }
+// getPublicPath() encapsulates the complexity of reading the publicPath from the current
+// webpack config. Let's keep the complexity in this function.
+/* eslint-disable complexity  */
+/**
+ * Retrieves the public path from the loader options, context.options (webpack <4) or context._compilation (webpack 4+).
+ * context._compilation is likely to get removed in a future release, so this whole function should be removed then.
+ * See: https://github.com/peerigon/extract-loader/issues/35
+ *
+ * @deprecated
+ * @param {Object} options - Extract-loader options
+ * @param {Object} context - Webpack loader context
+ * @returns {string}
+ */
 function getPublicPath(options, context) {
     if ("publicPath" in options) {
         return typeof options.publicPath === "function" ? options.publicPath(context) : options.publicPath;
@@ -151,4 +193,8 @@ function getPublicPath(options, context) {
     }
     return "";
 }
+/* eslint-enable complexity */
+// For CommonJS interoperability
+// module.exports = extractLoader;
+// export default extractLoader;
 //# sourceMappingURL=view-loader.js.map

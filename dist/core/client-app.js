@@ -1,6 +1,8 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.ClientApp = exports.Vue = void 0;
+// const Vue = require("@nivinjoseph/vue/dist/vue.js");
+// import Vue from "@nivinjoseph/vue";
 const Vue = require("vue");
 exports.Vue = Vue;
 const vue_router_1 = require("vue-router");
@@ -19,9 +21,11 @@ const n_config_1 = require("@nivinjoseph/n-config");
 const default_display_service_1 = require("../services/display-service/default-display-service");
 const default_component_service_1 = require("../services/component-service/default-component-service");
 const file_select_view_model_1 = require("../components/file-select-view-model");
+// declare const makeHot: (options: any) => void;
 let makeHot;
 if (module.hot) {
     makeHot = function (options) {
+        // console.log('is Hot');
         const api = require("vue-hot-reload-api");
         api.install(require("@nivinjoseph/vue"));
         if (!api.compatible)
@@ -29,12 +33,15 @@ if (module.hot) {
         module.hot.accept();
         if (!api.isRecorded("ClientAppRoot")) {
             api.createRecord("ClientAppRoot", options);
+            // console.log("creating record", "${id}");
         }
         else {
             api.reload("ClientAppRoot", options);
+            // console.log("updating record", "${id}");
         }
     };
 }
+// public
 class ClientApp {
     constructor(appElementId, rootComponentElement) {
         this._isBootstrapped = false;
@@ -93,12 +100,43 @@ class ClientApp {
         this._pageManager.useAsUnknownRoute(route);
         return this;
     }
+    /**
+     * @deprecated
+     */
+    // public useAsDefaultPageTitle(title: string): this
+    // {
+    //     if (this._isBootstrapped)
+    //         throw new InvalidOperationException("useAsDefaultPageTitle");
+    //     given(title, "title").ensureHasValue().ensureIsString();
+    //     this._pageManager.useAsDefaultPageTitle(title);
+    //     return this;
+    // }
+    /**
+     * @deprecated
+     */
+    // public useAsDefaultPageMetadata(...metas: Array<{ name: string; content: string; }>): this
+    // {
+    //     if (this._isBootstrapped)
+    //         throw new InvalidOperationException("useAsDefaultPageMetadata");
+    //     given(metas, "metas").ensureHasValue().ensureIsArray().ensure(t => t.length > 0);
+    //     this._pageManager.useAsDefaultPageMetadata(metas);
+    //     return this;
+    // }
     useHistoryModeRouting() {
         if (this._isBootstrapped)
             throw new n_exception_1.InvalidOperationException("useHistoryModeRouting");
+        // if (this._initialRoute)
+        //     throw new InvalidOperationException("Cannot use history mode with initial route.");
         this._pageManager.useHistoryModeRouting();
         return this;
     }
+    // public enableDevMode(): this
+    // {
+    //     if (this._isbootstrapped)
+    //         throw new InvalidOperationException("enableDevMode");
+    //     Config.enableDev(Vue);
+    //     return this;
+    // }
     bootstrap() {
         if (this._isBootstrapped)
             throw new n_exception_1.InvalidOperationException("bootstrap");
@@ -109,6 +147,7 @@ class ClientApp {
         this.configureContainer();
         this.configureRoot();
         this._isBootstrapped = true;
+        // this._pageManager.handleInitialRoute();
     }
     retrieveRouterInstance() {
         if (!this._isBootstrapped)
@@ -131,6 +170,11 @@ class ClientApp {
             Vue.config.performance = false;
             Vue.config.productionTip = false;
         }
+        // console.log(`Bootstrapping in ${ConfigurationManager.getConfig("env")} mode.`);
+        // Vue.config.silent = false;
+        // Vue.config.devtools = true;
+        // Vue.config.performance = true;
+        // Vue.config.productionTip = true;
     }
     configureComponents() {
         this._componentManager.bootstrap();

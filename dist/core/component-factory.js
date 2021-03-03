@@ -9,6 +9,9 @@ class ComponentFactory {
     create(registration) {
         n_defensive_1.given(registration, "registration").ensureHasValue();
         const component = {};
+        // component.template = registration.template;
+        // component.render = (<any>registration.viewModel).___render;
+        // component.staticRenderFns = (<any>registration.viewModel).___staticRenderFns;
         if (typeof registration.template === "string") {
             component.template = registration.template;
         }
@@ -21,6 +24,7 @@ class ComponentFactory {
         component.inject = ["pageScopeContainer", "rootScopeContainer"];
         component.data = function () {
             let vueVm = this;
+            // console.log("INVOKED component");
             const container = vueVm.pageScopeContainer || vueVm.rootScopeContainer;
             if (!container)
                 throw new n_exception_1.ApplicationException("Could not get pageScopeContainer or rootScopeContainer.");
@@ -29,6 +33,7 @@ class ComponentFactory {
                 const cReg = c.componentRegistry.find(registration.name);
                 cReg._component = component.___viewModel;
                 cReg._dependencies = cReg.getDependencies();
+                // registration.reload(component.___viewModel);
                 component.___reload = false;
             }
             let vm = container.resolve(registration.name);
@@ -53,24 +58,40 @@ class ComponentFactory {
             return data;
         };
         component.beforeCreate = function () {
+            // console.log("executing beforeCreate");
+            // console.log(this.vm);
         };
         component.created = function () {
+            // console.log("executing created");
+            // console.log(this.vm);
             if (this.vm.onCreate)
                 this.vm.onCreate();
         };
         component.beforeMount = function () {
+            // console.log("executing beforeMount");
+            // console.log(this.vm);
         };
         component.mounted = function () {
+            // console.log("executing mounted");
+            // console.log(this.vm);
             if (this.vm.onMount)
                 this.vm.onMount(this.$el);
         };
         component.beforeUpdate = function () {
+            // console.log("executing beforeUpdate");
+            // console.log(this.vm);
         };
         component.updated = function () {
+            // console.log("executing updated");
+            // console.log(this.vm);
         };
         component.beforeDestroy = function () {
+            // console.log("executing beforeDestroy");
+            // console.log(this.vm);
         };
         component.destroyed = function () {
+            // console.log("executing destroyed");
+            // console.log(this.vm);
             if (this.vm.onDestroy)
                 this.vm.onDestroy();
         };

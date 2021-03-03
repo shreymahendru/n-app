@@ -4,6 +4,7 @@ exports.ComponentManager = void 0;
 const n_defensive_1 = require("@nivinjoseph/n-defensive");
 const component_registration_1 = require("./component-registration");
 const n_exception_1 = require("@nivinjoseph/n-exception");
+// import { ComponentFactory } from "./component-factory";
 class ComponentManager {
     constructor(vue, container) {
         this._registrations = new Array();
@@ -17,7 +18,9 @@ class ComponentManager {
             this.registerComponent(item);
     }
     bootstrap() {
+        // let componentFactory = new ComponentFactory();
         this._registrations.forEach(registration => {
+            // this._vue.component(registration.element, componentFactory.create(registration));
             this._vue.component(registration.element, registration.viewModel.___componentOptions);
         });
     }

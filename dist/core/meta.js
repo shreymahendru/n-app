@@ -5,6 +5,7 @@ require("reflect-metadata");
 const n_defensive_1 = require("@nivinjoseph/n-defensive");
 require("@nivinjoseph/n-ext");
 exports.metaSymbol = Symbol("meta");
+// public
 function meta(...metas) {
     n_defensive_1.given(metas, "metas")
         .ensureHasValue()

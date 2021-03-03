@@ -19,6 +19,12 @@ export declare class ClientApp {
     registerPages(...pageViewModelClasses: Function[]): this;
     useAsInitialRoute(route: string): this;
     useAsUnknownRoute(route: string): this;
+    /**
+     * @deprecated
+     */
+    /**
+     * @deprecated
+     */
     useHistoryModeRouting(): this;
     bootstrap(): void;
     retrieveRouterInstance(): object;

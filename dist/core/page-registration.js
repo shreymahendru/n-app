@@ -8,6 +8,7 @@ const n_exception_1 = require("@nivinjoseph/n-exception");
 const route_info_1 = require("./route-info");
 const title_1 = require("./title");
 const meta_1 = require("./meta");
+// import { authorizeSymbol } from "./authorize";
 const resolve_1 = require("./resolve");
 const pages_1 = require("./pages");
 class PageRegistration extends view_model_registration_1.ViewModelRegistration {
@@ -28,6 +29,12 @@ class PageRegistration extends view_model_registration_1.ViewModelRegistration {
         const metas = defaultPageMetas ? [...defaultPageMetas] : [];
         if (Reflect.hasOwnMetadata(meta_1.metaSymbol, this.viewModel))
             metas.push(...Reflect.getOwnMetadata(meta_1.metaSymbol, this.viewModel));
+        // this._metadata = metas
+        //     .reduce((acc: any, t) =>
+        //     {
+        //         acc[t.name] = t.content;
+        //         return acc;
+        //     }, {});
         this._metadata = metas;
         if (Reflect.hasOwnMetadata(resolve_1.resolveSymbol, this.viewModel))
             this._resolvers = Reflect.getOwnMetadata(resolve_1.resolveSymbol, this.viewModel);

@@ -5,6 +5,7 @@ const n_defensive_1 = require("@nivinjoseph/n-defensive");
 require("@nivinjoseph/n-ext");
 const n_exception_1 = require("@nivinjoseph/n-exception");
 const route_param_1 = require("./route-param");
+// route template format: /api/Product/{id:number}?{name?:string}&{all:boolean}
 class RouteInfo {
     constructor(routeTemplate, isUrlGenerator = false) {
         this._routeParams = new Array();
@@ -49,7 +50,7 @@ class RouteInfo {
                 let replacement = routeParam.isQuery
                     ? "{0}={1}".format(key, encodeURIComponent(val))
                     : encodeURIComponent(val);
-                if (val == null && routeParam.isQuery && routeParam.isOptional)
+                if (val == null && routeParam.isQuery && routeParam.isOptional) // only query params can be optional anyway
                     replacement = "";
                 url = url.replace(param, replacement);
             }
