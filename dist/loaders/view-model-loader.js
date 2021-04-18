@@ -29,7 +29,7 @@ function default_1(content) {
     // console.log(content);
     // console.log("relativeViewFilePath", relativeViewFilePath);
     // this.addDependency(dirPath + "/" + fileName.replace("-view-model.js", "-view.html"));
-    const className = fileName.replace(".js", "").split("-").map(t => `${t[0].toUpperCase()}${t.substring(1)}`).join("");
+    const className = fileName.replace(".ts", "").split("-").map(t => `${t[0].toUpperCase()}${t.substring(1)}`).join("");
     // console.warn(className);
     // console.log(content);
     const componentCode = `
@@ -41,7 +41,7 @@ function default_1(content) {
     content = content.replace(`exports.${className} = ${className};`, componentCode);
     if (n_config_1.ConfigurationManager.getConfig("env") !== "dev")
         return content;
-    const viewFileName = fileName.replace("-view-model.js", "-view.html");
+    const viewFileName = fileName.replace("-view-model.ts", "-view.html");
     const relativeViewFilePath = "." + Path.sep + viewFileName;
     // const relativeViewFilePath = relativeFilePath.substr(0, relativeFilePath.length - "-view-model.js".length) + "-view.html";
     const id = hash(className);

@@ -1,15 +1,7 @@
 "use strict";
-var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
-    function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
-    return new (P || (P = Promise))(function (resolve, reject) {
-        function fulfilled(value) { try { step(generator.next(value)); } catch (e) { reject(e); } }
-        function rejected(value) { try { step(generator["throw"](value)); } catch (e) { reject(e); } }
-        function step(result) { result.done ? resolve(result.value) : adopt(result.value).then(fulfilled, rejected); }
-        step((generator = generator.apply(thisArg, _arguments || [])).next());
-    });
-};
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.PageManager = void 0;
+const tslib_1 = require("tslib");
 const n_defensive_1 = require("@nivinjoseph/n-defensive");
 const page_registration_1 = require("./page-registration");
 const n_exception_1 = require("@nivinjoseph/n-exception");
@@ -125,7 +117,7 @@ class PageManager {
             if (registration.resolvers && registration.resolvers.length > 0) {
                 const resolvers = registration.resolvers.map(t => this._container.resolve(t.name));
                 resolvers
-                    .mapAsync((t) => __awaiter(this, void 0, void 0, function* () {
+                    .mapAsync((t) => tslib_1.__awaiter(this, void 0, void 0, function* () {
                     try {
                         const resolution = yield t.resolve(from, to);
                         return resolution;

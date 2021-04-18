@@ -1,15 +1,7 @@
 "use strict";
-var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
-    var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
-    if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
-    else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
-    return c > 3 && r && Object.defineProperty(target, key, r), r;
-};
-var __metadata = (this && this.__metadata) || function (k, v) {
-    if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
-};
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.FileSelectViewModel = void 0;
+const tslib_1 = require("tslib");
 const template_1 = require("../core/template");
 const element_1 = require("../core/element");
 const bind_1 = require("../core/bind");
@@ -126,12 +118,12 @@ let FileSelectViewModel = class FileSelectViewModel extends component_view_model
         this._maxFileSizeBytes = this.maxFileSizeValue != null ? this.maxFileSizeValue * 1024 * 1024 : null;
     }
 };
-FileSelectViewModel = __decorate([
+FileSelectViewModel = tslib_1.__decorate([
     template_1.template(require("./file-select-view.html")),
     element_1.element("file-select"),
     bind_1.bind("id", "mimeTypes", "maxFileSize", "multiple", "onSelection"),
     n_ject_1.inject("DialogService", "EventAggregator"),
-    __metadata("design:paramtypes", [Object, Object])
+    tslib_1.__metadata("design:paramtypes", [Object, Object])
 ], FileSelectViewModel);
 exports.FileSelectViewModel = FileSelectViewModel;
 //# sourceMappingURL=file-select-view-model.js.map
