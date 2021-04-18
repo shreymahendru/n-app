@@ -18,6 +18,9 @@
         "forceConsistentCasingInFileNames": true,
         "incremental": false,
         "skipLibCheck": true,
+        "importHelpers": true,
+        "noEmitHelpers": true,
+        "resolveJsonModule": true,
         "plugins": [
             {
                 "name": "typescript-tslint-plugin",
