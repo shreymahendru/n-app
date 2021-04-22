@@ -34,7 +34,9 @@ module.exports = function (content) {
         "jpg": "image/jpeg",
         "jpeg": "image/jpeg",
         "png": "image/png",
-        "gif": "image/gif"
+        "gif": "image/gif",
+        "webp": "image/webp",
+        "svg": "image/svg+xml"
     };
     const ext = Path.extname(this.resourcePath).replace(/\./, "").toLowerCase();
     if (!MIMES[ext])
@@ -54,12 +56,12 @@ module.exports = function (content) {
     const plugins = [
         require("imagemin-gifsicle")({}),
         require("imagemin-mozjpeg")({ quality: jpegQuality }),
-        // require("imagemin-svgo")({}),
+        require("imagemin-svgo")({}),
         require("imagemin-pngquant")({ quality: [pngQuality, pngQuality] }),
         // require("imagemin-optipng")({}),
-        // require("imagemin-webp")({})
+        require("imagemin-webp")({})
     ];
-    resize(content, width, height, format, jpegQuality)
+    resize(content, width, height, ext === "svg" ? "jpeg" : format, jpegQuality)
         .then(resized => imagemin.buffer(resized.data, { plugins }))
         .then(data => callback(null, data))
         .catch(e => callback(e));
