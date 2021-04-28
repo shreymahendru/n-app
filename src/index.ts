@@ -20,7 +20,7 @@ import { ComponentService } from "./services/component-service/component-service
 import { ComponentOptions } from "./services/component-service/component-options";
 import { resolve, Resolution, Resolver } from "./core/resolve";
 import { NavRoute } from "./core/nav-route";
-import { FileInfo } from "./components/file-select-view-model";
+import { FileInfo } from "./components/n-file-select/n-file-select-view-model";
 
 
 export

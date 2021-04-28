@@ -21,7 +21,9 @@ import { DefaultStorageService } from "./../services/storage-service/default-sto
 import { ConfigurationManager } from "@nivinjoseph/n-config";
 import { DefaultDisplayService } from "../services/display-service/default-display-service";
 import { DefaultComponentService } from "../services/component-service/default-component-service";
-import { FileSelectViewModel } from "../components/file-select-view-model";
+import { NFileSelectViewModel } from "../components/n-file-select/n-file-select-view-model";
+import { NExpandingContainerViewModel } from "../components/n-expanding-container/n-expanding-container-view-model";
+import { NScrollContainerViewModel } from "../components/n-scroll-container/n-scroll-container-view-model";
 
 // declare const makeHot: (options: any) => void;
 
@@ -80,7 +82,9 @@ export class ClientApp
         
         this._container = new Container();
         this._componentManager = new ComponentManager(Vue, this._container);
-        this._componentManager.registerComponents(FileSelectViewModel);
+        this._componentManager.registerComponents(
+            NFileSelectViewModel, NExpandingContainerViewModel, NScrollContainerViewModel
+        );
         this._pageManager = new PageManager(VueRouter, this._container, this._componentManager);
 
         Vue.config.silent = false;
@@ -150,9 +154,9 @@ export class ClientApp
         return this;
     }
     
-    /**
-     * @deprecated
-     */
+    // /**
+    //  * @deprecated
+    //  */
     // public useAsDefaultPageTitle(title: string): this
     // {
     //     if (this._isBootstrapped)
@@ -163,9 +167,9 @@ export class ClientApp
     //     return this;
     // }
     
-    /**
-     * @deprecated
-     */
+    // /**
+    //  * @deprecated
+    //  */
     // public useAsDefaultPageMetadata(...metas: Array<{ name: string; content: string; }>): this
     // {
     //     if (this._isBootstrapped)

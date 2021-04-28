@@ -59,18 +59,18 @@ export class PageManager
         this._unknownRoute = route.trim();
     }
 
-    /**
-     * @deprecated
-     */
+    // /**
+    //  * @deprecated
+    //  */
     // public useAsDefaultPageTitle(title: string): void
     // {
     //     given(title, "title").ensureHasValue().ensureIsString();
     //     this._defaultPageTitle = title.trim();
     // }
 
-    /**
-     * @deprecated
-     */
+    // /**
+    //  * @deprecated
+    //  */
     // public useAsDefaultPageMetadata(metas: ReadonlyArray<{ name: string; content: string; }>): void
     // {
     //     given(metas, "metas").ensureHasValue().ensureIsArray().ensure(t => t.length > 0);
