@@ -16,7 +16,7 @@ interface ResizedImage
     data: Buffer;
 }
 
-function resize(data: Buffer, width: number, height: number, format: string, jpegQuality: number): Promise<ResizedImage>
+function resize(data: Buffer, width: number, height: number, format: string, jpegQuality: number, background: string): Promise<ResizedImage>
 {
     const promise = new Promise<ResizedImage>((resolve, reject) =>
     {
@@ -25,7 +25,23 @@ function resize(data: Buffer, width: number, height: number, format: string, jpe
             s = s.resize(width, height);
 
         if (format === "jpeg")
+        {
+            if (background)
+            {
+                background = background.toString().trim();
+                if (background.startsWith("#") && (background.length === 7 || background.length === 4))
+                {
+                    s = s.flatten({
+                        background
+                    });
+                }
+                else
+                {
+                    console.warn("SUPPLIED BACKGROUND PARAMETER IS NOT A VALID HEX COLOR.");
+                }
+            }
             s = s.jpeg({ quality: jpegQuality });
+        }
 
         s.toBuffer((err: any, buf: any, info) =>
         {
@@ -70,7 +86,7 @@ module.exports = function (content: any)
         .filter(t => ["width", "height"].contains(t))
         .forEach(t => parsedResourceQuery[t] = TypeHelper.parseNumber(parsedResourceQuery[t]));
 
-    const { width, height, format } = parsedResourceQuery;
+    const { width, height, format, background } = parsedResourceQuery;
 
     const options = loaderUtils.getOptions(this) || {};
     // const context = options.context || this.rootContext;
@@ -90,7 +106,7 @@ module.exports = function (content: any)
         require("imagemin-webp")({})
     ];
     
-    resize(content, width, height, ext === "svg" ? "jpeg" : format, jpegQuality)
+    resize(content, width, height, ext === "svg" ? "jpeg" : format, jpegQuality, background)
         .then(resized => imagemin.buffer(resized.data, { plugins }))
         .then(data => callback(null, data))
         .catch(e => callback(e));
