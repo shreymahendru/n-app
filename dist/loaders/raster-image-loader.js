@@ -6,13 +6,25 @@ const loaderUtils = require("loader-utils");
 const Path = require("path");
 const n_util_1 = require("@nivinjoseph/n-util");
 const imagemin = require("imagemin");
-function resize(data, width, height, format, jpegQuality) {
+function resize(data, width, height, format, jpegQuality, background) {
     const promise = new Promise((resolve, reject) => {
         let s = Sharp(data);
         if (width || height)
             s = s.resize(width, height);
-        if (format === "jpeg")
+        if (format === "jpeg") {
+            if (background) {
+                background = background.toString().trim();
+                if (background.startsWith("#") && (background.length === 7 || background.length === 4)) {
+                    s = s.flatten({
+                        background
+                    });
+                }
+                else {
+                    console.warn("SUPPLIED BACKGROUND PARAMETER IS NOT A VALID HEX COLOR.");
+                }
+            }
             s = s.jpeg({ quality: jpegQuality });
+        }
         s.toBuffer((err, buf, info) => {
             err ? reject(err) : resolve({
                 // name: fileName.endsWith(info.format) ? fileName : fileName + "." + info.format,
@@ -45,7 +57,7 @@ module.exports = function (content) {
     Object.keys(parsedResourceQuery)
         .filter(t => ["width", "height"].contains(t))
         .forEach(t => parsedResourceQuery[t] = n_util_1.TypeHelper.parseNumber(parsedResourceQuery[t]));
-    const { width, height, format } = parsedResourceQuery;
+    const { width, height, format, background } = parsedResourceQuery;
     const options = loaderUtils.getOptions(this) || {};
     // const context = options.context || this.rootContext;
     // const limit = options.urlEncodeLimit;
@@ -61,7 +73,7 @@ module.exports = function (content) {
         // require("imagemin-optipng")({}),
         require("imagemin-webp")({})
     ];
-    resize(content, width, height, ext === "svg" ? "jpeg" : format, jpegQuality)
+    resize(content, width, height, ext === "svg" ? "jpeg" : format, jpegQuality, background)
         .then(resized => imagemin.buffer(resized.data, { plugins }))
         .then(data => callback(null, data))
         .catch(e => callback(e));
