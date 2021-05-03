@@ -8,7 +8,7 @@ import "./n-expanding-container-view.scss";
 
 @template(require("./n-expanding-container-view.html"))
 @element("n-expanding-container")
-@bind("constrainX")
+@bind("constrainX", "renderKey")
 export class NExpandingContainerViewModel extends ComponentViewModel
 {
     public get _constrainHorizontal(): boolean { return !!TypeHelper.parseBoolean(this.getBound("constrainX")); }
@@ -18,9 +18,29 @@ export class NExpandingContainerViewModel extends ComponentViewModel
     {
         super.onMount(element);
 
+        this.recalculate(element);
+        
+        this.watch("renderKey", (v, ov) =>
+        {
+            if (v == null || v === ov)
+                return;
+
+            this.recalculate(element);
+        });
+    }
+    
+    protected onDestroy(): void
+    {
+        this.unWatch("renderKey");
+        
+        super.onDestroy();
+    }
+    
+    private recalculate(element: HTMLElement): void
+    {
         if (this._constrainHorizontal)
             this.doHorizontal(element);
-        
+
         this.doVertical(element);
     }
     

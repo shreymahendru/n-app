@@ -11,7 +11,7 @@ import { given } from "@nivinjoseph/n-defensive";
 
 @template(require("./n-scroll-container-view.html"))
 @element("n-scroll-container")
-@bind("onlyX", "onlyY")
+@bind("onlyX", "onlyY", "renderKey")
 export class NScrollContainerViewModel extends ComponentViewModel
 {
     private _sb: SimpleBar | null = null;
@@ -35,12 +35,23 @@ export class NScrollContainerViewModel extends ComponentViewModel
         
         const SimpleBarCtor = (<any>SimpleBar).default;
         this._sb = new SimpleBarCtor(element.querySelector(".simple-scroll-viewer-scroll-container")!, { autoHide: true });
+        
+        this.watch("renderKey", (v, ov) =>
+        {
+            if (v == null || v === ov)
+                return;
+            
+            this._sb.recalculate();
+        });
     }
     
     protected onDestroy(): void
     {
         if (this._sb != null)
+        {
+            // this._sb.unMount();
             this._sb = null;
+        }
         
         super.onDestroy();
     }
