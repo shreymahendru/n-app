@@ -2,13 +2,13 @@ const path = require("path");
 const autoprefixer = require("autoprefixer");
 const htmlWebpackPlugin = require("html-webpack-plugin");
 const { CleanWebpackPlugin } = require("clean-webpack-plugin");
-// const UglifyJsPlugin = require("uglifyjs-webpack-plugin");
 const TerserPlugin = require("terser-webpack-plugin");
 const MiniCssExtractPlugin = require("mini-css-extract-plugin");
 const OptimizeCSSAssetsPlugin = require("optimize-css-assets-webpack-plugin");
 const CompressionPlugin = require("compression-webpack-plugin");
 import { ConfigurationManager } from "@nivinjoseph/n-config";
 const webpack = require("webpack");
+
 
 const env = ConfigurationManager.getConfig<string>("env");
 console.log("WEBPACK ENV", env);
@@ -19,19 +19,16 @@ const moduleRules: Array<any> = [
     {
         test: /\.(scss|sass)$/,
         use: [
-            // {
-            //     loader: isDev ? "style-loader" : MiniCssExtractPlugin.loader
-            // },
             {
                 loader: MiniCssExtractPlugin.loader,
                 options: {
-                    hmr: isDev,
-                    reloadAll: false
+                    esModule: false
                 }
             },
             {
                 loader: "css-loader" // translates CSS into CommonJS
-            }, {
+            },
+            {
                 loader: "postcss-loader", // postcss
                 options: {
                     postcssOptions: {
@@ -47,26 +44,25 @@ const moduleRules: Array<any> = [
                         ]
                     }
                 }
-            }, {
+            },
+            {
                 loader: "sass-loader" // compiles Sass to CSS -> depends on node-sass
-            }]
+            }
+        ]
     },
     {
         test: /\.css$/,
         use: [
-            // {
-            //     loader: isDev ? "style-loader" : MiniCssExtractPlugin.loader
-            // },
             {
                 loader: MiniCssExtractPlugin.loader,
                 options: {
-                    hmr: isDev,
-                    reloadAll: false
+                    esModule: false
                 }
             },
             {
                 loader: "css-loader" // translates CSS into CommonJS
-            }]
+            }
+        ]
     },
     {
         test: /\.(png|jpg|jpeg|gif)$/,
@@ -76,9 +72,31 @@ const moduleRules: Array<any> = [
                 options: {
                     limit: 9000,
                     fallback: "file-loader",
-                    esModule: false
+                    esModule: false,
+                    // @ts-ignore
+                    name: (resourcePath: string, resourceQuery: string) =>
+                    {
+                        // `resourcePath` - `/absolute/path/to/file.js`
+                        // `resourceQuery` - `?foo=bar`
+
+                        if (process.env.NODE_ENV === "development")
+                        {
+                            return "[path][name]-[contenthash].[ext]";
+                        }
+
+                        return "[contenthash]-[name].[ext]";
+
+                        // return "[path][name].[ext]";
+                    }
                 }
             },
+            // {
+            //     loader: "file-loader",
+            //     options: {
+            //         esModule: false,
+            //         name: "[path][name]-[contenthash].[ext]",
+            //     }
+            // },
             {
                 loader: path.resolve("src/loaders/raster-image-loader.js"),
                 options: {
@@ -87,91 +105,34 @@ const moduleRules: Array<any> = [
                     pngQuality: 50
                 }
             }
+            // {
+            //     loader: "webp-loader"
+            // }
         ]
     },
     {
         test: /\.svg$/,
         use: [
-            isDev ? {
-                loader: "url-loader",
-                options: {
-                    limit: 900000,
-                    esModule: false
-                }
-            } : {
-                    loader: "url-loader",
-                    options: {
-                        limit: 9000,
-                        fallback: "file-loader",
-                        esModule: false
-                    }
-                },
             {
-                loader: "image-webpack-loader",
-                options: {
-                    disable: false, // webpack@2.x and newer
-                },
-            }
-        ]
-    },
-    // {
-    //     test: /\.svg$/,
-    //     use: [
-    //         {
-    //             loader: "url-loader",
-    //             options: {
-    //                 // limit: 9000,
-    //                 // fallback: "file-loader",
-    //                 esModule: false
-    //             }
-    //         }
-    //     ]
-    // },
-    // {
-    //     test: /\.(png|jpg|jpeg|gif)$/,
-    //     use: [
-    //         {
-    //             loader: "url-loader",
-    //             options: {
-    //                 // limit: 9000,
-    //                 // fallback: "file-loader",
-    //                 esModule: false
-    //             }
-    //         },
-    //         {
-    //             loader: "image-webpack-loader",
-    //             options: {
-    //                 bypassOnDebug: true
-    //             }
-    //         }
-    //     ]
-    // },
-    {
-        test: /\.(woff|woff2|eot|ttf|otf)$/,
-        use: [
-            isDev ? {
                 loader: "file-loader",
                 options: {
                     esModule: false
                 }
-            } : {
-                    loader: "url-loader",
-                    options: {
-                        limit: 9000,
-                        fallback: "file-loader"
-                    }
-                }
+            }
         ]
     },
-    // {
-    //     test: /\.(html)$/,
-    //     use: {
-    //         loader: "html-loader",
-    //         options: {
-    //             attrs: ["img:src", "use:xlink:href"]
-    //         }
-    //     }
-    // },
+    {
+        test: /\.(woff|woff2|eot|ttf|otf)$/,
+        use: [
+            isDev ? "file-loader" : {
+                loader: "url-loader",
+                options: {
+                    limit: 9000,
+                    fallback: "file-loader"
+                }
+            }
+        ]
+    },
     {
         test: /\.taskworker\.js$/,
         loader: "worker-loader"
@@ -209,6 +170,18 @@ const moduleRules: Array<any> = [
             }
         ]
     },
+    {
+        test: /-view\.html$/,
+        include: [path.resolve(__dirname, "test-app/controllers")],
+        use: [
+            {
+                loader: "html-loader",
+                options: {
+                    attrs: ["img:src", "use:xlink:href"]
+                }
+            }
+        ]
+    }
 ];
 
 const plugins = [
@@ -216,8 +189,8 @@ const plugins = [
     new htmlWebpackPlugin({
         template: "test-app/controllers/index-view.html",
         filename: "index-view.html",
+        favicon: "test-app/client/images/favicon.png",
         hash: true,
-        favicon: "test-app/client/images/favicon.png"
     }),
     new MiniCssExtractPlugin({}),
     new webpack.DefinePlugin({
@@ -232,6 +205,11 @@ if (isDev)
         loader: "source-map-loader",
         enforce: "pre"
     });
+    
+    plugins.push(new webpack.WatchIgnorePlugin([
+        /\.js$/,
+        /\.d\.ts$/
+    ]));
 }
 else
 {
@@ -241,7 +219,7 @@ else
             loader: "babel-loader",
             options: {
                 presets: [["@babel/preset-env", {
-                    debug: true,
+                    debug: false,
                     targets: {
                         // browsers: ["> 1%", "Chrome >= 41"],
                         chrome: "41" // this is what googles web crawler uses
@@ -255,9 +233,6 @@ else
     });
 
     plugins.push(...[
-        // new MiniCssExtractPlugin({
-        //     filename: "client.bundle.css"
-        // }),
         new CompressionPlugin({
             test: /\.(js|css|svg)$/
         })
@@ -265,11 +240,14 @@ else
 }
 
 module.exports = {
+    context: process.cwd(),
     mode: isDev ? "development" : "production",
     target: "web",
-    entry: ["./test-app/client/app.js"],
+    entry: {
+        main: ["./test-app/client/app.js"]
+    },
     output: {
-        filename: "client.bundle.js",
+        filename: "[name].bundle.js",
         chunkFilename: "[name].bundle.js",
         path: path.resolve(__dirname, "test-app/client/dist"),
         publicPath: "/"
@@ -306,6 +284,7 @@ module.exports = {
                     keep_classnames: true,
                     keep_fnames: true,
                     safari10: true,
+                    mangle: true,
                     output: {
                         comments: false
                     }
