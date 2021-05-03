@@ -26,17 +26,24 @@ let NScrollContainerViewModel = class NScrollContainerViewModel extends componen
         super.onMount(element);
         const SimpleBarCtor = SimpleBar.default;
         this._sb = new SimpleBarCtor(element.querySelector(".simple-scroll-viewer-scroll-container"), { autoHide: true });
+        this.watch("renderKey", (v, ov) => {
+            if (v == null || v === ov)
+                return;
+            this._sb.recalculate();
+        });
     }
     onDestroy() {
-        if (this._sb != null)
+        if (this._sb != null) {
+            // this._sb.unMount();
             this._sb = null;
+        }
         super.onDestroy();
     }
 };
 NScrollContainerViewModel = tslib_1.__decorate([
     template_1.template(require("./n-scroll-container-view.html")),
     element_1.element("n-scroll-container"),
-    bind_1.bind("onlyX", "onlyY")
+    bind_1.bind("onlyX", "onlyY", "renderKey")
 ], NScrollContainerViewModel);
 exports.NScrollContainerViewModel = NScrollContainerViewModel;
 //# sourceMappingURL=n-scroll-container-view-model.js.map

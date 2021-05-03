@@ -12,6 +12,18 @@ let NExpandingContainerViewModel = class NExpandingContainerViewModel extends co
     get _constrainHorizontal() { return !!n_util_1.TypeHelper.parseBoolean(this.getBound("constrainX")); }
     onMount(element) {
         super.onMount(element);
+        this.recalculate(element);
+        this.watch("renderKey", (v, ov) => {
+            if (v == null || v === ov)
+                return;
+            this.recalculate(element);
+        });
+    }
+    onDestroy() {
+        this.unWatch("renderKey");
+        super.onDestroy();
+    }
+    recalculate(element) {
         if (this._constrainHorizontal)
             this.doHorizontal(element);
         this.doVertical(element);
@@ -38,7 +50,7 @@ let NExpandingContainerViewModel = class NExpandingContainerViewModel extends co
 NExpandingContainerViewModel = tslib_1.__decorate([
     template_1.template(require("./n-expanding-container-view.html")),
     element_1.element("n-expanding-container"),
-    bind_1.bind("constrainX")
+    bind_1.bind("constrainX", "renderKey")
 ], NExpandingContainerViewModel);
 exports.NExpandingContainerViewModel = NExpandingContainerViewModel;
 //# sourceMappingURL=n-expanding-container-view-model.js.map
