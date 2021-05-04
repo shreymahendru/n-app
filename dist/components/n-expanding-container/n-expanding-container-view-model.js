@@ -10,17 +10,18 @@ const n_util_1 = require("@nivinjoseph/n-util");
 require("./n-expanding-container-view.scss");
 let NExpandingContainerViewModel = class NExpandingContainerViewModel extends component_view_model_1.ComponentViewModel {
     get _constrainHorizontal() { return !!n_util_1.TypeHelper.parseBoolean(this.getBound("constrainX")); }
+    get myRenderKey() { return this.getBound("renderKey"); }
     onMount(element) {
         super.onMount(element);
         this.recalculate(element);
-        this.watch("renderKey", (v, ov) => {
+        this.watch("myRenderKey", (v, ov) => {
             if (v == null || v === ov)
                 return;
             this.recalculate(element);
         });
     }
     onDestroy() {
-        this.unWatch("renderKey");
+        this.unWatch("myRenderKey");
         super.onDestroy();
     }
     recalculate(element) {

@@ -18,6 +18,7 @@ let NScrollContainerViewModel = class NScrollContainerViewModel extends componen
     }
     get isHorizontalOnly() { return !!n_util_1.TypeHelper.parseBoolean(this.getBound("onlyX")); }
     get isVerticalOnly() { return !!n_util_1.TypeHelper.parseBoolean(this.getBound("onlyY")); }
+    get myRenderKey() { return this.getBound("renderKey"); }
     onCreate() {
         n_defensive_1.given(this, "this").ensure(t => !(t.isHorizontalOnly === true && t.isVerticalOnly === true), "only-x and only-y cannot both be true");
         super.onCreate();
@@ -26,7 +27,7 @@ let NScrollContainerViewModel = class NScrollContainerViewModel extends componen
         super.onMount(element);
         const SimpleBarCtor = SimpleBar.default;
         this._sb = new SimpleBarCtor(element.querySelector(".simple-scroll-viewer-scroll-container"), { autoHide: true });
-        this.watch("renderKey", (v, ov) => {
+        this.watch("myRenderKey", (v, ov) => {
             if (v == null || v === ov)
                 return;
             this._sb.recalculate();
@@ -37,6 +38,7 @@ let NScrollContainerViewModel = class NScrollContainerViewModel extends componen
             // this._sb.unMount();
             this._sb = null;
         }
+        this.unWatch("myRenderKey");
         super.onDestroy();
     }
 };
