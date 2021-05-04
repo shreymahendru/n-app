@@ -19,6 +19,7 @@ export class NScrollContainerViewModel extends ComponentViewModel
     
     public get isHorizontalOnly(): boolean { return !!TypeHelper.parseBoolean(this.getBound("onlyX")); }
     public get isVerticalOnly(): boolean { return !!TypeHelper.parseBoolean(this.getBound("onlyY")); }
+    public get myRenderKey(): any { return this.getBound("renderKey"); }
     
     
     protected onCreate(): void
@@ -36,7 +37,7 @@ export class NScrollContainerViewModel extends ComponentViewModel
         const SimpleBarCtor = (<any>SimpleBar).default;
         this._sb = new SimpleBarCtor(element.querySelector(".simple-scroll-viewer-scroll-container")!, { autoHide: true });
         
-        this.watch("renderKey", (v, ov) =>
+        this.watch("myRenderKey", (v, ov) =>
         {
             if (v == null || v === ov)
                 return;
@@ -52,6 +53,8 @@ export class NScrollContainerViewModel extends ComponentViewModel
             // this._sb.unMount();
             this._sb = null;
         }
+        
+        this.unWatch("myRenderKey");
         
         super.onDestroy();
     }

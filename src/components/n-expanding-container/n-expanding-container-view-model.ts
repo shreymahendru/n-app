@@ -13,6 +13,8 @@ export class NExpandingContainerViewModel extends ComponentViewModel
 {
     public get _constrainHorizontal(): boolean { return !!TypeHelper.parseBoolean(this.getBound("constrainX")); }
     
+    public get myRenderKey(): any { return this.getBound("renderKey"); }
+    
     
     protected onMount(element: HTMLElement): void
     {
@@ -20,7 +22,7 @@ export class NExpandingContainerViewModel extends ComponentViewModel
 
         this.recalculate(element);
         
-        this.watch("renderKey", (v, ov) =>
+        this.watch("myRenderKey", (v, ov) =>
         {
             if (v == null || v === ov)
                 return;
@@ -31,7 +33,7 @@ export class NExpandingContainerViewModel extends ComponentViewModel
     
     protected onDestroy(): void
     {
-        this.unWatch("renderKey");
+        this.unWatch("myRenderKey");
         
         super.onDestroy();
     }
