@@ -1,6 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.resolve = exports.DisplayType = exports.Utils = exports.PageViewModel = exports.ComponentViewModel = exports.pages = exports.components = exports.bind = exports.meta = exports.title = exports.template = exports.route = exports.element = exports.ClientApp = exports.Vue = void 0;
+exports.resolve = exports.DisplayType = exports.Utils = exports.PageViewModel = exports.ComponentViewModel = exports.pages = exports.components = exports.events = exports.bind = exports.meta = exports.title = exports.template = exports.route = exports.element = exports.ClientApp = exports.Vue = void 0;
 const client_app_1 = require("./core/client-app");
 Object.defineProperty(exports, "Vue", { enumerable: true, get: function () { return client_app_1.Vue; } });
 Object.defineProperty(exports, "ClientApp", { enumerable: true, get: function () { return client_app_1.ClientApp; } });
@@ -16,6 +16,8 @@ const route_1 = require("./core/route");
 Object.defineProperty(exports, "route", { enumerable: true, get: function () { return route_1.route; } });
 const bind_1 = require("./core/bind");
 Object.defineProperty(exports, "bind", { enumerable: true, get: function () { return bind_1.bind; } });
+const events_1 = require("./core/events");
+Object.defineProperty(exports, "events", { enumerable: true, get: function () { return events_1.events; } });
 const components_1 = require("./core/components");
 Object.defineProperty(exports, "components", { enumerable: true, get: function () { return components_1.components; } });
 const pages_1 = require("./core/pages");

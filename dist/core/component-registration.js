@@ -6,6 +6,7 @@ const view_model_registration_1 = require("./view-model-registration");
 const element_1 = require("./element");
 const n_exception_1 = require("@nivinjoseph/n-exception");
 const bind_1 = require("./bind");
+const events_1 = require("./events");
 class ComponentRegistration extends view_model_registration_1.ViewModelRegistration {
     constructor(component) {
         n_defensive_1.given(component, "component").ensureHasValue();
@@ -17,10 +18,14 @@ class ComponentRegistration extends view_model_registration_1.ViewModelRegistrat
         if (Reflect.hasOwnMetadata(bind_1.bindSymbol, this.viewModel))
             this._bindings.push(...Reflect.getOwnMetadata(bind_1.bindSymbol, this.viewModel));
         this._hasModel = this._bindings.some(t => t === "value");
+        this._events = new Array();
+        if (Reflect.hasOwnMetadata(events_1.eventsSymbol, this.viewModel))
+            this._events.push(...Reflect.getOwnMetadata(events_1.eventsSymbol, this.viewModel));
     }
     get element() { return this._element; }
     get bindings() { return this._bindings; }
     get hasModel() { return this._hasModel; }
+    get events() { return this._events; }
 }
 exports.ComponentRegistration = ComponentRegistration;
 //# sourceMappingURL=component-registration.js.map
