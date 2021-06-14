@@ -1,4 +1,4 @@
-import { element, bind, ComponentViewModel, template } from "./../../../../src/index";
+import { element, bind, ComponentViewModel, template, events } from "./../../../../src/index";
 import "./score-board-view.scss";
 import { inject } from "@nivinjoseph/n-ject";
 import { ScopedService } from "../../services/scoped-service";
@@ -6,7 +6,8 @@ import { ScopedService } from "../../services/scoped-service";
 
 @template(require("./score-board-view.html"))
 @element("score-board")
-@bind("score", "increment")   
+@bind("score")
+@events("incremented")
 @inject("ScopedService")    
 export class ScoreBoardViewModel extends ComponentViewModel
 {
@@ -56,15 +57,18 @@ export class ScoreBoardViewModel extends ComponentViewModel
         console.log("scoreboard destroyed", this._time);
     }
 
-    // public incrementScore(): void
-    // {
-    //     // console.log(this);
-    //     // console.log("current score", currentScore);
-    //     // console.log("name", this.playerFullName);
-    //     // this.ctx["score"] += 1;
+    public incrementScore(): void
+    {
+        // console.log(this);
+        // console.log("current score", currentScore);
+        // console.log("name", this.playerFullName);
+        // this.ctx["score"] += 1;
         
-    //     this.ctx["increment"]();
-    // }
+        // this.ctx["increment"]();
+        
+        console.log("incrementing");
+        this.emit("incremented");
+    }
     
     // protected onMount(element: HTMLElement): void
     // { 

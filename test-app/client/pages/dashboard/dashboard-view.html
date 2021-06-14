@@ -8,7 +8,7 @@
         <img src="images/wrise-squirrel-colored.png?format=jpeg&background=ee4935" alt="">
     </div>
     <h3>{{message}}</h3>
-    <score-board v-bind:score="score" v-bind:increment="increment"></score-board>
+    <score-board v-bind:score="score" @incremented="increment"></score-board>
     <router-link to="/Test/2">Go to Test</router-link>
     <p>{{fooParentValue}}</p>
     <binding-test v-model="fooParentValue"></binding-test>
