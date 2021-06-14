@@ -5,6 +5,7 @@ import { title } from "./core/title";
 import { meta, MetaDetail } from "./core/meta";
 import { route } from "./core/route";
 import { bind } from "./core/bind";
+import { events } from "./core/events";
 import { components } from "./core/components";
 import { pages } from "./core/pages";
 import { ComponentViewModel } from "./core/component-view-model";
@@ -32,6 +33,7 @@ export
     title,
     meta, MetaDetail as metaDetail,
     bind,
+    events,
     components,
     pages,
     ComponentViewModel,

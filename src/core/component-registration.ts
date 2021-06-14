@@ -3,6 +3,7 @@ import { ViewModelRegistration } from "./view-model-registration";
 import { elementSymbol } from "./element";
 import { ApplicationException } from "@nivinjoseph/n-exception";
 import { bindSymbol } from "./bind";
+import { eventsSymbol } from "./events";
 
 
 export class ComponentRegistration extends ViewModelRegistration
@@ -10,11 +11,13 @@ export class ComponentRegistration extends ViewModelRegistration
     private readonly _element: string;
     private readonly _bindings: Array<string>;
     private readonly _hasModel: boolean;
+    private readonly _events: Array<string>;
     
     
     public get element(): string { return this._element; }
     public get bindings(): Array<string> { return this._bindings; }
     public get hasModel(): boolean { return this._hasModel; }
+    public get events(): Array<string> { return this._events; }
     
     
     public constructor(component: Function)
@@ -34,6 +37,10 @@ export class ComponentRegistration extends ViewModelRegistration
             this._bindings.push(...Reflect.getOwnMetadata(bindSymbol, this.viewModel));   
         
         this._hasModel = this._bindings.some(t => t === "value");
+        
+        this._events = new Array<string>();
+        if (Reflect.hasOwnMetadata(eventsSymbol, this.viewModel))
+            this._events.push(...Reflect.getOwnMetadata(eventsSymbol, this.viewModel));
     }
     
     

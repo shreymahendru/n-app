@@ -78,7 +78,9 @@ export class ComponentFactory
             vueVm.$options.methods = methods;
             vueVm.$options.computed = computed;
             vm._ctx = vueVm;
-            vm._bindings = component.props ? [...registration.bindings] : [];    
+            vm._bindings = component.props ? [...registration.bindings] : [];
+            
+            vm._events = registration.events;
 
             return data;
         };
