@@ -22,7 +22,7 @@ export class NScrollContainerViewModel extends ComponentViewModel
     public get myRenderKey(): any { return this.getBound("renderKey"); }
     
     
-    protected onCreate(): void
+    protected override onCreate(): void
     {
         given(this, "this").ensure(t => !(t.isHorizontalOnly === true && t.isVerticalOnly === true),
             "only-x and only-y cannot both be true");
@@ -30,7 +30,7 @@ export class NScrollContainerViewModel extends ComponentViewModel
         super.onCreate();
     }
     
-    protected onMount(element: HTMLElement): void
+    protected override onMount(element: HTMLElement): void
     {
         super.onMount(element);
         
@@ -46,7 +46,7 @@ export class NScrollContainerViewModel extends ComponentViewModel
         });
     }
     
-    protected onDestroy(): void
+    protected override onDestroy(): void
     {
         if (this._sb != null)
         {

@@ -21,6 +21,7 @@
         "importHelpers": true,
         "noEmitHelpers": true,
         "resolveJsonModule": true,
+        "noImplicitOverride": true,
         "plugins": [
             {
                 "name": "typescript-tslint-plugin",

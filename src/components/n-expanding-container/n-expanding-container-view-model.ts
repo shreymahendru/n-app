@@ -16,7 +16,7 @@ export class NExpandingContainerViewModel extends ComponentViewModel
     public get myRenderKey(): any { return this.getBound("renderKey"); }
     
     
-    protected onMount(element: HTMLElement): void
+    protected override onMount(element: HTMLElement): void
     {
         super.onMount(element);
 
@@ -31,7 +31,7 @@ export class NExpandingContainerViewModel extends ComponentViewModel
         });
     }
     
-    protected onDestroy(): void
+    protected override onDestroy(): void
     {
         this.unWatch("myRenderKey");
         

@@ -55,7 +55,7 @@ export class TestViewModel extends BasePageViewModel
     }
     
     
-    protected onEnter(arg: any, resolved1: string, resolved2: string): void
+    protected override onEnter(arg: any, resolved1: string, resolved2: string): void
     {
         super.onEnter(arg, resolved1, resolved2);
            

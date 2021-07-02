@@ -40,7 +40,7 @@ export class ScoreBoardViewModel extends ComponentViewModel
     }
     
     
-    protected onCreate(): void
+    protected override onCreate(): void
     {
         console.log("scoreboard created", this._time);
         
@@ -52,7 +52,7 @@ export class ScoreBoardViewModel extends ComponentViewModel
         });
     }
     
-    protected onDestroy(): void
+    protected override onDestroy(): void
     {
         console.log("scoreboard destroyed", this._time);
     }

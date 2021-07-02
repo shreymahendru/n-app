@@ -70,7 +70,7 @@ export class NFileSelectViewModel extends ComponentViewModel
     }
     
     
-    protected onMount(element: HTMLElement): void
+    protected override onMount(element: HTMLElement): void
     {         
         this.initializeMaxFileSizeBytes();
 
