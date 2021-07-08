@@ -9,6 +9,7 @@ Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor i
 
 ## **Prerequisites**
 
+<!-- n-app webpack.config loader -->
 - Vue.js
 - Node.js
 - Typescript (Recommended)
@@ -31,14 +32,25 @@ npm i @nivin-joseph/n-app --save
   - Getting Started
 - Convention & File Structure
 - Structure of Pages & Individual Page
+  - Pages
+  - Individual Page
+    - Interaction between View and View-Model
+      - Click Handler
+      - v-bind
+      - v-model
+    - Page's Lifecycle Methods
+      - onCreate
+      - onMount
+      - onEnter
+      - onLeave
+      - onDestroy
 - Structure of Components & Individual Component
 - Services
-  - Component Service
   - Dialog Service
-  - Display Service
   - Event Aggregator
   - Navigation Service
   - Storage Service
+- Example
 
 ## **What is n-app?**
 
@@ -224,17 +236,149 @@ import { Routes } from "../routes"; // Import all the possible Routes
 import "./page-1-view.scss"; // Importing the Styles
 
 @template(require("./page-1-view.html")) // Linking the Template to this View-Model
-@route(Routes.page1) // Linking the corresponding Routes to the correct one
+@route(Routes.page1) // Linking the Corresponding Routes to the correct one
 export class Page1ViewModel extends PageViewModel // Inheriting the PageViewModel class
 {
     // View-Model Logic
 }
 ```
 
-Now, we've successfully create and routed a page. This page is now **accessible**. Although, the creation of pages are a bit lengthy, **n-app** offers **separation of concern**, **ease of readability** and also **scalability**, if used correctly.
+Now, we've successfully create and routed a page. This page is now **accessible** to the user.
 
-<!-- TODO: Page's Event (Click Handling, V-binding, V-model) -->
+Although, the creation of pages are a bit lengthy, **n-app** offers **separation of concern**, **ease of readability** and also **scalability**, if used correctly.
+
+### **Interaction between View and View-Model**
+
+**n-app** allows for Vue operations with the DOM with **separation of concern**. Instead of writing the methods, data and template inside one file, you are able to separate it into a template file (**HTML**), and a **view-model** file (**TypeScript**).
+
+#### **Click Handler**
+
+Inside your **HTML** file:
+
+```html
+<button @click="foo()">Click Me</button>
+```
+
+Inside your **TypeScript** view-model file and inside the class, you'll create a method:
+
+```typescript
+public foo(): void
+{
+    // Method Body
+}
+```
+
+Now whenever you click the button, it'll call the method `doSomething`.
+
+#### **v-bind**
+
+You can easily incorporate **Vue's** data binding like this:
+
+Inside your **HTML** file:
+
+```html
+<div>{{ foo }}</div>
+```
+
+That's it! Now we've exposed `foo` data to the **view**.
+
+Inside your **TypeScript view-model** file and inside the class, you'll create a getter for the property:
+
+```typescript
+public get foo(): string { return "bar"; }
+```
+
+#### **v-model**
+
+You can easily incorporate **Vue's** two-way data binding like this:
+
+Inside your **HTML** file:
+
+```html
+<input v-model="message" >
+```
+
+Now inside your **TypeScript view-model** file, you can create a setter and a getter to dynamically two-way bind the data.
+
+```typescript
+private _message: string;
+
+public get message(): string { return this._message; }
+public set message(value: string) { this._message = value; }
+```
+
+Now when the message in the input updates, it'll update the _message property inside the **view-model** class.
+
 <!-- TODO: Page's Lifecycle -->
+
+### **Page's Lifecycle Methods**
+
+**Note:** The following methods are inherited from the `PageViewModel` class.
+
+#### **onCreate**
+
+This method is executed when the **view-model** is created, but when the template is not yet mounted to the **DOM**.
+
+```typescript
+protected onCreate(): void
+{
+    super.onCreate();
+    
+    // Method Body
+}
+```
+
+#### **onMount**
+
+This method is executed when the page template is mounted on the **DOM**, you'll get the HTML element as a parameter here to manipulate it, like using JQuery for example.
+
+```typescript
+protected onMount(element: HTMLElement): void
+{
+    super.onCreate(element);
+    
+    // Method Body + Manipulation of the HTML element
+}
+```
+
+#### **onEnter**
+
+This method is executed when the page has appeared and is usually used to fetch data to show on the page. The parametrs for this function would be any **query/path params** of the url defined in the **route**.
+
+```typescript
+protected onEnter(): void
+{
+    super.onEnter();
+    
+    // Method Body
+}
+```
+
+#### **onLeave**
+
+This method is executed when the user is about to **leave** the page.
+
+```typescript
+protected onLeave(): void
+{
+    super.onLeave();
+    
+    // Method Body
+}
+```
+
+#### **onDestroy**
+
+This method is executed when the page is **removed** from the **DOM**.
+
+```typescript
+protected onDestroy(): void
+{
+    super.onDestroy();
+    
+    // Method Body
+}
+```
 
 ## **Structure of Components & Individual Component**
 
