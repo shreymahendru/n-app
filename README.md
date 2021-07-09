@@ -36,8 +36,8 @@ npm i @nivin-joseph/n-app --save
   - Individual Page
     - Interaction between View and View-Model
       - Click Handler
-      - v-bind
-      - v-model
+      - Page v-bind
+      - Page v-model
     - Page's Lifecycle Methods
       - onCreate
       - onMount
@@ -49,8 +49,8 @@ npm i @nivin-joseph/n-app --save
     - Top-level Components
     - Page-level Components
   - Individual Component
-    - v-bind
-    - v-model
+    - Component v-bind
+    - Component v-model
     - Events
 - Services
   - Dialog Service
@@ -269,7 +269,7 @@ public foo(): void
 
 Now whenever you click the button, it'll call the method `doSomething`.
 
-#### **v-bind**
+#### **Page v-bind**
 
 You can easily incorporate **Vue's** data binding like this:
 
@@ -287,7 +287,7 @@ Inside your **TypeScript view-model** file and inside the class, you'll create a
 public get foo(): string { return "bar"; }
 ```
 
-#### **v-model**
+#### **Page v-model**
 
 You can easily incorporate **Vue's** two-way data binding like this:
 
@@ -462,8 +462,6 @@ Now, our component has been registered.
 
 ### **Individual Component**
 
-<!-- TODO: Component -->
-
 Let's look into the structure of each individual components.
 
 Just like the how the **pages** are structured, **components** uses a very similar structuring as pages minus the route.
@@ -494,7 +492,69 @@ export class Component1ViewModel extends ComponentViewModel
 }
 ```
 
-With creating the **view and view-model** and registering it, we've created a component.
+With creating the **view and view-model** and registering it, we've created a component and it's ready to be used.
+
+If we've registered the component top-level then it's available to be used anywhere by using the name inside the component's `@element` decorator. Inside the page's **HTML**,
+
+```html
+<component-1></component-1>
+```
+
+The same process applies for **page-level** components.
+
+#### **Component v-bind**
+
+Suppose we want to expose data from the page as a prop to our child component. First we'll create a getter for this object inside the page's **view-model**. Inside the **page's view-model**,
+
+```typescript
+public get data(): string { return "foo"; }
+```
+
+For our component to accept props, we'll use **n-app's** @bind decorator on top of the component's **view-model** class.
+
+```typescript
+@bind("propA")
+```
+
+Let's bind our `data` object to the `propA` prop inside the component. In our page **HTML** file which is using the component we'll bind it using `v-bind`.
+
+```html
+<component-1 v-bind:prop-a="data"></component-1>
+```
+
+**Note:** Since **HTML** uses **Kebab Case** the prop name inside the **HTML** must be **Kebab Case** but the `@bind` uses **Camel Case** so all the props inside the decorator must be in **Camel Case**; **n-app** handles the conversion.
+
+Now, we can use the prop inside our component using a getter which returns using the `getBound` method. Inside our component's **view-model**,
+
+```typescript
+public get propA(): string { return this.getBound<string>("propA"); }
+```
+
+Now, we've retreive data using **v-bind** from the parent and it can be used inside the child component.
+
+#### **Component v-model**
+
+Vue supports two-way binding using `v-model`. We can incorporate this using **n-app**.
+
+Suppose, inside our **page** we're trying to use v-model for `messageA` which will be retrieved from our child component.
+
+```html
+<component-1 v-model="messageA"></component-1>
+<h1>{{ messageA }}</h1>
+```
+
+Inside our component's **view-model**, we'll bind `value` keyword using the `@bind` decorator and retrieve it using a **getter** and **setter** with `getBoundModel` and `setBoundModel`, respectively.
+
+```typescript
+public set message(value: string) { this.setBoundModel(value); }
+public get message(): string { return this.getBoundModel<string>(); }
+```
+
+**Note:** Usually components that has `v-model` only introduce 1 instance of two-way binding per component therefore, `v-model` only does two-way binding on 1 prop which is the `value` keyword on the `@bind` decorator.
+
+Now, we can dynamically change the `message` and it'll be reflected on both the parent and child component using **Vue's** `v-model`.
+
+#### **Events**
 
 ## **Examples**
 
