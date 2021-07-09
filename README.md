@@ -45,6 +45,13 @@ npm i @nivin-joseph/n-app --save
       - onLeave
       - onDestroy
 - Structure of Components & Individual Component
+  - Components
+    - Top-level Components
+    - Page-level Components
+  - Individual Component
+    - v-bind
+    - v-model
+    - Events
 - Services
   - Dialog Service
   - Event Aggregator
@@ -104,30 +111,20 @@ n-test-app
     |-- client
         |-- components
             |-- component-1
-                |-- component-1-view-model.ts
-                |-- component-1-view.html
-                |-- component-1-view.scss
+                |-- # component-1 view and view-models
             |-- component-2
-                |-- component-2-view-model.ts
-                |-- component-2-view.html
-                |-- component-2-view.scss
+                |-- # component-2 view and view-models
             ...
             |-- index.ts
         |-- pages
             |-- page-1
                 |-- components
                     |-- page-1-component
-                        |-- page-1-component-view-model.ts
-                        |-- page-1-component-view.html
-                        |-- page-1-component-view.scss
+                        |-- # page-1-component view and view-models
                     ...
-                |-- page-1-view-model.ts
-                |-- page-1-view.html
-                |-- page-1-view.scss
+                |-- # page-1 view and view-models
             |-- page-2
-                |-- page-2-view-model.ts
-                |-- page-2-view.html
-                |-- page-2-view.scss
+                |-- # page-2 view and view-models
             ...
             |-- routes.ts
             |-- index.ts
@@ -309,8 +306,6 @@ public set message(value: string) { this._message = value; }
 
 Now when the message in the input updates, it'll update the _message property inside the **view-model** class.
 
-<!-- TODO: Page's Lifecycle -->
-
 ### **Page's Lifecycle Methods**
 
 **Note:** The following methods are inherited from the `PageViewModel` class.
@@ -384,7 +379,84 @@ protected onDestroy(): void
 
 ### **Components**
 
-<!-- TODO: Components -->
+For components, we recommend using a similar file structure to pages.
+
+There are two cases to incorporate components into your pages.
+
+- **Top-level** Components (Components that are visible to all pages).
+- **Page-level** Components (Components that are visible to a certian pages).
+
+#### **Top-level Components**
+
+To create a **top-level** component, you could create a `components` folder on the same level as pages.
+
+```bash
+client
+    |-- components
+        |-- component-1
+            |-- component-1-view-model.ts
+            |-- component-1-view.html
+            |-- component-1-view.scss
+    |-- pages
+```
+
+In order to register **top-level** components you have to create a `index.ts` file inside the `components` folder.
+
+```bash
+components
+    |-- component-1
+        |-- component-1-view-model.ts
+        |-- component-1-view.html
+        |-- component-1-view.scss
+    |-- index.ts
+```
+
+Like the `index.ts` file in pages, you'll create `index.ts` file here, though the registering process is a bit different.
+
+```typescript
+import { Component1ViewModel } from "./component-1/component-1-view-model";
+
+export const components: Array<Function> = [
+    Component1ViewModel
+];
+```
+
+Now, we've created and registered our **top-level** component.
+
+#### **Page-level Components**
+
+To create a **page-level** component, you could create a `components` folder on the individual page.
+
+```bash
+client
+    |-- pages
+        |-- page-1
+            |-- components
+                |-- component-1
+                    |-- component-1-view-model.ts
+                    |-- component-1-view.html
+                    |-- component-1-view.scss
+            |-- # page-1 view and view-model
+```
+
+To register our component we'll use `@components` decorator inside our page **view-model** and register the component's **view-model**.
+
+```typescript
+import { PageViewModel, route, template } from "@nivinjoseph/n-app"; 
+import { Routes } from "../routes"; 
+import "./page-1-view.scss"; 
+import { Component1ViewModel } from "./components/component-1/component-1-view-model"; // Importing the Component's View Model
+
+@template(require("./page-1-view.html")) 
+@route(Routes.page1) 
+@components(Component1ViewModel)
+export class Page1ViewModel extends PageViewModel 
+{
+    // View-Model Logic
+}
+```
+
+Now, our component has been registered.
 
 ### **Individual Component**
 
