@@ -57,7 +57,9 @@ npm i @nivin-joseph/n-app --save
   - Event Aggregator
   - Navigation Service
   - Storage Service
-- Example
+- Examples
+  - Simple Counter
+  - n-app-todo
 
 ## **What is n-app?**
 
@@ -462,7 +464,41 @@ Now, our component has been registered.
 
 <!-- TODO: Component -->
 
-## **Example**
+Let's look into the structure of each individual components.
+
+Just like the how the **pages** are structured, **components** uses a very similar structuring as pages minus the route.
+
+Inside, the `components` folder we'll make a component and each of these component will contain a **view** and **view-model**.
+
+```bash
+components
+    |-- component-1
+        |-- component-1-view-model.ts
+        |-- component-1-view.html
+        |-- component-1-view.scss
+```
+
+The component-1's **views** follow the same format as pages. Though it's **view-model** is a little bit different.
+
+Components inherits from the `ComponentViewModel` class and removes the concept of routes which is replaced by a decorator, `@element`, which contains the name of the component (the **element name** exposed to the DOM).
+
+```typescript
+import { ComponentViewModel, element, template } from "@nivinjoseph/n-app";
+import "./component-1-view.scss";
+
+@template(require("./component-1-view.html"))
+@element("component-1")
+export class Component1ViewModel extends ComponentViewModel
+{
+    
+}
+```
+
+With creating the **view and view-model** and registering it, we've created a component.
+
+## **Examples**
+
+### **Simple Counter**
 
 Here's an example of an simple counter.  
 
@@ -533,6 +569,10 @@ export const pages = [
 Now we're done!
 
 Running the page with the path `/counter` (without the path will work because we've set it as the `default` path) will bring up our simple counter application.
+
+### **n-app-todo**
+
+<!-- FIXME: Add the link for n-app-todo -->
 
 <!-- - What is n-app?
   - Introduction
