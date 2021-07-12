@@ -1,11 +1,8 @@
 # **n-app**
 
-Vue.js based application framework
-
 ## **Description**
 
-<!-- TODO: ADD DESCRIPTION -->
-Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.
+**n-app** is a Vue.js application framework developed by Nivin Joseph.
 
 ## **Prerequisites**
 
@@ -27,52 +24,57 @@ npm i @nivin-joseph/n-app --save
 
 ### **Content**
 
-- What is n-app?
-  - Introduction
-  - Getting Started
-- Convention & File Structure
-- Structure of Pages & Individual Page
-  - Pages
-  - Individual Page
-    - Interaction between View and View-Model
-      - Click Handler
-      - Page v-bind
-      - Page v-model
-    - Page's Lifecycle Methods
-      - onCreate
-      - onMount
-      - onEnter
-      - onLeave
-      - onDestroy
-- Structure of Components & Individual Component
-  - Components
-    - Top-level Components
-    - Page-level Components
-  - Individual Component
-    - Component v-bind
-    - Component v-model
-    - Events
+- [What is n-app?](#what-is-n-app)
+  - [Introduction](#introduction)
+  - [Getting Started](#getting-started)
+- [Convention & File Structure](#convention-and-file-structure)
+- [Structure of Pages & Individual Page](#structure-of-pages-and-individual-page)
+  - [Pages](#pages)
+  - [Individual Page](#individual-page)
+    - [Interaction between View & View-Model](#interaction-between-view-and-view-model)
+      - [Click Handler](#click-handler)
+      - [Page v-bind](#page-v-bind)
+      - [Page v-model](#page-v-model)
+    - [Page's Lifecycle Methods](#page's-lifecycle-methods)
+      - [onCreate](#onCreate)
+      - [onMount](#onMount)
+      - [onEnter](#onEnter)
+      - [onLeave](#onLeave)
+      - [onDestroy](#onDestroy)
+- [Structure of Components & Individual Component](#structure-of-components-and-individual-component)
+  - [Components](#components)
+    - [Top-level Components](#top-level-components)
+    - [Page-level Components](#page-level-components)
+  - [Individual Component](#individual-component)
+    - [Component v-bind](#component-v-bind)
+    - [Component v-model](#component-v-model)
+    - [Events](#events)
 - Services
   - Dialog Service
   - Event Aggregator
   - Navigation Service
   - Storage Service
-- Examples
-  - Simple Counter
-  - n-app-todo
+- [Examples](#examples)
+  - [Simple Counter](#simple-counter)
+  - [n-app-todo](#n-app-todo)
+
+<a id="what-is-n-app"></a>
 
 ## **What is n-app?**
 
+<a id="introduction"></a>
+
 ### **Introduction**
 
-<!-- TODO: ADD INTRODUCTION -->
-Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.
+**n-app** is a **enterprise-level** Vue.js based application framework that enforces **good practices** to maintain **scalability.**
+
+<a id="getting-started"></a>
 
 ### **Getting Started**
 
 #### **Hello World**
 
-If used correctly, **n-app** offers **separation of concern**, **ease of readability** and also **scalability**.
+Here's how to create a Hello World Page using **n-app**.
 
 ```html
 <div class="hello-page">
@@ -101,11 +103,13 @@ We've create our very first application that uses **Vue's** binding, with separa
 
 This is just the very start of what **n-app** has to offer.
 
+<a id="convention-and-file-structure"></a>
+
 ## **Convention & File Structure**
 
-<!-- TODO: Explain how n-app uses MVVM -->
+**n-app** follows a generalized structure and architecture for creating **enterprise-level** web applications. It enforces **strong type safety**, **good architecture**, **great integration with other libraries** and more...
 
-Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.
+The following is an example of how a web applications using `n-app` should be structured.
 
 ```bash
 n-test-app
@@ -134,13 +138,19 @@ n-test-app
         |-- index-view.html
 ```
 
+**n-app** uses a MVVM architectural pattern. You can learn more about it [here](https://en.wikipedia.org/wiki/Model%E2%80%93view%E2%80%93viewmodel).
+
+<a id="structure-of-pages-and-individual-page"></a>
+
 ## **Structure of Pages & Individual Page**
+
+<a id="pages"></a>
 
 ### **Pages**
 
-We highly recommend that the creation of pages should atleast somewhat follow this generalized structure...
+We highly recommend that the creation of pages should at least somewhat follow this generalized structure...
 
-Within the `pages` folder, it should contain all the page's view and view-model seperated into individual folder for each page.
+Within the `pages` folder, it should contain all the page's view and view-model separated into individual folder for each page.
 
 ```bash
 pages
@@ -199,6 +209,8 @@ export class Routes
 
 **Note:** we need a default path which is redirected to when the address has a path of `/`.
 
+<a id="individual-page"></a>
+
 ### **Individual Page**
 
 Now we have setup the routes for the pages, we now need to link it to the corresponding **view-models**.
@@ -245,9 +257,13 @@ Now, we've successfully create and routed a page. This page is now **accessible*
 
 Although, the creation of pages are a bit lengthy, **n-app** offers **separation of concern**, **ease of readability** and also **scalability**, if used correctly.
 
+<a id="interaction-between-view-and-view-model"></a>
+
 ### **Interaction between View and View-Model**
 
 **n-app** allows for Vue operations with the DOM with **separation of concern**. Instead of writing the methods, data and template inside one file, you are able to separate it into a template file (**HTML**), and a **view-model** file (**TypeScript**).
+
+<a id="click-handler"></a>
 
 #### **Click Handler**
 
@@ -268,6 +284,8 @@ public foo(): void
 
 Now whenever you click the button, it'll call the method `doSomething`.
 
+<a id="page-v-bind"></a>
+
 #### **Page v-bind**
 
 You can easily incorporate **Vue's** data binding like this:
@@ -285,6 +303,8 @@ Inside your **TypeScript view-model** file and inside the class, you'll create a
 ```typescript
 public get foo(): string { return "bar"; }
 ```
+
+<a id="page-v-model"></a>
 
 #### **Page v-model**
 
@@ -307,9 +327,13 @@ public set message(value: string) { this._message = value; }
 
 Now when the message in the input updates, it'll update the _message property inside the **view-model** class.
 
+<a id="page's-lifecycle-methods"></a>
+
 ### **Page's Lifecycle Methods**
 
 **Note:** The following methods are inherited from the `PageViewModel` class.
+
+<a id="onCreate"></a>
 
 #### **onCreate**
 
@@ -324,6 +348,8 @@ protected onCreate(): void
 }
 ```
 
+<a id="onMount"></a>
+
 #### **onMount**
 
 This method is executed when the page template is mounted on the **DOM**, you'll get the HTML element as a parameter here to manipulate it, like using JQuery for example.
@@ -337,9 +363,11 @@ protected onMount(element: HTMLElement): void
 }
 ```
 
+<a id="onEnter"></a>
+
 #### **onEnter**
 
-This method is executed when the page has appeared and is usually used to fetch data to show on the page. The parametrs for this function would be any **query/path params** of the url defined in the **route**.
+This method is executed when the page has appeared and is usually used to fetch data to show on the page. The parameters for this function would be any **query/path params** of the url defined in the **route**.
 
 ```typescript
 protected onEnter(): void
@@ -349,6 +377,8 @@ protected onEnter(): void
     // Method Body
 }
 ```
+
+<a id="onLeave"></a>
 
 #### **onLeave**
 
@@ -363,6 +393,8 @@ protected onLeave(): void
 }
 ```
 
+<a id="onDestroy"></a>
+
 #### **onDestroy**
 
 This method is executed when the page is **removed** from the **DOM**.
@@ -376,7 +408,11 @@ protected onDestroy(): void
 }
 ```
 
+<a id="structure-of-components-and-individual-component"></a>
+
 ## **Structure of Components & Individual Component**
+
+<a id="components"></a>
 
 ### **Components**
 
@@ -385,7 +421,9 @@ For components, we recommend using a similar file structure to pages.
 There are two cases to incorporate components into your pages.
 
 - **Top-level** Components (Components that are visible to all pages).
-- **Page-level** Components (Components that are visible to a certian pages).
+- **Page-level** Components (Components that are visible to a certain pages).
+
+<a id="top-level-components"></a>
 
 #### **Top-level Components**
 
@@ -424,6 +462,8 @@ export const components: Array<Function> = [
 
 Now, we've created and registered our **top-level** component.
 
+<a id="page-level-components"></a>
+
 #### **Page-level Components**
 
 To create a **page-level** component, you could create a `components` folder on the individual page.
@@ -458,6 +498,8 @@ export class Page1ViewModel extends PageViewModel
 ```
 
 Now, our component has been registered.
+
+<a id="individual-component"></a>
 
 ### **Individual Component**
 
@@ -501,6 +543,8 @@ If we've registered the component top-level then it's available to be used anywh
 
 The same process applies for **page-level** components.
 
+<a id="component-v-bind"></a>
+
 #### **Component v-bind**
 
 Suppose we want to expose data from the page as a prop to our child component. First we'll create a getter for this object inside the page's **view-model**. Inside the **page's view-model**,
@@ -529,7 +573,9 @@ Now, we can use the prop inside our component using a getter which returns using
 public get propA(): string { return this.getBound<string>("propA"); }
 ```
 
-Now, we've retreive data using **v-bind** from the parent and it can be used inside the child component.
+Now, we've retrieve data using **v-bind** from the parent and it can be used inside the child component.
+
+<a id="component-v-model"></a>
 
 #### **Component v-model**
 
@@ -552,6 +598,8 @@ public get message(): string { return this.getBoundModel<string>(); }
 **Note:** Usually components that has `v-model` only introduce 1 instance of two-way binding per component therefore, `v-model` only does two-way binding on 1 prop which is the `value` keyword on the `@bind` decorator.
 
 Now, we can dynamically change the `message` and it'll be reflected on both the parent and child component using **Vue's** `v-model`.
+
+<a id="events"></a>
 
 #### **Events**
 
@@ -580,9 +628,15 @@ export class Component1ViewModel extends ComponentViewModel
 }
 ```
 
+**Note:** the `emit` method also event arguments. i.e. `this.emit(event: string, ...eventArgs: any[])`.
+
 Now, once the click method is invoked it'll emit the `event1` event to the parent which then executes the `foo` method inside the parent's **view-model**.
 
+<a id="examples"></a>
+
 ## **Examples**
+
+<a id="simple-counter"></a>
 
 ### **Simple Counter**
 
@@ -656,20 +710,10 @@ Now we're done!
 
 Running the page with the path `/counter` (without the path will work because we've set it as the `default` path) will bring up our simple counter application.
 
+<a id="n-app-todo"></a>
+
 ### **n-app-todo**
 
-<!-- FIXME: Add the link for n-app-todo -->
+Here's an example of a fully built **todo** application built with the **n-app** framework.
 
-<!-- - What is n-app?
-  - Introduction
-  - Getting Started
-- Convention & File Structure
-- Page Structure
-- Component Structure
-- Services
-  - Component Service
-  - Dialog Service
-  - Display Service
-  - Event Aggregator
-  - Navigation Service
-  - Storage Service -->
+Link to the repo [here](https://github.com/shreymahendru/n-app-todo)
