@@ -9,7 +9,7 @@ Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor i
 
 ## **Prerequisites**
 
-<!-- n-app webpack.config loader -->
+<!-- TODO: n-app webpack.config loader -->
 - Vue.js
 - Node.js
 - Typescript (Recommended)
@@ -70,7 +70,6 @@ Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor i
 
 ### **Getting Started**
 
-<!-- TODO: ADD GETTING STARTED -->
 #### **Hello World**
 
 If used correctly, **n-app** offers **separation of concern**, **ease of readability** and also **scalability**.
@@ -555,6 +554,33 @@ public get message(): string { return this.getBoundModel<string>(); }
 Now, we can dynamically change the `message` and it'll be reflected on both the parent and child component using **Vue's** `v-model`.
 
 #### **Events**
+
+Similar to **Vue's** event listener using the `$emit`, we can also do implement a way to emit to the parent component that an event has been executed in the child component.
+
+We can do this using the `@events` decorator inside our component **view-model**.
+
+In our parent, we'll use a component which has an event.
+
+```html
+<component-1 @event-1="foo()"></component-1>
+```
+
+Now, once the event is emitted from the child component, it'll execute the `foo` method inside the parent component.
+
+Inside our **view-model** for the component, we'll add `@events` decorator and `emit` method inside where we want to emit the event.
+
+```typescript
+@events("event1")
+export class Component1ViewModel extends ComponentViewModel
+{
+    public click(): void
+    {
+        this.emit("event1");
+    }
+}
+```
+
+Now, once the click method is invoked it'll emit the `event1` event to the parent which then executes the `foo` method inside the parent's **view-model**.
 
 ## **Examples**
 
