@@ -31,16 +31,16 @@ npm i @nivin-joseph/n-app --save
 - [Structure of Pages & Individual Page](#structure-of-pages-and-individual-page)
   - [Pages](#pages)
   - [Individual Page](#individual-page)
-    - [Interaction between View & View-Model](#interaction-between-view-and-view-model)
-      - [Click Handler](#click-handler)
-      - [Page v-bind](#page-v-bind)
-      - [Page v-model](#page-v-model)
     - [Page's Lifecycle Methods](#page's-lifecycle-methods)
       - [onCreate](#onCreate)
       - [onMount](#onMount)
       - [onEnter](#onEnter)
       - [onLeave](#onLeave)
       - [onDestroy](#onDestroy)
+    - [Interaction between View & View-Model](#interaction-between-view-and-view-model)
+      - [Click Handler](#click-handler)
+      - [Page v-bind](#page-v-bind)
+      - [Page v-model](#page-v-model)
 - [Structure of Components & Individual Component](#structure-of-components-and-individual-component)
   - [Components](#components)
     - [Top-level Components](#top-level-components)
@@ -49,11 +49,10 @@ npm i @nivin-joseph/n-app --save
     - [Component v-bind](#component-v-bind)
     - [Component v-model](#component-v-model)
     - [Events](#events)
-- Services
-  - Dialog Service
-  - Event Aggregator
-  - Navigation Service
-  - Storage Service
+- [Services](#services)
+  - [Dialog Service](#dialog-service)
+  - [Event Aggregator](#event-aggregator)
+  - [Navigation Service](#navigation-service)
 - [Examples](#examples)
   - [Simple Counter](#simple-counter)
   - [n-app-todo](#n-app-todo)
@@ -257,76 +256,6 @@ Now, we've successfully create and routed a page. This page is now **accessible*
 
 Although, the creation of pages are a bit lengthy, **n-app** offers **separation of concern**, **ease of readability** and also **scalability**, if used correctly.
 
-<a id="interaction-between-view-and-view-model"></a>
-
-### **Interaction between View and View-Model**
-
-**n-app** allows for Vue operations with the DOM with **separation of concern**. Instead of writing the methods, data and template inside one file, you are able to separate it into a template file (**HTML**), and a **view-model** file (**TypeScript**).
-
-<a id="click-handler"></a>
-
-#### **Click Handler**
-
-Inside your **HTML** file:
-
-```html
-<button @click="foo()">Click Me</button>
-```
-
-Inside your **TypeScript** view-model file and inside the class, you'll create a method:
-
-```typescript
-public foo(): void
-{
-    // Method Body
-}
-```
-
-Now whenever you click the button, it'll call the method `doSomething`.
-
-<a id="page-v-bind"></a>
-
-#### **Page v-bind**
-
-You can easily incorporate **Vue's** data binding like this:
-
-Inside your **HTML** file:
-
-```html
-<div>{{ foo }}</div>
-```
-
-That's it! Now we've exposed `foo` data to the **view**.
-
-Inside your **TypeScript view-model** file and inside the class, you'll create a getter for the property:
-
-```typescript
-public get foo(): string { return "bar"; }
-```
-
-<a id="page-v-model"></a>
-
-#### **Page v-model**
-
-You can easily incorporate **Vue's** two-way data binding like this:
-
-Inside your **HTML** file:
-
-```html
-<input v-model="message" >
-```
-
-Now inside your **TypeScript view-model** file, you can create a setter and a getter to dynamically two-way bind the data.
-
-```typescript
-private _message: string;
-
-public get message(): string { return this._message; }
-public set message(value: string) { this._message = value; }
-```
-
-Now when the message in the input updates, it'll update the _message property inside the **view-model** class.
-
 <a id="page's-lifecycle-methods"></a>
 
 ### **Page's Lifecycle Methods**
@@ -407,6 +336,76 @@ protected onDestroy(): void
     // Method Body
 }
 ```
+
+<a id="interaction-between-view-and-view-model"></a>
+
+### **Interaction between View and View-Model**
+
+**n-app** allows for Vue operations with the DOM with **separation of concern**. Instead of writing the methods, data and template inside one file, you are able to separate it into a template file (**HTML**), and a **view-model** file (**TypeScript**).
+
+<a id="click-handler"></a>
+
+#### **Click Handler**
+
+Inside your **HTML** file:
+
+```html
+<button @click="foo()">Click Me</button>
+```
+
+Inside your **TypeScript** view-model file and inside the class, you'll create a method:
+
+```typescript
+public foo(): void
+{
+    // Method Body
+}
+```
+
+Now whenever you click the button, it'll call the method `doSomething`.
+
+<a id="page-v-bind"></a>
+
+#### **Page v-bind**
+
+You can easily incorporate **Vue's** data binding like this:
+
+Inside your **HTML** file:
+
+```html
+<div>{{ foo }}</div>
+```
+
+That's it! Now we've exposed `foo` data to the **view**.
+
+Inside your **TypeScript view-model** file and inside the class, you'll create a getter for the property:
+
+```typescript
+public get foo(): string { return "bar"; }
+```
+
+<a id="page-v-model"></a>
+
+#### **Page v-model**
+
+You can easily incorporate **Vue's** two-way data binding like this:
+
+Inside your **HTML** file:
+
+```html
+<input v-model="message" >
+```
+
+Now inside your **TypeScript view-model** file, you can create a setter and a getter to dynamically two-way bind the data.
+
+```typescript
+private _message: string;
+
+public get message(): string { return this._message; }
+public set message(value: string) { this._message = value; }
+```
+
+Now when the message in the input updates, it'll update the _message property inside the **view-model** class.
 
 <a id="structure-of-components-and-individual-component"></a>
 
@@ -631,6 +630,199 @@ export class Component1ViewModel extends ComponentViewModel
 **Note:** the `emit` method also event arguments. i.e. `this.emit(event: string, ...eventArgs: any[])`.
 
 Now, once the click method is invoked it'll emit the `event1` event to the parent which then executes the `foo` method inside the parent's **view-model**.
+
+<a id="services"></a>
+
+## **Services**
+
+**n-app** offers many useful services. In the following examples, I am going to use another dependencies [**n-ject**](https://github.com/nivinjoseph/n-ject) which is a dependency inversion library.
+
+<a id="dialog-service"></a>
+
+### **Dialog Service**
+
+Dialog service has many useful method that is capable of **Logical UI changes**.
+
+Here's how to include it:
+
+You'll add the `inject` decorator, and inside your constructor assign it the instance.
+
+```typescript
+@inject("DialogService")
+export class ExamplePageViewModel extends PageViewModel
+{
+    private _dialogService: DialogService;
+    
+    public constructor(dialogService: DialogService)
+    {
+        this._dialogService = dialogService;
+    }
+}
+```
+
+`showLoadingScreen` is a method that shows a loading screen. It is useful while starting an asynchronous call where you don't want the user interacting with the DOM while the wait.
+
+```typescript
+showLoadingScreen(): void;
+```
+
+`hideLoadingScreen` is a method that hides the loading screen; it should be used sequentially after `showLoadingScreen`. This method is useful when called after an asynchronous call.
+
+```typescript
+hideLoadingScreen(): void;
+```
+
+`showMessage` is a method that is used to show **general** message.
+
+```typescript
+showMessage(message: string, title?: string): void;
+```
+
+`showSuccessMessage` is a method that is used to show a message. This method should be used to show a **success**.
+
+```typescript
+showSuccessMessage(message: string, title?: string): void;
+```
+
+`showWarningMessage` is a method that is used to show a message. This method should be used to show a **warning**.
+
+```typescript
+showWarningMessage(message: string, title?: string): void;
+```
+
+`showErrorMessage` is a method that is used to show a message. This method should be used to show an **error**.
+
+```typescript
+showErrorMessage(message: string, title?: string): void;
+```
+
+`clearMessages` is a method that is used to clear all messages in a message stack.
+
+```typescript
+clearMessages(): void;
+```
+
+<a id="event-aggregator"></a>
+
+### **Event Aggregator**
+
+The Event Aggregator allows you to **subscribe** to events and **publish** to an event.
+
+Here's how to include it:
+
+You'll add the `inject` decorator, and inside your constructor assign it the instance.
+
+```typescript
+@inject("EventAggregator")
+export class ExamplePageViewModel extends PageViewModel
+{
+    private _eventAggregator: EventAggregator;
+    
+    public constructor(eventAggregator: EventAggregator)
+    {
+        this._eventAggregator = eventAggregator;
+    }
+}
+```
+
+`subscribe` is a method that returns an `EventSubscription` to an event given an `event` and `handler` is a callback which contains the `eventArgs` and it allows you to handle the event when it's been **published**.
+
+**Note:** Creating an `EventSubscription` is usually done on the `onEnter` lifecycle.
+
+```typescript
+subscribe(event: string, handler: (...eventArgs: any[]) => void): EventSubscription;
+```
+
+**Note:** It is **extremely** important to `unsubscribe` from any `EventSubscription` once you've finished using it. This is usually called on the `onLeave` lifecycle method.
+
+`publish` is a method that **publishes** an `event` with given `eventArgs`.
+
+```typescript
+publish(event: string, ...eventArgs: any[]): void;
+```
+
+<a id="navigation-service"></a>
+
+### **Navigation Service**
+
+Navigation service allows you to take advantage of **Vue's router-enabled application architecture**.
+
+Here's how to include it:
+
+You'll add the `inject` decorator, and inside your constructor assign it the instance.
+
+```typescript
+@inject("NavigationService")
+export class ExamplePageViewModel extends PageViewModel
+{
+    private _navigationService: NavigationService;
+    
+    public constructor(navigationService: NavigationService)
+    {
+        this._navigationService = navigationService;
+    }
+}
+```
+
+`currentRoutePath` is a property that contains the **current route path**.
+
+```typescript
+currentRoutePath: string;
+```
+
+`currentHashPath` is a property that contains the **current hash path**.
+
+```typescript
+currentHashPath: string;
+```
+
+`navigate` is a method that given a `route` (which is obtained from the `routes.ts` file), **redirects** you to that specific page. Optionally, it can take in `params` and you can specify if it replaces the history using `replaceHistory`.
+
+```typescript
+navigate(route: string, params?: object | null, replaceHistory?: boolean): void;;
+```
+
+`navigateBack` is a method that **navigates back**.
+
+```typescript
+navigateBack(): void;
+```
+
+`navigateForward` is a method that **navigates forward**.
+
+```typescript
+navigateForward(): void;
+```
+
+`navigateSiteSameTab` is a method that given a `url`, it'll **navigate** to that site on the **same tab**. Optionally, you can specify if it replaces the history using `replaceHistory`.
+
+```typescript
+navigateSiteSameTab(url: string, replaceHistory?: boolean): void;
+```
+
+`navigateSiteSameTab` is a method that given a `url`, it'll **navigate** to that site on a **new tab**.
+
+```typescript
+navigateSiteNewTab(url: string): void;
+```
+
+`navigateSitePostSameTab` is a method that given a `url`, it'll **navigate** to that site on the **same tab**. It'll also take in an `value` and does a `POST` on that site.
+
+```typescript
+navigateSitePostSameTab(url: string, value: object): void;
+```
+
+`navigateSitePostNewTab` is a method that given a `url`, it'll **navigate** to that site on the **new tab**. It'll also take in an `value` and does a `POST` on that site.
+
+```typescript
+navigateSitePostNewTab(url: string, value: object): void;
+```
+
+`getSiteQueryParam` is a method that given a `key`, returns the **query parameter** for the site.
+
+```typescript
+getSiteQueryParam(key: string): string;
+```
 
 <a id="examples"></a>
 
