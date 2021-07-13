@@ -108,7 +108,7 @@ This is just the very start of what **n-app** has to offer.
 
 **n-app** follows a generalized structure and architecture for creating **enterprise-level** web applications. It enforces **strong type safety**, **good architecture**, **great integration with other libraries** and more...
 
-The following is an example of how a web applications using `n-app` should be structured.
+The following is an example of how a web application using `n-app` should be structured.
 
 ```bash
 n-test-app
@@ -132,9 +132,6 @@ n-test-app
             ...
             |-- routes.ts
             |-- index.ts
-    |-- controllers
-        |-- index-controller.ts
-        |-- index-view.html
 ```
 
 **n-app** uses a MVVM architectural pattern. You can learn more about it [here](https://en.wikipedia.org/wiki/Model%E2%80%93view%E2%80%93viewmodel).
@@ -188,7 +185,7 @@ Inside `index.ts`, we need to register the page's view-model in order for the pa
 import { Page1ViewModel } from "./page-1/page-1-view-model";
 import { Page2ViewModel } from "./page-2/page-2-view-model";
 
-export const pages = [
+export const pages: Array<Function> = [
     Page1ViewModel,
     Page2ViewModel
 ];
