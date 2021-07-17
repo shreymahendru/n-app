@@ -1,11 +1,14 @@
 import "reflect-metadata";
 import "@nivinjoseph/n-ext";
+import { given } from "@nivinjoseph/n-defensive";
 
 
 export const persistSymbol = Symbol("persist");
 
 // public
-export function persist(): Function
+export function persist(target: Function): void
 {
-    return (target: Function) => Reflect.defineMetadata(persistSymbol, true, target);
+    given(target, "target").ensureHasValue().ensureIsFunction();
+    
+    Reflect.defineMetadata(persistSymbol, true, target);
 }
