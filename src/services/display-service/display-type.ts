@@ -1,6 +1,6 @@
 export enum DisplayType
 {
-    Desktop = 1,
-    Tablet = 2, // < 1024
-    Phone = 3 // < 769
+    desktop = 1,
+    tablet = 2, // < 1024
+    phone = 3 // < 769
 }

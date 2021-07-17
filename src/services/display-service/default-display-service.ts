@@ -1,31 +1,37 @@
 import { DisplayService } from "./display-service";
 import { DisplayType } from "./display-type";
 import * as $ from "jquery";
+import { Observable, Observer } from "@nivinjoseph/n-util";
 
 
 export class DefaultDisplayService implements DisplayService
 {
+    private readonly _windowResizeObserver = new Observer<void>("windowResized");
     private _currentDisplayType: DisplayType = null;
     private _currentDisplayWidth: number = null;
     private _currentDisplayHeight: number = null;
 
 
-    public get CurrentDisplayType(): DisplayType { return this._currentDisplayType; }
-    public get CurrentDisplayWidth(): number { return this._currentDisplayWidth; }
-    public get CurrentDisplayHeight(): number { return this._currentDisplayHeight; }
+    public get currentDisplayType(): DisplayType { return this._currentDisplayType; }
+    public get currentDisplayWidth(): number { return this._currentDisplayWidth; }
+    public get currentDisplayHeight(): number { return this._currentDisplayHeight; }
+    
+    public get windowResizeObservable(): Observable<void> { return this._windowResizeObserver; }
+    
 
 
     constructor()
     {
-        this.CalculateCurrentDisplayType();
-        $(window).resize(() =>
+        this._calculateCurrentDisplayType();
+        $(window).on("resize", () =>
         {
-            this.CalculateCurrentDisplayType();
+            this._calculateCurrentDisplayType();
+            this._windowResizeObserver.notify();
         });
     }
 
 
-    private CalculateCurrentDisplayType(): void
+    private _calculateCurrentDisplayType(): void
     {
         const displayHeight = $(window).height();
         if (this._currentDisplayHeight !== displayHeight)
@@ -36,9 +42,9 @@ export class DefaultDisplayService implements DisplayService
             return;
         this._currentDisplayWidth = displayWidth;
 
-        let displayType = DisplayType.Desktop;
-        if (displayWidth < 1024) displayType = DisplayType.Tablet;
-        if (displayWidth < 769) displayType = DisplayType.Phone;
+        let displayType = DisplayType.desktop;
+        if (displayWidth < 1024) displayType = DisplayType.tablet;
+        if (displayWidth < 769) displayType = DisplayType.phone;
         this._currentDisplayType = displayType;
     }
 }

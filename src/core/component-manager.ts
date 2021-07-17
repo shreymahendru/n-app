@@ -51,7 +51,11 @@ export class ComponentManager
             throw new ApplicationException(`Duplicate Component registration with element '${registration.element}'`);
         
         this._registrations.push(registration);
-        this._container.registerTransient(registration.name, registration.viewModel);
+        
+        if (registration.persist)
+            this._container.registerSingleton(registration.name, registration.viewModel);
+        else
+            this._container.registerTransient(registration.name, registration.viewModel);
         
         if (registration.components && registration.components.isNotEmpty)
             this.registerComponents(...registration.components);

@@ -22,6 +22,7 @@ import { ComponentOptions } from "./services/component-service/component-options
 import { resolve, Resolution, Resolver } from "./core/resolve";
 import { NavRoute } from "./core/nav-route";
 import { FileInfo } from "./components/n-file-select/n-file-select-view-model";
+import { persist } from "./core/persist";
 
 
 export
@@ -36,6 +37,7 @@ export
     events,
     components,
     pages,
+    persist,
     ComponentViewModel,
     PageViewModel,
     Utils,
