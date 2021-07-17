@@ -1,5 +1,5 @@
 export declare enum DisplayType {
-    Desktop = 1,
-    Tablet = 2,
-    Phone = 3
+    desktop = 1,
+    tablet = 2,
+    phone = 3
 }

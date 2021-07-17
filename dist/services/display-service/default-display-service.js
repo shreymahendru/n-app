@@ -3,20 +3,24 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.DefaultDisplayService = void 0;
 const display_type_1 = require("./display-type");
 const $ = require("jquery");
+const n_util_1 = require("@nivinjoseph/n-util");
 class DefaultDisplayService {
     constructor() {
+        this._windowResizeObserver = new n_util_1.Observer("windowResized");
         this._currentDisplayType = null;
         this._currentDisplayWidth = null;
         this._currentDisplayHeight = null;
-        this.CalculateCurrentDisplayType();
-        $(window).resize(() => {
-            this.CalculateCurrentDisplayType();
+        this._calculateCurrentDisplayType();
+        $(window).on("resize", () => {
+            this._calculateCurrentDisplayType();
+            this._windowResizeObserver.notify();
         });
     }
-    get CurrentDisplayType() { return this._currentDisplayType; }
-    get CurrentDisplayWidth() { return this._currentDisplayWidth; }
-    get CurrentDisplayHeight() { return this._currentDisplayHeight; }
-    CalculateCurrentDisplayType() {
+    get currentDisplayType() { return this._currentDisplayType; }
+    get currentDisplayWidth() { return this._currentDisplayWidth; }
+    get currentDisplayHeight() { return this._currentDisplayHeight; }
+    get windowResizeObservable() { return this._windowResizeObserver; }
+    _calculateCurrentDisplayType() {
         const displayHeight = $(window).height();
         if (this._currentDisplayHeight !== displayHeight)
             this._currentDisplayHeight = displayHeight;
@@ -24,11 +28,11 @@ class DefaultDisplayService {
         if (displayWidth === this._currentDisplayWidth)
             return;
         this._currentDisplayWidth = displayWidth;
-        let displayType = display_type_1.DisplayType.Desktop;
+        let displayType = display_type_1.DisplayType.desktop;
         if (displayWidth < 1024)
-            displayType = display_type_1.DisplayType.Tablet;
+            displayType = display_type_1.DisplayType.tablet;
         if (displayWidth < 769)
-            displayType = display_type_1.DisplayType.Phone;
+            displayType = display_type_1.DisplayType.phone;
         this._currentDisplayType = displayType;
     }
 }

@@ -1,6 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.resolve = exports.DisplayType = exports.Utils = exports.PageViewModel = exports.ComponentViewModel = exports.pages = exports.components = exports.events = exports.bind = exports.meta = exports.title = exports.template = exports.route = exports.element = exports.ClientApp = exports.Vue = void 0;
+exports.resolve = exports.DisplayType = exports.Utils = exports.PageViewModel = exports.ComponentViewModel = exports.persist = exports.pages = exports.components = exports.events = exports.bind = exports.meta = exports.title = exports.template = exports.route = exports.element = exports.ClientApp = exports.Vue = void 0;
 const client_app_1 = require("./core/client-app");
 Object.defineProperty(exports, "Vue", { enumerable: true, get: function () { return client_app_1.Vue; } });
 Object.defineProperty(exports, "ClientApp", { enumerable: true, get: function () { return client_app_1.ClientApp; } });
@@ -32,4 +32,6 @@ const display_type_1 = require("./services/display-service/display-type");
 Object.defineProperty(exports, "DisplayType", { enumerable: true, get: function () { return display_type_1.DisplayType; } });
 const resolve_1 = require("./core/resolve");
 Object.defineProperty(exports, "resolve", { enumerable: true, get: function () { return resolve_1.resolve; } });
+const persist_1 = require("./core/persist");
+Object.defineProperty(exports, "persist", { enumerable: true, get: function () { return persist_1.persist; } });
 //# sourceMappingURL=index.js.map

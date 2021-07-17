@@ -6,6 +6,7 @@ require("@nivinjoseph/n-ext");
 const template_1 = require("./template");
 const n_exception_1 = require("@nivinjoseph/n-exception");
 const components_1 = require("./components");
+const persist_1 = require("./persist");
 class ViewModelRegistration {
     constructor(viewModel) {
         n_defensive_1.given(viewModel, "viewModel").ensureHasValue();
@@ -18,11 +19,16 @@ class ViewModelRegistration {
         this._template = Reflect.getOwnMetadata(template_1.templateSymbol, this._viewModel);
         if (Reflect.hasOwnMetadata(components_1.componentsSymbol, this._viewModel))
             this._components = Reflect.getOwnMetadata(components_1.componentsSymbol, this._viewModel);
+        if (Reflect.hasOwnMetadata(persist_1.persistSymbol, this._viewModel))
+            this._persist = Reflect.getOwnMetadata(persist_1.persistSymbol, this._viewModel);
+        else
+            this._persist = false;
     }
     get name() { return this._name; }
     get viewModel() { return this._viewModel; }
     get template() { return this._template; }
     get components() { return this._components; }
+    get persist() { return this._persist; }
 }
 exports.ViewModelRegistration = ViewModelRegistration;
 //# sourceMappingURL=view-model-registration.js.map
