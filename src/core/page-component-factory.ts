@@ -120,7 +120,16 @@ export class PageComponentFactory
             // console.log(this.vm);
 
             if (this.vm.onCreate)
-                this.vm.onCreate();
+            {
+                if (registration.persist && registration.isCreated)
+                {
+                    // no op
+                }
+                else
+                    this.vm.onCreate();
+            }
+            
+            registration.created();
             
             if (component.___reload)
             {
@@ -164,6 +173,9 @@ export class PageComponentFactory
         {
             // console.log("executing beforeDestroy");
             // console.log(this.vm);
+            
+            if (this.vm.onDismount)
+                this.vm.onDismount();
         };
 
         component.destroyed = function ()
@@ -171,7 +183,7 @@ export class PageComponentFactory
             // console.log("executing destroyed");
             // console.log(this.vm);
 
-            if (this.vm.onDestroy)
+            if (this.vm.onDestroy && !registration.persist)
                 this.vm.onDestroy();
         };
         

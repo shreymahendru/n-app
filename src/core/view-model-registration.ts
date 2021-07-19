@@ -16,12 +16,16 @@ export class ViewModelRegistration
     private readonly _components: ReadonlyArray<Function>;
     private readonly _persist: boolean;
     
+    private _isCreated = false;
+    
     
     public get name(): string { return this._name; }
     public get viewModel(): Function { return this._viewModel; }
     public get template(): string | RenderInfo { return this._template; }
     public get components(): ReadonlyArray<Function> { return this._components; }
     public get persist(): boolean { return this._persist; }
+    
+    public get isCreated(): boolean { return this._isCreated; }
     
     
     public constructor(viewModel: Function)
@@ -46,6 +50,11 @@ export class ViewModelRegistration
             this._persist = Reflect.getOwnMetadata(persistSymbol, this._viewModel);
         else
             this._persist = false;
+    }
+    
+    public created(): void
+    {
+        this._isCreated = true;
     }
     
     

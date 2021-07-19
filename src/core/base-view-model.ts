@@ -7,8 +7,10 @@ export class BaseViewModel
     private readonly _watches: { [index: string]: Function } = {};
     private _executeOnCreate: () => void;
     private _executeOnDestroy: () => void;
+    private _domElement: HTMLElement;
 
 
+    protected get domElement(): HTMLElement { return this._domElement; }
     protected get ctx(): any { return (<any>this)["_ctx"]; }
 
 
@@ -23,7 +25,12 @@ export class BaseViewModel
     protected onMount(element: HTMLElement): void
     { 
         given(element, "element").ensureHasValue().ensureIsObject();
+        this._domElement = element;
     }
+    
+    /** Override */
+    protected onDismount(): void
+    { }
 
     /** Override */
     protected onDestroy(): void
