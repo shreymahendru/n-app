@@ -9,6 +9,7 @@ const components_1 = require("./components");
 const persist_1 = require("./persist");
 class ViewModelRegistration {
     constructor(viewModel) {
+        this._isCreated = false;
         n_defensive_1.given(viewModel, "viewModel").ensureHasValue();
         this._name = (" " + viewModel.getTypeName().trim()).substr(1); // Shrey: Safari de-optimization
         if (!this._name.endsWith("ViewModel"))
@@ -29,6 +30,10 @@ class ViewModelRegistration {
     get template() { return this._template; }
     get components() { return this._components; }
     get persist() { return this._persist; }
+    get isCreated() { return this._isCreated; }
+    created() {
+        this._isCreated = true;
+    }
 }
 exports.ViewModelRegistration = ViewModelRegistration;
 //# sourceMappingURL=view-model-registration.js.map

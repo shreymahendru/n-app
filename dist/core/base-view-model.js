@@ -7,6 +7,7 @@ class BaseViewModel {
     constructor() {
         this._watches = {};
     }
+    get domElement() { return this._domElement; }
     get ctx() { return this["_ctx"]; }
     /** Override */
     onCreate() {
@@ -16,7 +17,10 @@ class BaseViewModel {
     /** Override */
     onMount(element) {
         n_defensive_1.given(element, "element").ensureHasValue().ensureIsObject();
+        this._domElement = element;
     }
+    /** Override */
+    onDismount() { }
     /** Override */
     onDestroy() {
         for (let key in this._watches) {

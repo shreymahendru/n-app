@@ -9,11 +9,14 @@ export declare class ViewModelRegistration {
     private readonly _template;
     private readonly _components;
     private readonly _persist;
+    private _isCreated;
     get name(): string;
     get viewModel(): Function;
     get template(): string | RenderInfo;
     get components(): ReadonlyArray<Function>;
     get persist(): boolean;
+    get isCreated(): boolean;
     constructor(viewModel: Function);
+    created(): void;
 }
 export {};
