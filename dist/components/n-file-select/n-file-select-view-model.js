@@ -70,7 +70,7 @@ let NFileSelectViewModel = class NFileSelectViewModel extends component_view_mod
             });
             failedFiles.forEach(t => this._dialogService.showWarningMessage("File {0} exceeded the file size limit of {1} MB.".format(t.fileName, this._maxFileSizeValue)));
             if (processedFiles.length > 0)
-                this.emit("selected", this._isMultiple ? processedFiles : processedFiles[0]);
+                this.emit("select", this._isMultiple ? processedFiles : processedFiles[0]);
             this._dialogService.hideLoadingScreen();
         })
             .catch((e) => {
@@ -119,7 +119,7 @@ NFileSelectViewModel = tslib_1.__decorate([
     template_1.template(require("./n-file-select-view.html")),
     element_1.element("n-file-select"),
     bind_1.bind("id", "mimeTypes", "maxFileSize", "multiple"),
-    events_1.events("selected"),
+    events_1.events("select"),
     n_ject_1.inject("DialogService", "EventAggregator"),
     tslib_1.__metadata("design:paramtypes", [Object, Object])
 ], NFileSelectViewModel);
