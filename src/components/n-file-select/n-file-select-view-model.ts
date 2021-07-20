@@ -27,7 +27,7 @@ export interface FileInfo
 @template(require("./n-file-select-view.html"))
 @element("n-file-select")
 @bind("id", "mimeTypes", "maxFileSize", "multiple")
-@events("selected")    
+@events("select")    
 @inject("DialogService", "EventAggregator")    
 export class NFileSelectViewModel extends ComponentViewModel
 {
@@ -125,7 +125,7 @@ export class NFileSelectViewModel extends ComponentViewModel
                     "File {0} exceeded the file size limit of {1} MB.".format(t.fileName, this._maxFileSizeValue)));
 
                 if (processedFiles.length > 0)
-                    this.emit("selected", this._isMultiple ? processedFiles : processedFiles[0]);
+                    this.emit("select", this._isMultiple ? processedFiles : processedFiles[0]);
                 
                 this._dialogService.hideLoadingScreen();
             })
