@@ -17,12 +17,13 @@ export declare class NFileSelectViewModel extends ComponentViewModel {
     private readonly _inputTemplateMultiple;
     private _inputElement;
     private _maxFileSizeBytes;
-    private get mimeTypesList();
-    private get maxFileSizeValue();
-    private get isMultiple();
+    private get _mimeTypesList();
+    private get _maxFileSizeValue();
+    private get _isMultiple();
     constructor(dialogService: DialogService, eventAggregator: EventAggregator);
     protected onMount(element: HTMLElement): void;
-    private processFiles;
-    private ensureFileSizeIsAllowed;
-    private initializeMaxFileSizeBytes;
+    private _processFiles;
+    private _createFileInfo;
+    private _ensureFileSizeIsAllowed;
+    private _initializeMaxFileSizeBytes;
 }
