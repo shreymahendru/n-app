@@ -1,6 +1,7 @@
 import { ApplicationException } from "@nivinjoseph/n-exception";
 import "@nivinjoseph/n-ext";
 import { PropertyInfo } from "./property-info";
+import { Utils } from "./utils";
 
 
 export class Utilities
@@ -31,7 +32,7 @@ export class Utilities
                 continue;
 
             if (Utilities.forbidden.some(t => t === name))
-                throw new ApplicationException(`Class ${(<Object>val).getTypeName()} has a member with the forbidden name '${name}'. The following names are forbidden: ${Utilities.forbidden}.`);    
+                throw new ApplicationException(`Class ${Utils.getTypeName(val)} has a member with the forbidden name '${name}'. The following names are forbidden: ${Utilities.forbidden}.`);
             
             let descriptor = Object.getOwnPropertyDescriptor(val, name);
             propertyInfos.push(new PropertyInfo(name, descriptor));

@@ -4,6 +4,7 @@ import { templateSymbol } from "./template";
 import { ApplicationException } from "@nivinjoseph/n-exception";
 import { componentsSymbol } from "./components";
 import { persistSymbol } from "./persist";
+import { Utils } from "./utils";
 
 
 type RenderInfo = { render: Function, staticRenderFns: Array<Function> };
@@ -30,9 +31,9 @@ export class ViewModelRegistration
     
     public constructor(viewModel: Function)
     {
-        given(viewModel, "viewModel").ensureHasValue();
+        given(viewModel, "viewModel").ensureHasValue().ensureIsFunction();
         
-        this._name = (" " + (<Object>viewModel).getTypeName().trim()).substr(1); // Shrey: Safari de-optimization
+        this._name = Utils.getTypeName(viewModel);
         if (!this._name.endsWith("ViewModel"))
             throw new ApplicationException(`Registered ViewModel '${this._name}' violates ViewModel naming convention.`);
         

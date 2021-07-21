@@ -51,6 +51,8 @@ export default function (content: string)
         ${className}.___componentOptions = ${className}.createComponentOptions(${className}, ${JSON.stringify(defaultPageTitle)}, ${JSON.stringify(defaultPageMetadata)});
         // console.log(${className}.___componentOptions);
         
+        ${className}.___$typeName = "${className}";
+        
         exports.${className} = ${className};
     `;
     

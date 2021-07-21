@@ -1,6 +1,8 @@
 import "reflect-metadata";
 import { NavRoute } from "./nav-route";
 import { given } from "@nivinjoseph/n-defensive";
+import { Utils } from "./utils";
+
 
 
 export const resolveSymbol = Symbol("resolve");
@@ -13,7 +15,7 @@ export function resolve(...resolvers: Array<Function>): Function
     const mapped = resolvers.map(t =>
     {
         return {
-            name: (" " + (<Object>t).getTypeName().trim()).substr(1), // Shrey: Safari de-optimization
+            name: Utils.getTypeName(t),
             value: t
         }; 
     });

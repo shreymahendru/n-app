@@ -31,4 +31,11 @@ export abstract class Utils // static class
 
         return params ? new RouteInfo(route, true).generateUrl(params) : route;
     }
+    
+    public static getTypeName(value: Function): string
+    {
+        given(value, "value").ensureHasValue().ensureIsFunction();
+        
+        return (<any>value).___$typeName ?? (" " + (<Object>value).getTypeName().trim()).substr(1); // Shrey: Safari de-optimization
+    }
 }
