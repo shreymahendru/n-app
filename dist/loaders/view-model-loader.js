@@ -37,6 +37,8 @@ function default_1(content) {
         ${className}.___componentOptions = ${className}.createComponentOptions(${className}, ${JSON.stringify(defaultPageTitle)}, ${JSON.stringify(defaultPageMetadata)});
         // console.log(${className}.___componentOptions);
         
+        ${className}.___$typeName = "${className}";
+        
         exports.${className} = ${className};
     `;
     content = content.replace(`exports.${className} = ${className};`, componentCode);

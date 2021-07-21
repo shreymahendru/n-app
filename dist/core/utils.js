@@ -23,6 +23,11 @@ class Utils // static class
         }
         return params ? new route_info_1.RouteInfo(route, true).generateUrl(params) : route;
     }
+    static getTypeName(value) {
+        var _a;
+        n_defensive_1.given(value, "value").ensureHasValue().ensureIsFunction();
+        return (_a = value.___$typeName) !== null && _a !== void 0 ? _a : (" " + value.getTypeName().trim()).substr(1); // Shrey: Safari de-optimization
+    }
 }
 exports.Utils = Utils;
 //# sourceMappingURL=utils.js.map

@@ -4,6 +4,7 @@ exports.Utilities = void 0;
 const n_exception_1 = require("@nivinjoseph/n-exception");
 require("@nivinjoseph/n-ext");
 const property_info_1 = require("./property-info");
+const utils_1 = require("./utils");
 class Utilities {
     static getPropertyInfos(val) {
         let propertyInfos = new Array();
@@ -17,7 +18,7 @@ class Utilities {
             if (name === "constructor" || name.startsWith("_") || name.startsWith("$") || Utilities.internal.some(t => t === name))
                 continue;
             if (Utilities.forbidden.some(t => t === name))
-                throw new n_exception_1.ApplicationException(`Class ${val.getTypeName()} has a member with the forbidden name '${name}'. The following names are forbidden: ${Utilities.forbidden}.`);
+                throw new n_exception_1.ApplicationException(`Class ${utils_1.Utils.getTypeName(val)} has a member with the forbidden name '${name}'. The following names are forbidden: ${Utilities.forbidden}.`);
             let descriptor = Object.getOwnPropertyDescriptor(val, name);
             propertyInfos.push(new property_info_1.PropertyInfo(name, descriptor));
         }

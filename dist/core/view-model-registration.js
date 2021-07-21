@@ -7,11 +7,12 @@ const template_1 = require("./template");
 const n_exception_1 = require("@nivinjoseph/n-exception");
 const components_1 = require("./components");
 const persist_1 = require("./persist");
+const utils_1 = require("./utils");
 class ViewModelRegistration {
     constructor(viewModel) {
         this._isCreated = false;
-        n_defensive_1.given(viewModel, "viewModel").ensureHasValue();
-        this._name = (" " + viewModel.getTypeName().trim()).substr(1); // Shrey: Safari de-optimization
+        n_defensive_1.given(viewModel, "viewModel").ensureHasValue().ensureIsFunction();
+        this._name = utils_1.Utils.getTypeName(viewModel);
         if (!this._name.endsWith("ViewModel"))
             throw new n_exception_1.ApplicationException(`Registered ViewModel '${this._name}' violates ViewModel naming convention.`);
         this._viewModel = viewModel;
