@@ -34,9 +34,11 @@ npm i @nivin-joseph/n-app --save
     - [Page's Lifecycle Methods](#page's-lifecycle-methods)
       - [onCreate](#onCreate)
       - [onMount](#onMount)
+      - [onDismount](#onDismount)
       - [onEnter](#onEnter)
       - [onLeave](#onLeave)
       - [onDestroy](#onDestroy)
+    - [Persisted Pages](#persisted-pages)
     - [Interaction between View & View-Model](#interaction-between-view-and-view-model)
       - [Click Handler](#click-handler)
       - [Page v-bind](#page-v-bind)
@@ -283,9 +285,24 @@ This method is executed when the page template is mounted on the **DOM**, you'll
 ```typescript
 protected onMount(element: HTMLElement): void
 {
-    super.onCreate(element);
+    super.onMount(element);
     
     // Method Body + Manipulation of the HTML element
+}
+```
+
+<a id="onDismount"></a>
+
+#### **onDismount**
+
+This method is executed when the page template is disMounted on the **DOM**.
+
+```typescript
+protected onDismount(): void
+{
+    super.onDismount();
+    
+    // Method Body
 }
 ```
 
@@ -333,6 +350,22 @@ protected onDestroy(): void
     // Method Body
 }
 ```
+
+<a id="persisted-pages"></a>
+
+### **Persisted Pages**
+
+**n-app** allows you to have persisted pages which is means the state of a page is preserved throughout the whole session.
+
+Using the `@persist` decorator on top of the **view-model** will make the page persistence.
+
+```typescript
+@persist
+```
+
+**Note:** Persisted pages calls two lifecycle methods when entering a page and leaving a page, **onMount** and **onDismount**, respectively.
+
+**Note:** If a page is persisted, then **components** are also persisted.
 
 <a id="interaction-between-view-and-view-model"></a>
 
@@ -724,13 +757,13 @@ export class ExamplePageViewModel extends PageViewModel
 
 `subscribe` is a method that returns an `EventSubscription` to an event given an `event` and `handler` is a callback which contains the `eventArgs` and it allows you to handle the event when it's been **published**.
 
-**Note:** Creating an `EventSubscription` is usually done on the `onEnter` lifecycle.
+**Note:** Creating an `EventSubscription` is usually done on the `onEnter` lifecycle or `onMount` for persisted pages.
 
 ```typescript
 subscribe(event: string, handler: (...eventArgs: any[]) => void): EventSubscription;
 ```
 
-**Note:** It is **extremely** important to `unsubscribe` from any `EventSubscription` once you've finished using it. This is usually called on the `onLeave` lifecycle method.
+**Note:** It is **extremely** important to `unsubscribe` from any `EventSubscription` once you've finished using it. This is usually called on the `onLeave` lifecycle method or `onDismount` for persisted pages..
 
 `publish` is a method that **publishes** an `event` with given `eventArgs`.
 
