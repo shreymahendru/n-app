@@ -128,6 +128,9 @@ class PageComponentFactory {
             // console.log(this.vm);
             if (this.vm.onDestroy && !registration.persist)
                 this.vm.onDestroy();
+            this.vm._ctx.$options.methods = null;
+            this.vm._ctx.$options.computed = null;
+            this.vm._ctx = null;
             this.vm = null;
         };
         /* The Full Navigation Resolution Flow
