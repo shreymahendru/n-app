@@ -128,6 +128,7 @@ class PageComponentFactory {
             // console.log(this.vm);
             if (this.vm.onDestroy && !registration.persist)
                 this.vm.onDestroy();
+            this.vm = null;
         };
         /* The Full Navigation Resolution Flow
                 Navigation triggered

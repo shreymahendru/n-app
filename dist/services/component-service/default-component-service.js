@@ -115,6 +115,7 @@ class DefaultComponentService {
             // console.log(this.vm);
             if (this.vm.onDestroy && !registration.persist)
                 this.vm.onDestroy();
+            this.vm = null;
         };
         return component;
     }
