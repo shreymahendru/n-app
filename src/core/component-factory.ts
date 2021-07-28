@@ -153,6 +153,8 @@ export class ComponentFactory
             
             if (this.vm.onDestroy && !registration.persist)
                 this.vm.onDestroy(); 
+                
+            this.vm = null;
         };
         
         return component;
