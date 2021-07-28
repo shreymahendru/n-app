@@ -186,6 +186,7 @@ export class PageComponentFactory
             if (this.vm.onDestroy && !registration.persist)
                 this.vm.onDestroy();
             
+            this.vm._ctx = null;
             this.vm = null;
         };
         
