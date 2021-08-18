@@ -67,7 +67,7 @@ npm i @nivin-joseph/n-app --save
 
 ### **Introduction**
 
-**n-app** is a **enterprise-level** Vue.js based application framework that enforces **good practices** to maintain **scalability.**
+**n-app** is a **opinionated framework** that is built upon Vue.js and it comes with **renowned patterns and practices** out of the box. 
 
 <a id="getting-started"></a>
 
@@ -93,7 +93,7 @@ import { Routes } from "../routes";
 import "./hello-page-view.scss";
 
 @template(require("./hello-page-view.html"))
-@route(Routes.helloPage)
+@route("/hello-page")
 export class Page1ViewModel extends PageViewModel 
 {
     public get message(): string { return "Hello, World!" }
@@ -108,7 +108,9 @@ This is just the very start of what **n-app** has to offer.
 
 ## **Convention & File Structure**
 
-**n-app** follows a generalized structure and architecture for creating **enterprise-level** web applications. It enforces **strong type safety**, **good architecture**, **great integration with other libraries** and more...
+**n-app** follows a generalized structure and architecture for creating **enterprise-level** web applications. It maintains a **good architecture** within the web application.
+
+**n-app** also allows for Vue operations with the DOM with **separation of concern**. Instead of writing the methods, data and template inside one file, you are able to separate it into a template file (**HTML**), and a **view-model** file (**TypeScript**).
 
 The following is an example of how a web application using `n-app` should be structured.
 
@@ -136,7 +138,7 @@ n-test-app
             |-- index.ts
 ```
 
-**n-app** uses a MVVM architectural pattern. You can learn more about it [here](https://en.wikipedia.org/wiki/Model%E2%80%93view%E2%80%93viewmodel).
+Similar to **Vue**, **n-app** follows the MVVM architectural pattern.
 
 <a id="structure-of-pages-and-individual-page"></a>
 
@@ -165,7 +167,7 @@ pages
 
 Within the `pages` folder, we need a place to register our **view-models**, this can be done inside an `index.ts` file.
 
-We also need a place to setup our **routes** and **paths**, this can be done inside a `routes.ts` file.
+We also recommend to setup our **routes** and **paths**, this can be done inside a `routes.ts` file.
 
 ```bash
 pages
@@ -205,7 +207,7 @@ export class Routes
 }
 ```
 
-**Note:** we need a default path which is redirected to when the address has a path of `/`.
+**Note:** We can also set default path which is redirected to when the address has a path of `/`.
 
 <a id="individual-page"></a>
 
@@ -251,6 +253,8 @@ export class Page1ViewModel extends PageViewModel // Inheriting the PageViewMode
 }
 ```
 
+**Note:** Keep in mind that for the `@route`, we are importing it from the routes file we have defined above.
+
 Now, we've successfully create and routed a page. This page is now **accessible** to the user.
 
 Although, the creation of pages are a bit lengthy, **n-app** offers **separation of concern**, **ease of readability** and also **scalability**, if used correctly.
@@ -259,7 +263,9 @@ Although, the creation of pages are a bit lengthy, **n-app** offers **separation
 
 ### **Page's Lifecycle Methods**
 
-**Note:** The following methods are inherited from the `PageViewModel` class.
+**Note:** The following methods are inherited from the `PageViewModel` class
+
+**Note:** Page lifecycle methods can be `Overridden`.
 
 <a id="onCreate"></a>
 
@@ -313,11 +319,26 @@ protected onDismount(): void
 This method is executed when the page has appeared and is usually used to fetch data to show on the page. The parameters for this function would be any **query/path params** of the url defined in the **route**.
 
 ```typescript
-protected onEnter(): void
+protected onEnter(...params): void
 {
     super.onEnter();
     
     // Method Body
+}
+```
+
+**Note:** The order of the query parameters passed in are in the order defined on the route.
+
+**Example:** Given a route `/foo?id=bar`.
+
+We can fetch the query parameter using...
+
+```typescript
+protected onEnter(id: string): void
+{
+    super.onEnter();
+    
+    // Do something with id...
 }
 ```
 
@@ -355,7 +376,7 @@ protected onDestroy(): void
 
 ### **Persisted Pages**
 
-**n-app** allows you to have persisted pages which is means the state of a page is preserved throughout the whole session.
+**n-app** allows you to have persisted pages which is means the VM is not disposed and the state is preserved.
 
 Using the `@persist` decorator on top of the **view-model** will make the page persistence.
 
@@ -371,7 +392,7 @@ Using the `@persist` decorator on top of the **view-model** will make the page p
 
 ### **Interaction between View and View-Model**
 
-**n-app** allows for Vue operations with the DOM with **separation of concern**. Instead of writing the methods, data and template inside one file, you are able to separate it into a template file (**HTML**), and a **view-model** file (**TypeScript**).
+Instead of writing the methods, data and template inside one file, you are able to separate it into a template file (**HTML**), and a **view-model** file (**TypeScript**).
 
 <a id="click-handler"></a>
 
@@ -383,7 +404,7 @@ Inside your **HTML** file:
 <button @click="foo()">Click Me</button>
 ```
 
-Inside your **TypeScript** view-model file and inside the class, you'll create a method:
+Inside your **TypeScript** view-model file and inside the class, you'll create a public method:
 
 ```typescript
 public foo(): void
@@ -398,7 +419,7 @@ Now whenever you click the button, it'll call the method `doSomething`.
 
 #### **Page v-bind**
 
-You can easily incorporate **Vue's** data binding like this:
+Data binding using **n-app** is similar to **Vue**:
 
 Inside your **HTML** file:
 
@@ -763,7 +784,7 @@ export class ExamplePageViewModel extends PageViewModel
 subscribe(event: string, handler: (...eventArgs: any[]) => void): EventSubscription;
 ```
 
-**Note:** It is **extremely** important to `unsubscribe` from any `EventSubscription` once you've finished using it. This is usually called on the `onLeave` lifecycle method or `onDismount` for persisted pages..
+**Note:** It is **extremely** important to `unsubscribe` from any `EventSubscription` once you've finished using it, this is to prevent any **memory leaks**. This is usually called on the `onLeave` lifecycle method or `onDismount` for persisted pages..
 
 `publish` is a method that **publishes** an `event` with given `eventArgs`.
 
@@ -775,7 +796,7 @@ publish(event: string, ...eventArgs: any[]): void;
 
 ### **Navigation Service**
 
-Navigation service allows you to take advantage of **Vue's router-enabled application architecture**.
+Navigation service allows you to take navigate between different pages.
 
 Here's how to include it:
 

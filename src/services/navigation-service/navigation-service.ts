@@ -1,4 +1,7 @@
-export interface NavigationService 
+/**
+ * @description Used to navigate between different pages of the app or to redirect to an external one.
+ */
+export interface NavigationService
 {
     /**
      * The current route path.
@@ -10,8 +13,13 @@ export interface NavigationService
     currentRouteHash: string;
     
     /**
+     * @description Navigates to a specific route sending in any params with it.
      * 
-     * Navigates to a specific route sending in any params with it.
+     * @example 
+     * ```ts
+     * navigate("/foo", { key: value });
+     * ```
+     * If a parameter has been passed, then the resulting link will have a query param. `/foo?key=value`.
      * 
      * @param route - The specific route.
      * @param params - The value which is sent to another page.
@@ -19,50 +27,53 @@ export interface NavigationService
      */
     navigate(route: string, params?: object | null, replaceHistory?: boolean): void;
     /**
-     * Navigates back a page.
+     * @description Navigates to the previous page.
      */
     navigateBack(): void;
     /**
-     * Navigates forward a page.
+     * @description Navigates forward a page.
      */
     navigateForward(): void;
     
     /**
      * 
-     * Navigates to a url within the same tab.
+     * @description Navigates to a url within the same tab.
      * 
      * @param url - The url to navigate to.
      * @param replaceHistory - Optional: Used to replace history.
      */
     navigateSiteSameTab(url: string, replaceHistory?: boolean): void;
     /**
-     * 
-     * Navigates to a url within a new tab.
+     * @description Navigates to a url within a new tab.
      * 
      * @param url - The url to navigate to.
      */
     navigateSiteNewTab(url: string): void;
     /**
-     * 
-     * Navigate to a url using a POST within the same tab.
+     * @description Navigate to a url using a POST within the same tab.
      * 
      * @param url - The url to navigate to.
      * @param value - The value being POST to the url.
      */
     navigateSitePostSameTab(url: string, value: object): void;
     /**
-     * 
-     * Navigate to a url using a POST within a new tab.
+     * @description Navigate to a url using a POST within a new tab.
      * 
      * @param url - The url to navigate to.
      * @param value - The value being POST to the url.
      */
     navigateSitePostNewTab(url: string, value: object): void;
     /**
+     * @description Gets the site query parameter.
      * 
-     * Returns the site query parameters.
+     * Suppose you have a link: `test.com/?id=foo`. Calling
+     * ```ts
+     * getSiteQueryParam("id");
+     * ```
+     * will return "foo".
      * 
-     * @param key - FIXME: What is this param?
+     * @param key - What query parameter key to look for.
+     * @returns The value of the query parameter.
      */
     getSiteQueryParam(key: string): string;
 }
