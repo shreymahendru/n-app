@@ -51,6 +51,8 @@ npm i @nivin-joseph/n-app --save
     - [Component v-bind](#component-v-bind)
     - [Component v-model](#component-v-model)
     - [Events](#events)
+- [Putting it all Together](#putting-it-all-together)
+  - [client.ts](#client-ts)
 - [Services](#services)
   - [Dialog Service](#dialog-service)
   - [Event Aggregator](#event-aggregator)
@@ -67,7 +69,7 @@ npm i @nivin-joseph/n-app --save
 
 ### **Introduction**
 
-**n-app** is a **opinionated framework** that is built upon Vue.js and it comes with **renowned patterns and practices** out of the box. 
+**n-app** is a **opinionated framework** that is built upon Vue.js and it comes with **renowned patterns and practices** out of the box.
 
 <a id="getting-started"></a>
 
@@ -136,6 +138,7 @@ n-test-app
             ...
             |-- routes.ts
             |-- index.ts
+        |-- client.ts
 ```
 
 Similar to **Vue**, **n-app** follows the MVVM architectural pattern.
@@ -681,6 +684,114 @@ export class Component1ViewModel extends ComponentViewModel
 **Note:** the `emit` method also event arguments. i.e. `this.emit(event: string, ...eventArgs: any[])`.
 
 Now, once the click method is invoked it'll emit the `event1` event to the parent which then executes the `foo` method inside the parent's **view-model**.
+
+<a id="putting-it-all-together"></a>
+
+## **Putting it all Together**
+
+Let's put everything together, to do this we need to create a `client.ts`. This file is where **everything** comes together; the pages and components, the configurations all comes together inside this one file, `client.ts`.
+
+**Note:** It is a **requirement** to have this client.ts inside every project created using the **n-app** framework.
+
+<a id="client-ts"></a>
+
+### **client.ts**
+
+Let's start looking into the `client.ts` file.
+
+We'll first create the file inside our `client` folder.
+
+```bash
+|-- client
+    |-- components
+    |-- pages
+    |-- client.ts
+```
+
+Now that we have the file, let's dive into it's content.
+
+First let's import the base dependencies for our application...
+
+```typescript
+import "@babel/polyfill"; // FIXME: What's this?
+import "@nivinjoseph/n-ext"; // JavaScript Type Extension Library.
+import "./styles/main.scss"; // A Main Styling File.
+import * as $ from "jquery"; // FIXME: What's this?
+(<any>window).jQuery = $; (<any>window).$ = $; // FIXME: What's this?
+import { ClientApp } from "@nivinjoseph/n-app"; // Required for setting up the Vue application.
+import * as Routes from "./pages/routes"; // Used to Define Initial Routes and Redirection.
+import { pages } from "./pages/index"; // Import all Pages to Register Them.
+import { components } from "./components/index"; // Import all Components to Register Them.
+import { ComponentInstaller, Registry } from "@nivinjoseph/n-ject"; // Adding Dependency Inversion Library into the Project.
+import { given } from "@nivinjoseph/n-defensive"; // Defensive Check Library.
+```
+
+Now that we got all our dependencies, we now have to set up our **Dependency Injection** IOC container.
+
+Inside our `client.ts`, let's add...
+
+```typescript
+class Installer implements ComponentInstaller
+{
+    public install(registry: Registry): void
+    {
+        given(registry, "registry").ensureHasValue().ensureIsObject();
+        
+        // Here's where you can register your dependencies.
+        // Learn more about our dependency injection library @ https://github.com/nivinjoseph/n-ject.
+    }
+}
+```
+
+Lastly we can create a new instance of a Client App. This will register everything together.
+
+```typescript
+const client = new ClientApp("#app", "shell")
+    .useInstaller(new Installer())
+    .registerComponents(...components) // Registering all the Components.
+    .registerPages(...pages) // Registering all the Pages.
+    .useAsInitialRoute(Routes.default) // The initial route to your application.
+    .useAsUnknownRoute(Routes.default); // When a user goes onto a unknown route, they'll be redirected here.
+    
+client.bootstrap();
+```
+
+There we have it! After completing this feature your app is ready to use.
+
+Here's an example of a completed `client.ts`.
+
+```typescript
+import "@babel/polyfill";
+import "@nivinjoseph/n-ext";
+import "./styles/main.scss";
+import * as $ from "jquery";
+(<any>window).jQuery = $; (<any>window).$ = $;
+import { ClientApp } from "@nivinjoseph/n-app";
+import * as Routes from "./pages/routes";
+import { pages } from "./pages/pages";
+import { components } from "./components/components";
+import { ComponentInstaller, Registry } from "@nivinjoseph/n-ject";
+import { given } from "@nivinjoseph/n-defensive";
+
+
+class Installer implements ComponentInstaller
+{
+    public install(registry: Registry): void
+    {
+        given(registry, "registry").ensureHasValue().ensureIsObject();
+    }
+}
+
+
+const client = new ClientApp("#app", "shell")
+    .useInstaller(new Installer())
+    .registerComponents(...components)
+    .registerPages(...pages)
+    .useAsInitialRoute(Routes.default)
+    .useAsUnknownRoute(Routes.default)
+
+client.bootstrap();
+```
 
 <a id="services"></a>
 
