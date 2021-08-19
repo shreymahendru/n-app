@@ -1098,7 +1098,7 @@ export const pages = [
 ];
 ```
 
-Now we're done!
+Referring to the creation of `client.ts` [here](#client-ts) and implementing it and we're done!
 
 Running the page with the path `/counter` (without the path will work because we've set it as the `default` path) will bring up our simple counter application.
 
