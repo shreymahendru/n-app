@@ -453,7 +453,7 @@ Inside your **HTML** file:
 Now inside your **TypeScript view-model** file, you can create a setter and a getter to dynamically two-way bind the data.
 
 ```typescript
-private _message: string;
+private _message: string = "";
 
 public get message(): string { return this._message; }
 public set message(value: string) { this._message = value; }
@@ -754,6 +754,44 @@ const client = new ClientApp("#app", "shell")
     .useAsUnknownRoute(Routes.default); // When a user goes onto a unknown route, they'll be redirected here.
     
 client.bootstrap();
+```
+
+Now notice that the ClientApp constructor requires to parameter, `appElementId` and `rootComponentElement`. We can leave the `appElementId` as is (`"#app"`) but we'll need a `shell` component. The shell component serves as a root component which wraps over everything.
+
+Let's start creating the `shell` component...
+
+We'll add this shell component as a **top-level** component. We'll create the **view** and the **view-model**.
+
+Inside `shell-view.html`, we'll add the `router-view` element.
+
+```html
+<div class="shell-view">
+    <router-view></router-view>
+</div>
+```
+
+Inside the `shell-view.scss`, we'll make an empty class.
+
+```scss
+.shell-view 
+{
+    
+}
+```
+
+We'll set up the **view model** normally and name the element `shell`. So inside the `shell-view-model.ts`,
+
+```typescript
+import { ComponentViewModel, template, element } from "@nivinjoseph/n-app";
+import "./shell-view.scss";
+
+
+@template(require("./shell-view.html"))
+@element("shell")
+export class ShellViewModel extends ComponentViewModel
+{
+
+}
 ```
 
 There we have it! After completing this feature your app is ready to use.
