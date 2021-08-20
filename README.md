@@ -713,11 +713,10 @@ Now that we have the file, let's dive into it's content.
 First let's import the base dependencies for our application...
 
 ```typescript
-import "@babel/polyfill"; // FIXME: What's this?
 import "@nivinjoseph/n-ext"; // JavaScript Type Extension Library.
 import "./styles/main.scss"; // A Main Styling File.
-import * as $ from "jquery"; // FIXME: What's this?
-(<any>window).jQuery = $; (<any>window).$ = $; // FIXME: What's this?
+import * as $ from "jquery";
+(<any>window).jQuery = $; (<any>window).$ = $;
 import { ClientApp } from "@nivinjoseph/n-app"; // Required for setting up the Vue application.
 import * as Routes from "./pages/routes"; // Used to Define Initial Routes and Redirection.
 import { pages } from "./pages/index"; // Import all Pages to Register Them.
@@ -826,7 +825,7 @@ const client = new ClientApp("#app", "shell")
     .registerComponents(...components)
     .registerPages(...pages)
     .useAsInitialRoute(Routes.default)
-    .useAsUnknownRoute(Routes.default)
+    .useAsUnknownRoute(Routes.default);
 
 client.bootstrap();
 ```
