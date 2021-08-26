@@ -10,7 +10,7 @@ export declare class ClientApp {
     private readonly _pageManager;
     private _app;
     private _accentColor;
-    _errorTrackingConfigurationCallback: (vueRouter: any) => void;
+    private _errorTrackingConfigurationCallback;
     private _isBootstrapped;
     get container(): Container;
     /**
