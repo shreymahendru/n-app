@@ -66,7 +66,7 @@ export class ClientApp
     // @ts-ignore
     private _app: any;
     private _accentColor: string;
-    _errorTrackingConfigurationCallback: (vueRouter: any) => void;
+    private _errorTrackingConfigurationCallback: (vueRouter: any) => void;
     private _isBootstrapped: boolean = false;
     
     
