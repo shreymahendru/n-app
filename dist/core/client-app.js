@@ -195,11 +195,19 @@ class ClientApp {
     //     Config.enableDev(Vue);
     //     return this;
     // }
+    configureErrorTracking(callback) {
+        n_defensive_1.given(callback, "callback").ensureHasValue().ensureIsFunction();
+        if (this._isBootstrapped)
+            throw new n_exception_1.InvalidOperationException("calling method after bootstrap");
+        this._errorTrackingConfigurationCallback = callback;
+        return this;
+    }
     bootstrap() {
         if (this._isBootstrapped)
             throw new n_exception_1.InvalidOperationException("bootstrap");
         this.configureGlobalConfig();
         this.configurePages();
+        this._configureErrorTracking();
         this.configureComponents();
         this.configureCoreServices();
         this.configureContainer();
@@ -239,6 +247,10 @@ class ClientApp {
     }
     configurePages() {
         this._pageManager.bootstrap();
+    }
+    _configureErrorTracking() {
+        if (this._errorTrackingConfigurationCallback != null)
+            this._errorTrackingConfigurationCallback(this._pageManager.vueRouterInstance);
     }
     configureCoreServices() {
         this._container

@@ -10,6 +10,7 @@ export declare class ClientApp {
     private readonly _pageManager;
     private _app;
     private _accentColor;
+    _errorTrackingConfigurationCallback: (vueRouter: any) => void;
     private _isBootstrapped;
     get container(): Container;
     /**
@@ -76,11 +77,13 @@ export declare class ClientApp {
     useAsInitialRoute(route: string): this;
     useAsUnknownRoute(route: string): this;
     useHistoryModeRouting(): this;
+    configureErrorTracking(callback: (vueRouter: any) => void): this;
     bootstrap(): void;
     retrieveRouterInstance(): object;
     private configureGlobalConfig;
     private configureComponents;
     private configurePages;
+    private _configureErrorTracking;
     private configureCoreServices;
     private configureContainer;
     private configureRoot;
