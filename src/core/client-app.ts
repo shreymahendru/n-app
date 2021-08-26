@@ -66,6 +66,7 @@ export class ClientApp
     // @ts-ignore
     private _app: any;
     private _accentColor: string;
+    _errorTrackingConfigurationCallback: (vueRouter: any) => void;
     private _isBootstrapped: boolean = false;
     
     
@@ -257,6 +258,17 @@ export class ClientApp
     //     Config.enableDev(Vue);
     //     return this;
     // }
+    
+    public configureErrorTracking(callback: (vueRouter: any) => void): this
+    {
+        given(callback, "callback").ensureHasValue().ensureIsFunction();
+        
+        if (this._isBootstrapped)
+            throw new InvalidOperationException("calling method after bootstrap");
+        
+        this._errorTrackingConfigurationCallback = callback;
+        return this;
+    }
 
     public bootstrap(): void
     {
@@ -265,6 +277,7 @@ export class ClientApp
 
         this.configureGlobalConfig();
         this.configurePages();
+        this._configureErrorTracking();
         this.configureComponents();
         this.configureCoreServices();
         this.configureContainer();
@@ -322,6 +335,12 @@ export class ClientApp
     private configurePages(): void
     {
         this._pageManager.bootstrap();
+    }
+    
+    private _configureErrorTracking(): void
+    {
+        if (this._errorTrackingConfigurationCallback != null)
+            this._errorTrackingConfigurationCallback(this._pageManager.vueRouterInstance);
     }
 
     private configureCoreServices(): void
