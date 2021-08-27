@@ -11,4 +11,5 @@ export declare class NScrollContainerViewModel extends ComponentViewModel {
     protected onCreate(): void;
     protected onMount(element: HTMLElement): void;
     protected onDestroy(): void;
+    private _calculateScroll;
 }
