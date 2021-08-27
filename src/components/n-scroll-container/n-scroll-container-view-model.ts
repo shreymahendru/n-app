@@ -40,6 +40,8 @@ export class NScrollContainerViewModel extends ComponentViewModel
         const SimpleBarCtor = (<any>SimpleBar).default;
         this._sb = new SimpleBarCtor(element.querySelector(".simple-scroll-viewer-scroll-container")!, { autoHide: true });
         
+        this._calculateScroll();
+        
         this.watch("myRenderKey", (v, ov) =>
         {
             if (v == null || v === ov)
@@ -48,11 +50,8 @@ export class NScrollContainerViewModel extends ComponentViewModel
             this._sb.recalculate();
             setTimeout(() =>
             {
-                if (this._hugBottom)
-                    this._sb.getScrollElement().scrollTop = this._sb.getScrollElement().scrollHeight;
-                if (this._hugRight)
-                    this._sb.getScrollElement().scrollLeft = this._sb.getScrollElement().scrollWidth;
-            }, 150);
+                this._calculateScroll();
+            }, 500);
         });
     }
     
@@ -67,5 +66,26 @@ export class NScrollContainerViewModel extends ComponentViewModel
         this.unWatch("myRenderKey");
         
         super.onDestroy();
+    }
+    
+    private _calculateScroll(): void
+    {
+        if (this._sb == null)
+            return;
+
+        if (this._hugBottom)
+        {
+            const scrollElement = this._sb.getScrollElement();
+            $(scrollElement).animate({ scrollTop: scrollElement.scrollHeight + "px" });
+
+            // this._sb.getScrollElement().scrollTop = this._sb.getScrollElement().scrollHeight;
+        }
+        if (this._hugRight)
+        {
+            const scrollElement = this._sb.getScrollElement();
+            $(scrollElement).animate({ scrollLeft: scrollElement.scrollWidth + "px" });
+
+            // this._sb.getScrollElement().scrollLeft = this._sb.getScrollElement().scrollWidth;
+        }
     }
 }
