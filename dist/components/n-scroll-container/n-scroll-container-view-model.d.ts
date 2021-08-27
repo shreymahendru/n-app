@@ -6,6 +6,8 @@ export declare class NScrollContainerViewModel extends ComponentViewModel {
     get isHorizontalOnly(): boolean;
     get isVerticalOnly(): boolean;
     get myRenderKey(): any;
+    private get _hugBottom();
+    private get _hugRight();
     protected onCreate(): void;
     protected onMount(element: HTMLElement): void;
     protected onDestroy(): void;
