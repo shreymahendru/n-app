@@ -33,10 +33,12 @@ let NScrollContainerViewModel = class NScrollContainerViewModel extends componen
             if (v == null || v === ov)
                 return;
             this._sb.recalculate();
-            if (this._hugBottom)
-                this._sb.getScrollElement().scrollTop = 100;
-            if (this._hugRight)
-                this._sb.getScrollElement().scrollLeft = 100;
+            setTimeout(() => {
+                if (this._hugBottom)
+                    this._sb.getScrollElement().scrollTop = this._sb.getScrollElement().scrollHeight;
+                if (this._hugRight)
+                    this._sb.getScrollElement().scrollLeft = this._sb.getScrollElement().scrollWidth;
+            }, 150);
         });
     }
     onDestroy() {
