@@ -188,7 +188,7 @@ export class PageComponentFactory
             
             this.vm._ctx.$options.methods = null;
             this.vm._ctx.$options.computed = null;
-            this.vm._ctx = null;
+            // this.vm._ctx = null;
             this.vm = null;
         };
         
