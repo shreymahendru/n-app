@@ -117,7 +117,7 @@ class DefaultComponentService {
                 this.vm.onDestroy();
             this.vm._ctx.$options.methods = null;
             this.vm._ctx.$options.computed = null;
-            this.vm._ctx = null;
+            // this.vm._ctx = null;
             this.vm = null;
         };
         return component;
