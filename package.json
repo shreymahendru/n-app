@@ -9,7 +9,7 @@
         "ts-lint": "tslint -p . -c tslint.json",
         "ts-build": "npm run ts-compile && npm run ts-lint",
         "ts-build-dist": "npm run ts-build && tsc -p ./dist",
-        "ts-build-watch": "npm run ts-compile -- -w",
+        "ts-build-watch": "tsc -p tsconfig.server.json -w",
         "clean-src": "find ./src -name '*.js' -delete -o -name '*.map' -delete",
         "clean-test": "find ./test -name '*.js' -delete -o -name '*.map' -delete",
         "clean-test-app": "find ./test-app -name '*.js' -delete -o -name '*.map' -delete",
@@ -23,12 +23,12 @@
         "prebundle": "npm run ts-build",
         "webpack-build": "webpack",
         "webpack-build-watch": "npm run webpack-build -- -w",
-        "nodemon": "nodemon --ignore src/ --ignore test/ --ignore test-app/client/ --inspect=4001 ./test-app/main.js env=dev",
+        "nodemon": "nodemon --ignore src/ --ignore test/ --ignore test-app/client/ --inspect=4001 ./test-app/server.js env=dev",
         "predev": "npm run ts-build",
         "x-dev": "npm run ts-build-watch & npm run nodemon",
         "dev": "concurrently \"npm:ts-build-watch\" \"npm:nodemon\"",
         "build": "npm run ts-build && env=prod npm run webpack-build",
-        "start": "node ./test-app/main.js env=prod"
+        "start": "node ./test-app/server.js env=prod"
     },
     "repository": {
         "type": "git",

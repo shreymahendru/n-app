@@ -8,12 +8,32 @@ const OptimizeCSSAssetsPlugin = require("optimize-css-assets-webpack-plugin");
 const CompressionPlugin = require("compression-webpack-plugin");
 import { ConfigurationManager } from "@nivinjoseph/n-config";
 const webpack = require("webpack");
+const ForkTsCheckerWebpackPlugin = require("fork-ts-checker-webpack-plugin");
 
 
 const env = ConfigurationManager.getConfig<string>("env");
 console.log("WEBPACK ENV", env);
 
 const isDev = env === "dev";
+
+const tsLoader = {
+    loader: "ts-loader",
+    options: {
+        configFile: "tsconfig.client.json",
+        transpileOnly: true
+    }
+};
+
+const tsLintLoader = {
+    loader: "tslint-loader",
+    options: {
+        configFile: "tslint.json",
+        tsConfigFile: "tsconfig.client.json",
+        // typeCheck: true, // this is a performance hog
+        typeCheck: !isDev,
+        emitErrors: true
+    }
+};
 
 const moduleRules: Array<any> = [
     {
@@ -81,7 +101,7 @@ const moduleRules: Array<any> = [
 
                         if (process.env.NODE_ENV === "development")
                         {
-                            return "[path][name]-[contenthash].[ext]";
+                            return "[path][name].[ext]";
                         }
 
                         return "[contenthash]-[name].[ext]";
@@ -90,24 +110,14 @@ const moduleRules: Array<any> = [
                     }
                 }
             },
-            // {
-            //     loader: "file-loader",
-            //     options: {
-            //         esModule: false,
-            //         name: "[path][name]-[contenthash].[ext]",
-            //     }
-            // },
             {
                 loader: path.resolve("src/loaders/raster-image-loader.js"),
                 options: {
                     // urlEncodeLimit: isDev ? 9000000000 : 900000,
                     jpegQuality: 80,
-                    pngQuality: 50
+                    pngQuality: 60
                 }
             }
-            // {
-            //     loader: "webp-loader"
-            // }
         ]
     },
     {
@@ -134,14 +144,36 @@ const moduleRules: Array<any> = [
         ]
     },
     {
-        test: /\.taskworker\.js$/,
-        loader: "worker-loader"
+        test: /\.ts$/,
+        exclude: /node_modules/,
+        use: [tsLoader]
+    },
+    {
+        test: /\.ts$/,
+        exclude: /node_modules/,
+        enforce: "pre",
+        use: [tsLintLoader]
+    },
+    {
+        test: /-resolver\.ts$/,
+        use: [
+            { loader: path.resolve("src/loaders/resolver-loader.js") },
+            tsLoader
+        ]
+    },
+    {
+        test: /-view-model\.ts$/,
+        use: [
+            { loader: path.resolve("src/loaders/view-model-loader.js") },
+            tsLoader
+        ]
     },
     {
         test: /-view-model\.js$/,
         use: [
             {
                 loader: path.resolve("src/loaders/view-model-loader.js"),
+                // The options below can be applied to any use of the view-model-loader
                 options: {
                     defaultPageTitle: "fooo",
                     defaultPageMetadata: [
@@ -149,6 +181,20 @@ const moduleRules: Array<any> = [
                     ]
                 }
             }
+        ]
+    },
+    {
+        test: /\.taskworker\.ts$/,
+        use: [
+            {
+                loader: "worker-loader",
+                options: {
+                    esModule: false,
+                    filename: "[name].[contenthash].worker.js",
+                    chunkFilename: "[id].[contenthash].worker.js",
+                }
+            },
+            tsLoader
         ]
     },
     {
@@ -185,6 +231,15 @@ const moduleRules: Array<any> = [
 ];
 
 const plugins = [
+    new ForkTsCheckerWebpackPlugin({
+        async: isDev,
+        typescript: {
+            configFile: "tsconfig.client.json",
+            configOverwrite: {
+                compilerOptions: { skipLibCheck: true, sourceMap: true, inlineSourceMap: false, declarationMap: false }
+            }
+        }
+    }),
     new CleanWebpackPlugin(),
     new htmlWebpackPlugin({
         template: "test-app/controllers/index-view.html",
@@ -200,11 +255,11 @@ const plugins = [
 
 if (isDev)
 {
-    moduleRules.push({
-        test: /\.js$/,
-        loader: "source-map-loader",
-        enforce: "pre"
-    });
+    // moduleRules.push({
+    //     test: /\.js$/,
+    //     loader: "source-map-loader",
+    //     enforce: "pre"
+    // });
     
     plugins.push(new webpack.WatchIgnorePlugin([
         /\.js$/,
@@ -215,6 +270,10 @@ else
 {
     moduleRules.push({
         test: /\.js$/,
+        include: [
+            path.resolve(__dirname, "src"),
+            path.resolve(__dirname, "test-app/client"),
+        ],
         use: {
             loader: "babel-loader",
             options: {
@@ -228,6 +287,7 @@ else
                     forceAllTransforms: true,
                     modules: "commonjs"
                 }]]
+                // presets: ["@babel/preset-env"]
             }
         }
     });
@@ -299,6 +359,8 @@ module.exports = {
     },
     plugins: plugins,
     resolve: {
+        extensions: [".ts", ".js"],
+        symlinks: false,
         alias: {
             // https://feathericons.com/
             feather: path.resolve(__dirname, "node_modules/feather-icons/dist/feather-sprite.svg"),
