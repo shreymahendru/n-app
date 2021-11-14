@@ -7,7 +7,7 @@ require("@nivinjoseph/n-ext");
 exports.bindSymbol = Symbol("bind");
 // public
 function bind(...bindings) {
-    n_defensive_1.given(bindings, "bindings")
+    (0, n_defensive_1.given)(bindings, "bindings")
         .ensureHasValue()
         .ensure(t => t.length > 0, "cannot be empty");
     return (target) => Reflect.defineMetadata(exports.bindSymbol, bindings, target);

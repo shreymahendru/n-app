@@ -7,7 +7,7 @@ const n_defensive_1 = require("@nivinjoseph/n-defensive");
 exports.persistSymbol = Symbol("persist");
 // public
 function persist(target) {
-    n_defensive_1.given(target, "target").ensureHasValue().ensureIsFunction();
+    (0, n_defensive_1.given)(target, "target").ensureHasValue().ensureIsFunction();
     Reflect.defineMetadata(exports.persistSymbol, true, target);
 }
 exports.persist = persist;

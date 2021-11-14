@@ -8,7 +8,7 @@ exports.eventsSymbol = Symbol("events");
 // public
 function events(...events) {
     const initChars = "abcdefghijklmnopqrstuvwxyz".split("");
-    n_defensive_1.given(events, "events")
+    (0, n_defensive_1.given)(events, "events")
         .ensureHasValue()
         .ensure(t => t.length > 0, "cannot be empty")
         .ensure(t => t.length === t.distinct().length, "duplicate events")

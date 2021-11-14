@@ -27,14 +27,14 @@ class PageViewModel extends base_view_model_1.BaseViewModel {
     }
     // override
     onEnter(...params) {
-        n_defensive_1.given(params, "params").ensureHasValue().ensureIsArray();
+        (0, n_defensive_1.given)(params, "params").ensureHasValue().ensureIsArray();
     }
     // override
     onLeave() { }
     static createComponentOptions(component, defaultPageTitle, defaultPageMetadata) {
-        n_defensive_1.given(component, "component").ensureHasValue().ensureIsFunction();
-        n_defensive_1.given(defaultPageTitle, "defaultPageTitle").ensureIsString();
-        n_defensive_1.given(defaultPageMetadata, "defaultPageMetadata").ensureIsArray();
+        (0, n_defensive_1.given)(component, "component").ensureHasValue().ensureIsFunction();
+        (0, n_defensive_1.given)(defaultPageTitle, "defaultPageTitle").ensureIsString();
+        (0, n_defensive_1.given)(defaultPageMetadata, "defaultPageMetadata").ensureIsArray();
         const registration = new page_registration_1.PageRegistration(component, defaultPageTitle, defaultPageMetadata);
         const factory = new page_component_factory_1.PageComponentFactory();
         return factory.create(registration);

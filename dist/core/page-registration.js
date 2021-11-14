@@ -13,9 +13,9 @@ const resolve_1 = require("./resolve");
 const pages_1 = require("./pages");
 class PageRegistration extends view_model_registration_1.ViewModelRegistration {
     constructor(page, defaultPageTitle, defaultPageMetas) {
-        n_defensive_1.given(page, "page").ensureHasValue().ensureIsFunction();
-        n_defensive_1.given(defaultPageTitle, "defaultPageTitle").ensureIsString();
-        n_defensive_1.given(defaultPageMetas, "defaultPageMetas").ensureIsArray();
+        (0, n_defensive_1.given)(page, "page").ensureHasValue().ensureIsFunction();
+        (0, n_defensive_1.given)(defaultPageTitle, "defaultPageTitle").ensureIsString();
+        (0, n_defensive_1.given)(defaultPageMetas, "defaultPageMetas").ensureIsArray();
         super(page);
         if (!Reflect.hasOwnMetadata(route_1.appRouteSymbol, this.viewModel))
             throw new n_exception_1.ApplicationException(`PageViewModel '${this.name}' does not have @route applied.`);

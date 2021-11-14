@@ -9,7 +9,7 @@ const $ = require("jquery");
 const page_hmr_helper_1 = require("./page-hmr-helper");
 class PageComponentFactory {
     create(registration) {
-        n_defensive_1.given(registration, "registration").ensureHasValue();
+        (0, n_defensive_1.given)(registration, "registration").ensureHasValue();
         const component = {};
         // component.template = registration.template;
         // component.render = (<any>registration.viewModel).___render;

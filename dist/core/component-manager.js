@@ -8,8 +8,8 @@ const n_exception_1 = require("@nivinjoseph/n-exception");
 class ComponentManager {
     constructor(vue, container) {
         this._registrations = new Array();
-        n_defensive_1.given(vue, "vue").ensureHasValue();
-        n_defensive_1.given(container, "container").ensureHasValue();
+        (0, n_defensive_1.given)(vue, "vue").ensureHasValue();
+        (0, n_defensive_1.given)(container, "container").ensureHasValue();
         this._vue = vue;
         this._container = container;
     }

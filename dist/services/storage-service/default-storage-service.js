@@ -4,7 +4,7 @@ exports.DefaultStorageService = void 0;
 const n_defensive_1 = require("@nivinjoseph/n-defensive");
 class DefaultStorageService {
     persist(key, value) {
-        n_defensive_1.given(key, "key").ensureHasValue().ensure(t => !t.isEmptyOrWhiteSpace());
+        (0, n_defensive_1.given)(key, "key").ensureHasValue().ensure(t => !t.isEmptyOrWhiteSpace());
         key = key.trim();
         if (value === undefined || value === null) {
             localStorage.setItem(key, null);
@@ -14,7 +14,7 @@ class DefaultStorageService {
         localStorage.setItem(key, JSON.stringify(storeValue));
     }
     persistInSession(key, value) {
-        n_defensive_1.given(key, "key").ensureHasValue().ensure(t => !t.isEmptyOrWhiteSpace());
+        (0, n_defensive_1.given)(key, "key").ensureHasValue().ensure(t => !t.isEmptyOrWhiteSpace());
         key = key.trim();
         if (value === undefined || value === null) {
             sessionStorage.setItem(key, null);
@@ -24,7 +24,7 @@ class DefaultStorageService {
         sessionStorage.setItem(key, JSON.stringify(storeValue));
     }
     retrieve(key) {
-        n_defensive_1.given(key, "key").ensureHasValue().ensure(t => !t.isEmptyOrWhiteSpace());
+        (0, n_defensive_1.given)(key, "key").ensureHasValue().ensure(t => !t.isEmptyOrWhiteSpace());
         key = key.trim();
         let value = localStorage.getItem(key);
         if (value === undefined || value === null)
@@ -33,7 +33,7 @@ class DefaultStorageService {
         return parsedValue.item;
     }
     retrieveFromSession(key) {
-        n_defensive_1.given(key, "key").ensureHasValue().ensure(t => !t.isEmptyOrWhiteSpace());
+        (0, n_defensive_1.given)(key, "key").ensureHasValue().ensure(t => !t.isEmptyOrWhiteSpace());
         key = key.trim();
         let value = sessionStorage.getItem(key);
         if (value === undefined || value === null)
@@ -42,12 +42,12 @@ class DefaultStorageService {
         return parsedValue.item;
     }
     remove(key) {
-        n_defensive_1.given(key, "key").ensureHasValue().ensure(t => !t.isEmptyOrWhiteSpace());
+        (0, n_defensive_1.given)(key, "key").ensureHasValue().ensure(t => !t.isEmptyOrWhiteSpace());
         key = key.trim();
         localStorage.removeItem(key);
     }
     removeFromSession(key) {
-        n_defensive_1.given(key, "key").ensureHasValue().ensure(t => !t.isEmptyOrWhiteSpace());
+        (0, n_defensive_1.given)(key, "key").ensureHasValue().ensure(t => !t.isEmptyOrWhiteSpace());
         key = key.trim();
         sessionStorage.removeItem(key);
     }

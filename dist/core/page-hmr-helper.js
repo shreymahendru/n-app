@@ -10,12 +10,12 @@ class PageHmrHelper {
      */
     constructor() { }
     static track(registration, routeArgs) {
-        n_defensive_1.given(registration, "registration").ensureHasValue().ensureIsObject().ensureIsType(page_registration_1.PageRegistration);
-        n_defensive_1.given(routeArgs, "routeArgs").ensureHasValue().ensureIsObject().ensureIsType(route_args_1.RouteArgs);
+        (0, n_defensive_1.given)(registration, "registration").ensureHasValue().ensureIsObject().ensureIsType(page_registration_1.PageRegistration);
+        (0, n_defensive_1.given)(routeArgs, "routeArgs").ensureHasValue().ensureIsObject().ensureIsType(route_args_1.RouteArgs);
         this._infos.set(registration.name, { registration, routeArgs });
     }
     static restore(registration) {
-        n_defensive_1.given(registration, "registration").ensureHasValue().ensureIsObject().ensureIsType(page_registration_1.PageRegistration)
+        (0, n_defensive_1.given)(registration, "registration").ensureHasValue().ensureIsObject().ensureIsType(page_registration_1.PageRegistration)
             .ensure(t => this._infos.has(t.name));
         const info = this._infos.get(registration.name);
         registration.resolvedValues = info.registration.resolvedValues;

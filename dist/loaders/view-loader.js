@@ -26,7 +26,7 @@ const resolve = require("enhanced-resolve").create.sync({ alias: config.resolve 
  */
 // tslint:disable-next-line: no-default-export
 function extractLoader(src) {
-    return tslib_1.__awaiter(this, void 0, void 0, function* () {
+    return (0, tslib_1.__awaiter)(this, void 0, void 0, function* () {
         const done = this.async();
         const options = getOptions(this) || {};
         const publicPath = getPublicPath(options, this);
@@ -94,7 +94,7 @@ function evalDependencyGraph({ loaderContext, src, filename, publicPath = "" }) 
         };
     }
     function evalModule(src, filename) {
-        return tslib_1.__awaiter(this, void 0, void 0, function* () {
+        return (0, tslib_1.__awaiter)(this, void 0, void 0, function* () {
             const rndPlaceholder = "__EXTRACT_LOADER_PLACEHOLDER__" + rndNumber() + rndNumber();
             const rndPlaceholderPattern = new RegExp(rndPlaceholder, "g");
             const script = new vm.Script(src, {
@@ -140,7 +140,7 @@ function evalDependencyGraph({ loaderContext, src, filename, publicPath = "" }) 
                 },
             });
             script.runInNewContext(sandbox);
-            const extractedDependencyContent = yield Promise.all(newDependencies.map(({ absolutePath, absoluteRequest }) => tslib_1.__awaiter(this, void 0, void 0, function* () {
+            const extractedDependencyContent = yield Promise.all(newDependencies.map(({ absolutePath, absoluteRequest }) => (0, tslib_1.__awaiter)(this, void 0, void 0, function* () {
                 const src = yield loadModule(absoluteRequest);
                 return evalModule(src, absolutePath);
             })));

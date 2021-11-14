@@ -18,11 +18,11 @@ class PageManager {
         this._defaultPageTitle = null;
         this._defaultPageMetas = null;
         this._useHistoryMode = false;
-        n_defensive_1.given(vueRouter, "vueRouter").ensureHasValue();
+        (0, n_defensive_1.given)(vueRouter, "vueRouter").ensureHasValue();
         this._vueRouter = vueRouter;
-        n_defensive_1.given(container, "container").ensureHasValue().ensureIsObject();
+        (0, n_defensive_1.given)(container, "container").ensureHasValue().ensureIsObject();
         this._container = container;
-        n_defensive_1.given(componentManager, "componentManager").ensureHasValue().ensureIsObject();
+        (0, n_defensive_1.given)(componentManager, "componentManager").ensureHasValue().ensureIsObject();
         this._componentManager = componentManager;
     }
     get useHistoryMode() { return this._useHistoryMode; }
@@ -31,11 +31,11 @@ class PageManager {
         this._pageViewModelClasses.push(...pageViewModelClasses);
     }
     useAsInitialRoute(route) {
-        n_defensive_1.given(route, "route").ensureHasValue().ensureIsString();
+        (0, n_defensive_1.given)(route, "route").ensureHasValue().ensureIsString();
         this._initialRoute = route.trim();
     }
     useAsUnknownRoute(route) {
-        n_defensive_1.given(route, "route").ensureHasValue().ensureIsString();
+        (0, n_defensive_1.given)(route, "route").ensureHasValue().ensureIsString();
         this._unknownRoute = route.trim();
     }
     // /**
@@ -120,7 +120,7 @@ class PageManager {
             if (registration.resolvers && registration.resolvers.length > 0) {
                 const resolvers = registration.resolvers.map(t => this._container.resolve(t.name));
                 resolvers
-                    .mapAsync((t) => tslib_1.__awaiter(this, void 0, void 0, function* () {
+                    .mapAsync((t) => (0, tslib_1.__awaiter)(this, void 0, void 0, function* () {
                     try {
                         const resolution = yield t.resolve(from, to);
                         return resolution;

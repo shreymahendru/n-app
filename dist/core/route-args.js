@@ -6,9 +6,9 @@ const n_defensive_1 = require("@nivinjoseph/n-defensive");
 require("@nivinjoseph/n-ext");
 class RouteArgs {
     constructor(pathArgs, queryArgs, routeArgs) {
-        n_defensive_1.given(pathArgs, "pathArgs").ensureHasValue().ensureIsObject();
-        n_defensive_1.given(queryArgs, "queryArgs").ensureHasValue().ensureIsObject();
-        n_defensive_1.given(routeArgs, "routeArgs").ensureHasValue().ensureIsArray();
+        (0, n_defensive_1.given)(pathArgs, "pathArgs").ensureHasValue().ensureIsObject();
+        (0, n_defensive_1.given)(queryArgs, "queryArgs").ensureHasValue().ensureIsObject();
+        (0, n_defensive_1.given)(routeArgs, "routeArgs").ensureHasValue().ensureIsArray();
         this._pathArgs = pathArgs;
         this._queryArgs = queryArgs;
         this._routeArgs = routeArgs;

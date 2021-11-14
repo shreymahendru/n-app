@@ -7,7 +7,7 @@ const utils_1 = require("./utils");
 exports.resolveSymbol = Symbol("resolve");
 // public
 function resolve(...resolvers) {
-    n_defensive_1.given(resolvers, "resolvers").ensureHasValue().ensureIsArray().ensure(t => t.length > 0);
+    (0, n_defensive_1.given)(resolvers, "resolvers").ensureHasValue().ensureIsArray().ensure(t => t.length > 0);
     const mapped = resolvers.map(t => {
         return {
             name: utils_1.Utils.getTypeName(t),

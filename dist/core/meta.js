@@ -7,7 +7,7 @@ require("@nivinjoseph/n-ext");
 exports.metaSymbol = Symbol("meta");
 // public
 function meta(...metas) {
-    n_defensive_1.given(metas, "metas")
+    (0, n_defensive_1.given)(metas, "metas")
         .ensureHasValue()
         .ensureIsArray()
         .ensure(t => t.length > 0);

@@ -6,7 +6,7 @@ const n_defensive_1 = require("@nivinjoseph/n-defensive");
 exports.componentsSymbol = Symbol("components");
 // public
 function components(...components) {
-    n_defensive_1.given(components, "components").ensureHasValue().ensureIsArray().ensure(t => t.length > 0);
+    (0, n_defensive_1.given)(components, "components").ensureHasValue().ensureIsArray().ensure(t => t.length > 0);
     return (target) => Reflect.defineMetadata(exports.componentsSymbol, components, target);
 }
 exports.components = components;

@@ -13,7 +13,7 @@ class ComponentViewModel extends base_view_model_1.BaseViewModel {
     getBound(propertyName) {
         if (!this.ctx)
             throw new n_exception_1.InvalidOperationException("calling getBound() in the constructor");
-        n_defensive_1.given(propertyName, "propertyName").ensureHasValue().ensure(t => !t.isEmptyOrWhiteSpace())
+        (0, n_defensive_1.given)(propertyName, "propertyName").ensureHasValue().ensure(t => !t.isEmptyOrWhiteSpace())
             .ensure(t => this._myBindings.some(u => u === t), `No binding with the name '${propertyName}' found`);
         return this.ctx[propertyName];
     }
@@ -32,13 +32,13 @@ class ComponentViewModel extends base_view_model_1.BaseViewModel {
         this.ctx.$emit("input", value);
     }
     emit(event, ...eventArgs) {
-        n_defensive_1.given(event, "event").ensureHasValue().ensureIsString()
+        (0, n_defensive_1.given)(event, "event").ensureHasValue().ensureIsString()
             .ensure(t => this._myEvents.contains(t.trim()), "undeclared event");
         event = this._camelCaseToKebabCase(event);
         this.ctx.$emit(event, ...eventArgs);
     }
     static createComponentOptions(component) {
-        n_defensive_1.given(component, "component").ensureHasValue().ensureIsFunction();
+        (0, n_defensive_1.given)(component, "component").ensureHasValue().ensureIsFunction();
         const registration = new component_registration_1.ComponentRegistration(component);
         const factory = new component_factory_1.ComponentFactory();
         return factory.create(registration);

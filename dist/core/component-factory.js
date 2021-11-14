@@ -7,7 +7,7 @@ require("@nivinjoseph/n-ext");
 const n_exception_1 = require("@nivinjoseph/n-exception");
 class ComponentFactory {
     create(registration) {
-        n_defensive_1.given(registration, "registration").ensureHasValue();
+        (0, n_defensive_1.given)(registration, "registration").ensureHasValue();
         const component = {};
         // component.template = registration.template;
         // component.render = (<any>registration.viewModel).___render;

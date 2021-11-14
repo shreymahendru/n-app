@@ -48,10 +48,10 @@ let NExpandingContainerViewModel = class NExpandingContainerViewModel extends co
         $(element).height(`calc(100% - ${constrainedHeight}px)`);
     }
 };
-NExpandingContainerViewModel = tslib_1.__decorate([
-    template_1.template(require("./n-expanding-container-view.html")),
-    element_1.element("n-expanding-container"),
-    bind_1.bind("constrainX", "renderKey")
+NExpandingContainerViewModel = (0, tslib_1.__decorate)([
+    (0, template_1.template)(require("./n-expanding-container-view.html")),
+    (0, element_1.element)("n-expanding-container"),
+    (0, bind_1.bind)("constrainX", "renderKey")
 ], NExpandingContainerViewModel);
 exports.NExpandingContainerViewModel = NExpandingContainerViewModel;
 //# sourceMappingURL=n-expanding-container-view-model.js.map

@@ -7,14 +7,14 @@ const n_exception_1 = require("@nivinjoseph/n-exception");
 const utilities_1 = require("../../core/utilities");
 class DefaultComponentService {
     compile(componentViewModelClass, cache) {
-        n_defensive_1.given(componentViewModelClass, "componentViewModelClass").ensureHasValue().ensureIsFunction();
-        n_defensive_1.given(cache, "cache").ensureIsBoolean();
+        (0, n_defensive_1.given)(componentViewModelClass, "componentViewModelClass").ensureHasValue().ensureIsFunction();
+        (0, n_defensive_1.given)(cache, "cache").ensureIsBoolean();
         const registration = new view_model_registration_1.ViewModelRegistration(componentViewModelClass);
         return this.create(registration, !!cache);
     }
     create(registration, cache) {
-        n_defensive_1.given(registration, "registration").ensureHasValue().ensureIsType(view_model_registration_1.ViewModelRegistration);
-        n_defensive_1.given(cache, "cache").ensureHasValue().ensureIsBoolean();
+        (0, n_defensive_1.given)(registration, "registration").ensureHasValue().ensureIsType(view_model_registration_1.ViewModelRegistration);
+        (0, n_defensive_1.given)(cache, "cache").ensureHasValue().ensureIsBoolean();
         const component = {};
         component._cache = cache;
         // component.template = registration.template;

@@ -22,7 +22,7 @@ let NScrollContainerViewModel = class NScrollContainerViewModel extends componen
     get _hugBottom() { return !!n_util_1.TypeHelper.parseBoolean(this.getBound("hugBottom")); }
     get _hugRight() { return !!n_util_1.TypeHelper.parseBoolean(this.getBound("hugRight")); }
     onCreate() {
-        n_defensive_1.given(this, "this").ensure(t => !(t.isHorizontalOnly === true && t.isVerticalOnly === true), "only-x and only-y cannot both be true");
+        (0, n_defensive_1.given)(this, "this").ensure(t => !(t.isHorizontalOnly === true && t.isVerticalOnly === true), "only-x and only-y cannot both be true");
         super.onCreate();
     }
     onMount(element) {
@@ -62,10 +62,10 @@ let NScrollContainerViewModel = class NScrollContainerViewModel extends componen
         }
     }
 };
-NScrollContainerViewModel = tslib_1.__decorate([
-    template_1.template(require("./n-scroll-container-view.html")),
-    element_1.element("n-scroll-container"),
-    bind_1.bind("onlyX", "onlyY", "renderKey", "hugBottom", "hugRight")
+NScrollContainerViewModel = (0, tslib_1.__decorate)([
+    (0, template_1.template)(require("./n-scroll-container-view.html")),
+    (0, element_1.element)("n-scroll-container"),
+    (0, bind_1.bind)("onlyX", "onlyY", "renderKey", "hugBottom", "hugRight")
 ], NScrollContainerViewModel);
 exports.NScrollContainerViewModel = NScrollContainerViewModel;
 //# sourceMappingURL=n-scroll-container-view-model.js.map

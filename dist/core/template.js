@@ -7,12 +7,12 @@ require("@nivinjoseph/n-ext");
 exports.templateSymbol = Symbol("template");
 // public
 function template(template) {
-    n_defensive_1.given(template, "template")
+    (0, n_defensive_1.given)(template, "template")
         .ensureHasValue();
     if (typeof template === "string")
-        n_defensive_1.given(template, "template").ensureIsString();
+        (0, n_defensive_1.given)(template, "template").ensureIsString();
     else
-        n_defensive_1.given(template, "template").ensureIsObject();
+        (0, n_defensive_1.given)(template, "template").ensureIsObject();
     return (target) => Reflect.defineMetadata(exports.templateSymbol, template, target);
 }
 exports.template = template;

@@ -6,7 +6,7 @@ const n_defensive_1 = require("@nivinjoseph/n-defensive");
 class Page {
     constructor(segment, parent) {
         this._children = new Array();
-        n_defensive_1.given(segment, "segment").ensureHasValue().ensure(t => !t.isEmptyOrWhiteSpace());
+        (0, n_defensive_1.given)(segment, "segment").ensureHasValue().ensure(t => !t.isEmptyOrWhiteSpace());
         this._segment = segment;
         if (parent)
             this.changeParent(parent);
@@ -16,15 +16,15 @@ class Page {
     get children() { return this._children.map(t => t); }
     get registration() { return this._registration; }
     attachRegistration(registration) {
-        n_defensive_1.given(registration, "registration").ensureHasValue();
+        (0, n_defensive_1.given)(registration, "registration").ensureHasValue();
         this._registration = registration;
     }
     addChild(childPage) {
-        n_defensive_1.given(childPage, "childPage").ensureHasValue();
+        (0, n_defensive_1.given)(childPage, "childPage").ensureHasValue();
         this._children.push(childPage);
     }
     removeChild(childPage) {
-        n_defensive_1.given(childPage, "childPage").ensureHasValue()
+        (0, n_defensive_1.given)(childPage, "childPage").ensureHasValue()
             .ensure(t => this._children.some(u => u === t), "child not present");
         this._children.remove(childPage);
     }

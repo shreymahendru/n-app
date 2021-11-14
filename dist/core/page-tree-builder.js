@@ -5,8 +5,8 @@ const n_defensive_1 = require("@nivinjoseph/n-defensive");
 const page_1 = require("./page");
 class PageTreeBuilder {
     constructor(root, pageRegistrations) {
-        n_defensive_1.given(root, "root").ensureHasValue();
-        n_defensive_1.given(pageRegistrations, "pageRegistrations").ensureHasValue();
+        (0, n_defensive_1.given)(root, "root").ensureHasValue();
+        (0, n_defensive_1.given)(pageRegistrations, "pageRegistrations").ensureHasValue();
         this._root = root;
         this._registrations = pageRegistrations;
     }

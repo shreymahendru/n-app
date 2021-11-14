@@ -7,8 +7,8 @@ class DefaultEventAggregator {
         this._subscriptions = {};
     }
     subscribe(event, handler) {
-        n_defensive_1.given(event, "event").ensureHasValue().ensure(t => !t.isEmptyOrWhiteSpace());
-        n_defensive_1.given(handler, "handler").ensureHasValue();
+        (0, n_defensive_1.given)(event, "event").ensureHasValue().ensure(t => !t.isEmptyOrWhiteSpace());
+        (0, n_defensive_1.given)(handler, "handler").ensureHasValue();
         event = event.trim();
         if (!this._subscriptions[event])
             this._subscriptions[event] = new Array();
@@ -23,7 +23,7 @@ class DefaultEventAggregator {
         return eventSubscriptionInternal.subscription;
     }
     publish(event, ...eventArgs) {
-        n_defensive_1.given(event, "event").ensureHasValue().ensure(t => !t.isEmptyOrWhiteSpace());
+        (0, n_defensive_1.given)(event, "event").ensureHasValue().ensure(t => !t.isEmptyOrWhiteSpace());
         event = event.trim();
         if (!this._subscriptions[event])
             return;
@@ -32,7 +32,7 @@ class DefaultEventAggregator {
     // Called dynamically by EventSubscription class (internal)
     // @ts-ignore
     unsubscribe(event, subscription) {
-        n_defensive_1.given(event, "event").ensureHasValue().ensure(t => !t.isEmptyOrWhiteSpace());
+        (0, n_defensive_1.given)(event, "event").ensureHasValue().ensure(t => !t.isEmptyOrWhiteSpace());
         event = event.trim();
         if (!this._subscriptions[event])
             return;

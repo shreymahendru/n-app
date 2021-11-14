@@ -7,7 +7,7 @@ require("@nivinjoseph/n-ext");
 exports.titleSymbol = Symbol("title");
 // public
 function title(title) {
-    n_defensive_1.given(title, "title")
+    (0, n_defensive_1.given)(title, "title")
         .ensureHasValue()
         .ensure(t => !t.isEmptyOrWhiteSpace());
     return (target) => Reflect.defineMetadata(exports.titleSymbol, title.trim(), target);

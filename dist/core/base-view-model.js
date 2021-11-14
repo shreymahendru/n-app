@@ -16,7 +16,7 @@ class BaseViewModel {
     }
     /** Override */
     onMount(element) {
-        n_defensive_1.given(element, "element").ensureHasValue().ensureIsObject();
+        (0, n_defensive_1.given)(element, "element").ensureHasValue().ensureIsObject();
         this._domElement = element;
     }
     /** Override */
@@ -33,17 +33,17 @@ class BaseViewModel {
             this._executeOnDestroy();
     }
     executeOnCreate(funcToExecute) {
-        n_defensive_1.given(funcToExecute, "funcToExecute").ensureHasValue();
+        (0, n_defensive_1.given)(funcToExecute, "funcToExecute").ensureHasValue();
         this._executeOnCreate = funcToExecute;
     }
     executeOnDestroy(funcToExecute) {
-        n_defensive_1.given(funcToExecute, "funcToExecute").ensureHasValue();
+        (0, n_defensive_1.given)(funcToExecute, "funcToExecute").ensureHasValue();
         this._executeOnDestroy = funcToExecute;
     }
     watch(propertyName, callback) {
         if (!this.ctx)
             throw new n_exception_1.InvalidOperationException("calling watch() in the constructor");
-        n_defensive_1.given(propertyName, "propertyName").ensureHasValue().ensure(t => !t.isEmptyOrWhiteSpace());
+        (0, n_defensive_1.given)(propertyName, "propertyName").ensureHasValue().ensure(t => !t.isEmptyOrWhiteSpace());
         propertyName = propertyName.trim();
         if (this._watches[propertyName])
             throw new n_exception_1.ApplicationException(`Watch already defined for property '${propertyName}'.`);
@@ -52,7 +52,7 @@ class BaseViewModel {
         }, { deep: true });
     }
     unWatch(propertyName) {
-        n_defensive_1.given(propertyName, "propertyName").ensureHasValue().ensure(t => !t.isEmptyOrWhiteSpace());
+        (0, n_defensive_1.given)(propertyName, "propertyName").ensureHasValue().ensure(t => !t.isEmptyOrWhiteSpace());
         propertyName = propertyName.trim();
         if (this._watches[propertyName]) {
             this._watches[propertyName]();

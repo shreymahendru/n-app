@@ -17,9 +17,9 @@ let NFileSelectViewModel = class NFileSelectViewModel extends component_view_mod
         super();
         this._inputTemplate = `<input type="file" accept="{0}" style="display: none" />`;
         this._inputTemplateMultiple = `<input type="file" accept="{0}" multiple style="display: none" />`;
-        n_defensive_1.given(dialogService, "dialogService").ensureHasValue().ensureIsObject();
+        (0, n_defensive_1.given)(dialogService, "dialogService").ensureHasValue().ensureIsObject();
         this._dialogService = dialogService;
-        n_defensive_1.given(eventAggregator, "eventAggregator").ensureHasValue().ensureIsObject();
+        (0, n_defensive_1.given)(eventAggregator, "eventAggregator").ensureHasValue().ensureIsObject();
         this._eventAggregator = eventAggregator;
         this.executeOnCreate(() => {
             const id = this.getBound("id");
@@ -115,13 +115,13 @@ let NFileSelectViewModel = class NFileSelectViewModel extends component_view_mod
         this._maxFileSizeBytes = this._maxFileSizeValue != null ? this._maxFileSizeValue * 1024 * 1024 : null;
     }
 };
-NFileSelectViewModel = tslib_1.__decorate([
-    template_1.template(require("./n-file-select-view.html")),
-    element_1.element("n-file-select"),
-    bind_1.bind("id", "mimeTypes", "maxFileSize", "multiple"),
-    events_1.events("select"),
-    n_ject_1.inject("DialogService", "EventAggregator"),
-    tslib_1.__metadata("design:paramtypes", [Object, Object])
+NFileSelectViewModel = (0, tslib_1.__decorate)([
+    (0, template_1.template)(require("./n-file-select-view.html")),
+    (0, element_1.element)("n-file-select"),
+    (0, bind_1.bind)("id", "mimeTypes", "maxFileSize", "multiple"),
+    (0, events_1.events)("select"),
+    (0, n_ject_1.inject)("DialogService", "EventAggregator"),
+    (0, tslib_1.__metadata)("design:paramtypes", [Object, Object])
 ], NFileSelectViewModel);
 exports.NFileSelectViewModel = NFileSelectViewModel;
 //# sourceMappingURL=n-file-select-view-model.js.map

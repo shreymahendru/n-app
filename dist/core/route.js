@@ -7,11 +7,11 @@ require("@nivinjoseph/n-ext");
 exports.appRouteSymbol = Symbol("appRoute");
 // public
 function route(route, redirect) {
-    n_defensive_1.given(route, "route").ensureHasValue()
+    (0, n_defensive_1.given)(route, "route").ensureHasValue()
         .ensureIsString()
         .ensure(t => !t.isEmptyOrWhiteSpace(), "cannot be empty or whitespace")
         .ensure(t => t.trim().startsWith("/"), "has to begin with '/'");
-    n_defensive_1.given(redirect, "redirect")
+    (0, n_defensive_1.given)(redirect, "redirect")
         .ensureIsString()
         .ensure(t => !t.isEmptyOrWhiteSpace(), "cannot be empty or whitespace")
         .ensure(t => t.trim().startsWith("/"), "has to begin with '/'")

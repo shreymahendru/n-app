@@ -9,7 +9,7 @@ const bind_1 = require("./bind");
 const events_1 = require("./events");
 class ComponentRegistration extends view_model_registration_1.ViewModelRegistration {
     constructor(component) {
-        n_defensive_1.given(component, "component").ensureHasValue();
+        (0, n_defensive_1.given)(component, "component").ensureHasValue();
         super(component);
         this._bindings = new Array();
         if (!Reflect.hasOwnMetadata(element_1.elementSymbol, this.viewModel))

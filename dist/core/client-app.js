@@ -103,9 +103,9 @@ class ClientApp {
      */
     constructor(appElementId, rootComponentElement) {
         this._isBootstrapped = false;
-        n_defensive_1.given(appElementId, "appElementId").ensureHasValue().ensureIsString().ensure(t => t.startsWith("#"));
+        (0, n_defensive_1.given)(appElementId, "appElementId").ensureHasValue().ensureIsString().ensure(t => t.startsWith("#"));
         this._appElementId = appElementId;
-        n_defensive_1.given(rootComponentElement, "rootComponentElement").ensureHasValue().ensureIsString();
+        (0, n_defensive_1.given)(rootComponentElement, "rootComponentElement").ensureHasValue().ensureIsString();
         this._rootComponentElement = rootComponentElement;
         this._container = new n_ject_1.Container();
         this._componentManager = new component_manager_1.ComponentManager(Vue, this._container);
@@ -120,14 +120,14 @@ class ClientApp {
     useInstaller(installer) {
         if (this._isBootstrapped)
             throw new n_exception_1.InvalidOperationException("useInstaller");
-        n_defensive_1.given(installer, "installer").ensureHasValue();
+        (0, n_defensive_1.given)(installer, "installer").ensureHasValue();
         this._container.install(installer);
         return this;
     }
     useAccentColor(color) {
         if (this._isBootstrapped)
             throw new n_exception_1.InvalidOperationException("useAccentColor");
-        n_defensive_1.given(color, "color").ensureHasValue().ensure(t => !t.isEmptyOrWhiteSpace())
+        (0, n_defensive_1.given)(color, "color").ensureHasValue().ensure(t => !t.isEmptyOrWhiteSpace())
             .ensure(t => t.trim().startsWith("#"), "must be hex value");
         this._accentColor = color.trim();
         return this;
@@ -147,14 +147,14 @@ class ClientApp {
     useAsInitialRoute(route) {
         if (this._isBootstrapped)
             throw new n_exception_1.InvalidOperationException("useAsInitialRoute");
-        n_defensive_1.given(route, "route").ensureHasValue().ensureIsString();
+        (0, n_defensive_1.given)(route, "route").ensureHasValue().ensureIsString();
         this._pageManager.useAsInitialRoute(route);
         return this;
     }
     useAsUnknownRoute(route) {
         if (this._isBootstrapped)
             throw new n_exception_1.InvalidOperationException("useAsUnknownRoute");
-        n_defensive_1.given(route, "route").ensureHasValue().ensureIsString();
+        (0, n_defensive_1.given)(route, "route").ensureHasValue().ensureIsString();
         this._pageManager.useAsUnknownRoute(route);
         return this;
     }
@@ -196,7 +196,7 @@ class ClientApp {
     //     return this;
     // }
     configureErrorTracking(callback) {
-        n_defensive_1.given(callback, "callback").ensureHasValue().ensureIsFunction();
+        (0, n_defensive_1.given)(callback, "callback").ensureHasValue().ensureIsFunction();
         if (this._isBootstrapped)
             throw new n_exception_1.InvalidOperationException("calling method after bootstrap");
         this._errorTrackingConfigurationCallback = callback;

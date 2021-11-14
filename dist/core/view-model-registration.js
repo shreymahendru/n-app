@@ -11,7 +11,7 @@ const utils_1 = require("./utils");
 class ViewModelRegistration {
     constructor(viewModel) {
         this._isCreated = false;
-        n_defensive_1.given(viewModel, "viewModel").ensureHasValue().ensureIsFunction();
+        (0, n_defensive_1.given)(viewModel, "viewModel").ensureHasValue().ensureIsFunction();
         this._name = utils_1.Utils.getTypeName(viewModel);
         if (!this._name.endsWith("ViewModel"))
             throw new n_exception_1.ApplicationException(`Registered ViewModel '${this._name}' violates ViewModel naming convention.`);
