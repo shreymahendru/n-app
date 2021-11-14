@@ -46,7 +46,10 @@ const moduleRules: Array<any> = [
                 }
             },
             {
-                loader: "css-loader" // translates CSS into CommonJS
+                loader: "css-loader", // translates CSS into CommonJS
+                options: {
+                    esModule: false
+                }
             },
             {
                 loader: "postcss-loader", // postcss
@@ -211,8 +214,11 @@ const moduleRules: Array<any> = [
             {
                 loader: "html-loader",
                 options: {
-                    attrs: ["img:src", "use:xlink:href"]
+                    esModule: false,
                 }
+                // options: {
+                //     attrs: ["img:src", "use:xlink:href"]
+                // }
             }
         ]
     },
@@ -223,8 +229,11 @@ const moduleRules: Array<any> = [
             {
                 loader: "html-loader",
                 options: {
-                    attrs: ["img:src", "use:xlink:href"]
-                }
+                    esModule: false,
+                },
+                // options: {
+                //     attrs: ["img:src", "use:xlink:href"]
+                // }
             }
         ]
     }
@@ -261,10 +270,11 @@ if (isDev)
     //     enforce: "pre"
     // });
     
-    plugins.push(new webpack.WatchIgnorePlugin([
-        /\.js$/,
-        /\.d\.ts$/
-    ]));
+    plugins.push(new webpack.WatchIgnorePlugin({
+        paths: [/\.js$/, /\.d\.ts$/]
+    }));
+    
+    plugins.push(new webpack.HotModuleReplacementPlugin());
 }
 else
 {
@@ -304,7 +314,7 @@ module.exports = {
     mode: isDev ? "development" : "production",
     target: "web",
     entry: {
-        main: ["./test-app/client/app.js"]
+        main: ["./test-app/client/app.js", isDev ? "webpack-hot-middleware/client" : null].where(t => t != null)
     },
     output: {
         filename: "[name].bundle.js",
