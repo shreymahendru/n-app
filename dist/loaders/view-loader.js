@@ -95,8 +95,6 @@ function evalDependencyGraph({ loaderContext, src, filename, publicPath = "" }) 
     }
     function evalModule(src, filename) {
         return (0, tslib_1.__awaiter)(this, void 0, void 0, function* () {
-            const rndPlaceholder = "__EXTRACT_LOADER_PLACEHOLDER__" + rndNumber() + rndNumber();
-            const rndPlaceholderPattern = new RegExp(rndPlaceholder, "g");
             const script = new vm.Script(src, {
                 filename,
                 displayErrors: true,
@@ -132,9 +130,11 @@ function evalDependencyGraph({ loaderContext, src, filename, publicPath = "" }) 
                         moduleCache.set(absolutePath, exports);
                         return exports;
                     }
+                    const rndPlaceholder = "__EXTRACT_LOADER_PLACEHOLDER__" + rndNumber() + rndNumber();
                     newDependencies.push({
                         absolutePath,
                         absoluteRequest: loaders + absolutePath + query,
+                        rndPlaceholder
                     });
                     return rndPlaceholder;
                 },
@@ -145,7 +145,10 @@ function evalDependencyGraph({ loaderContext, src, filename, publicPath = "" }) 
                 return evalModule(src, absolutePath);
             })));
             const contentWithPlaceholders = extractExports(sandbox.module.exports);
-            const extractedContent = contentWithPlaceholders.replace(rndPlaceholderPattern, () => extractedDependencyContent.shift());
+            const extractedContent = extractedDependencyContent.reduce((content, dependencyContent, idx) => {
+                const pattern = new RegExp(newDependencies[idx].rndPlaceholder, "g");
+                return content.replace(pattern, dependencyContent);
+            }, contentWithPlaceholders);
             moduleCache.set(filename, extractedContent);
             return extractedContent;
         });
@@ -174,16 +177,17 @@ function rndNumber() {
  * @returns {string}
  */
 function getPublicPath(options, context) {
+    let publicPath = "";
     if ("publicPath" in options) {
-        return typeof options.publicPath === "function" ? options.publicPath(context) : options.publicPath;
+        publicPath = typeof options.publicPath === "function" ? options.publicPath(context) : options.publicPath;
     }
-    if (context.options && context.options.output && "publicPath" in context.options.output) {
-        return context.options.output.publicPath;
+    else if (context.options && context.options.output && "publicPath" in context.options.output) {
+        publicPath = context.options.output.publicPath;
     }
-    if (context._compilation && context._compilation.outputOptions && "publicPath" in context._compilation.outputOptions) {
-        return context._compilation.outputOptions.publicPath;
+    else if (context._compilation && context._compilation.outputOptions && "publicPath" in context._compilation.outputOptions) {
+        publicPath = context._compilation.outputOptions.publicPath;
     }
-    return "";
+    return publicPath === "auto" ? "" : publicPath;
 }
 /* eslint-enable complexity */
 // For CommonJS interoperability
