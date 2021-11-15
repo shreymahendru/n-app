@@ -219,11 +219,8 @@ const moduleRules: Array<any> = [
             {
                 loader: "html-loader",
                 options: {
-                    esModule: false,
+                    esModule: false
                 }
-                // options: {
-                //     attrs: ["img:src", "use:xlink:href"]
-                // }
             }
         ]
     },
@@ -234,11 +231,8 @@ const moduleRules: Array<any> = [
             {
                 loader: "html-loader",
                 options: {
-                    esModule: false,
-                },
-                // options: {
-                //     attrs: ["img:src", "use:xlink:href"]
-                // }
+                    esModule: false
+                }
             }
         ]
     }

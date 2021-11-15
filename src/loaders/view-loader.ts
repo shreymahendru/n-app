@@ -114,8 +114,6 @@ function evalDependencyGraph({ loaderContext, src, filename, publicPath = "" }: 
 
     async function evalModule(src: any, filename: any)
     {
-        const rndPlaceholder = "__EXTRACT_LOADER_PLACEHOLDER__" + rndNumber() + rndNumber();
-        const rndPlaceholderPattern = new RegExp(rndPlaceholder, "g");
         const script = new vm.Script(src, {
             filename,
             displayErrors: true,
@@ -162,9 +160,12 @@ function evalDependencyGraph({ loaderContext, src, filename, publicPath = "" }: 
                     return exports;
                 }
 
+                const rndPlaceholder = "__EXTRACT_LOADER_PLACEHOLDER__" + rndNumber() + rndNumber();
+                
                 newDependencies.push({
                     absolutePath,
                     absoluteRequest: loaders + absolutePath + query,
+                    rndPlaceholder
                 });
 
                 return rndPlaceholder;
@@ -182,10 +183,12 @@ function evalDependencyGraph({ loaderContext, src, filename, publicPath = "" }: 
             })
         );
         const contentWithPlaceholders = extractExports(sandbox.module.exports);
-        const extractedContent = contentWithPlaceholders.replace(
-            rndPlaceholderPattern,
-            () => extractedDependencyContent.shift()
-        );
+        const extractedContent = extractedDependencyContent.reduce((content: string, dependencyContent: string, idx) =>
+        {
+            const pattern = new RegExp(newDependencies[idx].rndPlaceholder, "g");
+
+            return content.replace(pattern, dependencyContent);
+        }, contentWithPlaceholders);
 
         moduleCache.set(filename, extractedContent);
 
@@ -220,22 +223,20 @@ function rndNumber()
  */
 function getPublicPath(options: any, context: any)
 {
+    let publicPath = "";
+
     if ("publicPath" in options)
     {
-        return typeof options.publicPath === "function" ? options.publicPath(context) : options.publicPath;
-    }
-
-    if (context.options && context.options.output && "publicPath" in context.options.output)
+        publicPath = typeof options.publicPath === "function" ? options.publicPath(context) : options.publicPath;
+    } else if (context.options && context.options.output && "publicPath" in context.options.output)
     {
-        return context.options.output.publicPath;
-    }
-
-    if (context._compilation && context._compilation.outputOptions && "publicPath" in context._compilation.outputOptions)
+        publicPath = context.options.output.publicPath;
+    } else if (context._compilation && context._compilation.outputOptions && "publicPath" in context._compilation.outputOptions)
     {
-        return context._compilation.outputOptions.publicPath;
+        publicPath = context._compilation.outputOptions.publicPath;
     }
 
-    return "";
+    return publicPath === "auto" ? "" : publicPath;
 }
 /* eslint-enable complexity */
 
