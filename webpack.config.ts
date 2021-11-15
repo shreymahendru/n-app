@@ -1,10 +1,12 @@
+import "@nivinjoseph/n-ext";
 const path = require("path");
 const autoprefixer = require("autoprefixer");
-const htmlWebpackPlugin = require("html-webpack-plugin");
+const HtmlWebpackPlugin = require("html-webpack-plugin");
+const HtmlWebpackTagsPlugin = require("html-webpack-tags-plugin");
 const { CleanWebpackPlugin } = require("clean-webpack-plugin");
 const TerserPlugin = require("terser-webpack-plugin");
 const MiniCssExtractPlugin = require("mini-css-extract-plugin");
-const OptimizeCSSAssetsPlugin = require("optimize-css-assets-webpack-plugin");
+const CssMinimizerPlugin = require("css-minimizer-webpack-plugin");
 const CompressionPlugin = require("compression-webpack-plugin");
 import { ConfigurationManager } from "@nivinjoseph/n-config";
 const webpack = require("webpack");
@@ -83,7 +85,10 @@ const moduleRules: Array<any> = [
                 }
             },
             {
-                loader: "css-loader" // translates CSS into CommonJS
+                loader: "css-loader", // translates CSS into CommonJS
+                options: {
+                    esModule: false
+                }
             }
         ]
     },
@@ -250,11 +255,17 @@ const plugins = [
         }
     }),
     new CleanWebpackPlugin(),
-    new htmlWebpackPlugin({
+    new HtmlWebpackPlugin({
         template: "test-app/controllers/index-view.html",
         filename: "index-view.html",
         favicon: "test-app/client/images/favicon.png",
         hash: true,
+        minify: false
+    }),
+    new HtmlWebpackTagsPlugin({
+        append: false,
+        usePublicPath: false,
+        tags: [ ]
     }),
     new MiniCssExtractPlugin({}),
     new webpack.DefinePlugin({
@@ -334,6 +345,7 @@ module.exports = {
         //         },
         //     }
         // },
+        runtimeChunk: "single",
         splitChunks: {
             chunks: "all"
         },
@@ -361,7 +373,7 @@ module.exports = {
                 },
                 extractComments: false
             }),
-            new OptimizeCSSAssetsPlugin({})
+            new CssMinimizerPlugin()
         ]
     },
     module: {
