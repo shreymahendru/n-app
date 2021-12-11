@@ -23,6 +23,7 @@ import { resolve, Resolution, Resolver } from "./core/resolve";
 import { NavRoute } from "./core/nav-route";
 import { FileInfo } from "./components/n-file-select/n-file-select-view-model";
 import { persist } from "./core/persist";
+import { debounce } from "./core/debounce";
 
 
 export
@@ -40,6 +41,7 @@ export
     persist,
     ComponentViewModel,
     PageViewModel,
+    debounce,
     Utils,
     StorageService,
     EventAggregator, EventSubscription,

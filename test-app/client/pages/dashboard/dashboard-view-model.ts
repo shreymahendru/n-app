@@ -1,10 +1,11 @@
-import { route, template, DialogService, EventAggregator, NavigationService, StorageService, title, components } from "./../../../../src/index";
+import { route, template, DialogService, EventAggregator, NavigationService, StorageService, title, components, debounce } from "./../../../../src/index";
 import * as Routes from "./../routes";
 import { BasePageViewModel } from "./../base-page-view-model";
 import { inject } from "@nivinjoseph/n-ject";
 import "./dashboard-view.scss";
 import { ScopedService } from "../../services/scoped-service";
 import { BindingTestViewModel } from "../../components/binding-test/binding-test-view-model";
+// import { Delay } from "@nivinjoseph/n-util";
 
 
 @components(BindingTestViewModel)
@@ -28,6 +29,7 @@ export class DashboardViewModel extends BasePageViewModel
     private readonly _message = "Dashboard view";
     private _score = 10;
     private _fooParentValue: string;
+    // private _isActive = false;
     
     
     public constructor(dialogService: DialogService, evenAggregator: EventAggregator,
@@ -57,9 +59,16 @@ export class DashboardViewModel extends BasePageViewModel
     public get fooParentValue(): string { return this._fooParentValue; }
     public set fooParentValue(value: string) { this._fooParentValue = value; }
     
-    
+    @debounce(1000)
     public increment(): void
     {
+        // console.log(this);
+        // console.log("isActive", this._isActive);
+        
+        // this._isActive = true;
+        
+        // await Delay.milliseconds(100);
+        
         this._score++;
         
         this._dialogService.showWarningMessage("Score incremented");
@@ -70,5 +79,8 @@ export class DashboardViewModel extends BasePageViewModel
         // this._dialogService.showErrorMessage("haha");
         
         // this._navigationService.navigate(Routes.updateTodo, { id: 5 });
+        
+        // this._isActive = false;
     }
 }
+
