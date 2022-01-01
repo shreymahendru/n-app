@@ -65,6 +65,22 @@ export class DashboardViewModel extends BasePageViewModel
         // console.log(this);
         // console.log("isActive", this._isActive);
         
+        // if (this._isActive === true)
+        //     return;
+        
+        // try
+        // {
+        //     this._isActive = true;
+            
+            
+            
+        //     // do all the logic
+        // }
+        // finally
+        // {
+        //     this._isActive = false;
+        // }
+        
         // this._isActive = true;
         
         // await Delay.milliseconds(100);

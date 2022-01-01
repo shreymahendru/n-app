@@ -18,6 +18,34 @@ export class DefaultNavigationService implements NavigationService
         given(vueRouter, "vueRouter").ensureHasValue();
         
         this._vueRouter = vueRouter;
+        
+        
+        // the code below is a hack to deal with following error
+        // Error: Navigation cancelled from "/runtime/dashboard" to "/runtime/appType/apd_cafdb74cf103485db2a6a2bcfd65ee8d" with a new navigation.
+        
+        // Solve an error
+        const originalPush = this._vueRouter.push;
+        const originalReplace = this._vueRouter.replace;
+        // push
+        this._vueRouter.push = function push(location: any, onResolve: any, onReject: any)
+        {
+            if (onResolve || onReject) return originalPush.call(this, location, onResolve, onReject);
+            return originalPush.call(this, location).catch((err: any) =>
+            {
+                console.log(err);
+                vueRouter.push(location);
+            });
+        };
+        // replace
+        this._vueRouter.replace = function push(location: any, onResolve: any, onReject: any)
+        {
+            if (onResolve || onReject) return originalReplace.call(this, location, onResolve, onReject);
+            return originalReplace.call(this, location).catch((err: any) =>
+            {
+                console.log(err);
+                vueRouter.replace(location);
+            });
+        };
     }
 
     
