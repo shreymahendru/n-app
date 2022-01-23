@@ -1,3 +1,4 @@
+import "@nivinjoseph/n-ext";
 import { Vue, ClientApp } from "./core/client-app";
 import { element } from "./core/element";
 import { template } from "./core/template";
