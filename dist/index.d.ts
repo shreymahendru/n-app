@@ -24,5 +24,4 @@ import { resolve, Resolution, Resolver } from "./core/resolve";
 import { NavRoute } from "./core/nav-route";
 import { FileInfo } from "./components/n-file-select/n-file-select-view-model";
 import { persist } from "./core/persist";
-import { debounce } from "./core/debounce";
-export { Vue, ClientApp, element, route, template, title, meta, MetaDetail as metaDetail, bind, events, components, pages, persist, ComponentViewModel, PageViewModel, debounce, Utils, StorageService, EventAggregator, EventSubscription, NavigationService, DialogService, DisplayService, DisplayType, ComponentService, ComponentOptions, resolve, Resolver, NavRoute, Resolution, FileInfo };
+export { Vue, ClientApp, element, route, template, title, meta, MetaDetail as metaDetail, bind, events, components, pages, persist, ComponentViewModel, PageViewModel, Utils, StorageService, EventAggregator, EventSubscription, NavigationService, DialogService, DisplayService, DisplayType, ComponentService, ComponentOptions, resolve, Resolver, NavRoute, Resolution, FileInfo };

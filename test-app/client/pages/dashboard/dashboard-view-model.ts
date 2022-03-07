@@ -1,10 +1,11 @@
-import { route, template, DialogService, EventAggregator, NavigationService, StorageService, title, components, debounce } from "./../../../../src/index";
+import { route, template, DialogService, EventAggregator, NavigationService, StorageService, title, components } from "./../../../../src/index";
 import * as Routes from "./../routes";
 import { BasePageViewModel } from "./../base-page-view-model";
 import { inject } from "@nivinjoseph/n-ject";
 import "./dashboard-view.scss";
 import { ScopedService } from "../../services/scoped-service";
 import { BindingTestViewModel } from "../../components/binding-test/binding-test-view-model";
+import { Duration, synchronize } from "@nivinjoseph/n-util";
 // import { Delay } from "@nivinjoseph/n-util";
 
 
@@ -59,7 +60,7 @@ export class DashboardViewModel extends BasePageViewModel
     public get fooParentValue(): string { return this._fooParentValue; }
     public set fooParentValue(value: string) { this._fooParentValue = value; }
     
-    @debounce(1000)
+    @synchronize(Duration.fromMilliSeconds(1000))
     public increment(): void
     {
         // console.log(this);

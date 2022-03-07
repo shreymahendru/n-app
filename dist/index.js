@@ -1,6 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.resolve = exports.DisplayType = exports.Utils = exports.debounce = exports.PageViewModel = exports.ComponentViewModel = exports.persist = exports.pages = exports.components = exports.events = exports.bind = exports.meta = exports.title = exports.template = exports.route = exports.element = exports.ClientApp = exports.Vue = void 0;
+exports.resolve = exports.DisplayType = exports.Utils = exports.PageViewModel = exports.ComponentViewModel = exports.persist = exports.pages = exports.components = exports.events = exports.bind = exports.meta = exports.title = exports.template = exports.route = exports.element = exports.ClientApp = exports.Vue = void 0;
 require("@nivinjoseph/n-ext");
 const client_app_1 = require("./core/client-app");
 Object.defineProperty(exports, "Vue", { enumerable: true, get: function () { return client_app_1.Vue; } });
@@ -35,6 +35,4 @@ const resolve_1 = require("./core/resolve");
 Object.defineProperty(exports, "resolve", { enumerable: true, get: function () { return resolve_1.resolve; } });
 const persist_1 = require("./core/persist");
 Object.defineProperty(exports, "persist", { enumerable: true, get: function () { return persist_1.persist; } });
-const debounce_1 = require("./core/debounce");
-Object.defineProperty(exports, "debounce", { enumerable: true, get: function () { return debounce_1.debounce; } });
 //# sourceMappingURL=index.js.map
