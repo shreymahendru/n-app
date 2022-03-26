@@ -3,6 +3,7 @@ import "@nivinjoseph/n-ext";
 export declare class DefaultNavigationService implements NavigationService {
     private readonly _vueRouter;
     get currentRoutePath(): string;
+    get currentRouteFullPath(): string;
     get currentRouteHash(): string;
     constructor(vueRouter: any);
     navigate(route: string, params?: object | null, replaceHistory?: boolean): void;

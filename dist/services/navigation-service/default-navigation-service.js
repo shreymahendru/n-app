@@ -35,6 +35,7 @@ class DefaultNavigationService {
         // };
     }
     get currentRoutePath() { return this._vueRouter.currentRoute.path; }
+    get currentRouteFullPath() { return this._vueRouter.currentRoute.fullPath; }
     get currentRouteHash() { return this.getHash(); }
     navigate(route, params, replaceHistory) {
         let url = utils_1.Utils.generateUrl(route, params);
