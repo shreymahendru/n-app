@@ -1,7 +1,8 @@
 export interface NavigationService 
 {
-    currentRoutePath: string;
-    currentRouteHash: string;
+    readonly currentRoutePath: string;
+    readonly currentRouteFullPath: string;
+    readonly currentRouteHash: string;
     
     navigate(route: string, params?: object | null, replaceHistory?: boolean): void;
     navigateBack(): void;

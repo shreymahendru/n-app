@@ -10,6 +10,7 @@ export class DefaultNavigationService implements NavigationService
     
     
     public get currentRoutePath(): string { return this._vueRouter.currentRoute.path; }
+    public get currentRouteFullPath(): string { return this._vueRouter.currentRoute.fullPath; }
     public get currentRouteHash(): string { return this.getHash(); }
 
 
