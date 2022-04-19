@@ -53,12 +53,14 @@ class ClientApp {
      * @description Requires dev dependencies
      * Check the dev dependencies in package.json
      */
-    constructor(appElementId, rootComponentElement) {
+    constructor(appElementId, rootComponentElement, options) {
         this._isBootstrapped = false;
         (0, n_defensive_1.given)(appElementId, "appElementId").ensureHasValue().ensureIsString().ensure(t => t.startsWith("#"));
         this._appElementId = appElementId;
         (0, n_defensive_1.given)(rootComponentElement, "rootComponentElement").ensureHasValue().ensureIsString();
         this._rootComponentElement = rootComponentElement;
+        (0, n_defensive_1.given)(options, "options").ensureIsObject();
+        this._options = options !== null && options !== void 0 ? options : {};
         this._container = new n_ject_1.Container();
         this._componentManager = new component_manager_1.ComponentManager(Vue, this._container);
         this._componentManager.registerComponents(n_file_select_view_model_1.NFileSelectViewModel, n_expanding_container_view_model_1.NExpandingContainerViewModel, n_scroll_container_view_model_1.NScrollContainerViewModel);
@@ -218,16 +220,11 @@ class ClientApp {
     }
     configureRoot() {
         const container = this._container;
-        const componentOptions = {
-            el: this._appElementId,
-            render: (createElement) => createElement(this._rootComponentElement),
-            router: this._pageManager.vueRouterInstance,
-            provide: function () {
+        const componentOptions = Object.assign({ el: this._appElementId, render: (createElement) => createElement(this._rootComponentElement), router: this._pageManager.vueRouterInstance, provide: function () {
                 return {
                     rootScopeContainer: container
                 };
-            }
-        };
+            } }, this._options);
         if (makeHot) {
             makeHot(componentOptions);
             console.log(`🔥 Hot Reload enabled`);

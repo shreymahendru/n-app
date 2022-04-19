@@ -5,6 +5,7 @@ import { Container, ComponentInstaller } from "@nivinjoseph/n-ject";
 export declare class ClientApp {
     private readonly _appElementId;
     private readonly _rootComponentElement;
+    private readonly _options;
     private readonly _container;
     private readonly _componentManager;
     private readonly _pageManager;
@@ -21,7 +22,7 @@ export declare class ClientApp {
      * @description Requires dev dependencies
      * Check the dev dependencies in package.json
      */
-    constructor(appElementId: string, rootComponentElement: string);
+    constructor(appElementId: string, rootComponentElement: string, options?: object);
     useInstaller(installer: ComponentInstaller): this;
     useAccentColor(color: string): this;
     registerComponents(...componentViewModelClasses: Function[]): this;
