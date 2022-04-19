@@ -60,6 +60,7 @@ export class ClientApp
 {
     private readonly _appElementId: string;
     private readonly _rootComponentElement: string;
+    private readonly _options: object;
     private readonly _container: Container;
     private readonly _componentManager: ComponentManager;
     private readonly _pageManager: PageManager;
@@ -82,13 +83,16 @@ export class ClientApp
      * Check the dev dependencies in package.json
      */
     
-    public constructor(appElementId: string, rootComponentElement: string)
+    public constructor(appElementId: string, rootComponentElement: string, options?: object)
     {
         given(appElementId, "appElementId").ensureHasValue().ensureIsString().ensure(t => t.startsWith("#"));
         this._appElementId = appElementId;
         
         given(rootComponentElement, "rootComponentElement").ensureHasValue().ensureIsString();
         this._rootComponentElement = rootComponentElement;
+        
+        given(options as object, "options").ensureIsObject();
+        this._options = options ?? {};
         
         this._container = new Container();
         this._componentManager = new ComponentManager(Vue, this._container);
@@ -325,7 +329,8 @@ export class ClientApp
                 return {
                     rootScopeContainer: container
                 };
-            }
+            },
+            ...this._options
         };
         
         
