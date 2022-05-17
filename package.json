@@ -51,7 +51,7 @@
     "devDependencies": {
         "@babel/core": "^7.16.0",
         "@babel/preset-env": "^7.16.0",
-        "@nivinjoseph/n-web": "^3.2.72",
+        "@nivinjoseph/n-web": "^4.0.1",
         "@types/jquery": "^3.5.8",
         "@types/mocha": "^8.2.2",
         "@types/node": "^14.14.43",
