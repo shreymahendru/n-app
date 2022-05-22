@@ -1,6 +1,6 @@
 {
     "name": "@nivinjoseph/n-app",
-    "version": "3.0.83",
+    "version": "3.0.84",
     "description": "Vue.js based application framework",
     "main": "./dist/index.js",
     "types": "./dist/index.d.ts",
@@ -13,7 +13,7 @@
         "x-ts-build": "npm run ts-compile-server && npm run ts-compile-client && npm run ts-lint",
         "ts-build": "npm run ts-compile && npm run ts-lint",
         "ts-build-dist": "npm run ts-build && tsc -p ./dist",
-        "ts-build-watch": "tsc -p tsconfig.server.json -w",    
+        "ts-build-watch": "tsc -p tsconfig.server.json -w",
         "clean-src": "find ./src -name '*.js' -delete -o -name '*.map' -delete",
         "clean-test": "find ./test -name '*.js' -delete -o -name '*.map' -delete",
         "clean-test-app": "find ./test-app -name '*.js' -delete -o -name '*.map' -delete",
