@@ -13,23 +13,23 @@ let NExpandingContainerViewModel = class NExpandingContainerViewModel extends co
     get myRenderKey() { return this.getBound("renderKey"); }
     onMount(element) {
         super.onMount(element);
-        this.recalculate(element);
+        this._recalculate(element);
         this.watch("myRenderKey", (v, ov) => {
             if (v == null || v === ov)
                 return;
-            this.recalculate(element);
+            this._recalculate(element);
         });
     }
     onDestroy() {
         this.unWatch("myRenderKey");
         super.onDestroy();
     }
-    recalculate(element) {
+    _recalculate(element) {
         if (this._constrainHorizontal)
-            this.doHorizontal(element);
-        this.doVertical(element);
+            this._doHorizontal(element);
+        this._doVertical(element);
     }
-    doHorizontal(element) {
+    _doHorizontal(element) {
         let constrainedWidth = 0;
         $(element).siblings().each(function () {
             var _a;
@@ -38,7 +38,7 @@ let NExpandingContainerViewModel = class NExpandingContainerViewModel extends co
         });
         $(element).width(`calc(100% - ${constrainedWidth}px)`);
     }
-    doVertical(element) {
+    _doVertical(element) {
         let constrainedHeight = 0;
         $(element).siblings().each(function () {
             var _a;
@@ -48,7 +48,7 @@ let NExpandingContainerViewModel = class NExpandingContainerViewModel extends co
         $(element).height(`calc(100% - ${constrainedHeight}px)`);
     }
 };
-NExpandingContainerViewModel = (0, tslib_1.__decorate)([
+NExpandingContainerViewModel = tslib_1.__decorate([
     (0, template_1.template)(require("./n-expanding-container-view.html")),
     (0, element_1.element)("n-expanding-container"),
     (0, bind_1.bind)("constrainX", "renderKey")

@@ -16,11 +16,11 @@ let NScrollContainerViewModel = class NScrollContainerViewModel extends componen
         super(...arguments);
         this._sb = null;
     }
+    get _hugBottom() { return !!n_util_1.TypeHelper.parseBoolean(this.getBound("hugBottom")); }
+    get _hugRight() { return !!n_util_1.TypeHelper.parseBoolean(this.getBound("hugRight")); }
     get isHorizontalOnly() { return !!n_util_1.TypeHelper.parseBoolean(this.getBound("onlyX")); }
     get isVerticalOnly() { return !!n_util_1.TypeHelper.parseBoolean(this.getBound("onlyY")); }
     get myRenderKey() { return this.getBound("renderKey"); }
-    get _hugBottom() { return !!n_util_1.TypeHelper.parseBoolean(this.getBound("hugBottom")); }
-    get _hugRight() { return !!n_util_1.TypeHelper.parseBoolean(this.getBound("hugRight")); }
     onCreate() {
         (0, n_defensive_1.given)(this, "this").ensure(t => !(t.isHorizontalOnly === true && t.isVerticalOnly === true), "only-x and only-y cannot both be true");
         super.onCreate();
@@ -28,6 +28,7 @@ let NScrollContainerViewModel = class NScrollContainerViewModel extends componen
     onMount(element) {
         super.onMount(element);
         const SimpleBarCtor = SimpleBar.default;
+        // eslint-disable-next-line @typescript-eslint/no-unsafe-call
         this._sb = new SimpleBarCtor(element.querySelector(".simple-scroll-viewer-scroll-container"), { autoHide: true });
         this._calculateScroll();
         this.watch("myRenderKey", (v, ov) => {
@@ -62,7 +63,7 @@ let NScrollContainerViewModel = class NScrollContainerViewModel extends componen
         }
     }
 };
-NScrollContainerViewModel = (0, tslib_1.__decorate)([
+NScrollContainerViewModel = tslib_1.__decorate([
     (0, template_1.template)(require("./n-scroll-container-view.html")),
     (0, element_1.element)("n-scroll-container"),
     (0, bind_1.bind)("onlyX", "onlyY", "renderKey", "hugBottom", "hugRight")
