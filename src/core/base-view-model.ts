@@ -1,17 +1,17 @@
 import { given } from "@nivinjoseph/n-defensive";
-import { ApplicationException, InvalidOperationException } from "@nivinjoseph/n-exception";
+import { ApplicationException } from "@nivinjoseph/n-exception";
 
 
 export class BaseViewModel
 {
-    private readonly _watches: { [index: string]: Function } = {};
-    private _executeOnCreate: () => void;
-    private _executeOnDestroy: () => void;
-    private _domElement: HTMLElement;
+    private readonly _watches: Record<string, Function | undefined> = {};
+    private _executeOnCreate: (() => void) | null = null;
+    private _executeOnDestroy: (() => void) | null = null;
+    private _domElement!: HTMLElement;
 
 
     protected get domElement(): HTMLElement { return this._domElement; }
-    protected get ctx(): any { return (<any>this)["_ctx"]; }
+    protected get ctx(): Record<string, any> { return (<any>this)["_ctx"] as Record<string, any>; }
 
 
     /** Override */
@@ -30,16 +30,18 @@ export class BaseViewModel
     
     /** Override */
     protected onDismount(): void
-    { }
+    { 
+        // deliberate empty
+    }
 
     /** Override */
     protected onDestroy(): void
     {
-        for (let key in this._watches)
+        for (const key in this._watches)
         {
             if (this._watches[key])
             {
-                this._watches[key]();
+                this._watches[key]!(); // FIXME: why are we 
                 this._watches[key] = undefined;
             }
         }
@@ -62,8 +64,8 @@ export class BaseViewModel
 
     protected watch<T>(propertyName: string, callback: (value: T, oldValue: T) => void): void
     {
-        if (!this.ctx)
-            throw new InvalidOperationException("calling watch() in the constructor");
+        // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
+        given(this, "this").ensure(t => t.ctx != null, "cannot invoke in the constructor");
 
         given(propertyName, "propertyName").ensureHasValue().ensure(t => !t.isEmptyOrWhiteSpace());
 
@@ -72,6 +74,7 @@ export class BaseViewModel
         if (this._watches[propertyName])
             throw new ApplicationException(`Watch already defined for property '${propertyName}'.`);
 
+        // eslint-disable-next-line @typescript-eslint/no-unsafe-call
         this._watches[propertyName] = this.ctx.$watch(propertyName,
             function (newVal: any, oldVal: any)
             {
@@ -87,7 +90,7 @@ export class BaseViewModel
 
         if (this._watches[propertyName])
         {
-            this._watches[propertyName]();
+            this._watches[propertyName]!();
             this._watches[propertyName] = undefined;
         }
     }

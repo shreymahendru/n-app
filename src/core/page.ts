@@ -6,29 +6,32 @@ import { PageRegistration } from "./page-registration";
 export class Page
 {
     private readonly _segment: string;
-    private _parent: Page;
+    private _parent: Page | null = null;
     private readonly _children = new Array<Page>();
-    private _registration: PageRegistration;
+    private _registration: PageRegistration | null = null;
 
 
     public get segment(): string { return this._segment; }
-    public get parent(): Page { return this._parent; }
+    public get parent(): Page | null { return this._parent; }
     public get children(): ReadonlyArray<Page> { return this._children.map(t => t); }
-    public get registration(): PageRegistration { return this._registration; }
+    public get registration(): PageRegistration | null { return this._registration; }
 
 
-    public constructor(segment: string, parent: Page)
+    public constructor(segment: string, parent: Page | null)
     {
         given(segment, "segment").ensureHasValue().ensure(t => !t.isEmptyOrWhiteSpace());
         this._segment = segment;
+        
+        given(parent as Page, "parent").ensureIsType(Page);
         if (parent)
             this.changeParent(parent);
     }
 
 
-    public attachRegistration(registration: PageRegistration)
+    public attachRegistration(registration: PageRegistration): void
     {
-        given(registration, "registration").ensureHasValue();
+        given(registration, "registration").ensureHasValue().ensureIsType(PageRegistration);
+        given(this, "this").ensure(t => t._registration == null, "already has registration");
         this._registration = registration;
     }
 
@@ -40,54 +43,60 @@ export class Page
 
     public removeChild(childPage: Page): void
     {
-        given(childPage, "childPage").ensureHasValue()
-            .ensure(t => this._children.some(u => u === t), "child not present");
+        given(childPage, "childPage").ensureHasValue().ensureIsType(Page)
+            .ensure(t => this._children.contains(t), "child not present");
 
         this._children.remove(childPage);
     }
 
-    public changeParent(parent: Page): void
+    public changeParent(parent: Page | null): void
     {
-        if (this._parent) this._parent.removeChild(this);
+        if (this._parent)
+            this._parent.removeChild(this);
+        
         this._parent = parent;
-        if (this._parent) this._parent.addChild(this);
+        
+        if (this._parent)
+            this._parent.addChild(this);
     }
     
-    public createVueRouterRoute(): any
+    public createVueRouterRoute(): object
     {
         // let factory = new PageComponentFactory(container);
         // let factory = new PageComponentFactory();
         
-        let vueRouterRoute: any = {
-            name: this._registration.name.replace("ViewModel", ""),
-            path: this.createRoute(),
+        given(this, "this").ensure(t => t._registration != null, "no registration present");
+        
+        const vueRouterRoute: any = {
+            name: this._registration!.name.replace("ViewModel", ""),
+            path: this._createRoute(),
             // component: factory.create(this._registration)
-            component: (<any>this._registration.viewModel).___componentOptions
+            component: (<any>this._registration!.viewModel).___componentOptions
         };
         
-        if (this._registration.redirect)
+        if (this._registration!.redirect)
         {
-            vueRouterRoute.redirect = (to: any) =>
+            vueRouterRoute.redirect = (to: any): string =>
             {
                 // we can do this because redirect has to be a nested route
-                return to.path + this._registration.redirect.replace(this._registration.route.route, "");
+                return to.path + this._registration!.redirect!.replace(this._registration!.route.route, "");
             };
         }
         
         if (this._children.length > 0)
             vueRouterRoute.children = this._children.map(t => t.createVueRouterRoute());
         
-        return vueRouterRoute;
+        return vueRouterRoute as object;
     }
     
     
-    private createRoute(): string
+    private _createRoute(): string
     {
-        let route = this._registration.route.vueRoute;
+        let route = this._registration!.route.vueRoute;
         if (!this._parent)
             return route;
         
-        route = route.replace(this._parent.registration.route.vueRoute, "");
+        route = route.replace(this._parent.registration!.route.vueRoute, "");
         if (route.startsWith("/"))
             route = route.substr(1);
         

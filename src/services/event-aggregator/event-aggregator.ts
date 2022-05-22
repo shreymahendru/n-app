@@ -13,14 +13,14 @@ export interface EventAggregator
      * @param handler - The event handler given the event arguments.
      * @returns The Event Subscription.
      */
-    subscribe(event: string, handler: (...eventArgs: any[]) => void): EventSubscription;
+    subscribe(event: string, handler: (...eventArgs: Array<any>) => void): EventSubscription;
     /**
      * @description Publishes an event.
      * 
      * @param event - The specified event name.
      * @param eventArgs - Arguments sent to the event subscription.
      */
-    publish(event: string, ...eventArgs: any[]): void;
+    publish(event: string, ...eventArgs: Array<any>): void;
 } 
 
 // public

@@ -20,6 +20,15 @@
         }
     },
     "editor.trimAutoWhitespace": false,
+    "typescript.updateImportsOnFileMove.enabled": "prompt",
+    "editor.wordWrapColumn": 120,
+    "editor.rulers": [
+        120
+    ],
+    "[scss]": {
+        "editor.defaultFormatter": "vscode.css-language-features"
+    },
+    "scss.format.braceStyle": "expand",
     "cSpell.userWords": [
         "Repo",
         "Unarchived",
@@ -29,10 +38,5 @@
         "strval",
         "unarchive",
         "unarchiving"
-    ],
-    "typescript.updateImportsOnFileMove.enabled": "prompt",
-    "editor.wordWrapColumn": 120,
-    "editor.rulers": [
-        120
-    ],
+    ]
 }

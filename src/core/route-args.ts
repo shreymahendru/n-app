@@ -8,15 +8,15 @@ export class RouteArgs
 {
     private readonly _pathArgs: object;
     private readonly _queryArgs: object;
-    private readonly _routeArgs: Array<any>;
+    private readonly _routeArgs: Array<unknown>;
     
     
     public get pathArgs(): object { return this._pathArgs; }
     public get queryArgs(): object { return this._queryArgs; }
-    public get routeArgs(): Array<any> { return this._routeArgs; }
+    public get routeArgs(): Array<unknown> { return this._routeArgs; }
     
     
-    public constructor(pathArgs: object, queryArgs: object, routeArgs: Array<any>)
+    public constructor(pathArgs: object, queryArgs: object, routeArgs: Array<unknown>)
     {
         given(pathArgs, "pathArgs").ensureHasValue().ensureIsObject();
         given(queryArgs, "queryArgs").ensureHasValue().ensureIsObject();
@@ -27,44 +27,34 @@ export class RouteArgs
         this._routeArgs = routeArgs;
     }
     
-    
-    public equals(comparison: RouteArgs): boolean
-    {
-        let current = this.createParamsArray(this);
-        let compare = this.createParamsArray(comparison);
-        
-        return current.equals(compare);
-    }
-    
-    
-    public static create(route: RouteInfo, ctx: any): RouteArgs
+    public static create(route: RouteInfo, ctx: Record<string, any>): RouteArgs
     {
         // console.log("ctx", ctx);
-        
-        let queryArgs = Object.assign({}, ctx.query);
-        let pathArgs = Object.assign({}, ctx.params);
-        let model: { [index: string]: any } = {};
 
-        for (let key in queryArgs)
+        const queryArgs = Object.assign({}, ctx.query);
+        const pathArgs = Object.assign({}, ctx.params);
+        const model: Record<string, any> = {};
+
+        for (const key in queryArgs)
         {
-            let routeParam = route.findRouteParam(key);
+            const routeParam = route.findRouteParam(key);
             if (routeParam)
             {
-                let parsed = routeParam.parseParam(queryArgs[key]);
+                const parsed = routeParam.parseParam(queryArgs[key]);
                 model[routeParam.paramKey] = parsed;
                 queryArgs[key] = parsed;
             }
             else
             {
-                let value: string = queryArgs[key];
-                if (value === undefined || value == null || value.isEmptyOrWhiteSpace() || value.trim().toLowerCase() === "null")
+                const value: string | null = queryArgs[key];
+                if (value == null || typeof value !== "string" || value.isEmptyOrWhiteSpace() || value.trim().toLowerCase() === "null")
                     queryArgs[key] = null;
             }
         }
 
-        for (let key in pathArgs)
+        for (const key in pathArgs)
         {
-            let routeParam = route.findRouteParam(key);
+            const routeParam = route.findRouteParam(key);
             // if (!routeParam)
             //     throw new HttpException(404);
 
@@ -73,13 +63,13 @@ export class RouteArgs
             if (!routeParam)
                 continue;
 
-            let parsed = routeParam.parseParam(pathArgs[key]);
+            const parsed = routeParam.parseParam(pathArgs[key]);
             model[routeParam.paramKey] = parsed;
             pathArgs[key] = parsed;
         }
 
-        let routeArgs = [];
-        for (let routeParam of route.params)
+        const routeArgs = [];
+        for (const routeParam of route.params)
         {
             let value = model[routeParam.paramKey];
             if (value === undefined || value === null)
@@ -91,16 +81,26 @@ export class RouteArgs
             }
             routeArgs.push(value);
         }
-        
+
         return new RouteArgs(pathArgs, queryArgs, routeArgs);
     }
     
-    
-    private createParamsArray(routeArgs: RouteArgs): Array<[string, any]>
+    public equals(comparison: RouteArgs): boolean
     {
-        let obj: Object = Object.assign({}, routeArgs._pathArgs, routeArgs._queryArgs);
-        let params = new Array<[string, any]>();
-        for (let key in obj)
+        given(comparison, "comparison").ensureHasValue().ensureIsType(RouteArgs);
+        
+        const current = this._createParamsArray(this);
+        const compare = this._createParamsArray(comparison);
+        
+        return current.equals(compare);
+    }
+    
+    
+    private _createParamsArray(routeArgs: RouteArgs): Array<[string, any]>
+    {
+        const obj: Object = Object.assign({}, routeArgs._pathArgs, routeArgs._queryArgs);
+        const params = new Array<[string, any]>();
+        for (const key in obj)
             params.push([key, obj.getValue(key)]);
         return params.orderBy(t => t[0]);
     }

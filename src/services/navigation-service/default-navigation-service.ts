@@ -2,22 +2,22 @@ import { NavigationService } from "./navigation-service";
 import { given } from "@nivinjoseph/n-defensive";
 import "@nivinjoseph/n-ext";
 import { Utils } from "../../core/utils";
+import VueRouter from "vue-router";
 
 
 export class DefaultNavigationService implements NavigationService
 {
-    private readonly _vueRouter: any;
+    private readonly _vueRouter: VueRouter;
     
     
     public get currentRoutePath(): string { return this._vueRouter.currentRoute.path; }
     public get currentRouteFullPath(): string { return this._vueRouter.currentRoute.fullPath; }
-    public get currentRouteHash(): string { return this.getHash(); }
+    public get currentRouteHash(): string | null { return this._getHash(); }
 
 
-    public constructor(vueRouter: any)
+    public constructor(vueRouter: VueRouter)
     {
-        given(vueRouter, "vueRouter").ensureHasValue();
-        
+        given(vueRouter, "vueRouter").ensureHasValue().ensureIsObject();
         this._vueRouter = vueRouter;
         
         
@@ -52,8 +52,11 @@ export class DefaultNavigationService implements NavigationService
     
     public navigate(route: string, params?: object | null, replaceHistory?: boolean): void
     {
-        let url = Utils.generateUrl(route, params);
-        replaceHistory ? this._vueRouter.replace(url) : this._vueRouter.push(url);
+        const url = Utils.generateUrl(route, params ?? undefined);
+        if (replaceHistory)
+            this._vueRouter.replace(url).catch(e => console.error(e));
+        else
+            this._vueRouter.push(url).catch(e => console.error(e));
     }
     
     public navigateBack(): void
@@ -69,15 +72,18 @@ export class DefaultNavigationService implements NavigationService
 
     public navigateSiteSameTab(url: string, replaceHistory?: boolean): void
     {
-        given(url, "url").ensureHasValue().ensure(t => !t.isEmptyOrWhiteSpace());
+        given(url, "url").ensureHasValue().ensureIsString();
         url = url.trim();
 
-        replaceHistory ? window.location.replace(url) : window.location.href = url;
+        if (replaceHistory)
+            window.location.replace(url);
+        else
+            window.location.href = url;
     }
 
     public navigateSiteNewTab(url: string): void
     {
-        given(url, "url").ensureHasValue().ensure(t => !t.isEmptyOrWhiteSpace());
+        given(url, "url").ensureHasValue().ensureIsString();
         url = url.trim();
         
         window.open(url);
@@ -85,20 +91,20 @@ export class DefaultNavigationService implements NavigationService
 
     public navigateSitePostSameTab(url: string, value: object): void
     {
-        given(url, "url").ensureHasValue().ensure(t => !t.isEmptyOrWhiteSpace());
+        given(url, "url").ensureHasValue().ensureIsString();
         url = url.trim();
 
-        let form = this.createForm(url, value);
+        const form = this._createForm(url, value);
         form.submit();
     }
 
     public navigateSitePostNewTab(url: string, value: object): void
     {
-        given(url, "url").ensureHasValue().ensure(t => !t.isEmptyOrWhiteSpace());
+        given(url, "url").ensureHasValue().ensureIsString();
         url = url.trim();
 
-        let form = this.createForm(url, value);
-        let view = "view" + "_" + Math.floor((Math.random() * 9999999) + 1);
+        const form = this._createForm(url, value);
+        const view = "view" + "_" + Math.floor((Math.random() * 9999999) + 1);
         form.setAttribute("target", view); // to open in a new Tab
         window.open("", view); // to open in new tab
         form.submit();
@@ -106,29 +112,30 @@ export class DefaultNavigationService implements NavigationService
 
     public getSiteQueryParam(key: string): string
     {
-        given(key, "key").ensureHasValue().ensureIsString().ensure(t => !t.isEmptyOrWhiteSpace());
+        given(key, "key").ensureHasValue().ensureIsString();
         
+        // eslint-disable-next-line no-useless-escape
         key = key.replace(/[\[]/, "\\[").replace(/[\]]/, "\\]");
-        let regex = new RegExp("[\\?&]" + key + "=([^&#]*)");
-        let results = regex.exec(location.search);
+        const regex = new RegExp("[\\?&]" + key + "=([^&#]*)");
+        const results = regex.exec(location.search);
         return results === null ? "" : decodeURIComponent(results[1].replace(/\+/g, " "));
     }
 
 
-    private createForm(url: string, value: any): HTMLFormElement
+    private _createForm(url: string, value?: Record<string, any>): HTMLFormElement
     {
-        let form = document.createElement("form");
+        const form = document.createElement("form");
         form.setAttribute("method", "post");
         form.setAttribute("action", url);
 
-        if (value !== undefined && value !== null)
+        if (value != null)
         {
-            for (let key in value)
+            for (const key in value)
             {
-                if (value.hasOwnProperty(key) && typeof value[key] !== "function")
+                if (Object.prototype.hasOwnProperty.call(value, key) && typeof value[key] !== "function")
                 {
-                    let val = value[key];
-                    let hiddenField = document.createElement("input");
+                    const val = value[key];
+                    const hiddenField = document.createElement("input");
                     hiddenField.setAttribute("type", "hidden");
                     hiddenField.setAttribute("name", key);
                     hiddenField.setAttribute("value", val);
@@ -141,9 +148,9 @@ export class DefaultNavigationService implements NavigationService
         return form;
     }
     
-    private getHash(): string
+    private _getHash(): string | null
     {
-        let hash: string = this._vueRouter.currentRoute.hash;
+        let hash = this._vueRouter.currentRoute.hash;
         if (!hash || hash.isEmptyOrWhiteSpace())
             return null;
         

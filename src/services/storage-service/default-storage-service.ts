@@ -4,65 +4,65 @@ import { given } from "@nivinjoseph/n-defensive";
 
 export class DefaultStorageService implements StorageService
 {
-    public persist(key: string, value: any): void
+    public persist(key: string, value: unknown): void
     {
-        given(key, "key").ensureHasValue().ensure(t => !t.isEmptyOrWhiteSpace());
+        given(key, "key").ensureHasValue().ensureIsString();
         key = key.trim();
         
-        if (value === undefined || value === null)
+        if (value == null)
         {
-            localStorage.setItem(key, null);
+            localStorage.setItem(key, null as any);
             return;
         }    
         
-        let storeValue = { item: value };
+        const storeValue = { item: value };
         localStorage.setItem(key, JSON.stringify(storeValue));
     }
 
-    public persistInSession(key: string, value: any): void
+    public persistInSession(key: string, value: unknown): void
     {
-        given(key, "key").ensureHasValue().ensure(t => !t.isEmptyOrWhiteSpace());
+        given(key, "key").ensureHasValue().ensureIsString();
         key = key.trim();
         
-        if (value === undefined || value === null)
+        if (value == null)
         {
-            sessionStorage.setItem(key, null);
+            sessionStorage.setItem(key, null as any);
             return;
         }
         
-        let storeValue = { item: value };
+        const storeValue = { item: value };
         sessionStorage.setItem(key, JSON.stringify(storeValue));
     }
 
-    public retrieve(key: string): any
+    public retrieve(key: string): unknown
     {
-        given(key, "key").ensureHasValue().ensure(t => !t.isEmptyOrWhiteSpace());
+        given(key, "key").ensureHasValue().ensureIsString();
         key = key.trim();
         
-        let value = localStorage.getItem(key);
-        if (value === undefined || value === null)
+        const value = localStorage.getItem(key);
+        if (value == null)
             return null;
         
-        let parsedValue = JSON.parse(value);
+        const parsedValue = JSON.parse(value);
         return parsedValue.item;
     }
 
-    public retrieveFromSession(key: string): any
+    public retrieveFromSession(key: string): unknown
     {
-        given(key, "key").ensureHasValue().ensure(t => !t.isEmptyOrWhiteSpace());
+        given(key, "key").ensureHasValue().ensureIsString();
         key = key.trim();
         
-        let value = sessionStorage.getItem(key);
-        if (value === undefined || value === null)
+        const value = sessionStorage.getItem(key);
+        if (value == null)
             return null;
         
-        let parsedValue = JSON.parse(value);
+        const parsedValue = JSON.parse(value);
         return parsedValue.item;
     }
 
     public remove(key: string): void
     {
-        given(key, "key").ensureHasValue().ensure(t => !t.isEmptyOrWhiteSpace());
+        given(key, "key").ensureHasValue().ensureIsString();
         key = key.trim();
         
         localStorage.removeItem(key);

@@ -13,31 +13,31 @@ import { pagesSymbol } from "./pages";
 export class PageRegistration extends ViewModelRegistration
 {
     private readonly _route: RouteInfo;
-    private readonly _redirect: string;
-    private readonly _title: string;
+    private readonly _redirect: string | null;
+    private readonly _title: string | null;
     private readonly _metadata: ReadonlyArray<MetaDetail>;
-    private readonly _resolvers: ReadonlyArray<any>;
-    private readonly _pages: ReadonlyArray<Function>;
+    private readonly _resolvers: ReadonlyArray<any> | null = null;
+    private readonly _pages: ReadonlyArray<Function> | null = null;
     
-    private _resolvedValues: ReadonlyArray<any>;
+    private _resolvedValues: ReadonlyArray<any> | null = null;
 
 
     public get route(): RouteInfo { return this._route; }
-    public get redirect(): string { return this._redirect; }
-    public get title(): string { return this._title; }
+    public get redirect(): string | null { return this._redirect; }
+    public get title(): string | null { return this._title; }
     public get metadata(): ReadonlyArray<MetaDetail> { return this._metadata; }
-    public get resolvers(): ReadonlyArray<any> { return this._resolvers; }
-    public get pages(): ReadonlyArray<Function> { return this._pages; }
+    public get resolvers(): ReadonlyArray<any> | null { return this._resolvers; }
+    public get pages(): ReadonlyArray<Function> | null { return this._pages; }
     
-    public get resolvedValues(): ReadonlyArray<any> { return this._resolvedValues; }
-    public set resolvedValues(value: ReadonlyArray<any>) { this._resolvedValues = value; }
+    public get resolvedValues(): ReadonlyArray<any> | null { return this._resolvedValues; }
+    public set resolvedValues(value: ReadonlyArray<any> | null) { this._resolvedValues = value; }
     
 
-    public constructor(page: Function, defaultPageTitle: string, defaultPageMetas: ReadonlyArray<MetaDetail>)
+    public constructor(page: Function, defaultPageTitle: string | null, defaultPageMetas: ReadonlyArray<MetaDetail> | null)
     {
         given(page, "page").ensureHasValue().ensureIsFunction();
-        given(defaultPageTitle, "defaultPageTitle").ensureIsString();
-        given(defaultPageMetas, "defaultPageMetas").ensureIsArray();
+        given(defaultPageTitle as string, "defaultPageTitle").ensureIsString();
+        given(defaultPageMetas as Array<MetaDetail>, "defaultPageMetas").ensureIsArray();
 
         super(page);
 
@@ -47,7 +47,7 @@ export class PageRegistration extends ViewModelRegistration
         const routeData = Reflect.getOwnMetadata(appRouteSymbol, this.viewModel);
 
         this._route = new RouteInfo(routeData.route);
-        this._redirect = routeData.redirect;
+        this._redirect = routeData.redirect as string | null;
 
         let title = defaultPageTitle || null;
         if (Reflect.hasOwnMetadata(titleSymbol, this.viewModel))

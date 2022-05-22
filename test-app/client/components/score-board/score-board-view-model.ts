@@ -11,10 +11,10 @@ import { ScopedService } from "../../services/scoped-service";
 @inject("ScopedService")    
 export class ScoreBoardViewModel extends ComponentViewModel
 {
-    // @ts-ignore
+    // @ts-expect-error: not used atm
     private readonly _scopedService: ScopedService;
-    private _playerFirstName: string = "Nivin";
-    private _playerLastName: string = "Joseph";
+    private _playerFirstName = "Nivin";
+    private _playerLastName = "Joseph";
     private readonly _time: number;
 
 
@@ -40,6 +40,19 @@ export class ScoreBoardViewModel extends ComponentViewModel
     }
     
     
+    public incrementScore(): void
+    {
+        // console.log(this);
+        // console.log("current score", currentScore);
+        // console.log("name", this.playerFullName);
+        // this.ctx["score"] += 1;
+
+        // this.ctx["increment"]();
+
+        console.log("incrementing");
+        this.emit("incremented");
+    }
+    
     protected override onCreate(): void
     {
         console.log("scoreboard created", this._time);
@@ -55,19 +68,6 @@ export class ScoreBoardViewModel extends ComponentViewModel
     protected override onDestroy(): void
     {
         console.log("scoreboard destroyed", this._time);
-    }
-
-    public incrementScore(): void
-    {
-        // console.log(this);
-        // console.log("current score", currentScore);
-        // console.log("name", this.playerFullName);
-        // this.ctx["score"] += 1;
-        
-        // this.ctx["increment"]();
-        
-        console.log("incrementing");
-        this.emit("incremented");
     }
     
     // protected onMount(element: HTMLElement): void

@@ -16,13 +16,12 @@ export class NScrollContainerViewModel extends ComponentViewModel
 {
     private _sb: SimpleBar | null = null;
     
+    private get _hugBottom(): boolean { return !!TypeHelper.parseBoolean(this.getBound("hugBottom")); }
+    private get _hugRight(): boolean { return !!TypeHelper.parseBoolean(this.getBound("hugRight")); }
     
     public get isHorizontalOnly(): boolean { return !!TypeHelper.parseBoolean(this.getBound("onlyX")); }
     public get isVerticalOnly(): boolean { return !!TypeHelper.parseBoolean(this.getBound("onlyY")); }
-    public get myRenderKey(): any { return this.getBound("renderKey"); }
-    
-    private get _hugBottom(): boolean { return !!TypeHelper.parseBoolean(this.getBound("hugBottom")); }
-    private get _hugRight(): boolean { return !!TypeHelper.parseBoolean(this.getBound("hugRight")); }
+    public get myRenderKey(): string | number { return this.getBound("renderKey"); }
     
     
     protected override onCreate(): void
@@ -38,6 +37,7 @@ export class NScrollContainerViewModel extends ComponentViewModel
         super.onMount(element);
         
         const SimpleBarCtor = (<any>SimpleBar).default;
+        // eslint-disable-next-line @typescript-eslint/no-unsafe-call
         this._sb = new SimpleBarCtor(element.querySelector(".simple-scroll-viewer-scroll-container")!, { autoHide: true });
         
         this._calculateScroll();
@@ -47,7 +47,7 @@ export class NScrollContainerViewModel extends ComponentViewModel
             if (v == null || v === ov)
                 return;
             
-            this._sb.recalculate();
+            this._sb!.recalculate();
             setTimeout(() =>
             {
                 this._calculateScroll();

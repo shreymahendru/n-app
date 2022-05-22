@@ -27,7 +27,7 @@ export class PageHmrHelper
         given(registration, "registration").ensureHasValue().ensureIsObject().ensureIsType(PageRegistration)
             .ensure(t => this._infos.has(t.name));
      
-        const info = this._infos.get(registration.name);
+        const info = this._infos.get(registration.name)!;
         
         registration.resolvedValues = info.registration.resolvedValues;
         return info.routeArgs;

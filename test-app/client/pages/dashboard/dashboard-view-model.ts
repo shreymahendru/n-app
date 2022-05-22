@@ -17,13 +17,13 @@ import { Duration, synchronize } from "@nivinjoseph/n-util";
 export class DashboardViewModel extends BasePageViewModel
 {
     private readonly _dialogService: DialogService;
-    // @ts-ignore
+    // @ts-expect-error: not used atm
     private readonly _eventAggregator: EventAggregator;
-    // @ts-ignore
+    // @ts-expect-error: not used atm
     private readonly _navigationService: NavigationService;
-    // @ts-ignore
+    // @ts-expect-error: not used atm
     private readonly _storageService: StorageService;
-    // @ts-ignore
+    // @ts-expect-error: not used atm
     private readonly _scopedService: ScopedService;
     
     
@@ -31,25 +31,6 @@ export class DashboardViewModel extends BasePageViewModel
     private _score = 10;
     private _fooParentValue: string;
     // private _isActive = false;
-    
-    
-    public constructor(dialogService: DialogService, evenAggregator: EventAggregator,
-        navigationService: NavigationService, storageService: StorageService, scopedService: ScopedService)
-    {
-        super();
-        
-        this._dialogService = dialogService;
-        this._eventAggregator = evenAggregator;
-        this._navigationService = navigationService;
-        this._storageService = storageService;
-        this._scopedService = scopedService;
-        
-        this._fooParentValue = "whatever";
-        
-        this.executeOnDestroy(() => console.log("Destroying dashboard"));
-    }
-    
-    
     
     public get score(): number { return this._score; }
     
@@ -59,6 +40,24 @@ export class DashboardViewModel extends BasePageViewModel
     
     public get fooParentValue(): string { return this._fooParentValue; }
     public set fooParentValue(value: string) { this._fooParentValue = value; }
+    
+    
+    public constructor(dialogService: DialogService, evenAggregator: EventAggregator,
+        navigationService: NavigationService, storageService: StorageService, scopedService: ScopedService)
+    {
+        super();
+
+        this._dialogService = dialogService;
+        this._eventAggregator = evenAggregator;
+        this._navigationService = navigationService;
+        this._storageService = storageService;
+        this._scopedService = scopedService;
+
+        this._fooParentValue = "whatever";
+
+        this.executeOnDestroy(() => console.log("Destroying dashboard"));
+    }
+    
     
     @synchronize(Duration.fromMilliSeconds(1000))
     public increment(): void

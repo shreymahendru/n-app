@@ -9,9 +9,9 @@ import { eventsSymbol } from "./events";
 export class ComponentRegistration extends ViewModelRegistration
 {
     private readonly _element: string;
-    private readonly _bindings: Array<string>;
+    private readonly _bindings = new Array<string>();
     private readonly _hasModel: boolean;
-    private readonly _events: Array<string>;
+    private readonly _events = new Array<string>();
     
     
     public get element(): string { return this._element; }
@@ -26,8 +26,6 @@ export class ComponentRegistration extends ViewModelRegistration
         
         super(component);
         
-        this._bindings = new Array<string>();
-        
         if (!Reflect.hasOwnMetadata(elementSymbol, this.viewModel))
             throw new ApplicationException(`ComponentViewModel '${this.name}' does not have @element applied.`);
 
@@ -38,7 +36,6 @@ export class ComponentRegistration extends ViewModelRegistration
         
         this._hasModel = this._bindings.some(t => t === "value");
         
-        this._events = new Array<string>();
         if (Reflect.hasOwnMetadata(eventsSymbol, this.viewModel))
             this._events.push(...Reflect.getOwnMetadata(eventsSymbol, this.viewModel));
     }

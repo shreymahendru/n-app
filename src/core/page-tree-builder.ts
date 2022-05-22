@@ -11,8 +11,8 @@ export class PageTreeBuilder
 
     public constructor(root: Page, pageRegistrations: ReadonlyArray<PageRegistration>)
     {
-        given(root, "root").ensureHasValue();
-        given(pageRegistrations, "pageRegistrations").ensureHasValue();
+        given(root, "root").ensureHasValue().ensureIsType(Page);
+        given(pageRegistrations, "pageRegistrations").ensureHasValue().ensureIsArray().ensure(t => t.isNotEmpty);
         this._root = root;
         this._registrations = pageRegistrations;
     }
@@ -20,18 +20,18 @@ export class PageTreeBuilder
 
     public build(): ReadonlyArray<Page>
     {
-        this.buildTree();
-        return this.shakeTree();
+        this._buildTree();
+        return this._shakeTree();
     }
 
     
-    private buildTree(): void
+    private _buildTree(): void
     {
-        for (let registration of this._registrations)
+        for (const registration of this._registrations)
         {
             let currentNode = this._root;
 
-            for (let segment of registration.route.pathSegments)
+            for (const segment of registration.route.pathSegments)
             {
                 if (segment === currentNode.segment)
                     continue;
@@ -47,19 +47,19 @@ export class PageTreeBuilder
         }
     }
 
-    private shakeTree(): ReadonlyArray<Page>
+    private _shakeTree(): ReadonlyArray<Page>
     {
-        let nodesToProcess = new Array<Page>();
+        const nodesToProcess = new Array<Page>();
         // skip root
         nodesToProcess.push(...this._root.children);
 
         while (nodesToProcess.length > 0)
         {
-            let currentNode = nodesToProcess.shift();
-            let children = currentNode.children;
+            const currentNode = nodesToProcess.shift()!;
+            const children = currentNode.children;
             if (!currentNode.registration)
             {
-                for (let child of children)
+                for (const child of children)
                     child.changeParent(currentNode.parent);
             }
 
@@ -69,8 +69,8 @@ export class PageTreeBuilder
         if (this._root.registration)
             return [this._root];
         
-        let children = this._root.children;
-        for (let child of children)
+        const children = this._root.children;
+        for (const child of children)
             child.changeParent(null);
 
         return children;        

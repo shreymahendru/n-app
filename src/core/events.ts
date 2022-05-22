@@ -6,7 +6,7 @@ import "@nivinjoseph/n-ext";
 export const eventsSymbol = Symbol("events");
 
 // public
-export function events(...events: string[]): Function
+export function events(...events: Array<string>): Function
 {
     const initChars = "abcdefghijklmnopqrstuvwxyz".split("");
     

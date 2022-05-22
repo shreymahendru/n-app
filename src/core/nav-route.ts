@@ -5,8 +5,8 @@
 export interface NavRoute
 {
     path: string;
-    params: { [index: string]: any };
-    query: { [index: string]: any };
+    params: Record<string, any>;
+    query: Record<string, any>;
     hash: string;
     fullPath: string;
     name?: string;

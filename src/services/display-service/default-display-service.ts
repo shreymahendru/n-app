@@ -7,9 +7,9 @@ import { Observable, Observer } from "@nivinjoseph/n-util";
 export class DefaultDisplayService implements DisplayService
 {
     private readonly _windowResizeObserver = new Observer<void>("windowResized");
-    private _currentDisplayType: DisplayType = null;
-    private _currentDisplayWidth: number = null;
-    private _currentDisplayHeight: number = null;
+    private _currentDisplayType!: DisplayType;
+    private _currentDisplayWidth!: number;
+    private _currentDisplayHeight!: number;
 
 
     public get currentDisplayType(): DisplayType { return this._currentDisplayType; }
@@ -20,7 +20,7 @@ export class DefaultDisplayService implements DisplayService
     
 
 
-    constructor()
+    public constructor()
     {
         this._calculateCurrentDisplayType();
         $(window).on("resize", () =>
@@ -33,14 +33,13 @@ export class DefaultDisplayService implements DisplayService
 
     private _calculateCurrentDisplayType(): void
     {
-        const displayHeight = $(window).height();
+        const displayHeight = $(window).height()!;
         if (this._currentDisplayHeight !== displayHeight)
             this._currentDisplayHeight = displayHeight;   
         
-        const displayWidth = $(window).width();
-        if (displayWidth === this._currentDisplayWidth)
-            return;
-        this._currentDisplayWidth = displayWidth;
+        const displayWidth = $(window).width()!;
+        if (this._currentDisplayWidth !== displayWidth)
+            this._currentDisplayWidth = displayWidth;
 
         let displayType = DisplayType.desktop;
         if (displayWidth < 1024) displayType = DisplayType.tablet;

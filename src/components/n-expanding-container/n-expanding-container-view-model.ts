@@ -13,21 +13,21 @@ export class NExpandingContainerViewModel extends ComponentViewModel
 {
     public get _constrainHorizontal(): boolean { return !!TypeHelper.parseBoolean(this.getBound("constrainX")); }
     
-    public get myRenderKey(): any { return this.getBound("renderKey"); }
+    public get myRenderKey(): string | number { return this.getBound("renderKey"); }
     
     
     protected override onMount(element: HTMLElement): void
     {
         super.onMount(element);
 
-        this.recalculate(element);
+        this._recalculate(element);
         
         this.watch("myRenderKey", (v, ov) =>
         {
             if (v == null || v === ov)
                 return;
 
-            this.recalculate(element);
+            this._recalculate(element);
         });
     }
     
@@ -38,19 +38,19 @@ export class NExpandingContainerViewModel extends ComponentViewModel
         super.onDestroy();
     }
     
-    private recalculate(element: HTMLElement): void
+    private _recalculate(element: HTMLElement): void
     {
         if (this._constrainHorizontal)
-            this.doHorizontal(element);
+            this._doHorizontal(element);
 
-        this.doVertical(element);
+        this._doVertical(element);
     }
     
-    private doHorizontal(element: HTMLElement): void
+    private _doHorizontal(element: HTMLElement): void
     {        
         let constrainedWidth = 0;
 
-        $(element).siblings().each(function ()
+        $(element).siblings().each(function (this: HTMLElement)
         {
             const width = $(this).outerWidth(true) ?? 0;
             constrainedWidth += width;
@@ -59,11 +59,11 @@ export class NExpandingContainerViewModel extends ComponentViewModel
         $(element).width(`calc(100% - ${constrainedWidth}px)`);
     }
 
-    private doVertical(element: HTMLElement): void
+    private _doVertical(element: HTMLElement): void
     {
         let constrainedHeight = 0;
 
-        $(element).siblings().each(function ()
+        $(element).siblings().each(function (this: HTMLElement)
         {
             const height = $(this).outerHeight(true) ?? 0;
             constrainedHeight += height;

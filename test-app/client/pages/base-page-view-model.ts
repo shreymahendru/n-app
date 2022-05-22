@@ -10,7 +10,7 @@ export class BasePageViewModel extends PageViewModel
         console.log("Instantiating {0}".format((<Object>this).getTypeName()));
     }
 
-    protected override onEnter(...params: any[]): void
+    protected override onEnter(...params: Array<any>): void
     {
         console.log("Entering {0}".format((<Object>this).getTypeName()));
         console.log("arg", params);

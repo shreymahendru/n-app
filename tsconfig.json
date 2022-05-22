@@ -1,11 +1,12 @@
 {
     "compilerOptions": {
         "module": "commonjs",
+        "moduleResolution": "Node",
         "target": "es2015",
         "strict": true,
-        "strictNullChecks": false,
-        "strictFunctionTypes": false,
-        "noImplicitThis": false,
+        "strictNullChecks": true,
+        "strictFunctionTypes": true,
+        "noImplicitThis": true,
         "noImplicitReturns": true,
         "noUnusedLocals": true,
         "noUnusedParameters": true,
@@ -20,14 +21,7 @@
         "skipLibCheck": true,
         "importHelpers": true,
         "noEmitHelpers": true,
-        "resolveJsonModule": true,
         "noImplicitOverride": true,
-        "plugins": [
-            {
-                "name": "typescript-tslint-plugin",
-                "configFile": "./tslint.json",
-                "alwaysShowRuleFailuresAsWarnings": false
-            }
-        ]
+        "pretty": true
     }
 }

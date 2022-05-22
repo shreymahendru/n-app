@@ -7,9 +7,8 @@ import { DialogService } from "../../services/dialog-service/dialog-service";
 import { EventAggregator } from "../../services/event-aggregator/event-aggregator";
 import { given } from "@nivinjoseph/n-defensive";
 import * as $ from "jquery";
-import { ArgumentException } from "@nivinjoseph/n-exception";
 import { events } from "../../core/events";
-import { Deferred } from "@nivinjoseph/n-util";
+import { Deferred, TypeHelper } from "@nivinjoseph/n-util";
 
 // public
 export interface FileInfo
@@ -35,12 +34,12 @@ export class NFileSelectViewModel extends ComponentViewModel
     private readonly _eventAggregator: EventAggregator;
     private readonly _inputTemplate = `<input type="file" accept="{0}" style="display: none" />`;
     private readonly  _inputTemplateMultiple = `<input type="file" accept="{0}" multiple style="display: none" />`;
-    private _inputElement: any;
-    private _maxFileSizeBytes: number;
+    private _inputElement!: JQuery<HTMLElement>;
+    private _maxFileSizeBytes: number | null = null;
 
     
     private get _mimeTypesList(): string { return this.getBound("mimeTypes"); }
-    private get _maxFileSizeValue(): number { return parseInt(this.getBound("maxFileSize")); }
+    private get _maxFileSizeValue(): number | null { return TypeHelper.parseNumber(this.getBound("maxFileSize")); }
     private get _isMultiple(): boolean { return this.getBound("multiple") != null && this.getBound("multiple") === "true"; }
 
     
@@ -57,8 +56,7 @@ export class NFileSelectViewModel extends ComponentViewModel
         this.executeOnCreate(() =>
         {
             const id = this.getBound<string>("id");
-            if (id == null || typeof (id) !== "string" || id.isEmptyOrWhiteSpace())
-                throw new ArgumentException("id", "id not specified for file-select");
+            given(id, "id").ensureHasValue().ensureIsString();
             
             const sub = this._eventAggregator.subscribe("openFileSelect", (identifier) =>
             {
@@ -80,8 +78,9 @@ export class NFileSelectViewModel extends ComponentViewModel
         const inputText = this._isMultiple
             ? this._inputTemplateMultiple.format(this._mimeTypesList) : this._inputTemplate.format(this._mimeTypesList);
 
+        // eslint-disable-next-line @typescript-eslint/no-this-alias
         const that = this;
-        const fchange = function ()
+        const fchange = function (this: any): void
         {
             that._processFiles(this.files);
             $(this).off("change");
@@ -95,7 +94,7 @@ export class NFileSelectViewModel extends ComponentViewModel
     }
 
 
-    private _processFiles(files: FileList): void
+    private _processFiles(files: FileList | null): void
     {
         this._dialogService.showLoadingScreen();
 
@@ -157,16 +156,16 @@ export class NFileSelectViewModel extends ComponentViewModel
         // }
 
         const reader = new FileReader();
-        reader.onload = function (e: any)
+        reader.onload = function (e: any): void
         {
-            fileInfo.fileDataUrl = (<any>e).target.result;
-            const splitted: string[] = (<any>e).target.result.split(",");
+            fileInfo.fileDataUrl = e.target.result;
+            const splitted = (e.target.result as string).split(",");
             fileInfo.fileMime = splitted[0].trim().split(";")[0].substr(5);
             fileInfo.fileData = splitted[1];
             deferred.resolve(fileInfo);
         };
 
-        reader.onerror = function (e: any)
+        reader.onerror = function (e: any): void
         {
             deferred.reject(e);
         };
@@ -183,6 +182,6 @@ export class NFileSelectViewModel extends ComponentViewModel
 
     private _initializeMaxFileSizeBytes(): void
     {
-        this._maxFileSizeBytes = this._maxFileSizeValue != null ? this._maxFileSizeValue * 1024 * 1024 : null;
+        this._maxFileSizeBytes = this._maxFileSizeValue != null ? Number.parseInt(this._maxFileSizeValue.toString()) * 1024 * 1024 : null;
     }
 }

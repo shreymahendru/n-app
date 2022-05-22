@@ -24,7 +24,7 @@ export class TestResolverBar implements Resolver
         await Delay.seconds(2);
 
         return {
-            value: "bar",
+            value: "bar"
             // redirect: "/test/5"
         };
     }

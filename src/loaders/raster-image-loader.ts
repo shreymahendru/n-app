@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-unsafe-call */
 import "@nivinjoseph/n-ext";
 import * as Sharp from "sharp";
 const loaderUtils = require("loader-utils");
@@ -16,7 +17,7 @@ interface ResizedImage
     data: Buffer;
 }
 
-function resize(data: Buffer, width: number, height: number, format: string, jpegQuality: number, background: string): Promise<ResizedImage>
+function resize(data: Buffer, width: number, height: number, format: string | null, jpegQuality: number, background: string): Promise<ResizedImage>
 {
     const promise = new Promise<ResizedImage>((resolve, reject) =>
     {
@@ -48,14 +49,17 @@ function resize(data: Buffer, width: number, height: number, format: string, jpe
 
         s.toBuffer((err: any, buf: any, info) =>
         {
-            err ? reject(err) : resolve({
-                // name: fileName.endsWith(info.format) ? fileName : fileName + "." + info.format,
-                ext: info.format.toLowerCase(),
-                width: info.width,
-                height: info.height,
-                size: info.size,
-                data: buf
-            });
+            if (err)
+                reject(err);
+            else
+                resolve({
+                    // name: fileName.endsWith(info.format) ? fileName : fileName + "." + info.format,
+                    ext: info.format.toLowerCase(),
+                    width: info.width,
+                    height: info.height,
+                    size: info.size,
+                    data: buf
+                });
         });
     });
 
@@ -65,54 +69,56 @@ function resize(data: Buffer, width: number, height: number, format: string, jpe
     return promise;
 }
 
-// @ts-ignore
-function normalizePath(path: any, stripTrailing: any)
+// function normalizePath(path: any, stripTrailing: any): any
+// {
+//     if (path === "\\" || path === "/")
+//     {
+//         return "/";
+//     }
+
+//     const len = path.length;
+
+//     if (len <= 1)
+//     {
+//         return path;
+//     }
+
+//     // ensure that win32 namespaces has two leading slashes, so that the path is
+//     // handled properly by the win32 version of path.parse() after being normalized
+//     // https://msdn.microsoft.com/library/windows/desktop/aa365247(v=vs.85).aspx#namespaces
+//     let prefix = "";
+
+//     if (len > 4 && path[3] === "\\")
+//     {
+//         // eslint-disable-next-line prefer-destructuring
+//         const ch = path[2];
+
+//         if ((ch === "?" || ch === ".") && path.slice(0, 2) === "\\\\")
+//         {
+//             // eslint-disable-next-line no-param-reassign
+//             path = path.slice(2);
+//             prefix = "//";
+//         }
+//     }
+
+//     const segs = path.split(/[/\\]+/);
+
+//     if (stripTrailing !== false && segs[segs.length - 1] === "")
+//     {
+//         segs.pop();
+//     }
+
+//     return prefix + segs.join("/");
+// }
+
+module.exports = function (content: any): void
 {
-    if (path === "\\" || path === "/")
-    {
-        return "/";
-    }
-
-    const len = path.length;
-
-    if (len <= 1)
-    {
-        return path;
-    }
-
-    // ensure that win32 namespaces has two leading slashes, so that the path is
-    // handled properly by the win32 version of path.parse() after being normalized
-    // https://msdn.microsoft.com/library/windows/desktop/aa365247(v=vs.85).aspx#namespaces
-    let prefix = "";
-
-    if (len > 4 && path[3] === "\\")
-    {
-        // eslint-disable-next-line prefer-destructuring
-        const ch = path[2];
-
-        if ((ch === "?" || ch === ".") && path.slice(0, 2) === "\\\\")
-        {
-            // eslint-disable-next-line no-param-reassign
-            path = path.slice(2);
-            prefix = "//";
-        }
-    }
-
-    const segs = path.split(/[/\\]+/);
-
-    if (stripTrailing !== false && segs[segs.length - 1] === "")
-    {
-        segs.pop();
-    }
-
-    return prefix + segs.join("/");
-}
-
-module.exports = function (content: any)
-{
-    this.cacheable && this.cacheable();
+    // @ts-expect-error: unsafe use of this
+    if (this.cacheable)
+        // @ts-expect-error: unsafe use of this
+        this.cacheable();
     
-    const MIMES: { [index: string]: string } = {
+    const MIMES: { [index: string]: string; } = {
         "jpg": "image/jpeg",
         "jpeg": "image/jpeg",
         "png": "image/png",
@@ -121,10 +127,13 @@ module.exports = function (content: any)
         "svg": "image/svg+xml"
     };
 
+    // @ts-expect-error: unsafe use of this
     const ext = Path.extname(this.resourcePath).replace(/\./, "").toLowerCase();
     if (!MIMES[ext])
+        // @ts-expect-error: unsafe use of this
         throw new Error(`Unsupported format for file '${this.resourcePath}'`);
 
+    // @ts-expect-error: unsafe use of this
     const parsedResourceQuery = this.resourceQuery ? loaderUtils.parseQuery(this.resourceQuery) : {};
     Object.keys(parsedResourceQuery)
         .filter(t => ["width", "height"].contains(t))
@@ -140,6 +149,7 @@ module.exports = function (content: any)
     const jpegQuality = options.jpegQuality || 80;
     const pngQuality = Number.parseFloat(((options.pngQuality || 80) / 100).toFixed(1));
     // console.log("LIMIT", limit);
+    // @ts-expect-error: unsafe use of this
     const callback = this.async();
 
     const plugins = [
@@ -158,7 +168,7 @@ module.exports = function (content: any)
         {
             // console.log(this.resourcePath, " ==> ", resized.ext);
             
-            return imagemin.buffer(resized.data, { plugins });
+            return imagemin.buffer(resized.data, { plugins }) as Buffer;
         })
         .then(data =>
         {
@@ -166,6 +176,7 @@ module.exports = function (content: any)
             
             if (isFormatted)
             {
+                // @ts-expect-error: unsafe use of this
                 this.resourcePath = this.resourcePath.replace(new RegExp(`.${ext}`, "i"), ".jpeg");
                 
                 // const context = options.context || this.rootContext;
@@ -207,7 +218,10 @@ module.exports = function (content: any)
             
             
         })
-        .catch(e => callback(e));
+        .catch(e =>
+        {
+            callback(e);
+        });
 };
 
 module.exports.raw = true;

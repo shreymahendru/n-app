@@ -8,12 +8,22 @@ import { ComponentFactory } from "./component-factory";
 // public
 export class ComponentViewModel extends BaseViewModel
 {    
-    private get _myBindings(): ReadonlyArray<string> { return (<any>this)["_bindings"]; }
-    private get _myEvents(): ReadonlyArray<string> { return (<any>this)["_events"]; }
+    private get _myBindings(): ReadonlyArray<string> { return (<any>this)["_bindings"] as Array<string>; }
+    private get _myEvents(): ReadonlyArray<string> { return (<any>this)["_events"] as Array<string>; }
     
+    
+    public static createComponentOptions(component: Function): object
+    {
+        given(component, "component").ensureHasValue().ensureIsFunction();
+
+        const registration = new ComponentRegistration(component);
+        const factory = new ComponentFactory();
+        return factory.create(registration);
+    }
     
     protected getBound<T>(propertyName: string): T
     {
+        // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
         if (!this.ctx)
             throw new InvalidOperationException("calling getBound() in the constructor");
         
@@ -25,6 +35,7 @@ export class ComponentViewModel extends BaseViewModel
     
     protected getBoundModel<T>(): T
     {
+        // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
         if (!this.ctx)
             throw new InvalidOperationException("calling getBoundModel() in the constructor");
         
@@ -34,34 +45,28 @@ export class ComponentViewModel extends BaseViewModel
         return this.ctx["value"] as T;
     }
     
-    protected setBoundModel(value: any): void
+    protected setBoundModel(value: unknown): void
     {
+        // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
         if (!this.ctx)
             throw new InvalidOperationException("calling setBoundModel() in the constructor");
 
         if (!this._myBindings.some(t => t === "value"))
             throw new InvalidOperationException("calling setBoundModel() without defining 'value' in bind");
         
+        // eslint-disable-next-line @typescript-eslint/no-unsafe-call
         this.ctx.$emit("input", value);
     }
     
-    protected emit(event: string, ...eventArgs: any[]): void
+    protected emit(event: string, ...eventArgs: Array<any>): void
     {
         given(event, "event").ensureHasValue().ensureIsString()
             .ensure(t => this._myEvents.contains(t.trim()), "undeclared event");
         
         event = this._camelCaseToKebabCase(event);
         
+        // eslint-disable-next-line @typescript-eslint/no-unsafe-call
         this.ctx.$emit(event, ...eventArgs);
-    }
-    
-    public static createComponentOptions(component: Function): object
-    {
-        given(component, "component").ensureHasValue().ensureIsFunction();
-        
-        const registration = new ComponentRegistration(component);
-        const factory = new ComponentFactory();
-        return factory.create(registration);
     }
     
     private _camelCaseToKebabCase(value: string): string

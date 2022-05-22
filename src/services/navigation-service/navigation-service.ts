@@ -16,7 +16,7 @@ export interface NavigationService
     /**
      * The current route hash.
      */
-    readonly currentRouteHash: string;
+    readonly currentRouteHash: string | null;
     
     /**
      * @description Navigates to a specific route sending in any params with it.

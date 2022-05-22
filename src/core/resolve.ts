@@ -5,12 +5,12 @@ import { Utils } from "./utils";
 
 
 
-export const resolveSymbol = Symbol("resolve");
+export const resolveSymbol = Symbol.for("@nivinjoseph/n-app/resolve");
 
 // public
-export function resolve(...resolvers: Array<Function>): Function
+export function resolve(...resolvers: ReadonlyArray<Function>): Function
 {
-    given(resolvers, "resolvers").ensureHasValue().ensureIsArray().ensure(t => t.length > 0);
+    given(resolvers, "resolvers").ensureHasValue().ensureIsArray().ensure(t => t.isNotEmpty);
     
     const mapped = resolvers.map(t =>
     {

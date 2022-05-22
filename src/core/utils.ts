@@ -7,17 +7,13 @@ export abstract class Utils // static class
 {
     public static generateUrl(route: string, params?: object, baseUrl?: string): string
     {
-        given(route, "route").ensureHasValue().ensure(t => !t.isEmptyOrWhiteSpace());
-
-        if (params)
-            given(params, "params").ensureIsObject();
-
-        if (baseUrl)
-            given(baseUrl, "baseUrl").ensureIsString();
+        given(route, "route").ensureHasValue().ensureIsString();
+        given(params as object, "params").ensureIsObject();
+        given(baseUrl as string, "baseUrl").ensureIsString();
 
         route = route.trim().replaceAll(" ", "");
 
-        if (baseUrl !== undefined && baseUrl != null && !baseUrl.isEmptyOrWhiteSpace())
+        if (baseUrl != null && !baseUrl.isEmptyOrWhiteSpace())
         {
             baseUrl = baseUrl.trim().replaceAll(" ", "");
             if (baseUrl.endsWith("/"))
@@ -36,6 +32,7 @@ export abstract class Utils // static class
     {
         given(value, "value").ensureHasValue().ensureIsFunction();
         
+        // eslint-disable-next-line @typescript-eslint/no-unsafe-return
         return (<any>value).___$typeName ?? (" " + (<Object>value).getTypeName().trim()).substr(1); // Shrey: Safari de-optimization
     }
 }

@@ -4,10 +4,10 @@ import { given } from "@nivinjoseph/n-defensive";
 
 export class DefaultEventAggregator implements EventAggregator
 {
-    private _subscriptions: { [index: string]: Array<DefaultEventSubscriptionInternal> } = {};
+    private _subscriptions: Record<string, Array<DefaultEventSubscriptionInternal> | null> = {};
 
 
-    public subscribe(event: string, handler: (...eventArgs: any[]) => void): EventSubscription
+    public subscribe(event: string, handler: (...eventArgs: Array<any>) => void): EventSubscription
     {
         given(event, "event").ensureHasValue().ensure(t => !t.isEmptyOrWhiteSpace());
         given(handler, "handler").ensureHasValue();
@@ -17,13 +17,13 @@ export class DefaultEventAggregator implements EventAggregator
         if (!this._subscriptions[event])
             this._subscriptions[event] = new Array<DefaultEventSubscriptionInternal>();
 
-        let eventSubscriptions = this._subscriptions[event];
+        const eventSubscriptions = this._subscriptions[event]!;
 
-        let existingRegistration = eventSubscriptions.find(t => t.handler === handler);
+        const existingRegistration = eventSubscriptions.find(t => t.handler === handler);
         if (existingRegistration)
             return existingRegistration.subscription;
 
-        let eventSubscriptionInternal = new DefaultEventSubscriptionInternal();
+        const eventSubscriptionInternal = new DefaultEventSubscriptionInternal();
         eventSubscriptionInternal.handler = handler;
         eventSubscriptionInternal.subscription = new DefaultEventSubscription(event, this, eventSubscriptionInternal);
         eventSubscriptions.push(eventSubscriptionInternal);
@@ -31,22 +31,21 @@ export class DefaultEventAggregator implements EventAggregator
         return eventSubscriptionInternal.subscription;
     }
 
-    public publish(event: string, ...eventArgs: any[]): void
+    public publish(event: string, ...eventArgs: Array<any>): void
     {
-        given(event, "event").ensureHasValue().ensure(t => !t.isEmptyOrWhiteSpace());
-        
+        given(event, "event").ensureHasValue().ensureIsString();
         event = event.trim();
+        
+        given(eventArgs, "eventArgs").ensureHasValue().ensureIsArray();
         
         if (!this._subscriptions[event])
             return;
 
-        this._subscriptions[event].forEach(t => t.handler(...eventArgs));
+        this._subscriptions[event]!.forEach(t => t.handler(...eventArgs));
     }
 
     
-    // Called dynamically by EventSubscription class (internal)
-    // @ts-ignore
-    private unsubscribe(event: string, subscription: any): void
+    private _unsubscribe(event: string, subscription: any): void
     {
         given(event, "event").ensureHasValue().ensure(t => !t.isEmptyOrWhiteSpace());
 
@@ -55,25 +54,30 @@ export class DefaultEventAggregator implements EventAggregator
         if (!this._subscriptions[event])
             return;
 
-        this._subscriptions[event].remove(subscription);
+        this._subscriptions[event]!.remove(subscription);
     }
 }
 
 class DefaultEventSubscription implements EventSubscription
 {
-    private _event: string;
-    private _eventManager: any;
-    private _subscription: Object;
+    private readonly _event: string;
+    private readonly _eventManager: DefaultEventAggregator;
+    private readonly _subscription: DefaultEventSubscriptionInternal;
     private _isUnsubscribed = false;
 
 
     public get event(): string { return this._event; }
 
 
-    constructor(event: string, eventManager: any, subscription: Object)
+    public constructor(event: string, eventManager: DefaultEventAggregator, subscription: DefaultEventSubscriptionInternal)
     {
+        given(event, "event").ensureHasValue().ensureIsString();
         this._event = event;
+        
+        given(eventManager, "eventManager").ensureHasValue().ensureIsType(DefaultEventAggregator);
         this._eventManager = eventManager;
+        
+        given(subscription, "subscription").ensureHasValue().ensureIsType(DefaultEventSubscriptionInternal);
         this._subscription = subscription;
     }
 
@@ -82,13 +86,14 @@ class DefaultEventSubscription implements EventSubscription
     {
         if (this._isUnsubscribed) return;
 
-        this._eventManager.unsubscribe(this._event, this._subscription);
+        // @ts-expect-error: deliberately calling inaccessible private method
+        this._eventManager._unsubscribe(this._event, this._subscription);
         this._isUnsubscribed = true;
     }
 }
 
 class DefaultEventSubscriptionInternal
 {
-    public handler: (...eventArgs: any[]) => void;
-    public subscription: EventSubscription;
+    public handler!: (...eventArgs: Array<any>) => void;
+    public subscription!: EventSubscription;
 }

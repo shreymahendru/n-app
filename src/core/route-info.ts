@@ -9,18 +9,26 @@ export class RouteInfo
 {
     private readonly _routeTemplate: string;
     private readonly _routeParams = new Array<RouteParam>();
-    private readonly _routeParamsRegistry: { [index: string]: RouteParam } = {};
-    private readonly _vueRoute: string;
+    private readonly _routeParamsRegistry: Record<string, RouteParam | null> = {};
+    private readonly _vueRoute: string | null = null;
     private readonly _pathSegments = new Array<string>();
-    private readonly _routeKey: string;
-    private _hasQuery: boolean;
+    private readonly _routeKey: string | null = null;
+    private _hasQuery = false;
 
 
     public get route(): string { return this._routeTemplate; }
-    public get vueRoute(): string { return this._vueRoute; }
+    public get vueRoute(): string
+    {
+        given(this, "this").ensure(t => t._vueRoute != null, "not available in UrlGenerator mode");
+        return this._vueRoute!;
+    }
     public get params(): ReadonlyArray<RouteParam> { return this._routeParams; }
     public get pathSegments(): ReadonlyArray<string> { return this._pathSegments; }
-    public get routeKey(): string { return this._routeKey; }
+    public get routeKey(): string
+    {
+        given(this, "this").ensure(t => t._routeKey != null, "not available in UrlGenerator mode");
+        return this._routeKey!;
+    }
 
 
     public constructor(routeTemplate: string, isUrlGenerator = false) // true if used purely for url generation (only by utils)
@@ -42,36 +50,38 @@ export class RouteInfo
         }
         
         this._routeTemplate = routeTemplate;
-        this.populateRouteParams();
+        this._populateRouteParams();
         
         if (!isUrlGenerator)
         {
-            this._vueRoute = this.generateVueRoute(this._routeTemplate);
-            this.populatePathSegments();
-            this._routeKey = this.generateRouteKey();
+            this._vueRoute = this._generateVueRoute(this._routeTemplate);
+            this._populatePathSegments();
+            this._routeKey = this._generateRouteKey();
         }
     }
 
 
-    public findRouteParam(key: string): RouteParam
+    public findRouteParam(key: string): RouteParam | null
     {
-        given(key, "key").ensureHasValue().ensure(t => !t.isEmptyOrWhiteSpace());
+        given(key, "key").ensureHasValue().ensureIsString();
         return this._routeParamsRegistry[key.trim().toLowerCase()];
     }
 
-    public generateUrl(values: any): string
+    public generateUrl(values: object): string
     {
+        given(values, "values").ensureHasValue().ensureIsObject();
+        
         let url = this._routeTemplate;
         let hasQuery = this._hasQuery;
 
-        for (let key in values)
+        for (const key in values)
         {
-            let routeParam = this.findRouteParam(key);
+            const routeParam = this.findRouteParam(key);
             const val = values.getValue(key);
             
             if (routeParam)
             {
-                let param = "{" + routeParam.param + "}";
+                const param = "{" + routeParam.param + "}";
                 let replacement = routeParam.isQuery
                     ? "{0}={1}".format(key, encodeURIComponent(val))
                     : encodeURIComponent(val);
@@ -97,12 +107,12 @@ export class RouteInfo
         return url;
     }
 
-    private populateRouteParams(): void
+    private _populateRouteParams(): void
     {
         let index = 1;
-        for (let routeParam of this.extractTemplateParams(this._routeTemplate).map(t => new RouteParam(t)))
+        for (const routeParam of this._extractTemplateParams(this._routeTemplate).map(t => new RouteParam(t)))
         {
-            let key = routeParam.paramKey.toLowerCase();
+            const key = routeParam.paramKey.toLowerCase();
             if (this._routeParamsRegistry[key])
                 throw new ApplicationException("Invalid route template. Duplicate route params (case insensitive) detected.");
 
@@ -112,9 +122,9 @@ export class RouteInfo
         }
     }
 
-    private extractTemplateParams(routeTemplate: string): Array<string>
+    private _extractTemplateParams(routeTemplate: string): Array<string>
     {
-        let templateParams = new Array<string>();
+        const templateParams = new Array<string>();
         let queryFound = false;
         let startFound = false;
         let startIndex = 0;
@@ -155,11 +165,11 @@ export class RouteInfo
         return templateParams;
     }
 
-    private generateVueRoute(routeTemplate: string): string
+    private _generateVueRoute(routeTemplate: string): string
     {
-        for (let routeParam of this._routeParams)
+        for (const routeParam of this._routeParams)
         {
-            let asItWas = "{" + routeParam.param + "}";
+            const asItWas = "{" + routeParam.param + "}";
             if (!routeTemplate.contains(asItWas))
                 throw new ApplicationException("Invalid route template.");
 
@@ -168,7 +178,7 @@ export class RouteInfo
 
         if (routeTemplate.contains("?"))
         {
-            let splitted = routeTemplate.split("?");
+            const splitted = routeTemplate.split("?");
             if (splitted.length > 2)
                 throw new ApplicationException("Invalid route template. Unresolvable '?' characters detected.");
 
@@ -178,16 +188,16 @@ export class RouteInfo
         return routeTemplate;
     }
     
-    private populatePathSegments()
+    private _populatePathSegments(): void
     {
-        let routeTemplate = this._vueRoute;
-        let pathSegments = new Array<string>();
+        const routeTemplate = this._vueRoute!;
+        const pathSegments = new Array<string>();
         
         pathSegments.push("/");
         
-        for (let item of routeTemplate.split("/"))
+        for (const item of routeTemplate.split("/"))
         {
-            if (item === null || item.isEmptyOrWhiteSpace() || item.startsWith(":"))
+            if (item.isEmptyOrWhiteSpace() || item.startsWith(":"))
                 continue;
             
             if (pathSegments.some(t => t === item))
@@ -199,7 +209,7 @@ export class RouteInfo
         this._pathSegments.push(...pathSegments);
     }
     
-    private generateRouteKey(): string
+    private _generateRouteKey(): string
     {
         return this._pathSegments.join("/").replace("//", "/");
     }

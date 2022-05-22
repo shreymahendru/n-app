@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-unsafe-call */
 import "@nivinjoseph/n-ext";
 const path = require("path");
 const autoprefixer = require("autoprefixer");
@@ -26,16 +27,16 @@ const tsLoader = {
     }
 };
 
-const tsLintLoader = {
-    loader: "tslint-loader",
-    options: {
-        configFile: "tslint.json",
-        tsConfigFile: "tsconfig.client.json",
-        // typeCheck: true, // this is a performance hog
-        typeCheck: !isDev,
-        emitErrors: true
-    }
-};
+// const tsLintLoader = {
+//     loader: "tslint-loader",
+//     options: {
+//         configFile: "tslint.json",
+//         tsConfigFile: "tsconfig.client.json",
+//         // typeCheck: true, // this is a performance hog
+//         typeCheck: !isDev,
+//         emitErrors: true
+//     }
+// };
 
 const moduleRules: Array<any> = [
     {
@@ -101,8 +102,7 @@ const moduleRules: Array<any> = [
                     limit: 9000,
                     fallback: "file-loader",
                     esModule: false,
-                    // @ts-ignore
-                    name: (resourcePath: string, resourceQuery: string) =>
+                    name: (_resourcePath: string, _resourceQuery: string): string =>
                     {
                         // `resourcePath` - `/absolute/path/to/file.js`
                         // `resourceQuery` - `?foo=bar`
@@ -156,12 +156,12 @@ const moduleRules: Array<any> = [
         exclude: /node_modules/,
         use: [tsLoader]
     },
-    {
-        test: /\.ts$/,
-        exclude: /node_modules/,
-        enforce: "pre",
-        use: [tsLintLoader]
-    },
+    // {
+    //     test: /\.ts$/,
+    //     exclude: /node_modules/,
+    //     enforce: "pre",
+    //     use: [tsLintLoader]
+    // },
     {
         test: /-resolver\.ts$/,
         use: [
@@ -199,7 +199,7 @@ const moduleRules: Array<any> = [
                 options: {
                     esModule: false,
                     filename: "[name].[contenthash].worker.js",
-                    chunkFilename: "[id].[contenthash].worker.js",
+                    chunkFilename: "[id].[contenthash].worker.js"
                 }
             },
             tsLoader
@@ -209,13 +209,13 @@ const moduleRules: Array<any> = [
         test: /-view\.html$/,
         exclude: [path.resolve(__dirname, "test-app/controllers")],
         use: [
-            ...(isDev ? [] :
+            ...isDev ? [] :
                 [{
                     loader: "vue-loader/lib/loaders/templateLoader.js"
                 },
                 {
                     loader: path.resolve("src/loaders/view-loader.js")
-                }]),
+                }],
             {
                 loader: "html-loader",
                 options: {
@@ -259,13 +259,27 @@ const plugins = [
     new HtmlWebpackTagsPlugin({
         append: false,
         usePublicPath: false,
-        tags: [ ]
+        tags: []
     }),
     new MiniCssExtractPlugin({}),
     new webpack.DefinePlugin({
         APP_CONFIG: JSON.stringify({})
+    }),
+    new webpack.ProvidePlugin({
+        // "__assign": ["tslib", "__assign"],
+        // "__extends": ["tslib", "__extends"],
+        // "__awaiter": ["tslib", "__awaiter"]
+
+        ...Object.keys(require("tslib"))
+            .reduce<Record<string, Array<string>>>((acc, key) =>
+            {
+                acc[key] = ["tslib", key];
+                return acc;
+            }, {})
     })
 ];
+
+
 
 if (isDev)
 {
@@ -274,11 +288,11 @@ if (isDev)
     //     loader: "source-map-loader",
     //     enforce: "pre"
     // });
-    
+
     plugins.push(new webpack.WatchIgnorePlugin({
         paths: [/\.js$/, /\.d\.ts$/]
     }));
-    
+
     plugins.push(new webpack.HotModuleReplacementPlugin());
 }
 else
@@ -287,7 +301,7 @@ else
         test: /\.js$/,
         include: [
             path.resolve(__dirname, "src"),
-            path.resolve(__dirname, "test-app/client"),
+            path.resolve(__dirname, "test-app/client")
         ],
         use: {
             loader: "babel-loader",
@@ -380,7 +394,8 @@ module.exports = {
         alias: {
             // https://feathericons.com/
             feather: path.resolve(__dirname, "node_modules/feather-icons/dist/feather-sprite.svg"),
-            vue: isDev ? "@nivinjoseph/vue/dist/vue.js" : "@nivinjoseph/vue/dist/vue.runtime.common.prod.js"
+            vue: isDev ? "@nivinjoseph/vue/dist/vue.js" : "@nivinjoseph/vue/dist/vue.runtime.common.prod.js",
+            "tslib$": "tslib/tslib.es6.js"
         }
     }
 };

@@ -6,6 +6,7 @@ const Vue = require("vue");
 export { Vue };
 
 import VueRouter from "vue-router";
+// eslint-disable-next-line @typescript-eslint/no-unsafe-call
 Vue.use(VueRouter);
 
 import "@nivinjoseph/n-ext";
@@ -24,31 +25,39 @@ import { DefaultComponentService } from "../services/component-service/default-c
 import { NFileSelectViewModel } from "../components/n-file-select/n-file-select-view-model";
 import { NExpandingContainerViewModel } from "../components/n-expanding-container/n-expanding-container-view-model";
 import { NScrollContainerViewModel } from "../components/n-scroll-container/n-scroll-container-view-model";
+import { ClassHierarchy } from "@nivinjoseph/n-util";
+import { ComponentViewModel } from "./component-view-model";
+import { PageViewModel } from "./page-view-model";
 
 // declare const makeHot: (options: any) => void;
 
-let makeHot: any;
+let makeHot: Function | null;
 
 if ((<any>module).hot)
 {
-    makeHot = function (options: any)
+    makeHot = function (options: any): void
     {
         // console.log('is Hot');
         const api = require("vue-hot-reload-api");
+        // eslint-disable-next-line @typescript-eslint/no-unsafe-call
         api.install(require("@nivinjoseph/vue"));
 
         if (!api.compatible)
             throw new Error("vue-hot-reload-api is not compatible with the version of Vue you are using.");
 
+        // eslint-disable-next-line @typescript-eslint/no-unsafe-call
         (<any>module).hot.accept();
 
+        // eslint-disable-next-line @typescript-eslint/no-unsafe-call
         if (!api.isRecorded("ClientAppRoot")) 
         {
+            // eslint-disable-next-line @typescript-eslint/no-unsafe-call
             api.createRecord("ClientAppRoot", options);
             // console.log("creating record", "${id}");
         }
         else 
         {
+            // eslint-disable-next-line @typescript-eslint/no-unsafe-call
             api.reload("ClientAppRoot", options);
             // console.log("updating record", "${id}");
         }
@@ -64,11 +73,11 @@ export class ClientApp
     private readonly _container: Container;
     private readonly _componentManager: ComponentManager;
     private readonly _pageManager: PageManager;
-    // @ts-ignore
+    // @ts-expect-error: not used atm
     private _app: any;
-    private _accentColor: string;
-    private _errorTrackingConfigurationCallback: (vueRouter: any) => void;
-    private _isBootstrapped: boolean = false;
+    private _accentColor: string | undefined;
+    private _errorTrackingConfigurationCallback: ((vueRouter: any) => void) | null = null;
+    private _isBootstrapped = false;
     
     
     public get container(): Container { return this._container; }
@@ -130,7 +139,7 @@ export class ClientApp
         return this;
     }
 
-    public registerComponents(...componentViewModelClasses: Function[]): this
+    public registerComponents(...componentViewModelClasses: Array<ClassHierarchy<ComponentViewModel>>): this
     {
         if (this._isBootstrapped)
             throw new InvalidOperationException("registerComponents");
@@ -139,7 +148,7 @@ export class ClientApp
         return this;
     }
 
-    public registerPages(...pageViewModelClasses: Function[]): this
+    public registerPages(...pageViewModelClasses: Array<ClassHierarchy<PageViewModel>>): this
     {
         if (this._isBootstrapped)
             throw new InvalidOperationException("registerPages");
@@ -231,13 +240,13 @@ export class ClientApp
         if (this._isBootstrapped)
             throw new InvalidOperationException("bootstrap");
 
-        this.configureGlobalConfig();
-        this.configurePages();
+        this._configureGlobalConfig();
+        this._configurePages();
         this._configureErrorTracking();
-        this.configureComponents();
-        this.configureCoreServices();
-        this.configureContainer();
-        this.configureRoot();
+        this._configureComponents();
+        this._configureCoreServices();
+        this._configureContainer();
+        this._configureRoot();
 
         this._isBootstrapped = true;
         // this._pageManager.handleInitialRoute();
@@ -248,14 +257,14 @@ export class ClientApp
         if (!this._isBootstrapped)
             throw new InvalidOperationException("calling retrieveRouterInstance before calling bootstrap");
         
-        if (this._pageManager.vueRouterInstance === null)
+        if (!this._pageManager.hasRegistrations)
             throw new InvalidOperationException("calling retrieveRouterInstance with no page registrations");
         
         return this._pageManager.vueRouterInstance;
     }
     
     
-    private configureGlobalConfig(): void
+    private _configureGlobalConfig(): void
     {
         if (ConfigurationManager.getConfig("env") === "dev")
         {
@@ -283,12 +292,12 @@ export class ClientApp
     }
 
 
-    private configureComponents(): void
+    private _configureComponents(): void
     {
         this._componentManager.bootstrap();
     }
 
-    private configurePages(): void
+    private _configurePages(): void
     {
         this._pageManager.bootstrap();
     }
@@ -299,7 +308,7 @@ export class ClientApp
             this._errorTrackingConfigurationCallback(this._pageManager.vueRouterInstance);
     }
 
-    private configureCoreServices(): void
+    private _configureCoreServices(): void
     {
         this._container
             .registerInstance("DialogService", new DefaultDialogService(this._accentColor))
@@ -311,20 +320,21 @@ export class ClientApp
             ;
     }
 
-    private configureContainer(): void
+    private _configureContainer(): void
     {
         this._container.bootstrap();
     }
 
-    private configureRoot(): void
+    private _configureRoot(): void
     {
         const container = this._container;
         
         const componentOptions = {
             el: this._appElementId,
-            render: (createElement: any) => createElement(this._rootComponentElement),
+            // eslint-disable-next-line @typescript-eslint/no-unsafe-return
+            render: (createElement: Function) => createElement(this._rootComponentElement),
             router: this._pageManager.vueRouterInstance,
-            provide: function ()
+            provide: function (): { rootScopeContainer: Container; }
             {
                 return {
                     rootScopeContainer: container
@@ -342,6 +352,7 @@ export class ClientApp
         
         
         
-        this._app = new Vue(componentOptions as any);
+        // eslint-disable-next-line @typescript-eslint/no-unsafe-call
+        this._app = new Vue(componentOptions);
     }
 }

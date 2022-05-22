@@ -16,12 +16,12 @@ import { TestResolverBar } from "../../resolvers/test-resolver-bar";
 @resolve(TestResolverBar, TestResolverFoo) 
 export class TestViewModel extends BasePageViewModel
 {
-    // @ts-ignore
+    // @ts-expect-error: not used atm
     private readonly _todoRepository: TodoRepository;
-    // @ts-ignore
+    // @ts-expect-error: not used atm
     private readonly _navigationService: NavigationService;
     private readonly _eventAggregator: EventAggregator;
-    private _id: number = 0;
+    private _id = 0;
     
     
     public get id(): number { return this._id; }
@@ -49,13 +49,13 @@ export class TestViewModel extends BasePageViewModel
         this._eventAggregator.publish("openFileSelect", "foo");
     }
     
-    public onFileSelected(val: any): void
+    public onFileSelected(val: unknown): void
     {
         console.log("File data", val);
     }
     
     
-    protected override onEnter(arg: any, resolved1: string, resolved2: string): void
+    protected override onEnter(arg: number, resolved1: string, resolved2: string): void
     {
         super.onEnter(arg, resolved1, resolved2);
            

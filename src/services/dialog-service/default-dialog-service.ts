@@ -8,19 +8,21 @@ if (!Spinner)
 
 import { DialogService } from "./dialog-service";
 import * as $ from "jquery";
+import { given } from "@nivinjoseph/n-defensive";
 
 
 export class DefaultDialogService implements DialogService
 {
     private readonly _accentColor: string = "#000";
+    private readonly _toastr: Toastr;
     private _loadingScreenCount = 0;
-    private _loadingScreen: any;
-    private _spinner: any;
-    private _toastr: Toastr;
+    private _loadingScreen: JQuery<HTMLElement> | null = null;
+    private _spinner: any = null;
 
 
-    constructor(accentColor: string)
+    public constructor(accentColor?: string)
     {
+        given(accentColor as string, "accentColor").ensureIsString();
         if (accentColor)
             this._accentColor = accentColor.trim();    
         
@@ -38,10 +40,11 @@ export class DefaultDialogService implements DialogService
         {
             if (!this._loadingScreen)
             {
-                this.CreateLoadingScreen();
+                this._createLoadingScreen();
             }
 
-            this._loadingScreen.show();
+            this._loadingScreen!.show();
+            // eslint-disable-next-line @typescript-eslint/no-unsafe-call
             this._spinner.spin(document.getElementById("spinnerLocation"));
         }
 
@@ -59,6 +62,7 @@ export class DefaultDialogService implements DialogService
         {
             if (this._loadingScreen && this._spinner)
             {
+                // eslint-disable-next-line @typescript-eslint/no-unsafe-call
                 this._spinner.stop();
                 this._loadingScreen.hide();
             }
@@ -119,7 +123,7 @@ export class DefaultDialogService implements DialogService
     }
 
 
-    private CreateLoadingScreen(): void
+    private _createLoadingScreen(): void
     {
         this._loadingScreen = $("<div style='position:fixed;top:0;left:0;right:0;bottom:0;z-index:100000000;background-color:rgba(255, 255, 255, 0.1);'><div id='spinnerLocation' style='position:absolute;top:50%;left:50%;'></div></div>")
             .appendTo($("body"));
@@ -144,7 +148,7 @@ export class DefaultDialogService implements DialogService
         // };
 
 
-        let opts = {
+        const opts = {
             lines: 12, // The number of lines to draw
             length: 10, // The length of each line
             width: 4, // The line thickness
@@ -163,9 +167,11 @@ export class DefaultDialogService implements DialogService
             left: "auto" // Left position relative to parent in px
         };
 
-        let target = document.getElementById("spinnerLocation");
+        const target = document.getElementById("spinnerLocation");
+        // eslint-disable-next-line @typescript-eslint/no-unsafe-call
         this._spinner = new Spinner(opts).spin(target);
 
+        // eslint-disable-next-line @typescript-eslint/no-unsafe-call
         this._spinner.stop();
         this._loadingScreen.hide();
     }

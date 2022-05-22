@@ -1,7 +1,7 @@
 export class PropertyInfo
 {
-    private _name: string;
-    private _descriptor: PropertyDescriptor;
+    private readonly _name: string;
+    private readonly _descriptor: PropertyDescriptor;
 
 
     public get name(): string { return this._name; }

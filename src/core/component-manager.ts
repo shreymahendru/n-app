@@ -12,6 +12,7 @@ export class ComponentManager
     private readonly _registrations = new Array<ComponentRegistration>();
     
     
+    // eslint-disable-next-line @typescript-eslint/explicit-module-boundary-types
     public constructor(vue: any, container: Container)
     {
         given(vue, "vue").ensureHasValue();
@@ -21,10 +22,10 @@ export class ComponentManager
     }
     
     
-    public registerComponents(...componentViewModelClasses: Function[]): void
+    public registerComponents(...componentViewModelClasses: Array<Function>): void
     {
-        for (let item of componentViewModelClasses)
-            this.registerComponent(item);    
+        for (const item of componentViewModelClasses)
+            this._registerComponent(item);    
     }
     
     public bootstrap(): void
@@ -35,12 +36,13 @@ export class ComponentManager
         {
             // this._vue.component(registration.element, componentFactory.create(registration));
             
+            // eslint-disable-next-line @typescript-eslint/no-unsafe-call
             this._vue.component(registration.element, (<any>registration.viewModel).___componentOptions);
         });
     }
     
     
-    private registerComponent(componentViewModelClass: Function): void
+    private _registerComponent(componentViewModelClass: Function): void
     {
         const registration = new ComponentRegistration(componentViewModelClass);
         
@@ -57,7 +59,7 @@ export class ComponentManager
         else
             this._container.registerTransient(registration.name, registration.viewModel);
         
-        if (registration.components && registration.components.isNotEmpty)
+        if (registration.components != null && registration.components.isNotEmpty)
             this.registerComponents(...registration.components);
     }
 }

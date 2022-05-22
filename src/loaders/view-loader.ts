@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-unsafe-call */
 import * as vm from "vm";
 import * as path from "path";
 const getOptions = require("loader-utils").getOptions;
@@ -23,34 +24,39 @@ const resolve = require("enhanced-resolve").create.sync({ alias: config.resolve 
  * @param {string} src
  * @throws Error
  */
-// tslint:disable-next-line: no-default-export
-export default async function extractLoader(src: string)
+export default async function extractLoader(src: string): Promise<void>
 {
+    // @ts-expect-error: unsafe use of this
     const done = this.async();
+    // @ts-expect-error: unsafe use of this
     const options = getOptions(this) || {};
+    // @ts-expect-error: unsafe use of this
     const publicPath = getPublicPath(options, this);
-
+    // @ts-expect-error: unsafe use of this
     this.cacheable();
 
     try
     {
         done(null, await evalDependencyGraph({
+            // @ts-expect-error: unsafe use of this
             loaderContext: this,
             src,
+            // @ts-expect-error: unsafe use of this
             filename: this.resourcePath,
-            publicPath,
+            publicPath
         }));
-    } catch (error)
+    }
+    catch (error)
     {
         done(error);
     }
 }
 
-function evalDependencyGraph({ loaderContext, src, filename, publicPath = "" }: any)
+function evalDependencyGraph({ loaderContext, src, filename, publicPath = "" }: any): Promise<any>
 {
     const moduleCache = new Map();
 
-    function loadModule(filename: any)
+    function loadModule(filename: any): Promise<unknown>
     {
         return new Promise((resolve, reject) =>
         {
@@ -60,7 +66,8 @@ function evalDependencyGraph({ loaderContext, src, filename, publicPath = "" }: 
                 if (error)
                 {
                     reject(error);
-                } else
+                }
+                else
                 {
                     resolve(src);
                 }
@@ -68,7 +75,7 @@ function evalDependencyGraph({ loaderContext, src, filename, publicPath = "" }: 
         });
     }
 
-    function extractExports(exports: any)
+    function extractExports(exports: any): any
     {
         const hasBtoa = "btoa" in global;
         const previousBtoa = (<any>global).btoa;
@@ -78,22 +85,21 @@ function evalDependencyGraph({ loaderContext, src, filename, publicPath = "" }: 
         try
         {
             return exports.toString();
-        } catch (error)
-        {
-            throw error;
-        } finally
+        }
+        finally
         {
             if (hasBtoa)
             {
                 (<any>global).btoa = previousBtoa;
-            } else
+            }
+            else
             {
                 delete (<any>global).btoa;
             }
         }
     }
 
-    function extractQueryFromPath(givenRelativePath: any)
+    function extractQueryFromPath(givenRelativePath: any): { relativePathWithoutQuery: any; query: any; }
     {
         const indexOfLastExclMark = givenRelativePath.lastIndexOf("!");
         const indexOfQuery = givenRelativePath.lastIndexOf("?");
@@ -102,27 +108,27 @@ function evalDependencyGraph({ loaderContext, src, filename, publicPath = "" }: 
         {
             return {
                 relativePathWithoutQuery: givenRelativePath.slice(0, indexOfQuery),
-                query: givenRelativePath.slice(indexOfQuery),
+                query: givenRelativePath.slice(indexOfQuery)
             };
         }
 
         return {
             relativePathWithoutQuery: givenRelativePath,
-            query: "",
+            query: ""
         };
     }
 
-    async function evalModule(src: any, filename: any)
+    async function evalModule(src: any, filename: any): Promise<any>
     {
         const script = new vm.Script(src, {
             filename,
-            displayErrors: true,
+            displayErrors: true
         });
         const newDependencies = [] as any;
         const exports = {};
         const sandbox = Object.assign({}, global, {
             module: {
-                exports,
+                exports
             },
             exports,
             __webpack_public_path__: publicPath, // eslint-disable-line camelcase
@@ -142,6 +148,7 @@ function evalDependencyGraph({ loaderContext, src, filename, publicPath = "" }: 
 
                 if (moduleCache.has(absolutePath))
                 {
+                    // eslint-disable-next-line @typescript-eslint/no-unsafe-return
                     return moduleCache.get(absolutePath);
                 }
 
@@ -153,10 +160,11 @@ function evalDependencyGraph({ loaderContext, src, filename, publicPath = "" }: 
                     // Other dependencies are automatically added by loadModule() below
                     loaderContext.addDependency(absolutePath);
 
-                    const exports = require(absolutePath); // eslint-disable-line import/no-dynamic-require
+                    const exports = require(absolutePath);
 
                     moduleCache.set(absolutePath, exports);
 
+                    // eslint-disable-next-line @typescript-eslint/no-unsafe-return
                     return exports;
                 }
 
@@ -169,7 +177,7 @@ function evalDependencyGraph({ loaderContext, src, filename, publicPath = "" }: 
                 });
 
                 return rndPlaceholder;
-            },
+            }
         });
 
         script.runInNewContext(sandbox);
@@ -192,6 +200,7 @@ function evalDependencyGraph({ loaderContext, src, filename, publicPath = "" }: 
 
         moduleCache.set(filename, extractedContent);
 
+        // eslint-disable-next-line @typescript-eslint/no-unsafe-return
         return extractedContent;
     }
 
@@ -201,7 +210,7 @@ function evalDependencyGraph({ loaderContext, src, filename, publicPath = "" }: 
 /**
  * @returns {string}
  */
-function rndNumber()
+function rndNumber(): string
 {
     return Math.random()
         .toString()
@@ -221,17 +230,19 @@ function rndNumber()
  * @param {Object} context - Webpack loader context
  * @returns {string}
  */
-function getPublicPath(options: any, context: any)
+function getPublicPath(options: any, context: any): string
 {
     let publicPath = "";
 
     if ("publicPath" in options)
     {
         publicPath = typeof options.publicPath === "function" ? options.publicPath(context) : options.publicPath;
-    } else if (context.options && context.options.output && "publicPath" in context.options.output)
+    }
+    else if (context.options && context.options.output && "publicPath" in context.options.output)
     {
         publicPath = context.options.output.publicPath;
-    } else if (context._compilation && context._compilation.outputOptions && "publicPath" in context._compilation.outputOptions)
+    }
+    else if (context._compilation && context._compilation.outputOptions && "publicPath" in context._compilation.outputOptions)
     {
         publicPath = context._compilation.outputOptions.publicPath;
     }

@@ -6,7 +6,7 @@ import { Page } from "./page";
 import { PageTreeBuilder } from "./page-tree-builder";
 import { Resolver, Resolution } from "./resolve";
 import { ComponentManager } from "./component-manager";
-import { MetaDetail } from "./meta";
+import VueRouter from "vue-router";
 
 
 export class PageManager
@@ -17,19 +17,24 @@ export class PageManager
     private readonly _pageViewModelClasses = new Array<Function>();
     private readonly _registrations = new Array<PageRegistration>();
     private readonly _resolvers = new Array<string>();
-    private _vueRouterInstance: any = null;
-    private _initialRoute: string = null;
-    private _unknownRoute: string = null;
-    private _defaultPageTitle: string = null;
-    private _defaultPageMetas: ReadonlyArray<MetaDetail> = null;
-    private _useHistoryMode: boolean = false;
+    private _vueRouterInstance: VueRouter | null = null;
+    private _initialRoute: string | null = null;
+    private _unknownRoute: string | null = null;
+    // private _defaultPageTitle: string | null = null;
+    // private _defaultPageMetas: ReadonlyArray<MetaDetail> = null;
+    private _useHistoryMode = false;
 
 
+    public get hasRegistrations(): boolean { return this._registrations.isNotEmpty;  }
     public get useHistoryMode(): boolean { return this._useHistoryMode; }
-    public get vueRouterInstance(): any { return this._vueRouterInstance; }
+    public get vueRouterInstance(): VueRouter
+    {
+        given(this, "this").ensure(t => t._vueRouterInstance != null, "not bootstrapped");
+        return this._vueRouterInstance!;
+    }
 
 
-    public constructor(vueRouter: any, container: Container, componentManager: ComponentManager)
+    public constructor(vueRouter: unknown, container: Container, componentManager: ComponentManager)
     {
         given(vueRouter, "vueRouter").ensureHasValue();
         this._vueRouter = vueRouter;
@@ -42,7 +47,7 @@ export class PageManager
     }
 
 
-    public registerPages(...pageViewModelClasses: Function[]): void
+    public registerPages(...pageViewModelClasses: Array<Function>): void
     {
         this._pageViewModelClasses.push(...pageViewModelClasses);
     }
@@ -84,19 +89,20 @@ export class PageManager
 
     public bootstrap(): void
     {
-        this._pageViewModelClasses.forEach(t => this.registerPage(t));
+        this._pageViewModelClasses.forEach(t => this._registerPage(t));
         if (this._registrations.length === 0)
             return;
 
-        this.createRouting();
-        this.configureResolves();
+        this._createRouting();
+        this._configureResolves();
         // this.configureInitialRoute();
     }
     
 
-    private registerPage(pageViewModelClass: Function): void
+    private _registerPage(pageViewModelClass: Function): void
     {
-        const registration = new PageRegistration(pageViewModelClass, this._defaultPageTitle, this._defaultPageMetas);
+        // const registration = new PageRegistration(pageViewModelClass, this._defaultPageTitle, this._defaultPageMetas);
+        const registration = new PageRegistration(pageViewModelClass, null, null);
 
         if (this._registrations.some(t => t.name === registration.name))
             throw new ApplicationException(`Duplicate Page registration with name '${registration.name}'.`);
@@ -125,44 +131,47 @@ export class PageManager
             this._componentManager.registerComponents(...registration.components);
         
         if (registration.pages && registration.pages.isNotEmpty)
-            registration.pages.forEach(t => this.registerPage(t));
+            registration.pages.forEach(t => this._registerPage(t));
     }
 
-    private createRouting(): void
+    private _createRouting(): void
     {
-        let pageTree = this.createPageTree();
-        let vueRouterRoutes = pageTree.map(t => t.createVueRouterRoute());
+        const pageTree = this._createPageTree();
+        const vueRouterRoutes = pageTree.map(t => t.createVueRouterRoute());
         if (this._initialRoute)
             vueRouterRoutes.push({ path: "/", redirect: this._initialRoute });
         if (this._unknownRoute)
             vueRouterRoutes.push({ path: "*", redirect: this._unknownRoute });
-        let vueRouter = this._vueRouter;
+        const vueRouter = this._vueRouter;
         const routerOptions: any = {
             routes: vueRouterRoutes,
-            // @ts-ignore
-            scrollBehavior: function (to: any, from: any, savedPosition: any)
+            scrollBehavior: function (_to: any, _from: any, _savedPosition: any)
             {
                 return { x: 0, y: 0 };
             }
         };
         if (this._useHistoryMode)
             routerOptions.mode = "history";
+        // eslint-disable-next-line @typescript-eslint/no-unsafe-call
         this._vueRouterInstance = new vueRouter(routerOptions);
     }
 
-    private createPageTree(): ReadonlyArray<Page>
+    private _createPageTree(): ReadonlyArray<Page>
     {
-        let root = new Page("/", null);
-        let treeBuilder = new PageTreeBuilder(root, this._registrations);
+        const root = new Page("/", null);
+        const treeBuilder = new PageTreeBuilder(root, this._registrations);
         return treeBuilder.build();
     }
 
-    private configureResolves(): void
+    private _configureResolves(): void
     {
-        this._vueRouterInstance.beforeEach((to: any, from: any, next: any) =>
+        // eslint-disable-next-line @typescript-eslint/no-unsafe-call
+        this._vueRouterInstance!.beforeEach((to: any, from: any, next: Function) =>
         {
             const registrationName = to.name + "ViewModel";
             const registration = this._registrations.find(t => t.name === registrationName);
+            if (registration == null)
+                throw new ApplicationException(`Unable to find PageRegistration with name '${registrationName}'`);
             registration.resolvedValues = null;
             if (registration.resolvers && registration.resolvers.length > 0)
             {
@@ -188,14 +197,15 @@ export class PageManager
                             return;
                         }
                         
-                        const redirectRes = resolutions.find(t => !!(<Resolution>t).redirect) as Resolution;
+                        const redirectRes = resolutions.find(t => !!(<Resolution>t).redirect);
                         if (redirectRes && redirectRes.redirect)
                         {
                             next(redirectRes.redirect);
                             return;
                         }
                         
-                        registration.resolvedValues = resolutions.filter(t => (<any>t).value != null).map(t => (<any>t).value);
+                        // eslint-disable-next-line @typescript-eslint/no-unsafe-return
+                        registration.resolvedValues = resolutions.filter(t => (<any>t).value != null).map(t => (<Resolution>t).value);
                         next();
                     })
                     .catch(() =>

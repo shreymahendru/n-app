@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-invalid-this */
 import "@nivinjoseph/n-ext";
 import { ConfigurationManager } from "@nivinjoseph/n-config";
 const hash = require("hash-sum");
@@ -5,8 +6,7 @@ const loaderUtils = require("loader-utils");
 import * as Path from "path";
 
 
-// tslint:disable-next-line: no-default-export
-export default function (content: string)
+export default function (content: string): string
 {
     // console.log(this.request);    
     // console.log(content);
@@ -18,14 +18,18 @@ export default function (content: string)
         return content;
     
     
+    // @ts-expect-error: unsafe use of this
+    // eslint-disable-next-line @typescript-eslint/no-unsafe-call
     const options = loaderUtils.getOptions(this);
     let defaultPageTitle, defaultPageMetadata;
     if (options)
         ({defaultPageTitle, defaultPageMetadata } = options);
     
     // console.log("options", defaultPageTitle, defaultPageMetadata);
-    
+
+    // @ts-expect-error: unsafe use of this
     const dirPath = this.context as string;
+    // @ts-expect-error: unsafe use of this
     const filePath = this.resourcePath as string;
     // const relativeFilePath = "./" + Path.relative(this.rootContext, this.resourcePath).replace(/^(\.\.[\/\\])+/, "");
     const fileName = filePath.replace(dirPath + Path.sep, "");
@@ -65,6 +69,7 @@ export default function (content: string)
     const relativeViewFilePath = "." + Path.sep + viewFileName;
     // const relativeViewFilePath = relativeFilePath.substr(0, relativeFilePath.length - "-view-model.js".length) + "-view.html";
     
+    // eslint-disable-next-line @typescript-eslint/no-unsafe-call
     const id = hash(className);
     const hotReloadAPIPath = JSON.stringify(require.resolve("vue-hot-reload-api"));
     const vueTemplateCompilerPath = JSON.stringify(require.resolve("vue-template-compiler"));

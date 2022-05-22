@@ -10,7 +10,7 @@ export class InmemoryTodoRepository implements TodoRepository
     private readonly _todos: Array<Todo> = [];
 
 
-    public getTodos(): Promise<Todo[]>
+    public getTodos(): Promise<Array<Todo>>
     {
         return Promise.resolve(this._todos.map(t => t));
     }
@@ -19,8 +19,8 @@ export class InmemoryTodoRepository implements TodoRepository
     {
         given(title, "title").ensureHasValue().ensure(t => !t.isEmptyOrWhiteSpace());
 
-        let lastId = this._todos.length === 0 ? 0 : this._todos.orderByDesc(t => t.id)[0].id;
-        let todo = new Todo(lastId + 1, title, description);
+        const lastId = this._todos.length === 0 ? 0 : this._todos.orderByDesc(t => t.id)[0].id;
+        const todo = new Todo(lastId + 1, title, description);
         this._todos.push(todo);
         return Promise.resolve(todo);
     }
@@ -44,7 +44,7 @@ export class InmemoryTodoRepository implements TodoRepository
     {
         given(id, "id").ensureHasValue();
 
-        let todo = this._todos.find(t => t.id === id);
+        const todo = this._todos.find(t => t.id === id);
         if (todo == null)
             return Promise.resolve();    
         

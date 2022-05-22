@@ -33,7 +33,7 @@ export class TestResolverFoo implements Resolver
         
         
         return {
-            value: "foo",
+            value: "foo"
             // redirect: "/dashboard"
         };
     }
