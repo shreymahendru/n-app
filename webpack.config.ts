@@ -209,7 +209,10 @@ const moduleRules: Array<any> = [
         test: /-view\.html$/,
         exclude: [path.resolve(__dirname, "test-app/controllers")],
         use: [
-            ...isDev ? [] :
+            ...isDev ? [
+                
+            ]
+                :
                 [{
                     loader: "vue-loader/lib/loaders/templateLoader.js"
                 },
@@ -221,6 +224,9 @@ const moduleRules: Array<any> = [
                 options: {
                     esModule: false
                 }
+            },
+            {
+                loader: path.resolve("src/loaders/view-dev-loader.js")
             }
         ]
     },
