@@ -11,7 +11,13 @@ import { given } from "@nivinjoseph/n-defensive";
 
 @template(require("./n-scroll-container-view.html"))
 @element("n-scroll-container")
-@bind("onlyX", "onlyY", "renderKey", "hugBottom", "hugRight")
+@bind({
+    "onlyX?": "boolean",
+    "onlyY?": "boolean",
+    "renderKey?": "number",
+    "hugBottom?": "boolean",
+    "hugRight?": "boolean"
+})
 export class NScrollContainerViewModel extends ComponentViewModel
 {
     private _sb: SimpleBar | null = null;
@@ -21,7 +27,7 @@ export class NScrollContainerViewModel extends ComponentViewModel
     
     public get isHorizontalOnly(): boolean { return !!TypeHelper.parseBoolean(this.getBound("onlyX")); }
     public get isVerticalOnly(): boolean { return !!TypeHelper.parseBoolean(this.getBound("onlyY")); }
-    public get myRenderKey(): string | number { return this.getBound("renderKey"); }
+    public get myRenderKey(): number { return this.getBound<number | null>("renderKey") ?? 0; }
     
     
     protected override onCreate(): void

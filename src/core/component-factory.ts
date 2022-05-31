@@ -29,8 +29,8 @@ export class ComponentFactory
             component.staticRenderFns = registration.template.staticRenderFns;
         }
         
-        if (registration.bindings.length > 0)
-            component.props = registration.bindings;
+        if (registration.bindings.isNotEmpty)
+            component.props = registration.bindings.map(t => t.name);
         
         component.inject = ["pageScopeContainer", "rootScopeContainer"];
         
@@ -50,10 +50,11 @@ export class ComponentFactory
                 const c = container as Container;
                 // @ts-expect-error: deliberately accessing protected member
                 const cReg = c.componentRegistry.find(registration.name)!;
-                (<any>cReg)._component = component.___viewModel;
-                // @ts-expect-error: deliberate calling private method
+                // @ts-expect-error: deliberately accessing private member
+                cReg._component = component.___viewModel;
+                // @ts-expect-error: deliberate calling private method and accessing private member
                 // eslint-disable-next-line @typescript-eslint/no-unsafe-call
-                (<any>cReg)._dependencies = cReg._getDependencies();
+                cReg._dependencies = cReg._getDependencies();
                 // registration.reload(component.___viewModel);
                 
                 component.___reload = false;
@@ -82,7 +83,7 @@ export class ComponentFactory
             vueVm.$options.methods = methods;
             vueVm.$options.computed = computed;
             vm._ctx = vueVm;
-            vm._bindings = component.props ? [...registration.bindings] : [];
+            vm._bindings = component.props ? [...registration.bindings.map(t => t.name)] : [];
             
             vm._events = registration.events;
 
@@ -92,12 +93,21 @@ export class ComponentFactory
         
         component.beforeCreate = function (): void
         {
+            // if (registration.bindings.isNotEmpty)
+            //     given(this.$options.propsData as object, "boundData").ensureHasValue().ensureIsObject()
+            //         .ensureHasStructure(registration.bindingSchema as any);
+            
             // console.log("executing beforeCreate");
-            // console.log(this.vm);
+            // console.log(Object.keys(this));
+            // console.log(this.$options.propsData);
         };
         
         component.created = function (): void
         {
+            if (registration.bindings.isNotEmpty)
+                given(this.$options.propsData as object, "boundData").ensureHasValue().ensureIsObject()
+                    .ensureHasStructure(registration.bindingSchema as any);
+            
             // console.log("executing created");
             // console.log(this.vm);
             

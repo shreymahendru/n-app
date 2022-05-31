@@ -36,7 +36,7 @@ export class PageManager
 
     public constructor(vueRouter: unknown, container: Container, componentManager: ComponentManager)
     {
-        given(vueRouter, "vueRouter").ensureHasValue();
+        given(vueRouter as object, "vueRouter").ensureHasValue();
         this._vueRouter = vueRouter;
         
         given(container, "container").ensureHasValue().ensureIsObject();

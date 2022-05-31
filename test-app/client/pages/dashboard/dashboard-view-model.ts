@@ -54,6 +54,7 @@ export class DashboardViewModel extends BasePageViewModel
         this._scopedService = scopedService;
 
         this._fooParentValue = "whatever";
+        // this._fooParentValue = null as any;
 
         this.executeOnDestroy(() => console.log("Destroying dashboard"));
     }

@@ -6,10 +6,9 @@ import "@nivinjoseph/n-ext";
 export const bindSymbol = Symbol.for("@nivinjoseph/n-app/bind");
 
 // public
-export function bind(...bindings: ReadonlyArray<string>): Function
+export function bind(schema: object): Function
 {
-    given(bindings, "bindings").ensureHasValue().ensureIsArray()
-        .ensure(t => t.isNotEmpty, "cannot be empty");
+    given(schema, "schema").ensureHasValue().ensureIsObject();
 
-    return (target: Function) => Reflect.defineMetadata(bindSymbol, bindings, target);
+    return (target: Function) => Reflect.defineMetadata(bindSymbol, schema, target);
 }
