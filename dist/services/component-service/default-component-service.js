@@ -34,10 +34,11 @@ class DefaultComponentService {
                 throw new n_exception_1.ApplicationException("Could not get pageScopeContainer or rootScopeContainer.");
             if (component.___reload) {
                 const c = container;
-                // @ts-expect-error: deliberately accessing  protected member
+                // @ts-expect-error: deliberately accessing protected member
                 const cReg = c.componentRegistry.find(registration.name);
+                // @ts-expect-error: deliberately accessing private member
                 cReg._component = component.___viewModel;
-                // @ts-expect-error: deliberately calling private method
+                // @ts-expect-error: deliberately calling private method and accessing private member
                 // eslint-disable-next-line @typescript-eslint/no-unsafe-call
                 cReg._dependencies = cReg._getDependencies();
                 component._cachedVm = null;
