@@ -34,7 +34,7 @@ let NFileSelectViewModel = class NFileSelectViewModel extends component_view_mod
     }
     get _mimeTypesList() { return this.getBound("mimeTypes"); }
     get _maxFileSizeValue() { return n_util_1.TypeHelper.parseNumber(this.getBound("maxFileSize")); }
-    get _isMultiple() { return this.getBound("multiple") != null && this.getBound("multiple") === "true"; }
+    get _isMultiple() { return this.getBound("multiple") != null && this.getBound("multiple") === true; }
     onMount(element) {
         this._initializeMaxFileSizeBytes();
         const inputText = this._isMultiple
