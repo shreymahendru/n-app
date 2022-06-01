@@ -1,6 +1,6 @@
 {
     "name": "@nivinjoseph/n-app",
-    "version": "3.0.84",
+    "version": "4.0.3",
     "description": "Vue.js based application framework",
     "main": "./dist/index.js",
     "types": "./dist/index.d.ts",
@@ -71,7 +71,6 @@
         "enhanced-resolve": "^5.9.3",
         "eslint": "^8.15.0",
         "feather-icons": "^4.29.0",
-        "fibers": "^5.0.1",
         "file-loader": "^6.2.0",
         "fork-ts-checker-webpack-plugin": "^7.2.11",
         "hash-sum": "^2.0.0",
@@ -115,7 +114,7 @@
     "dependencies": {
         "@babel/polyfill": "^7.12.1",
         "@nivinjoseph/n-config": "^1.0.35",
-        "@nivinjoseph/n-defensive": "^1.0.39",
+        "@nivinjoseph/n-defensive": "^1.0.40",
         "@nivinjoseph/n-exception": "^1.0.26",
         "@nivinjoseph/n-ext": "^1.1.35",
         "@nivinjoseph/n-ject": "^2.0.3",

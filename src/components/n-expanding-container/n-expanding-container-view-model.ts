@@ -8,20 +8,23 @@ import "./n-expanding-container-view.scss";
 
 @template(require("./n-expanding-container-view.html"))
 @element("n-expanding-container")
-@bind("constrainX", "renderKey")
+@bind({
+    "constrainX?": "boolean",
+    "renderKey?": "number"
+})
 export class NExpandingContainerViewModel extends ComponentViewModel
 {
     public get _constrainHorizontal(): boolean { return !!TypeHelper.parseBoolean(this.getBound("constrainX")); }
-    
-    public get myRenderKey(): string | number { return this.getBound("renderKey"); }
-    
-    
+
+    public get myRenderKey(): number { return this.getBound<number | null>("renderKey") ?? 0; }
+
+
     protected override onMount(element: HTMLElement): void
     {
         super.onMount(element);
 
         this._recalculate(element);
-        
+
         this.watch("myRenderKey", (v, ov) =>
         {
             if (v == null || v === ov)
@@ -30,14 +33,14 @@ export class NExpandingContainerViewModel extends ComponentViewModel
             this._recalculate(element);
         });
     }
-    
+
     protected override onDestroy(): void
     {
         this.unWatch("myRenderKey");
-        
+
         super.onDestroy();
     }
-    
+
     private _recalculate(element: HTMLElement): void
     {
         if (this._constrainHorizontal)
@@ -45,9 +48,9 @@ export class NExpandingContainerViewModel extends ComponentViewModel
 
         this._doVertical(element);
     }
-    
+
     private _doHorizontal(element: HTMLElement): void
-    {        
+    {
         let constrainedWidth = 0;
 
         $(element).siblings().each(function (this: HTMLElement)

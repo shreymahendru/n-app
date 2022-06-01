@@ -1,25 +1,27 @@
-import { route, template, meta, NavigationService, resolve, EventAggregator } from "./../../../../src/index";
+import { route, template, meta, NavigationService, resolve, EventAggregator, PageViewModel, components } from "./../../../../src/index";
 import * as Routes from "./../routes";
-import { BasePageViewModel } from "./../base-page-view-model";
 import "./test-view.scss";
 import { inject } from "@nivinjoseph/n-ject";
 import { TodoRepository } from "../../services/todo-repository/todo-repository";
 import { given } from "@nivinjoseph/n-defensive";
 import { TestResolverFoo } from "../../resolvers/test-resolver-foo";
 import { TestResolverBar } from "../../resolvers/test-resolver-bar";
+import { ComponentAViewModel } from "./components/component-a/component-a-view-model";
 
 
+@components(ComponentAViewModel)
 @template(require("./test-view.html"))
 @route(Routes.test)
 @meta({$key: "name", name: "description", content: "This is test"})    
 @inject("TodoRepository", "NavigationService", "EventAggregator")    
 @resolve(TestResolverBar, TestResolverFoo) 
-export class TestViewModel extends BasePageViewModel
+export class TestViewModel extends PageViewModel
 {
     // @ts-expect-error: not used atm
     private readonly _todoRepository: TodoRepository;
-    // @ts-expect-error: not used atm
+    
     private readonly _navigationService: NavigationService;
+    // @ts-expect-error: not used atm
     private readonly _eventAggregator: EventAggregator;
     private _id = 0;
     
@@ -44,9 +46,9 @@ export class TestViewModel extends BasePageViewModel
     
     public go(): void
     {
-        // this._navigationService.navigate(Routes.test, { id: this._id });
+        this._navigationService.navigate(Routes.test, { id: ++this._id });
         
-        this._eventAggregator.publish("openFileSelect", "foo");
+        // this._eventAggregator.publish("openFileSelect", "foo");
     }
     
     public onFileSelected(val: unknown): void
@@ -54,16 +56,24 @@ export class TestViewModel extends BasePageViewModel
         console.log("File data", val);
     }
     
+    protected override onCreate(): void
+    {
+        super.onCreate();
+        
+        console.log("test page on create");
+    }
     
     protected override onEnter(arg: number, resolved1: string, resolved2: string): void
     {
         super.onEnter(arg, resolved1, resolved2);
+        
+        console.log("test page on enter");
            
         // console.log("resolved", resolved1);
         
         console.log("id is", arg);
         
-        this._id = ++arg;
+        this._id = arg;
     }
 }
 

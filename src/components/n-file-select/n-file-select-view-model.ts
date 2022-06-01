@@ -25,54 +25,59 @@ export interface FileInfo
 
 @template(require("./n-file-select-view.html"))
 @element("n-file-select")
-@bind("id", "mimeTypes", "maxFileSize", "multiple")
-@events("select")    
-@inject("DialogService", "EventAggregator")    
+@bind({
+    id: "string",
+    mimeTypes: "string",
+    "maxFileSize?": "number",
+    "multiple?": "boolean"
+})
+@events("select")
+@inject("DialogService", "EventAggregator")
 export class NFileSelectViewModel extends ComponentViewModel
 {
     private readonly _dialogService: DialogService;
     private readonly _eventAggregator: EventAggregator;
     private readonly _inputTemplate = `<input type="file" accept="{0}" style="display: none" />`;
-    private readonly  _inputTemplateMultiple = `<input type="file" accept="{0}" multiple style="display: none" />`;
+    private readonly _inputTemplateMultiple = `<input type="file" accept="{0}" multiple style="display: none" />`;
     private _inputElement!: JQuery<HTMLElement>;
     private _maxFileSizeBytes: number | null = null;
 
-    
+
     private get _mimeTypesList(): string { return this.getBound("mimeTypes"); }
     private get _maxFileSizeValue(): number | null { return TypeHelper.parseNumber(this.getBound("maxFileSize")); }
-    private get _isMultiple(): boolean { return this.getBound("multiple") != null && this.getBound("multiple") === "true"; }
+    private get _isMultiple(): boolean { return this.getBound("multiple") != null && this.getBound("multiple") === true; }
 
-    
+
     public constructor(dialogService: DialogService, eventAggregator: EventAggregator)
     {
         super();
-        
+
         given(dialogService, "dialogService").ensureHasValue().ensureIsObject();
         this._dialogService = dialogService;
-        
+
         given(eventAggregator, "eventAggregator").ensureHasValue().ensureIsObject();
         this._eventAggregator = eventAggregator;
-        
+
         this.executeOnCreate(() =>
         {
             const id = this.getBound<string>("id");
             given(id, "id").ensureHasValue().ensureIsString();
-            
+
             const sub = this._eventAggregator.subscribe("openFileSelect", (identifier) =>
             {
                 if (identifier !== id)
                     return;
-                
+
                 this._inputElement.click();
             });
-            
+
             this.executeOnDestroy(() => sub.unsubscribe());
         });
     }
-    
-    
+
+
     protected override onMount(element: HTMLElement): void
-    {         
+    {
         this._initializeMaxFileSizeBytes();
 
         const inputText = this._isMultiple
@@ -100,12 +105,12 @@ export class NFileSelectViewModel extends ComponentViewModel
 
         if (files == null || files.length === 0)
             return;
-        
+
         const promises = new Array<Promise<FileInfo>>();
 
         for (const file of files)
             promises.push(this._createFileInfo(file));
-        
+
         Promise.all(promises)
             .then((results) =>
             {
@@ -125,7 +130,7 @@ export class NFileSelectViewModel extends ComponentViewModel
 
                 if (processedFiles.length > 0)
                     this.emit("select", this._isMultiple ? processedFiles : processedFiles[0]);
-                
+
                 this._dialogService.hideLoadingScreen();
             })
             .catch((e) =>
@@ -135,7 +140,7 @@ export class NFileSelectViewModel extends ComponentViewModel
                 this._dialogService.hideLoadingScreen();
             });
     }
-    
+
     private _createFileInfo(file: File): Promise<FileInfo>
     {
         const fileInfo = {} as FileInfo;
@@ -143,7 +148,7 @@ export class NFileSelectViewModel extends ComponentViewModel
         fileInfo.fileName = file.name;
         fileInfo.fileType = file.type;
         fileInfo.fileSize = file.size;
-        
+
         const deferred = new Deferred<FileInfo>();
 
         // if (fileInfo.fileType == null || fileInfo.fileType.isEmptyOrWhiteSpace())

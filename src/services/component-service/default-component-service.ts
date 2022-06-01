@@ -54,12 +54,13 @@ export class DefaultComponentService implements ComponentService
             if (component.___reload)
             {
                 const c = container as Container;
-                // @ts-expect-error: deliberately accessing  protected member
+                // @ts-expect-error: deliberately accessing protected member
                 const cReg = c.componentRegistry.find(registration.name)!;
-                (<any>cReg)._component = component.___viewModel;
-                // @ts-expect-error: deliberately calling private method
+                // @ts-expect-error: deliberately accessing private member
+                cReg._component = component.___viewModel;
+                // @ts-expect-error: deliberately calling private method and accessing private member
                 // eslint-disable-next-line @typescript-eslint/no-unsafe-call
-                (<any>cReg)._dependencies = cReg._getDependencies();
+                cReg._dependencies = cReg._getDependencies();
 
                 component._cachedVm = null;
 

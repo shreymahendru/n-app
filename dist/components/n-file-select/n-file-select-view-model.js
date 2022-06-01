@@ -34,7 +34,7 @@ let NFileSelectViewModel = class NFileSelectViewModel extends component_view_mod
     }
     get _mimeTypesList() { return this.getBound("mimeTypes"); }
     get _maxFileSizeValue() { return n_util_1.TypeHelper.parseNumber(this.getBound("maxFileSize")); }
-    get _isMultiple() { return this.getBound("multiple") != null && this.getBound("multiple") === "true"; }
+    get _isMultiple() { return this.getBound("multiple") != null && this.getBound("multiple") === true; }
     onMount(element) {
         this._initializeMaxFileSizeBytes();
         const inputText = this._isMultiple
@@ -118,7 +118,12 @@ let NFileSelectViewModel = class NFileSelectViewModel extends component_view_mod
 NFileSelectViewModel = tslib_1.__decorate([
     (0, template_1.template)(require("./n-file-select-view.html")),
     (0, element_1.element)("n-file-select"),
-    (0, bind_1.bind)("id", "mimeTypes", "maxFileSize", "multiple"),
+    (0, bind_1.bind)({
+        id: "string",
+        mimeTypes: "string",
+        "maxFileSize?": "number",
+        "multiple?": "boolean"
+    }),
     (0, events_1.events)("select"),
     (0, n_ject_1.inject)("DialogService", "EventAggregator"),
     tslib_1.__metadata("design:paramtypes", [Object, Object])

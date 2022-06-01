@@ -10,7 +10,7 @@ const n_util_1 = require("@nivinjoseph/n-util");
 require("./n-expanding-container-view.scss");
 let NExpandingContainerViewModel = class NExpandingContainerViewModel extends component_view_model_1.ComponentViewModel {
     get _constrainHorizontal() { return !!n_util_1.TypeHelper.parseBoolean(this.getBound("constrainX")); }
-    get myRenderKey() { return this.getBound("renderKey"); }
+    get myRenderKey() { var _a; return (_a = this.getBound("renderKey")) !== null && _a !== void 0 ? _a : 0; }
     onMount(element) {
         super.onMount(element);
         this._recalculate(element);
@@ -51,7 +51,10 @@ let NExpandingContainerViewModel = class NExpandingContainerViewModel extends co
 NExpandingContainerViewModel = tslib_1.__decorate([
     (0, template_1.template)(require("./n-expanding-container-view.html")),
     (0, element_1.element)("n-expanding-container"),
-    (0, bind_1.bind)("constrainX", "renderKey")
+    (0, bind_1.bind)({
+        "constrainX?": "boolean",
+        "renderKey?": "number"
+    })
 ], NExpandingContainerViewModel);
 exports.NExpandingContainerViewModel = NExpandingContainerViewModel;
 //# sourceMappingURL=n-expanding-container-view-model.js.map
