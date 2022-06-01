@@ -30,7 +30,80 @@ export class ComponentFactory
         }
         
         if (registration.bindings.isNotEmpty)
-            component.props = registration.bindings.map(t => t.name);
+        {
+            component.props = registration.bindings
+                .reduce<Record<string, any>>((acc, t) =>
+                {
+                    // const types = ["string", "boolean", "number", "function", "array", "object"];
+                    
+                    const propSchema: Record<string, any> = {};
+                    propSchema.required = !t.isOptional;
+                    if (typeof t.type === "string")
+                    {
+                        const type = t.type.trim().toLowerCase();
+                        switch (type)
+                        {
+                            case "string":
+                                propSchema.type = String;
+                                break;
+                            case "boolean":
+                                propSchema.type = Boolean;
+                                break;
+                            case "number":
+                                propSchema.type = Number;
+                                break;
+                            case "function":
+                                propSchema.type = Function;
+                                break;
+                            case "array":
+                                propSchema.type = Array;
+                                break;
+                            case "object":
+                                propSchema.type = Object;
+                                break;
+                            default:
+                                throw new Error(`Unsupported binding prop type '${type}'`);
+                        }
+                    }
+                    else if (typeof t.type === "function")
+                        propSchema.type = t.type;
+                    else if (Array.isArray(t.type))
+                        propSchema.type = Array;
+                    else if (typeof t.type === "object")
+                        propSchema.type = Object;
+                    else
+                        throw new Error(`Unsupported binding prop type '${t.type}'`);
+                    
+                    const key = t.isOptional ? t.name + "?" : t.name;
+                    const validationSchema: Record<string, any> = {
+                        [registration.name]: {
+                            "props": {
+                                [key]: t.type
+                            }
+                        }
+                    };
+                    
+                    // const longName = `${registration.name}.props.${t.name}`;
+                    
+                    propSchema.validator = (value: any): boolean | never =>
+                    {
+                        given({
+                            [registration.name]: {
+                                "props": {
+                                    [t.name]: value
+                                }
+                            }
+                        }, t.name)
+                            .ensureHasStructure(validationSchema);
+                        
+                        return true;
+                    };
+                    
+                    acc[t.name] = propSchema;
+                    
+                    return acc;
+                }, {});
+        }
         
         component.inject = ["pageScopeContainer", "rootScopeContainer"];
         
@@ -104,9 +177,9 @@ export class ComponentFactory
         
         component.created = function (): void
         {
-            if (registration.bindings.isNotEmpty)
-                given(this.$options.propsData as object, "boundData").ensureHasValue().ensureIsObject()
-                    .ensureHasStructure(registration.bindingSchema as any);
+            // if (registration.bindings.isNotEmpty)
+            //     given(this.$options.propsData as object, "propsData").ensureHasValue().ensureIsObject()
+            //         .ensureHasStructure(registration.bindingSchema as any);
             
             // console.log("executing created");
             // console.log(this.vm);

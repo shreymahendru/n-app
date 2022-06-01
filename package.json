@@ -71,7 +71,6 @@
         "enhanced-resolve": "^5.9.3",
         "eslint": "^8.15.0",
         "feather-icons": "^4.29.0",
-        "fibers": "^5.0.1",
         "file-loader": "^6.2.0",
         "fork-ts-checker-webpack-plugin": "^7.2.11",
         "hash-sum": "^2.0.0",

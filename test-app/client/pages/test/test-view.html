@@ -2,5 +2,6 @@
     <h3>This is a test</h3>
     <router-link to="/dashboard">Go to Dashboard</router-link>
     <button v-on:click="go">To Test {{id}}</button>
-    <n-file-select id="foo" mime-types=".xlsx" max-file-size="500" @select="onFileSelected"></n-file-select>
+    <n-file-select id="foo" mime-types=".xlsx" :max-file-size="500" @select="onFileSelected"></n-file-select>
+    <component-a :num="id"></component-a>
 </div>
