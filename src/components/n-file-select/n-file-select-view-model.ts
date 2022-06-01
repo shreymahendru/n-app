@@ -45,7 +45,7 @@ export class NFileSelectViewModel extends ComponentViewModel
 
     private get _mimeTypesList(): string { return this.getBound("mimeTypes"); }
     private get _maxFileSizeValue(): number | null { return TypeHelper.parseNumber(this.getBound("maxFileSize")); }
-    private get _isMultiple(): boolean { return this.getBound("multiple") != null && this.getBound("multiple") === "true"; }
+    private get _isMultiple(): boolean { return this.getBound("multiple") != null && this.getBound("multiple") === true; }
 
 
     public constructor(dialogService: DialogService, eventAggregator: EventAggregator)
