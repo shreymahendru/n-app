@@ -37,7 +37,7 @@ export default async function extractLoader(src: string): Promise<void>
 
     try
     {
-        console.log(src);
+        // console.log(src);
         done(null, await evalDependencyGraph({
             // @ts-expect-error: unsafe use of this
             loaderContext: this,

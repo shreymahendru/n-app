@@ -6,6 +6,9 @@ import "./component-a-view.scss";
 @bind({ num: "number" })
 export class ComponentAViewModel extends ComponentViewModel
 {
+    
+    public get value(): number { return this.getBound("num"); }
+    
     protected override onCreate(): void
     {
         super.onCreate();
