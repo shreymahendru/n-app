@@ -157,6 +157,8 @@ export default function (this: LoaderContext<any>, src: string): string
     
     const combinedFile = file.replace("-view.html", "-view-model.temp.ts");
     const combinedFilePath = Path.join(dir, combinedFile);
+    if (!MemFs.existsSync(dir))
+        MemFs.mkdirSync(dir, { recursive: true });
     MemFs.writeFileSync(combinedFilePath, combined, {encoding: "utf-8"});
     
     compile([combinedFilePath], {
