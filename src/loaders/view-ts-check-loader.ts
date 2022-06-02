@@ -1,7 +1,7 @@
 /* eslint-disable @typescript-eslint/no-unsafe-call */
 // import { compileToFunctions } from "vue-template-compiler";
 import * as Path from "path";
-// import * as Fs from "fs";
+import * as Fs from "fs";
 import * as ts from "typescript";
 import { LoaderContext } from "webpack";
 import { fs as MemFs } from "memfs";
@@ -95,34 +95,35 @@ export default function (this: LoaderContext<any>, src: string): string
     const file = Path.basename(filePath);
     const viewModelFile = file.replace("-view.html", "-view-model.ts");
     
-    compile([Path.join(dir, viewModelFile)], {
-        "module": ts.ModuleKind.CommonJS,
-        "moduleResolution": ts.ModuleResolutionKind.NodeJs,
-        "target": ts.ScriptTarget.ES2015,
-        emitDeclarationOnly: true,
-        declaration: true,
-        strict: false,
-        strictNullChecks: false,
-        strictFunctionTypes: false,
-        noImplicitAny: false,
-        noImplicitThis: false,
-        noImplicitReturns: false,
-        noUnusedLocals: false,
-        noUnusedParameters: false,
-        noFallthroughCasesInSwitch: false,
-        noEmitOnError: false,
-        "sourceMap": false,
-        "experimentalDecorators": true,
-        "emitDecoratorMetadata": true,
-        "removeComments": false,
-        "forceConsistentCasingInFileNames": false,
-        "incremental": false,
-        "skipLibCheck": true,
-        "importHelpers": true,
-        "noEmitHelpers": true,
-        "noImplicitOverride": true,
-        "pretty": false
-    }, this);
+    if (!dir.contains("node_modules"))
+        compile([Path.join(dir, viewModelFile)], {
+            "module": ts.ModuleKind.CommonJS,
+            "moduleResolution": ts.ModuleResolutionKind.NodeJs,
+            "target": ts.ScriptTarget.ES2015,
+            emitDeclarationOnly: true,
+            declaration: true,
+            strict: false,
+            strictNullChecks: false,
+            strictFunctionTypes: false,
+            noImplicitAny: false,
+            noImplicitThis: false,
+            noImplicitReturns: false,
+            noUnusedLocals: false,
+            noUnusedParameters: false,
+            noFallthroughCasesInSwitch: false,
+            noEmitOnError: false,
+            "sourceMap": false,
+            "experimentalDecorators": true,
+            "emitDecoratorMetadata": true,
+            "removeComments": false,
+            "forceConsistentCasingInFileNames": false,
+            "incremental": false,
+            "skipLibCheck": true,
+            "importHelpers": true,
+            "noEmitHelpers": true,
+            "noImplicitOverride": true,
+            "pretty": false
+        }, this);
     
     // console.log("=====first-pass-end======");
     
@@ -132,7 +133,9 @@ export default function (this: LoaderContext<any>, src: string): string
     const declarationFile = file.replace("-view.html", "-view-model.d.ts");
     
     
-    const declaration = MemFs.readFileSync(Path.join(dir, declarationFile), "utf8");
+    const declaration = dir.contains("node_modules")
+        ? Fs.readFileSync(Path.join(dir, declarationFile), "utf8")
+        : MemFs.readFileSync(Path.join(dir, declarationFile), "utf8");
     
     const className = file.replace("-view.html", "").split("-")
         .map(t => t.split("").takeFirst().toUpperCase() + t.split("").skip(1).join(""))
