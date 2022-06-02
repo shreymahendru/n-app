@@ -30,12 +30,15 @@ function compile(fileNames, options, loaderContext, isView = false) {
     };
     const program = ts.createProgram(fileNames, options, host);
     const emitResult = program.emit();
+    if (!isView)
+        return;
     const allDiagnostics = ts
         .getPreEmitDiagnostics(program)
         .concat(emitResult.diagnostics);
     allDiagnostics.forEach(diagnostic => {
         if (diagnostic.file && fileNames.contains(diagnostic.file.fileName)) {
             const message = ts.flattenDiagnosticMessageText(diagnostic.messageText, "\n");
+            // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
             if (isView) {
                 const viewFile = Path.basename(diagnostic.file.fileName).replace("-view-model.temp.ts", "-view.html");
                 const viewFilePath = Path.join(Path.dirname(diagnostic.file.fileName), viewFile);
