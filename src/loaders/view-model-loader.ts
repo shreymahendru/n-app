@@ -4,9 +4,10 @@ import { ConfigurationManager } from "@nivinjoseph/n-config";
 const hash = require("hash-sum");
 const loaderUtils = require("loader-utils");
 import * as Path from "path";
+import { LoaderContext } from "webpack";
 
 
-export default function (content: string): string
+export default function (this: LoaderContext<any>, content: string): string
 {
     // console.log(this.request);    
     // console.log(content);
@@ -17,20 +18,20 @@ export default function (content: string): string
     if (!content.contains("__decorate"))
         return content;
     
-    
-    // @ts-expect-error: unsafe use of this
     // eslint-disable-next-line @typescript-eslint/no-unsafe-call
     const options = loaderUtils.getOptions(this);
-    let defaultPageTitle, defaultPageMetadata;
+    let hmrView: string | undefined = undefined;
+    let defaultPageTitle: string, defaultPageMetadata: string;
     if (options)
-        ({defaultPageTitle, defaultPageMetadata } = options);
+        ({defaultPageTitle, defaultPageMetadata, hmrView } = options);
+    
+    if (hmrView == null)
+        hmrView = "templates";   
     
     // console.log("options", defaultPageTitle, defaultPageMetadata);
 
-    // @ts-expect-error: unsafe use of this
-    const dirPath = this.context as string;
-    // @ts-expect-error: unsafe use of this
-    const filePath = this.resourcePath as string;
+    const dirPath = this.context;
+    const filePath = this.resourcePath;
     // const relativeFilePath = "./" + Path.relative(this.rootContext, this.resourcePath).replace(/^(\.\.[\/\\])+/, "");
     const fileName = filePath.replace(dirPath + Path.sep, "");
     
@@ -54,7 +55,7 @@ export default function (content: string): string
     const componentCode = `
         ${className}.___$typeName = "${className}";
     
-        ${className}.___componentOptions = ${className}.createComponentOptions(${className}, ${JSON.stringify(defaultPageTitle)}, ${JSON.stringify(defaultPageMetadata)});
+        ${className}.___componentOptions = ${className}.createComponentOptions(${className}, ${JSON.stringify(defaultPageTitle!)}, ${JSON.stringify(defaultPageMetadata!)});
         // console.log(${className}.___componentOptions);
         
         exports.${className} = ${className};
@@ -103,10 +104,14 @@ export default function (content: string): string
                     // console.log("updating record", "${id}");
                 }
                 
-                const vueTemplateCompiler = require(${vueTemplateCompilerPath});
+                const hmrView = "${hmrView}";
+                
+                const vueTemplateCompiler = hmrView === "templates" ? require(${vueTemplateCompilerPath}) : null;
                 
                 module.hot.accept('${relativeViewFilePath}', function () {
-                    const renderFuncs = vueTemplateCompiler.compileToFunctions(require('${relativeViewFilePath}'));
+                    const renderFuncs = hmrView === "templates"
+                        ? vueTemplateCompiler.compileToFunctions(require('${relativeViewFilePath}'))
+                        : require('${relativeViewFilePath}');
                     if(componentOptions.___preRerender)
                         componentOptions.___preRerender(api, renderFuncs);
                     api.rerender('${id}', renderFuncs);

@@ -172,7 +172,12 @@ const moduleRules: Array<any> = [
     {
         test: /-view-model\.ts$/,
         use: [
-            { loader: path.resolve("src/loaders/view-model-loader.js") },
+            {
+                loader: path.resolve("src/loaders/view-model-loader.js"),
+                options: {
+                    hmrView: "renderFuncs" // templates | renderFuncs
+                }
+            },
             tsLoader
         ]
     },
@@ -183,6 +188,7 @@ const moduleRules: Array<any> = [
                 loader: path.resolve("src/loaders/view-model-loader.js"),
                 // The options below can be applied to any use of the view-model-loader
                 options: {
+                    hmrView: "renderFuncs", // templates | renderFuncs
                     defaultPageTitle: "fooo",
                     defaultPageMetadata: [
                         { name: "description", content: "this is the default description" }
@@ -205,17 +211,42 @@ const moduleRules: Array<any> = [
             tsLoader
         ]
     },
+    // {
+    //     test: /-view\.html$/,
+    //     exclude: [path.resolve(__dirname, "test-app/controllers")],
+    //     use: [
+    //         ...isDev ? []
+    //             :
+    //             [{
+    //                 loader: path.resolve("src/loaders/view-ts-check-loader.js")
+    //             },
+    //             {
+    //                 loader: "vue-loader/lib/loaders/templateLoader.js"
+    //             },
+    //             {
+    //                 loader: path.resolve("src/loaders/view-loader.js")
+    //             }],
+    //         {
+    //             loader: "html-loader",
+    //             options: {
+    //                 esModule: false
+    //             }
+    //         }
+    //     ]
+    // },
     {
         test: /-view\.html$/,
         exclude: [path.resolve(__dirname, "test-app/controllers")],
         use: [
-            ...isDev ? [] :
-                [{
-                    loader: "vue-loader/lib/loaders/templateLoader.js"
-                },
-                {
-                    loader: path.resolve("src/loaders/view-loader.js")
-                }],
+            {
+                loader: path.resolve("src/loaders/view-ts-check-loader.js")
+            },
+            {
+                loader: "vue-loader/lib/loaders/templateLoader.js"
+            },
+            {
+                loader: path.resolve("src/loaders/view-loader.js")
+            },
             {
                 loader: "html-loader",
                 options: {
@@ -329,6 +360,9 @@ else
 }
 
 module.exports = {
+    stats: {
+        errorDetails: true
+    },
     context: process.cwd(),
     mode: isDev ? "development" : "production",
     target: "web",
