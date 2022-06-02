@@ -1,6 +1,6 @@
 {
     "name": "@nivinjoseph/n-app",
-    "version": "4.0.8",
+    "version": "4.0.9",
     "description": "Vue.js based application framework",
     "main": "./dist/index.js",
     "types": "./dist/index.d.ts",
