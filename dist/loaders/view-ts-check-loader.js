@@ -121,6 +121,8 @@ function default_1(src) {
     `;
     const combinedFile = file.replace("-view.html", "-view-model.temp.ts");
     const combinedFilePath = Path.join(dir, combinedFile);
+    if (!memfs_1.fs.existsSync(dir))
+        memfs_1.fs.mkdirSync(dir, { recursive: true });
     memfs_1.fs.writeFileSync(combinedFilePath, combined, { encoding: "utf-8" });
     compile([combinedFilePath], {
         "module": ts.ModuleKind.CommonJS,
