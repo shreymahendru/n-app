@@ -100,7 +100,7 @@ export default function (this: LoaderContext<any>, src: string): string
         "strict": true,
         "strictNullChecks": true,
         "strictFunctionTypes": true,
-        "noImplicitThis": true,
+        "noImplicitThis": false,
         "noImplicitReturns": true,
         "noUnusedLocals": true,
         "noUnusedParameters": true,
@@ -138,7 +138,8 @@ export default function (this: LoaderContext<any>, src: string): string
         .replaceAll("var _vm = this", `var _vm: ${className} = this; var _vm$ = this as any;`)
         .replaceAll("_vm._", "_vm$._")
         .replaceAll("_vm.$", "_vm$.$")
-        .replaceAll("render._withStripped", ";(<any>render)._withStripped");
+        .replaceAll("render._withStripped", ";(<any>render)._withStripped")
+        .replaceAll(", arguments)", ", arguments as any)");
     
     const combined = `
     ${declaration}
