@@ -13,16 +13,16 @@ function default_1(content) {
     //     return content;
     if (!content.contains("__decorate"))
         return content;
-    // @ts-expect-error: unsafe use of this
     // eslint-disable-next-line @typescript-eslint/no-unsafe-call
     const options = loaderUtils.getOptions(this);
+    let hmrView = undefined;
     let defaultPageTitle, defaultPageMetadata;
     if (options)
-        ({ defaultPageTitle, defaultPageMetadata } = options);
+        ({ defaultPageTitle, defaultPageMetadata, hmrView } = options);
+    if (hmrView == null)
+        hmrView = "templates";
     // console.log("options", defaultPageTitle, defaultPageMetadata);
-    // @ts-expect-error: unsafe use of this
     const dirPath = this.context;
-    // @ts-expect-error: unsafe use of this
     const filePath = this.resourcePath;
     // const relativeFilePath = "./" + Path.relative(this.rootContext, this.resourcePath).replace(/^(\.\.[\/\\])+/, "");
     const fileName = filePath.replace(dirPath + Path.sep, "");
@@ -85,10 +85,14 @@ function default_1(content) {
                     // console.log("updating record", "${id}");
                 }
                 
-                const vueTemplateCompiler = require(${vueTemplateCompilerPath});
+                const hmrView = "${hmrView}";
+                
+                const vueTemplateCompiler = hmrView === "templates" ? require(${vueTemplateCompilerPath}) : null;
                 
                 module.hot.accept('${relativeViewFilePath}', function () {
-                    const renderFuncs = vueTemplateCompiler.compileToFunctions(require('${relativeViewFilePath}'));
+                    const renderFuncs = hmrView === "templates"
+                        ? vueTemplateCompiler.compileToFunctions(require('${relativeViewFilePath}'))
+                        : require('${relativeViewFilePath}');
                     if(componentOptions.___preRerender)
                         componentOptions.___preRerender(api, renderFuncs);
                     api.rerender('${id}', renderFuncs);

@@ -36,6 +36,7 @@ function extractLoader(src) {
         // @ts-expect-error: unsafe use of this
         this.cacheable();
         try {
+            // console.log(src);
             done(null, yield evalDependencyGraph({
                 // @ts-expect-error: unsafe use of this
                 loaderContext: this,

@@ -1,2 +1,3 @@
 import "@nivinjoseph/n-ext";
-export default function (content: string): string;
+import { LoaderContext } from "webpack";
+export default function (this: LoaderContext<any>, content: string): string;
