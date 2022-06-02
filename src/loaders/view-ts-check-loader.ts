@@ -40,6 +40,9 @@ function compile(fileNames: Array<string>, options: ts.CompilerOptions, loaderCo
     const program = ts.createProgram(fileNames, options, host);
     const emitResult = program.emit();
     
+    if (!isView)
+        return;
+    
     const allDiagnostics = ts
         .getPreEmitDiagnostics(program)
         .concat(emitResult.diagnostics);
@@ -50,6 +53,7 @@ function compile(fileNames: Array<string>, options: ts.CompilerOptions, loaderCo
         {
             const message = ts.flattenDiagnosticMessageText(diagnostic.messageText, "\n");
             
+            // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
             if (isView)
             {
                 const viewFile = Path.basename(diagnostic.file.fileName).replace("-view-model.temp.ts", "-view.html"); 
