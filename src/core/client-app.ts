@@ -28,6 +28,7 @@ import { NScrollContainerViewModel } from "../components/n-scroll-container/n-sc
 import { ClassHierarchy } from "@nivinjoseph/n-util";
 import { ComponentViewModel } from "./component-view-model";
 import { PageViewModel } from "./page-view-model";
+import { DialogService } from "../services/dialog-service/dialog-service";
 
 // declare const makeHot: (options: any) => void;
 
@@ -76,6 +77,7 @@ export class ClientApp
     // @ts-expect-error: not used atm
     private _app: any;
     private _accentColor: string | undefined;
+    private _isDialogServiceRegistered = false;
     private _errorTrackingConfigurationCallback: ((vueRouter: any) => void) | null = null;
     private _isBootstrapped = false;
     
@@ -123,6 +125,7 @@ export class ClientApp
             throw new InvalidOperationException("useInstaller");
 
         given(installer, "installer").ensureHasValue();
+        
         this._container.install(installer);
         return this;
     }
@@ -136,6 +139,19 @@ export class ClientApp
             .ensure(t => t.trim().startsWith("#"), "must be hex value");
 
         this._accentColor = color.trim();
+        return this;
+    }
+
+    public registerDialogService(dialogService: DialogService): this
+    {
+        given(dialogService, "dialogService").ensureHasValue().ensureIsObject();
+
+        if (this._isBootstrapped)
+            throw new InvalidOperationException("registerDialogService");
+
+        this._container.registerInstance("DialogService", dialogService);
+        this._isDialogServiceRegistered = true;
+
         return this;
     }
 
@@ -311,13 +327,15 @@ export class ClientApp
     private _configureCoreServices(): void
     {
         this._container
-            .registerInstance("DialogService", new DefaultDialogService(this._accentColor))
             .registerInstance("EventAggregator", new DefaultEventAggregator())
             .registerInstance("NavigationService", new DefaultNavigationService(this._pageManager.vueRouterInstance))
             .registerInstance("StorageService", new DefaultStorageService())
             .registerInstance("DisplayService", new DefaultDisplayService())
             .registerInstance("ComponentService", new DefaultComponentService())
             ;
+        
+        if (!this._isDialogServiceRegistered)
+            this._container.registerInstance("DialogService", new DefaultDialogService({ accentColor: this._accentColor }));
     }
 
     private _configureContainer(): void

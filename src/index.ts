@@ -15,7 +15,7 @@ import { Utils } from "./core/utils";
 import { StorageService } from "./services/storage-service/storage-service";
 import { EventAggregator, EventSubscription } from "./services/event-aggregator/event-aggregator";
 import { NavigationService } from "./services/navigation-service/navigation-service";
-import { DialogService } from "./services/dialog-service/dialog-service";
+import { DialogService, DialogServiceOptions, DialogLocation } from "./services/dialog-service/dialog-service";
 import { DisplayService } from "./services/display-service/display-service";
 import { DisplayType } from "./services/display-service/display-type";
 import { ComponentService } from "./services/component-service/component-service";
@@ -24,6 +24,7 @@ import { resolve, Resolution, Resolver } from "./core/resolve";
 import { NavRoute } from "./core/nav-route";
 import { FileInfo } from "./components/n-file-select/n-file-select-view-model";
 import { persist } from "./core/persist";
+import { DefaultDialogService } from "./services/dialog-service/default-dialog-service";
 
 
 export
@@ -45,11 +46,11 @@ export
     StorageService,
     EventAggregator, EventSubscription,
     NavigationService,
-    DialogService,
+    DialogService, DialogServiceOptions, DialogLocation, DefaultDialogService,
     DisplayService, DisplayType,
     ComponentService, ComponentOptions,
-    
+
     resolve, Resolver, NavRoute, Resolution,
-    
+
     FileInfo
 };
