@@ -6,13 +6,210 @@ const Path = require("path");
 const Fs = require("fs");
 const ts = require("typescript");
 const memfs_1 = require("memfs");
-function compile(fileNames, options, loaderContext, isView = false) {
+const n_defensive_1 = require("@nivinjoseph/n-defensive");
+const getOptions = require("loader-utils").getOptions;
+let globalComponentElementTypeCache = null;
+const declarationCompileConfig = {
+    "module": ts.ModuleKind.CommonJS,
+    "moduleResolution": ts.ModuleResolutionKind.NodeJs,
+    "target": ts.ScriptTarget.ES2015,
+    emitDeclarationOnly: true,
+    declaration: true,
+    strict: false,
+    strictNullChecks: false,
+    strictFunctionTypes: false,
+    noImplicitAny: false,
+    noImplicitThis: false,
+    noImplicitReturns: false,
+    noUnusedLocals: false,
+    noUnusedParameters: false,
+    noFallthroughCasesInSwitch: false,
+    noEmitOnError: false,
+    "sourceMap": false,
+    "experimentalDecorators": true,
+    "emitDecoratorMetadata": true,
+    "removeComments": false,
+    "forceConsistentCasingInFileNames": false,
+    "incremental": false,
+    "skipLibCheck": true,
+    "importHelpers": true,
+    "noEmitHelpers": true,
+    "noImplicitOverride": true,
+    "pretty": false
+};
+const combinedCompileConfig = {
+    "module": ts.ModuleKind.CommonJS,
+    "moduleResolution": ts.ModuleResolutionKind.NodeJs,
+    "target": ts.ScriptTarget.ES2015,
+    // emitDeclarationOnly: true,
+    // declaration: true,
+    strict: false,
+    strictNullChecks: false,
+    strictFunctionTypes: false,
+    noImplicitAny: false,
+    noImplicitThis: false,
+    noImplicitReturns: false,
+    noUnusedLocals: false,
+    noUnusedParameters: false,
+    noFallthroughCasesInSwitch: false,
+    "noEmitOnError": true,
+    noEmit: true,
+    "sourceMap": false,
+    "experimentalDecorators": true,
+    "emitDecoratorMetadata": true,
+    "removeComments": false,
+    "forceConsistentCasingInFileNames": false,
+    "incremental": false,
+    "skipLibCheck": true,
+    "importHelpers": true,
+    "noEmitHelpers": true,
+    "noImplicitOverride": true,
+    "pretty": false
+};
+module.exports = function (src) {
+    // console.log("Ts-check loading", this.resourcePath);
+    // console.log(globalComponentElementTypeCache);
+    var _a;
+    // const callback = this.async();
+    const options = (getOptions(this) || {});
+    const isDebug = !!options.debug;
+    let debugFiles = (_a = options.debugFiles) !== null && _a !== void 0 ? _a : [];
+    (0, n_defensive_1.given)(debugFiles, "debugFiles").ensureHasValue().ensureIsArray();
+    debugFiles = debugFiles.map(t => Path.join(Path.dirname(t), Path.basename(t).split(".").takeFirst()));
+    const filePath = this.resourcePath;
+    const dir = Path.dirname(filePath);
+    const file = Path.basename(filePath);
+    const viewModelFile = file.replace("-view.html", "-view-model.ts");
+    if (!dir.contains("node_modules"))
+        compile(isDebug, debugFiles, [Path.join(dir, viewModelFile)], declarationCompileConfig, this);
+    const declarationFile = file.replace("-view.html", "-view-model.d.ts");
+    const declaration = dir.contains("node_modules")
+        ? Fs.readFileSync(Path.join(dir, declarationFile), "utf8")
+        : memfs_1.fs.readFileSync(Path.join(dir, declarationFile), "utf8");
+    const className = file.replace("-view.html", "").split("-")
+        .map(t => t.split("").takeFirst().toUpperCase() + t.split("").skip(1).join(""))
+        .join("") + "ViewModel";
+    const staticRenderFnsKey = "var staticRenderFns =";
+    let [renderFn, staticRenderFns] = src.split(staticRenderFnsKey);
+    staticRenderFns = staticRenderFnsKey + staticRenderFns;
+    const extracts = new Array();
+    [...globalComponentElementTypeCache.keys()]
+        .forEach(key => {
+        let instanceCount = 0;
+        // console.log("key", key);
+        const syntax = `_c(${key}, {`;
+        const modifiedSyntax = `_c(${key} + "", {`;
+        let fileAddedAsDependency = false;
+        while (renderFn.contains(syntax)) {
+            if (!fileAddedAsDependency) {
+                this.addDependency(globalComponentElementTypeCache.get(key).filePath);
+                fileAddedAsDependency = true;
+            }
+            instanceCount++;
+            const index = renderFn.indexOf(syntax);
+            const attrsIndex = renderFn.indexOf("attrs:", index);
+            if (attrsIndex < 0 || (attrsIndex - index - syntax.length) > 15) {
+                // console.log("not valid attrs");
+                renderFn = renderFn.replace(syntax, modifiedSyntax);
+                continue;
+            }
+            const split = renderFn.split("");
+            const before = split.take(attrsIndex);
+            const after = split.skip(attrsIndex);
+            // const afterMod = after.replace("attrs:", `attrs:<${globalComponentElementTypeCache.get(key)}>`);
+            // console.log(afterMod);
+            // transformed = before.replace(syntax, modifiedSyntax) + afterMod;
+            let curlyCount = 0;
+            let endValue = 0;
+            const toExtract = after.skip("attrs:".length).join("").trimStart().split("");
+            for (let i = 0; i < toExtract.length; i++) {
+                if (i > 0 && curlyCount === 0) {
+                    endValue = i;
+                    break;
+                }
+                const char = toExtract[i];
+                if (char === "{")
+                    curlyCount++;
+                else if (char === "}")
+                    curlyCount--;
+            }
+            const extracted = toExtract.join("").substring(0, endValue);
+            const variable = `${key.replaceAll("-", "_").replaceAll("\"", "")}_attrs_${instanceCount}`;
+            extracts.push({
+                element: key,
+                variable,
+                value: extracted
+            });
+            renderFn = before.join("").replace(syntax, modifiedSyntax) + `attrs: ${variable}` + toExtract.skip(endValue).join("");
+        }
+    });
+    renderFn = renderFn
+        .replace("var render = function ()", `var render = function (this: ${className})`)
+        .replace("var _vm = this", `var _vm: ${className} = this; var _vm$ = this as any; ${extracts.map(t => `var ${t.variable}: ${globalComponentElementTypeCache.get(t.element).schema} = ${t.value}`).join(";")};`)
+        .replaceAll("_vm._", "_vm$._")
+        .replaceAll("_vm.$", "_vm$.$")
+        .replaceAll(", arguments)", ", arguments as any)");
+    staticRenderFns = staticRenderFns
+        .replaceAll(", arguments)", ", arguments as any)")
+        .replace("render._withStripped", ";(<any>render)._withStripped");
+    const combinedContents = `
+    ${declaration}
+    
+    ${renderFn}
+    
+    ${staticRenderFns}
+    `;
+    const combinedFile = file.replace("-view.html", "-view-model.temp.ts");
+    const combinedFilePath = Path.join(dir, combinedFile);
+    if (!memfs_1.fs.existsSync(dir))
+        memfs_1.fs.mkdirSync(dir, { recursive: true });
+    memfs_1.fs.writeFileSync(combinedFilePath, combinedContents, { encoding: "utf-8" });
+    if (isDebug) {
+        if (debugFiles.contains(combinedFilePath.replace(".temp.ts", "")))
+            Fs.writeFileSync(combinedFilePath, combinedContents, "utf8");
+    }
+    compile(isDebug, debugFiles, [combinedFilePath], combinedCompileConfig, this, true);
+    // console.log("=====second-pass-end======");
+    // const result = compileToFunctions(src);
+    // console.log(JSON.stringify((<any>result.render)[0]));
+    return src;
+    // const done = this.async();
+    // // @ts-expect-error: unsafe use of this
+    // const options = getOptions(this) || {};
+    // // @ts-expect-error: unsafe use of this
+    // const publicPath = getPublicPath(options, this);
+    // // @ts-expect-error: unsafe use of this
+    // this.cacheable();
+    // try
+    // {
+    //     console.log(src);
+    //     done(null, await evalDependencyGraph({
+    //         // @ts-expect-error: unsafe use of this
+    //         loaderContext: this,
+    //         src,
+    //         // @ts-expect-error: unsafe use of this
+    //         filename: this.resourcePath,
+    //         publicPath
+    //     }));
+    // }
+    // catch (error)
+    // {
+    //     done(error);
+    // }
+};
+function compile(isDebug, debugFiles, fileNames, options, loaderContext, isView = false) {
     const host = ts.createCompilerHost(options);
     host.writeFile = (fileName, contents) => {
         const dir = Path.dirname(fileName);
         if (!memfs_1.fs.existsSync(dir))
             memfs_1.fs.mkdirSync(dir, { recursive: true });
         memfs_1.fs.writeFileSync(fileName, contents, { encoding: "utf-8" });
+        if (isDebug) {
+            if (!isView) {
+                if (debugFiles.contains(fileName.replace(".d.ts", "")))
+                    Fs.writeFileSync(fileName, contents, "utf8");
+            }
+        }
     };
     const originalReadFile = host.readFile.bind(host);
     host.readFile = (filename) => {
@@ -59,127 +256,211 @@ function compile(fileNames, options, loaderContext, isView = false) {
     // console.error(`Process exiting with code '${exitCode}'.`);
     // process.exit(exitCode);
 }
-function default_1(src) {
-    const filePath = this.resourcePath;
-    // console.log("=====start======");
-    // console.log(filePath);
-    // console.log(src);
-    // console.log("=====end======");
-    // console.log("=====first-pass-start======");
-    const dir = Path.dirname(filePath);
-    const file = Path.basename(filePath);
-    const viewModelFile = file.replace("-view.html", "-view-model.ts");
-    if (!dir.contains("node_modules"))
-        compile([Path.join(dir, viewModelFile)], {
-            "module": ts.ModuleKind.CommonJS,
-            "moduleResolution": ts.ModuleResolutionKind.NodeJs,
-            "target": ts.ScriptTarget.ES2015,
-            emitDeclarationOnly: true,
-            declaration: true,
-            strict: false,
-            strictNullChecks: false,
-            strictFunctionTypes: false,
-            noImplicitAny: false,
-            noImplicitThis: false,
-            noImplicitReturns: false,
-            noUnusedLocals: false,
-            noUnusedParameters: false,
-            noFallthroughCasesInSwitch: false,
-            noEmitOnError: false,
-            "sourceMap": false,
-            "experimentalDecorators": true,
-            "emitDecoratorMetadata": true,
-            "removeComments": false,
-            "forceConsistentCasingInFileNames": false,
-            "incremental": false,
-            "skipLibCheck": true,
-            "importHelpers": true,
-            "noEmitHelpers": true,
-            "noImplicitOverride": true,
-            "pretty": false
-        }, this);
-    // console.log("=====first-pass-end======");
-    // console.log("=====second-pass-start======");
-    const declarationFile = file.replace("-view.html", "-view-model.d.ts");
-    const declaration = dir.contains("node_modules")
-        ? Fs.readFileSync(Path.join(dir, declarationFile), "utf8")
-        : memfs_1.fs.readFileSync(Path.join(dir, declarationFile), "utf8");
-    const className = file.replace("-view.html", "").split("-")
-        .map(t => t.split("").takeFirst().toUpperCase() + t.split("").skip(1).join(""))
-        .join("") + "ViewModel";
-    const transformed = src
-        .replace("var render = function ()", `var render = function (this: ${className})`)
-        .replaceAll("var _vm = this", `var _vm: ${className} = this; var _vm$ = this as any;`)
-        .replaceAll("_vm._", "_vm$._")
-        .replaceAll("_vm.$", "_vm$.$")
-        .replaceAll("render._withStripped", ";(<any>render)._withStripped")
-        .replaceAll(", arguments)", ", arguments as any)");
-    const combined = `
-    ${declaration}
-    
-    ${transformed}
-    `;
-    const combinedFile = file.replace("-view.html", "-view-model.temp.ts");
-    const combinedFilePath = Path.join(dir, combinedFile);
-    if (!memfs_1.fs.existsSync(dir))
-        memfs_1.fs.mkdirSync(dir, { recursive: true });
-    memfs_1.fs.writeFileSync(combinedFilePath, combined, { encoding: "utf-8" });
-    compile([combinedFilePath], {
-        "module": ts.ModuleKind.CommonJS,
-        "moduleResolution": ts.ModuleResolutionKind.NodeJs,
-        "target": ts.ScriptTarget.ES2015,
-        // emitDeclarationOnly: true,
-        // declaration: true,
-        strict: false,
-        strictNullChecks: false,
-        strictFunctionTypes: false,
-        noImplicitAny: false,
-        noImplicitThis: false,
-        noImplicitReturns: false,
-        noUnusedLocals: false,
-        noUnusedParameters: false,
-        noFallthroughCasesInSwitch: false,
-        "noEmitOnError": true,
-        noEmit: true,
-        "sourceMap": false,
-        "experimentalDecorators": true,
-        "emitDecoratorMetadata": true,
-        "removeComments": false,
-        "forceConsistentCasingInFileNames": false,
-        "incremental": false,
-        "skipLibCheck": true,
-        "importHelpers": true,
-        "noEmitHelpers": true,
-        "noImplicitOverride": true,
-        "pretty": false
-    }, this, true);
-    // console.log("=====second-pass-end======");
-    // const result = compileToFunctions(src);
-    // console.log(JSON.stringify((<any>result.render)[0]));
-    return src;
-    // const done = this.async();
-    // // @ts-expect-error: unsafe use of this
-    // const options = getOptions(this) || {};
-    // // @ts-expect-error: unsafe use of this
-    // const publicPath = getPublicPath(options, this);
-    // // @ts-expect-error: unsafe use of this
-    // this.cacheable();
-    // try
-    // {
-    //     console.log(src);
-    //     done(null, await evalDependencyGraph({
-    //         // @ts-expect-error: unsafe use of this
-    //         loaderContext: this,
-    //         src,
-    //         // @ts-expect-error: unsafe use of this
-    //         filename: this.resourcePath,
-    //         publicPath
-    //     }));
-    // }
-    // catch (error)
-    // {
-    //     done(error);
-    // }
+module.exports.pitch = function () {
+    // console.log("Ts-check pitching", this.resourcePath);
+    // if (this.mode !== "production")
+    //     return;
+    if (globalComponentElementTypeCache == null) {
+        globalComponentElementTypeCache = new Map();
+        const isPackage = __dirname.contains("node_modules");
+        const paths = [Path.resolve(process.cwd(), "src")];
+        if (isPackage)
+            paths.push(Path.resolve(process.cwd(), "node_modules", "@nivinjoseph", "n-app", "src", "components"));
+        else
+            paths.push(Path.resolve(process.cwd(), "test-app"));
+        const files = paths.reduce((acc, path) => {
+            acc.push(...traverseAccumulateFiles(path));
+            return acc;
+        }, new Array());
+        files.forEach((filePath) => createBindingSchema(this, filePath));
+    }
+    createBindingSchema(this, this.resourcePath);
+};
+function traverseAccumulateFiles(dir) {
+    (0, n_defensive_1.given)(dir, "dir").ensureHasValue().ensureIsString()
+        .ensure(t => Fs.statSync(t).isDirectory(), "not directory");
+    return Fs.readdirSync(dir).reduce((acc, path) => {
+        path = Path.resolve(dir, path);
+        if (Fs.statSync(path).isDirectory())
+            acc.push(...traverseAccumulateFiles(path));
+        else if (path.endsWith("-view.html"))
+            acc.push(path);
+        return acc;
+    }, new Array());
 }
-exports.default = default_1;
+function createBindingSchema(context, filePath) {
+    const file = Path.basename(filePath);
+    const dir = Path.dirname(filePath);
+    const viewModelFile = file.replace("-view.html", "-view-model.ts");
+    const viewModelFilePath = Path.join(dir, viewModelFile);
+    if (!Fs.existsSync(viewModelFilePath))
+        return;
+    const viewModelContents = Fs.readFileSync(viewModelFilePath, "utf8");
+    const elementDecorator = "@element(";
+    const bindDecorator = "@bind(";
+    const isComponent = viewModelContents.contains(elementDecorator); // && viewModelContents.contains(bindDecorator);
+    if (!isComponent)
+        return;
+    context.addDependency(viewModelFilePath);
+    let start = viewModelContents.indexOf(elementDecorator);
+    let end = viewModelContents.indexOf(")", start);
+    const element = viewModelContents.substring(start, end).replace(elementDecorator, "");
+    // console.log(element);
+    let schema = "any";
+    if (viewModelContents.contains(bindDecorator)) {
+        start = viewModelContents.indexOf(bindDecorator);
+        end = viewModelContents.indexOf(")", start);
+        schema = viewModelContents.substring(start, end).replace(bindDecorator, "");
+        // console.log(schema);
+        schema = schemaToJson(schema);
+        schema = schemaToType(JSON.parse(schema));
+        // console.log(schema);
+    }
+    globalComponentElementTypeCache.set(element, { schema, filePath: viewModelFilePath });
+}
+function schemaToJson(schema) {
+    (0, n_defensive_1.given)(schema, "schema").ensureHasValue().ensureIsString();
+    const splitSchema = schema.replaceAll("\r", "").replaceAll("\n", "").replaceAll("\r\n", "").replaceAll(" ", "")
+        .replaceAll("'", "\"").split("");
+    const formattedSchema = new Array();
+    // '{"foo?": "string", "bar": [], "baz": Nove, box: {b: "string"}'
+    for (let i = 0; i < splitSchema.length; i++) {
+        const char = splitSchema[i];
+        if (i === 0) {
+            formattedSchema.push(char);
+            continue;
+        }
+        const charRe = /[A-Za-z0-9_$?]/;
+        if (charRe.test(char)) {
+            const lastChar = splitSchema[i - 1];
+            if (charRe.test(lastChar) || lastChar === "\"") {
+                formattedSchema.push(char);
+                continue;
+            }
+            else {
+                formattedSchema.push("\"");
+                formattedSchema.push(char);
+                continue;
+            }
+        }
+        else {
+            if (char === "\"") {
+                formattedSchema.push(char);
+                continue;
+            }
+            const lastChar = splitSchema[i - 1];
+            if (charRe.test(lastChar)) {
+                formattedSchema.push("\"");
+                formattedSchema.push(char);
+                continue;
+            }
+            else {
+                formattedSchema.push(char);
+                continue;
+            }
+        }
+    }
+    return formattedSchema.join("");
+    // const schemaObj = JSON.parse(formattedSchema.join("")) as object;
+}
+function schemaToType(schema, isTopLevel = true) {
+    const typeDetails = Object.keys(schema)
+        .map(key => {
+        const left = `"${isTopLevel ? key.split("").map(t => /[A-Z]/.test(t) ? `-${t.toLowerCase()}` : t).join("") : key}"`;
+        const right = parseType(schema[key]);
+        const isOptional = left.contains("?");
+        return { left, right, isOptional };
+    });
+    if (isTopLevel) {
+        const optionals = typeDetails.where(t => t.isOptional);
+        let typedOptionals = null;
+        if (optionals.isNotEmpty) {
+            const flatOptionals = optionals
+                .map(t => {
+                t.left = t.left.replace("?", "");
+                return t.left + ": " + t.right;
+            })
+                .join(";");
+            typedOptionals = `Partial<{ ${flatOptionals} }>`;
+        }
+        const requireds = typeDetails.where(t => !t.isOptional);
+        let typedRequireds = null;
+        if (requireds.isNotEmpty) {
+            const flatRequireds = requireds
+                .map(t => t.left + ": " + t.right)
+                .join(";");
+            typedRequireds = `{ ${flatRequireds} }`;
+        }
+        let result = "";
+        if (typedOptionals)
+            result += typedOptionals;
+        if (typedRequireds) {
+            if (result.isNotEmptyOrWhiteSpace())
+                result += "&";
+            result += typedRequireds;
+        }
+        return result;
+    }
+    return `{ ${typeDetails.map(t => t.left + ": " + t.right).join(";")} }`;
+}
+function parseType(right) {
+    if (typeof right === "string") {
+        right = right.trim().toLowerCase();
+        switch (right) {
+            case "string":
+                break;
+            case "boolean":
+                break;
+            case "number":
+                break;
+            case "function":
+                right = "Function";
+                break;
+            case "array":
+                right = "Array<any>";
+                break;
+            case "object":
+                break;
+            default:
+                right = "object";
+                break;
+        }
+    }
+    else if (Array.isArray(right)) {
+        if (right.isEmpty)
+            right = "Array<any>";
+        else {
+            const arrayType = right[0];
+            right = `Array<${parseType(arrayType)}>`;
+        }
+    }
+    else // {} object literal
+     {
+        right = schemaToType(right, false);
+    }
+    return right;
+}
+// interface Foo
+// {
+//     num: number;
+//     str: string;
+//     bool: boolean;
+//     func: Function;
+//     array: Array<any>;
+//     object: object;
+// }
+// type Foo = { a: string; b: number; };
+// type Bar = { c: string; d: number; };
+// type ParFoo = Partial<Foo>;
+// const s: Partial<Foo> & Bar = {
+//     a: "",
+//     "s": 4,
+// };
+// const ["s"] = <{ "max-file-size": number; "multiple": boolean; } & { "id": string; "mime-types": string; }>{
+//     id: "",
+//     "mime-types": "",
+//     "max-file-size": 5,
+//     multiple: true,
+//     foo: 4
+// };
 //# sourceMappingURL=view-ts-check-loader.js.map
