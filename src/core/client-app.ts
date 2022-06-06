@@ -14,7 +14,6 @@ import { given } from "@nivinjoseph/n-defensive";
 import { Container, ComponentInstaller } from "@nivinjoseph/n-ject";
 import { ComponentManager } from "./component-manager";
 import { PageManager } from "./page-manager";
-import { InvalidOperationException } from "@nivinjoseph/n-exception";
 import { DefaultDialogService } from "./../services/dialog-service/default-dialog-service";
 import { DefaultEventAggregator } from "./../services/event-aggregator/default-event-aggregator";
 import { DefaultNavigationService } from "./../services/navigation-service/default-navigation-service";
@@ -120,11 +119,10 @@ export class ClientApp
 
     public useInstaller(installer: ComponentInstaller): this
     {
-        if (this._isBootstrapped)
-            throw new InvalidOperationException("useInstaller");
+        given(this, "this").ensure(t => !t._isBootstrapped, "already bootstrapped");
 
         given(installer, "installer").ensureHasValue();
-        
+
         this._container.install(installer);
         return this;
     }
@@ -143,8 +141,7 @@ export class ClientApp
 
     public registerComponents(...componentViewModelClasses: Array<ClassHierarchy<ComponentViewModel>>): this
     {
-        if (this._isBootstrapped)
-            throw new InvalidOperationException("registerComponents");
+        given(this, "this").ensure(t => !t._isBootstrapped, "already bootstrapped");
 
         this._componentManager.registerComponents(...componentViewModelClasses);
         return this;
@@ -152,8 +149,7 @@ export class ClientApp
 
     public registerPages(...pageViewModelClasses: Array<ClassHierarchy<PageViewModel>>): this
     {
-        if (this._isBootstrapped)
-            throw new InvalidOperationException("registerPages");
+        given(this, "this").ensure(t => !t._isBootstrapped, "already bootstrapped");
 
         this._pageManager.registerPages(...pageViewModelClasses);
         return this;
@@ -161,9 +157,8 @@ export class ClientApp
 
     public useAsInitialRoute(route: string): this
     {
-        if (this._isBootstrapped)
-            throw new InvalidOperationException("useAsInitialRoute");
-        
+        given(this, "this").ensure(t => !t._isBootstrapped, "already bootstrapped");
+
         given(route, "route").ensureHasValue().ensureIsString();
         this._pageManager.useAsInitialRoute(route);
         return this;
@@ -171,8 +166,7 @@ export class ClientApp
 
     public useAsUnknownRoute(route: string): this
     {
-        if (this._isBootstrapped)
-            throw new InvalidOperationException("useAsUnknownRoute");
+        given(this, "this").ensure(t => !t._isBootstrapped, "already bootstrapped");
 
         given(route, "route").ensureHasValue().ensureIsString();
         this._pageManager.useAsUnknownRoute(route);
@@ -207,9 +201,8 @@ export class ClientApp
     
     public useHistoryModeRouting(): this
     {
-        if (this._isBootstrapped)
-            throw new InvalidOperationException("useHistoryModeRouting");
-        
+        given(this, "this").ensure(t => !t._isBootstrapped, "already bootstrapped");
+
         // if (this._initialRoute)
         //     throw new InvalidOperationException("Cannot use history mode with initial route.");
         
@@ -225,22 +218,20 @@ export class ClientApp
     //     Config.enableDev(Vue);
     //     return this;
     // }
-    
+
     public configureErrorTracking(callback: (vueRouter: any) => void): this
     {
         given(callback, "callback").ensureHasValue().ensureIsFunction();
-        
-        if (this._isBootstrapped)
-            throw new InvalidOperationException("calling method after bootstrap");
-        
+
+        given(this, "this").ensure(t => !t._isBootstrapped, "already bootstrapped");
+
         this._errorTrackingConfigurationCallback = callback;
         return this;
     }
 
     public bootstrap(): void
     {
-        if (this._isBootstrapped)
-            throw new InvalidOperationException("bootstrap");
+        given(this, "this").ensure(t => !t._isBootstrapped, "already bootstrapped");
 
         this._configureGlobalConfig();
         this._configurePages();
@@ -256,12 +247,9 @@ export class ClientApp
     
     public retrieveRouterInstance(): object
     {
-        if (!this._isBootstrapped)
-            throw new InvalidOperationException("calling retrieveRouterInstance before calling bootstrap");
-        
-        if (!this._pageManager.hasRegistrations)
-            throw new InvalidOperationException("calling retrieveRouterInstance with no page registrations");
-        
+        given(this, "this").ensure(t => t._isBootstrapped, "calling retrieveRouterInstance before calling bootstrap");
+        given(this, "this").ensure(t => t._pageManager.hasRegistrations, "calling retrieveRouterInstance with no page registrations");
+
         return this._pageManager.vueRouterInstance;
     }
     
