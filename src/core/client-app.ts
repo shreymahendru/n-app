@@ -76,7 +76,6 @@ export class ClientApp
     private readonly _pageManager: PageManager;
     // @ts-expect-error: not used atm
     private _app: any;
-    private _accentColor: string | undefined;
     private _isDialogServiceRegistered = false;
     private _errorTrackingConfigurationCallback: ((vueRouter: any) => void) | null = null;
     private _isBootstrapped = false;
@@ -130,24 +129,11 @@ export class ClientApp
         return this;
     }
 
-    public useAccentColor(color: string): this
-    {
-        if (this._isBootstrapped)
-            throw new InvalidOperationException("useAccentColor");
-
-        given(color, "color").ensureHasValue().ensure(t => !t.isEmptyOrWhiteSpace())
-            .ensure(t => t.trim().startsWith("#"), "must be hex value");
-
-        this._accentColor = color.trim();
-        return this;
-    }
-
     public registerDialogService(dialogService: DialogService): this
     {
         given(dialogService, "dialogService").ensureHasValue().ensureIsObject();
 
-        if (this._isBootstrapped)
-            throw new InvalidOperationException("registerDialogService");
+        given(this, "this").ensure(t => !t._isBootstrapped, "already bootstrapped");
 
         this._container.registerInstance("DialogService", dialogService);
         this._isDialogServiceRegistered = true;
@@ -335,7 +321,7 @@ export class ClientApp
             ;
         
         if (!this._isDialogServiceRegistered)
-            this._container.registerInstance("DialogService", new DefaultDialogService({ accentColor: this._accentColor }));
+            this._container.registerInstance("DialogService", new DefaultDialogService());
     }
 
     private _configureContainer(): void

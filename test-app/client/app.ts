@@ -43,7 +43,6 @@ const dialogService = new DefaultDialogService({
 });
 
 const app = new ClientApp("#app", "router-view")
-    // .useAccentColor("#7ab53b")
     .registerDialogService(dialogService)
     .useInstaller(new Installer())
     .registerComponents(ScoreBoardViewModel)

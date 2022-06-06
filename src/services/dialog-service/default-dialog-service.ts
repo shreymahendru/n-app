@@ -27,7 +27,7 @@ export class DefaultDialogService implements DialogService
         const newestOnTop = options?.newestOnTop ?? false;
         const enableCloseButton = options?.enableCloseButton ?? false;
 
-        given(accentColor as string, "accentColor").ensureIsString().ensure(t => t.trim().startsWith("#"), "must be hex value");
+        given(accentColor, "accentColor").ensureIsString().ensure(t => t.trim().startsWith("#"), "must be hex value");
         given(dialogLocation, "dialogLocation").ensureHasValue().ensureIsEnum(DialogLocation);
         given(newestOnTop, "newestOnTop").ensureHasValue().ensureIsBoolean();
         given(enableCloseButton, "enableCloseButton").ensureHasValue().ensureIsBoolean();
