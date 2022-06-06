@@ -1,3 +1,6 @@
+// import * as Assert from "assert";
+// import { given } from "@nivinjoseph/n-defensive";
+
 suite("Random stuff", () =>
 {
     test("string splitting", () =>
@@ -10,8 +13,16 @@ suite("Random stuff", () =>
         console.log(splitted.map(t => t.length));
     });
     
-    // test("Page tree building", () =>
+    // test.only("Schema conversion", () =>
     // {
+    //     const schema = '{"foo?": "string", "bar": [], "baz": Nove, box: {b: "string"}}';
         
+    //     const result = schemaToType(schema);
+        
+    //     console.log(result);
+    //     const parsed = JSON.parse(result);
+    //     console.log(parsed);
+        
+    //     Assert.ok(true);
     // });
 });
