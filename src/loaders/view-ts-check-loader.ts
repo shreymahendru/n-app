@@ -547,7 +547,7 @@ function parseType(right: any): string
                 right = "Function";
                 break;
             case "array":
-                right = "Array<any>";
+                right = "ReadonlyArray<any>";
                 break;
             case "object":
                 break;
@@ -559,11 +559,11 @@ function parseType(right: any): string
     else if (Array.isArray(right))
     {
         if (right.isEmpty)
-            right = "Array<any>";
+            right = "ReadonlyArray<any>";
         else
         {
             const arrayType = right[0];
-            right = `Array<${parseType(arrayType)}>`;
+            right = `ReadonlyArray<${parseType(arrayType)}>`;
         }
     }
     else // {} object literal
