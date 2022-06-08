@@ -44,3 +44,23 @@ export interface DialogService
     clearMessages(): void;
 }
 
+export interface DialogServiceOptions
+{
+    accentColor?: string;
+    dialogLocation?: DialogLocation;
+    newestOnTop?: boolean;
+    enableCloseButton?: boolean; 
+}
+
+export enum DialogLocation
+{
+    topLeft = "toast-top-left", 
+    topRight = "toast-top-right", 
+    topCenter = "toast-top-center", 
+    topFullWidth = "toast-top-full-width", 
+    
+    bottomLeft = "toast-bottom-left",
+    bottomRight = "toast-bottom-right",
+    bottomCenter = "toast-bottom-center",
+    bottomFullWidth = "toast-bottom-full-width"
+}

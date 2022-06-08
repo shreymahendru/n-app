@@ -1,12 +1,12 @@
 const Toastr = require("./../../../vendor/toastr.js");
 if (!Toastr)
-    console.log("No Toastr!!!");    
+    console.log("No Toastr!!!");
 
-const Spinner = require("./../../../vendor/spin.js");   
+const Spinner = require("./../../../vendor/spin.js");
 if (!Spinner)
-    console.log("No Spinner!!!");    
+    console.log("No Spinner!!!");
 
-import { DialogService } from "./dialog-service";
+import { DialogLocation, DialogService, DialogServiceOptions } from "./dialog-service";
 import * as $ from "jquery";
 import { given } from "@nivinjoseph/n-defensive";
 
@@ -20,19 +20,29 @@ export class DefaultDialogService implements DialogService
     private _spinner: any = null;
 
 
-    public constructor(accentColor?: string)
+    public constructor(options?: DialogServiceOptions)
     {
-        given(accentColor as string, "accentColor").ensureIsString();
+        const accentColor = options?.accentColor;
+        const dialogLocation = options?.dialogLocation ?? DialogLocation.bottomRight;
+        const newestOnTop = options?.newestOnTop ?? false;
+        const enableCloseButton = options?.enableCloseButton ?? false;
+
+        given(accentColor, "accentColor").ensureIsString().ensure(t => t.trim().startsWith("#"), "must be hex value");
+        given(dialogLocation, "dialogLocation").ensureHasValue().ensureIsEnum(DialogLocation);
+        given(newestOnTop, "newestOnTop").ensureHasValue().ensureIsBoolean();
+        given(enableCloseButton, "enableCloseButton").ensureHasValue().ensureIsBoolean();
+
         if (accentColor)
-            this._accentColor = accentColor.trim();    
-        
+            this._accentColor = accentColor.trim();
+
         this._toastr = (<any>window).toastr;
-        
+
         this._toastr.options.timeOut = 4000;
-        this._toastr.options.positionClass = "toast-bottom-right";
-        this._toastr.options.newestOnTop = false;
+        this._toastr.options.positionClass = dialogLocation;
+        this._toastr.options.newestOnTop = newestOnTop;
+        this._toastr.options.closeButton = enableCloseButton;
     }
-    
+
 
     public showLoadingScreen(): void
     {
@@ -92,7 +102,7 @@ export class DefaultDialogService implements DialogService
             this._toastr.success(message);
         }
     }
-    
+
     public showWarningMessage(message: string, title?: string): void
     {
         if (title)

@@ -1,7 +1,7 @@
 import "@babel/polyfill";
 
 import "@nivinjoseph/n-ext";
-import { ClientApp } from "./../../src/index";
+import { ClientApp, DefaultDialogService, DialogLocation } from "./../../src/index";
 import { ScoreBoardViewModel } from "./components/score-board/score-board-view-model";
 import { ComponentInstaller, Registry } from "@nivinjoseph/n-ject";
 import { InmemoryTodoRepository } from "./services/todo-repository/inmemory-todo-repository";
@@ -30,13 +30,20 @@ class Installer implements ComponentInstaller
             .registerScoped("ScopedService", ScopedService)
             ;
     }
-}    
+}
 
 const pages = [DashboardViewModel, TestViewModel, TodoViewModel];
 // const pages = [DashboardViewModel, TestViewModel];
 
+const dialogService = new DefaultDialogService({
+    accentColor: "#7ab53b",
+    dialogLocation: DialogLocation.bottomRight,
+    newestOnTop: true,
+    enableCloseButton: true
+});
+
 const app = new ClientApp("#app", "router-view")
-    .useAccentColor("#7ab53b")
+    .registerDialogService(dialogService)
     .useInstaller(new Installer())
     .registerComponents(ScoreBoardViewModel)
     .registerPages(...pages)
@@ -46,5 +53,5 @@ const app = new ClientApp("#app", "router-view")
     // .useAsDefaultPageTitle("fooo")
     // .useAsDefaultPageMetadata({name: "description", content: "this is the default description"})
     ;
-    
+
 app.bootstrap();
