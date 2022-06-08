@@ -1,4 +1,4 @@
-export declare class BaseViewModel {
+export declare abstract class BaseViewModel {
     private readonly _watches;
     private _executeOnCreate;
     private _executeOnDestroy;

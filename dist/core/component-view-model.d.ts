@@ -1,5 +1,5 @@
 import { BaseViewModel } from "./base-view-model";
-export declare class ComponentViewModel extends BaseViewModel {
+export declare abstract class ComponentViewModel extends BaseViewModel {
     private get _myBindings();
     private get _myEvents();
     static createComponentOptions(component: Function): object;

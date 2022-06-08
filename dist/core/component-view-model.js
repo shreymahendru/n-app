@@ -20,24 +20,24 @@ class ComponentViewModel extends base_view_model_1.BaseViewModel {
         // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
         if (!this.ctx)
             throw new n_exception_1.InvalidOperationException("calling getBound() in the constructor");
-        (0, n_defensive_1.given)(propertyName, "propertyName").ensureHasValue().ensure(t => !t.isEmptyOrWhiteSpace())
-            .ensure(t => this._myBindings.some(u => u === t), `No binding with the name '${propertyName}' found`);
+        (0, n_defensive_1.given)(propertyName, "propertyName").ensureHasValue()
+            .ensure(t => this._myBindings.contains(t), `No binding with the name '${propertyName}' found`);
         return this.ctx[propertyName];
     }
     getBoundModel() {
         // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
         if (!this.ctx)
             throw new n_exception_1.InvalidOperationException("calling getBoundModel() in the constructor");
-        if (!this._myBindings.some(t => t === "value"))
-            throw new n_exception_1.InvalidOperationException("calling getBoundModel() without defining 'value' in bind");
+        if (!this._myBindings.contains("model"))
+            throw new n_exception_1.InvalidOperationException("calling getBoundModel() without defining 'model' in bind");
         return this.ctx["value"];
     }
     setBoundModel(value) {
         // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
         if (!this.ctx)
             throw new n_exception_1.InvalidOperationException("calling setBoundModel() in the constructor");
-        if (!this._myBindings.some(t => t === "value"))
-            throw new n_exception_1.InvalidOperationException("calling setBoundModel() without defining 'value' in bind");
+        if (!this._myBindings.contains("model"))
+            throw new n_exception_1.InvalidOperationException("calling setBoundModel() without defining 'model' in bind");
         // eslint-disable-next-line @typescript-eslint/no-unsafe-call
         this.ctx.$emit("input", value);
     }
