@@ -53,10 +53,12 @@ export class FunctionNode
                 const hasModel = globalComponentElementTypeCache!.get(key)!.hasModel;
 
                 // Step 1: Check basic component declaration with no arguments
-                const noArgsSyntax = `_c(${key})`;
-                const noArgsSyntaxWithSlot = `_c(${key}, [`;
+                // eslint-disable-next-line no-useless-escape
+                const noArgsSyntax = new RegExp(`_c\\(\\s*\\"${key.substring(1, key.length -1)}\\"\\s*\\)`, "g");
+                // eslint-disable-next-line no-useless-escape
+                const noArgsSyntaxWithSlot = new RegExp(`_c\\(\\s*\\"${key.substring(1, key.length -1)}\\"\\s*,\\s*\\[`, "g");
                 // const modifiedCheckSyntax = `_c(${key} + ""`;
-                if (renderFn.contains(noArgsSyntax) || renderFn.contains(noArgsSyntaxWithSlot))
+                if (noArgsSyntax.test(renderFn) || noArgsSyntaxWithSlot.test(renderFn))
                 {
                     if (hasModel)
                     {
@@ -71,8 +73,8 @@ export class FunctionNode
                     }
 
                     renderFn = renderFn
-                        .replaceAll(noArgsSyntax, `_c(${key} + "")`)
-                        .replaceAll(noArgsSyntaxWithSlot, `_c(${key} + "", [`);
+                        .replaceAll(noArgsSyntax as any, `_c(${key} + "")`)
+                        .replaceAll(noArgsSyntaxWithSlot as any, `_c(${key} + "", [`);
                 }
                 // {
                 //     if (schema !== "any")
@@ -95,6 +97,10 @@ export class FunctionNode
 
                 // Step 2: Check component declaration with args. Validate that attrs exist if there are required Args
 
+                // eslint-disable-next-line no-useless-escape
+                const test = new RegExp(`_c\\(\\s*\\"${key.substring(1, key.length - 1)}\\"\\s*\\,`, "g");
+                if (test.test(renderFn))
+                    renderFn.replaceAll(test as any, `_c(${key},`);
 
                 let instanceCount = 0;
                 // console.log("key", key);

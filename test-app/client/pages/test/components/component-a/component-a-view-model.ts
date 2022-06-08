@@ -3,7 +3,7 @@ import "./component-a-view.scss";
 
 @template(require("./component-a-view.html"))
 @element("component-a")
-@bind({ num: "number", sport: {name: "string"} })
+    @bind({ sport: { name: "string" }, "num?": "number" })
 export class ComponentAViewModel extends ComponentViewModel
 {
     // private readonly _names = ["Shrey", "Nivin", "Albert"];
