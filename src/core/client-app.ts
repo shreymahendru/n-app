@@ -247,8 +247,8 @@ export class ClientApp
     
     public retrieveRouterInstance(): object
     {
-        given(this, "this").ensure(t => t._isBootstrapped, "calling retrieveRouterInstance before calling bootstrap");
-        given(this, "this").ensure(t => t._pageManager.hasRegistrations, "calling retrieveRouterInstance with no page registrations");
+        given(this, "this").ensure(t => t._isBootstrapped, "calling retrieveRouterInstance before calling bootstrap")
+            .ensure(t => t._pageManager.hasRegistrations, "calling retrieveRouterInstance with no page registrations");
 
         return this._pageManager.vueRouterInstance;
     }
