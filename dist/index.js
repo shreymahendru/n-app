@@ -1,6 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.resolve = exports.DisplayType = exports.Utils = exports.PageViewModel = exports.ComponentViewModel = exports.persist = exports.pages = exports.components = exports.events = exports.bind = exports.meta = exports.title = exports.template = exports.route = exports.element = exports.ClientApp = exports.Vue = void 0;
+exports.resolve = exports.DisplayType = exports.DefaultDialogService = exports.DialogLocation = exports.Utils = exports.PageViewModel = exports.ComponentViewModel = exports.persist = exports.pages = exports.components = exports.events = exports.bind = exports.meta = exports.title = exports.template = exports.route = exports.element = exports.ClientApp = exports.Vue = void 0;
 require("@nivinjoseph/n-ext");
 const client_app_1 = require("./core/client-app");
 Object.defineProperty(exports, "Vue", { enumerable: true, get: function () { return client_app_1.Vue; } });
@@ -29,10 +29,14 @@ const page_view_model_1 = require("./core/page-view-model");
 Object.defineProperty(exports, "PageViewModel", { enumerable: true, get: function () { return page_view_model_1.PageViewModel; } });
 const utils_1 = require("./core/utils");
 Object.defineProperty(exports, "Utils", { enumerable: true, get: function () { return utils_1.Utils; } });
+const dialog_service_1 = require("./services/dialog-service/dialog-service");
+Object.defineProperty(exports, "DialogLocation", { enumerable: true, get: function () { return dialog_service_1.DialogLocation; } });
 const display_type_1 = require("./services/display-service/display-type");
 Object.defineProperty(exports, "DisplayType", { enumerable: true, get: function () { return display_type_1.DisplayType; } });
 const resolve_1 = require("./core/resolve");
 Object.defineProperty(exports, "resolve", { enumerable: true, get: function () { return resolve_1.resolve; } });
 const persist_1 = require("./core/persist");
 Object.defineProperty(exports, "persist", { enumerable: true, get: function () { return persist_1.persist; } });
+const default_dialog_service_1 = require("./services/dialog-service/default-dialog-service");
+Object.defineProperty(exports, "DefaultDialogService", { enumerable: true, get: function () { return default_dialog_service_1.DefaultDialogService; } });
 //# sourceMappingURL=index.js.map

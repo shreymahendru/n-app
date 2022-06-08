@@ -13,7 +13,6 @@ const n_defensive_1 = require("@nivinjoseph/n-defensive");
 const n_ject_1 = require("@nivinjoseph/n-ject");
 const component_manager_1 = require("./component-manager");
 const page_manager_1 = require("./page-manager");
-const n_exception_1 = require("@nivinjoseph/n-exception");
 const default_dialog_service_1 = require("./../services/dialog-service/default-dialog-service");
 const default_event_aggregator_1 = require("./../services/event-aggregator/default-event-aggregator");
 const default_navigation_service_1 = require("./../services/navigation-service/default-navigation-service");
@@ -60,6 +59,7 @@ class ClientApp {
      * Check the dev dependencies in package.json
      */
     constructor(appElementId, rootComponentElement, options) {
+        this._isDialogServiceRegistered = false;
         this._errorTrackingConfigurationCallback = null;
         this._isBootstrapped = false;
         (0, n_defensive_1.given)(appElementId, "appElementId").ensureHasValue().ensureIsString().ensure(t => t.startsWith("#"));
@@ -79,42 +79,36 @@ class ClientApp {
     }
     get container() { return this._container; }
     useInstaller(installer) {
-        if (this._isBootstrapped)
-            throw new n_exception_1.InvalidOperationException("useInstaller");
+        (0, n_defensive_1.given)(this, "this").ensure(t => !t._isBootstrapped, "already bootstrapped");
         (0, n_defensive_1.given)(installer, "installer").ensureHasValue();
         this._container.install(installer);
         return this;
     }
-    useAccentColor(color) {
-        if (this._isBootstrapped)
-            throw new n_exception_1.InvalidOperationException("useAccentColor");
-        (0, n_defensive_1.given)(color, "color").ensureHasValue().ensure(t => !t.isEmptyOrWhiteSpace())
-            .ensure(t => t.trim().startsWith("#"), "must be hex value");
-        this._accentColor = color.trim();
+    registerDialogService(dialogService) {
+        (0, n_defensive_1.given)(dialogService, "dialogService").ensureHasValue().ensureIsObject();
+        (0, n_defensive_1.given)(this, "this").ensure(t => !t._isBootstrapped, "already bootstrapped");
+        this._container.registerInstance("DialogService", dialogService);
+        this._isDialogServiceRegistered = true;
         return this;
     }
     registerComponents(...componentViewModelClasses) {
-        if (this._isBootstrapped)
-            throw new n_exception_1.InvalidOperationException("registerComponents");
+        (0, n_defensive_1.given)(this, "this").ensure(t => !t._isBootstrapped, "already bootstrapped");
         this._componentManager.registerComponents(...componentViewModelClasses);
         return this;
     }
     registerPages(...pageViewModelClasses) {
-        if (this._isBootstrapped)
-            throw new n_exception_1.InvalidOperationException("registerPages");
+        (0, n_defensive_1.given)(this, "this").ensure(t => !t._isBootstrapped, "already bootstrapped");
         this._pageManager.registerPages(...pageViewModelClasses);
         return this;
     }
     useAsInitialRoute(route) {
-        if (this._isBootstrapped)
-            throw new n_exception_1.InvalidOperationException("useAsInitialRoute");
+        (0, n_defensive_1.given)(this, "this").ensure(t => !t._isBootstrapped, "already bootstrapped");
         (0, n_defensive_1.given)(route, "route").ensureHasValue().ensureIsString();
         this._pageManager.useAsInitialRoute(route);
         return this;
     }
     useAsUnknownRoute(route) {
-        if (this._isBootstrapped)
-            throw new n_exception_1.InvalidOperationException("useAsUnknownRoute");
+        (0, n_defensive_1.given)(this, "this").ensure(t => !t._isBootstrapped, "already bootstrapped");
         (0, n_defensive_1.given)(route, "route").ensureHasValue().ensureIsString();
         this._pageManager.useAsUnknownRoute(route);
         return this;
@@ -142,8 +136,7 @@ class ClientApp {
     //     return this;
     // }
     useHistoryModeRouting() {
-        if (this._isBootstrapped)
-            throw new n_exception_1.InvalidOperationException("useHistoryModeRouting");
+        (0, n_defensive_1.given)(this, "this").ensure(t => !t._isBootstrapped, "already bootstrapped");
         // if (this._initialRoute)
         //     throw new InvalidOperationException("Cannot use history mode with initial route.");
         this._pageManager.useHistoryModeRouting();
@@ -158,14 +151,12 @@ class ClientApp {
     // }
     configureErrorTracking(callback) {
         (0, n_defensive_1.given)(callback, "callback").ensureHasValue().ensureIsFunction();
-        if (this._isBootstrapped)
-            throw new n_exception_1.InvalidOperationException("calling method after bootstrap");
+        (0, n_defensive_1.given)(this, "this").ensure(t => !t._isBootstrapped, "already bootstrapped");
         this._errorTrackingConfigurationCallback = callback;
         return this;
     }
     bootstrap() {
-        if (this._isBootstrapped)
-            throw new n_exception_1.InvalidOperationException("bootstrap");
+        (0, n_defensive_1.given)(this, "this").ensure(t => !t._isBootstrapped, "already bootstrapped");
         this._configureGlobalConfig();
         this._configurePages();
         this._configureErrorTracking();
@@ -177,10 +168,8 @@ class ClientApp {
         // this._pageManager.handleInitialRoute();
     }
     retrieveRouterInstance() {
-        if (!this._isBootstrapped)
-            throw new n_exception_1.InvalidOperationException("calling retrieveRouterInstance before calling bootstrap");
-        if (!this._pageManager.hasRegistrations)
-            throw new n_exception_1.InvalidOperationException("calling retrieveRouterInstance with no page registrations");
+        (0, n_defensive_1.given)(this, "this").ensure(t => t._isBootstrapped, "calling retrieveRouterInstance before calling bootstrap")
+            .ensure(t => t._pageManager.hasRegistrations, "calling retrieveRouterInstance with no page registrations");
         return this._pageManager.vueRouterInstance;
     }
     _configureGlobalConfig() {
@@ -215,12 +204,13 @@ class ClientApp {
     }
     _configureCoreServices() {
         this._container
-            .registerInstance("DialogService", new default_dialog_service_1.DefaultDialogService(this._accentColor))
             .registerInstance("EventAggregator", new default_event_aggregator_1.DefaultEventAggregator())
             .registerInstance("NavigationService", new default_navigation_service_1.DefaultNavigationService(this._pageManager.vueRouterInstance))
             .registerInstance("StorageService", new default_storage_service_1.DefaultStorageService())
             .registerInstance("DisplayService", new default_display_service_1.DefaultDisplayService())
             .registerInstance("ComponentService", new default_component_service_1.DefaultComponentService());
+        if (!this._isDialogServiceRegistered)
+            this._container.registerInstance("DialogService", new default_dialog_service_1.DefaultDialogService());
     }
     _configureContainer() {
         this._container.bootstrap();

@@ -5,6 +5,7 @@ import { Container, ComponentInstaller } from "@nivinjoseph/n-ject";
 import { ClassHierarchy } from "@nivinjoseph/n-util";
 import { ComponentViewModel } from "./component-view-model";
 import { PageViewModel } from "./page-view-model";
+import { DialogService } from "../services/dialog-service/dialog-service";
 export declare class ClientApp {
     private readonly _appElementId;
     private readonly _rootComponentElement;
@@ -13,7 +14,7 @@ export declare class ClientApp {
     private readonly _componentManager;
     private readonly _pageManager;
     private _app;
-    private _accentColor;
+    private _isDialogServiceRegistered;
     private _errorTrackingConfigurationCallback;
     private _isBootstrapped;
     get container(): Container;
@@ -27,7 +28,7 @@ export declare class ClientApp {
      */
     constructor(appElementId: string, rootComponentElement: string, options?: object);
     useInstaller(installer: ComponentInstaller): this;
-    useAccentColor(color: string): this;
+    registerDialogService(dialogService: DialogService): this;
     registerComponents(...componentViewModelClasses: Array<ClassHierarchy<ComponentViewModel>>): this;
     registerPages(...pageViewModelClasses: Array<ClassHierarchy<PageViewModel>>): this;
     useAsInitialRoute(route: string): this;

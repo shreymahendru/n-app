@@ -1,11 +1,11 @@
-import { DialogService } from "./dialog-service";
+import { DialogService, DialogServiceOptions } from "./dialog-service";
 export declare class DefaultDialogService implements DialogService {
     private readonly _accentColor;
     private readonly _toastr;
     private _loadingScreenCount;
     private _loadingScreen;
     private _spinner;
-    constructor(accentColor?: string);
+    constructor(options?: DialogServiceOptions);
     showLoadingScreen(): void;
     hideLoadingScreen(): void;
     showMessage(message: string, title?: string): void;

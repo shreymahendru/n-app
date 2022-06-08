@@ -7,21 +7,31 @@ if (!Toastr)
 const Spinner = require("./../../../vendor/spin.js");
 if (!Spinner)
     console.log("No Spinner!!!");
+const dialog_service_1 = require("./dialog-service");
 const $ = require("jquery");
 const n_defensive_1 = require("@nivinjoseph/n-defensive");
 class DefaultDialogService {
-    constructor(accentColor) {
+    constructor(options) {
+        var _a, _b, _c;
         this._accentColor = "#000";
         this._loadingScreenCount = 0;
         this._loadingScreen = null;
         this._spinner = null;
-        (0, n_defensive_1.given)(accentColor, "accentColor").ensureIsString();
+        const accentColor = options === null || options === void 0 ? void 0 : options.accentColor;
+        const dialogLocation = (_a = options === null || options === void 0 ? void 0 : options.dialogLocation) !== null && _a !== void 0 ? _a : dialog_service_1.DialogLocation.bottomRight;
+        const newestOnTop = (_b = options === null || options === void 0 ? void 0 : options.newestOnTop) !== null && _b !== void 0 ? _b : false;
+        const enableCloseButton = (_c = options === null || options === void 0 ? void 0 : options.enableCloseButton) !== null && _c !== void 0 ? _c : false;
+        (0, n_defensive_1.given)(accentColor, "accentColor").ensureIsString().ensure(t => t.trim().startsWith("#"), "must be hex value");
+        (0, n_defensive_1.given)(dialogLocation, "dialogLocation").ensureHasValue().ensureIsEnum(dialog_service_1.DialogLocation);
+        (0, n_defensive_1.given)(newestOnTop, "newestOnTop").ensureHasValue().ensureIsBoolean();
+        (0, n_defensive_1.given)(enableCloseButton, "enableCloseButton").ensureHasValue().ensureIsBoolean();
         if (accentColor)
             this._accentColor = accentColor.trim();
         this._toastr = window.toastr;
         this._toastr.options.timeOut = 4000;
-        this._toastr.options.positionClass = "toast-bottom-right";
-        this._toastr.options.newestOnTop = false;
+        this._toastr.options.positionClass = dialogLocation;
+        this._toastr.options.newestOnTop = newestOnTop;
+        this._toastr.options.closeButton = enableCloseButton;
     }
     showLoadingScreen() {
         if (this._loadingScreenCount === 0) {
