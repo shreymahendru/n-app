@@ -6,11 +6,10 @@ import { ComponentFactory } from "./component-factory";
 
 
 // public
-export class ComponentViewModel extends BaseViewModel
+export abstract class ComponentViewModel extends BaseViewModel
 {    
     private get _myBindings(): ReadonlyArray<string> { return (<any>this)["_bindings"] as Array<string>; }
     private get _myEvents(): ReadonlyArray<string> { return (<any>this)["_events"] as Array<string>; }
-    
     
     public static createComponentOptions(component: Function): object
     {
@@ -27,8 +26,8 @@ export class ComponentViewModel extends BaseViewModel
         if (!this.ctx)
             throw new InvalidOperationException("calling getBound() in the constructor");
         
-        given(propertyName, "propertyName").ensureHasValue().ensure(t => !t.isEmptyOrWhiteSpace())
-            .ensure(t => this._myBindings.some(u => u === t), `No binding with the name '${propertyName}' found`);
+        given(propertyName, "propertyName").ensureHasValue()
+            .ensure(t => this._myBindings.contains(t), `No binding with the name '${propertyName}' found`);
         
         return this.ctx[propertyName] as T;
     }
@@ -39,8 +38,8 @@ export class ComponentViewModel extends BaseViewModel
         if (!this.ctx)
             throw new InvalidOperationException("calling getBoundModel() in the constructor");
         
-        if (!this._myBindings.some(t => t === "value"))
-            throw new InvalidOperationException("calling getBoundModel() without defining 'value' in bind");
+        if (!this._myBindings.contains("model"))
+            throw new InvalidOperationException("calling getBoundModel() without defining 'model' in bind");
         
         return this.ctx["value"] as T;
     }
@@ -51,8 +50,8 @@ export class ComponentViewModel extends BaseViewModel
         if (!this.ctx)
             throw new InvalidOperationException("calling setBoundModel() in the constructor");
 
-        if (!this._myBindings.some(t => t === "value"))
-            throw new InvalidOperationException("calling setBoundModel() without defining 'value' in bind");
+        if (!this._myBindings.contains("model"))
+            throw new InvalidOperationException("calling setBoundModel() without defining 'model' in bind");
         
         // eslint-disable-next-line @typescript-eslint/no-unsafe-call
         this.ctx.$emit("input", value);

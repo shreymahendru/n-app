@@ -52,10 +52,17 @@ export class ComponentRegistration extends ViewModelRegistration
                 });
             });
             
+            given(this._bindings, "bindings")
+                .ensure(t => t.length === t.distinct(u => u.name).length,
+                    `duplicate binding declarations detected in ${this.name} binding schema`)
+                .ensure(t => t.some(u => u.name === "model") ? !t.find(u => u.name === "model")!.isOptional : true,
+                    "model cannot be declared as optional")
+                .ensure(t => t.every(u => u.name !== "value"), "using forbidden keyword 'value' in binding schema");
+            
             this._bindingSchema = bindingSchema;
         }
         
-        this._hasModel = this._bindings.some(t => t.name === "value");
+        this._hasModel = this._bindings.some(t => t.name === "model");
         
         if (Reflect.hasOwnMetadata(eventsSymbol, this.viewModel))
             this._events.push(...Reflect.getOwnMetadata(eventsSymbol, this.viewModel));

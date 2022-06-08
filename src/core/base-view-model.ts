@@ -2,7 +2,7 @@ import { given } from "@nivinjoseph/n-defensive";
 import { ApplicationException } from "@nivinjoseph/n-exception";
 
 
-export class BaseViewModel
+export abstract class BaseViewModel
 {
     private readonly _watches: Record<string, Function | undefined> = {};
     private _executeOnCreate: (() => void) | null = null;

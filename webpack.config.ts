@@ -256,7 +256,8 @@ const moduleRules: Array<any> = [
                 //     debugFiles: [
                 //         // Path.resolve("test-app/client/components/binding-test/binding-test-view-model.ts"),
                 //         // Path.resolve("test-app/client/pages/test/test-view-model.ts")
-                //         // Path.resolve("test-app/client/components/score-board/score-board-view-model.ts")
+                //         Path.resolve("test-app/client/components/score-board/score-board-view-model.ts"),
+                //         Path.resolve("test-app/client/pages/test/test-view-model.ts"),
                 //         Path.resolve("test-app/client/pages/dashboard/dashboard-view-model.ts")
                 //     ]
                 // }
@@ -320,6 +321,9 @@ const plugins = [
         // "__assign": ["tslib", "__assign"],
         // "__extends": ["tslib", "__extends"],
         // "__awaiter": ["tslib", "__awaiter"]
+        
+        $: "jquery",
+        jQuery: "jquery",
 
         ...Object.keys(require("tslib"))
             .reduce<Record<string, Array<string>>>((acc, key) =>

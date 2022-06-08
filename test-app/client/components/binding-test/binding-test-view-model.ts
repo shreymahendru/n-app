@@ -4,7 +4,7 @@ import "./binding-test-view.scss";
 
 @template(require("./binding-test-view.html"))
 @element("binding-test")
-@bind({value: "string"})   
+@bind({"model": "string"})   
 export class BindingTestViewModel extends ComponentViewModel
 {
     public get fooVal(): string { return this.getBoundModel(); }

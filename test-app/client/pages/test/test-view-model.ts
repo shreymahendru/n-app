@@ -28,6 +28,8 @@ export class TestViewModel extends PageViewModel
     
     public get id(): number { return this._id; }
     
+    public get players(): ReadonlyArray<{ name: string; }>  { return [{ name: 'Shrey' }, { name: 'Albert' }]; }
+    
     
     public constructor(todoRepository: TodoRepository, navigationService: NavigationService, eventAggregator: EventAggregator)
     {
@@ -44,9 +46,9 @@ export class TestViewModel extends PageViewModel
     }
     
     
-    public go(): void
+    public go(id: number): void
     {
-        this._navigationService.navigate(Routes.test, { id: ++this._id });
+        this._navigationService.navigate(Routes.test, { id: ++id });
         
         // this._eventAggregator.publish("openFileSelect", "foo");
     }
