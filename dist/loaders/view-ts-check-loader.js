@@ -24,6 +24,9 @@ module.exports = function (src) {
     const dir = Path.dirname(filePath);
     const file = Path.basename(filePath);
     const viewModelFile = file.replace("-view.html", "-view-model.ts");
+    let isDebugFile = false;
+    if (isDebug)
+        isDebugFile = debugFiles.some(t => t.contains(this.resourcePath.replace(Path.extname(this.resourcePath), "")));
     if (!dir.contains("node_modules"))
         (0, ts_compiler_1.compile)(isDebug, debugFiles, [Path.join(dir, viewModelFile)], ts_compiler_1.declarationCompileConfig, this);
     const declarationFile = file.replace("-view.html", "-view-model.d.ts");
@@ -36,7 +39,8 @@ module.exports = function (src) {
     const staticRenderFnsKey = "var staticRenderFns =";
     let [renderFn, staticRenderFns] = src.split(staticRenderFnsKey);
     staticRenderFns = staticRenderFnsKey + staticRenderFns;
-    // console.log(renderFn);
+    if (isDebugFile)
+        console.log(renderFn);
     renderFn = (0, view_transformer_1.transformRenderFns)(renderFn, this, className);
     staticRenderFns = staticRenderFns
         .replaceAll(", arguments)", ", arguments as any)")

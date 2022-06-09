@@ -8,10 +8,12 @@ exports.globalComponentElementTypeCache = null;
 function populateGlobalElementTypeCache(context) {
     if (exports.globalComponentElementTypeCache == null) {
         exports.globalComponentElementTypeCache = new Map();
-        const isPackage = __dirname.contains("node_modules");
         const paths = [Path.resolve(process.cwd(), "src")];
-        if (isPackage)
-            paths.push(Path.resolve(process.cwd(), "node_modules", "@nivinjoseph", "n-app", "src", "components"));
+        const isPackage = __dirname.contains("node_modules");
+        if (isPackage) {
+            // do nothing, because monorepos work differently
+            // paths.push(Path.resolve(process.cwd(), "node_modules", "@nivinjoseph", "n-app", "src", "components"));
+        }
         else
             paths.push(Path.resolve(process.cwd(), "test-app"));
         const files = paths.reduce((acc, path) => {

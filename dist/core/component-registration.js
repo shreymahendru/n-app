@@ -7,6 +7,7 @@ const element_1 = require("./element");
 const n_exception_1 = require("@nivinjoseph/n-exception");
 const bind_1 = require("./bind");
 const events_1 = require("./events");
+const utilities_1 = require("./utilities");
 class ComponentRegistration extends view_model_registration_1.ViewModelRegistration {
     constructor(component) {
         (0, n_defensive_1.given)(component, "component").ensureHasValue();
@@ -32,10 +33,12 @@ class ComponentRegistration extends view_model_registration_1.ViewModelRegistrat
                     type: bindingSchema[key]
                 });
             });
+            const forbidden = [...utilities_1.Utilities.forbidden, "value"];
             (0, n_defensive_1.given)(this._bindings, "bindings")
                 .ensure(t => t.length === t.distinct(u => u.name).length, `duplicate binding declarations detected in ${this.name} binding schema`)
                 .ensure(t => t.some(u => u.name === "model") ? !t.find(u => u.name === "model").isOptional : true, "model cannot be declared as optional")
-                .ensure(t => t.every(u => u.name !== "value"), "using forbidden keyword 'value' in binding schema");
+                // .ensure(t => t.every(u => u.name !== "value"), "using forbidden keyword 'value' in binding schema")
+                .ensure(t => t.every(u => !forbidden.contains(u.name)), `using forbidden keyword in binding schema, the following names are forbidden: ${forbidden}.`);
             this._bindingSchema = bindingSchema;
         }
         this._hasModel = this._bindings.some(t => t.name === "model");

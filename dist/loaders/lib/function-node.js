@@ -226,6 +226,7 @@ class FunctionNode {
         return moddedCode;
     }
     _locateCurlyBeginningEnd() {
+        var _a;
         const functionIndex = this._text.indexOf("function");
         const firstCurlyIndex = this._text.indexOf("{", functionIndex);
         let curlyCount = 1;
@@ -247,22 +248,47 @@ class FunctionNode {
         this._curlyStart = firstCurlyIndex;
         this._curlyEnd = lastCurlyIndex;
         this._functionCode = this._text.substring(this._functionIndex, this._curlyEnd + 1);
-        if (this._functionCode.substring(0, this._functionCode.indexOf("{")).contains("$"))
-            throw new Error("Invalid function");
+        // const dollarTest = /\(\s*\$/;
+        // const propTest = /\(\s*props/;
+        const signature = this._functionCode.substring(0, this._functionCode.indexOf("{"));
+        // if (signature.contains("$") || signature.contains("props"))
+        //     throw new Error("Unparsable function");
+        if (signature.contains("$"))
+            throw new Error("Unparsable built in function");
+        const scopedSlotsIndex = (_a = this._parent) === null || _a === void 0 ? void 0 : _a._functionCode.lastIndexOf("scopedSlots", this._parentRefIndex);
+        if (scopedSlotsIndex != null && scopedSlotsIndex !== -1) {
+            const scopedSlotCurlyIndex = this._parent._functionCode.indexOf("{", scopedSlotsIndex);
+            curlyCount = 1;
+            let scopedSlotCurlyEndIndex = this._parentRefIndex;
+            for (let i = scopedSlotCurlyIndex + 1; i < this._parentRefIndex; i++) {
+                const char = this._parent._functionCode[i];
+                if (char === "{")
+                    curlyCount++;
+                else if (char === "}")
+                    curlyCount--;
+                if (curlyCount === 0) {
+                    scopedSlotCurlyEndIndex = i;
+                    break;
+                }
+            }
+            if (this._parentRefIndex > scopedSlotCurlyIndex && this._parentRefIndex <= scopedSlotCurlyEndIndex)
+                throw new Error("Unparsable scoped slot function");
+        }
     }
     _createChildNodes() {
         const sub = this._functionCode.substring(this._functionCode.indexOf("{") + 1);
+        const diff = this._functionCode.length - sub.length;
         let start = 0;
         let subFunctionIndex = sub.indexOf("function", start);
         while (subFunctionIndex !== -1) {
             const functionInputType = sub.substring(sub.lastIndexOf("(", subFunctionIndex) + 1, sub.lastIndexOf(",", subFunctionIndex));
-            const childNode = new FunctionNode(sub.substring(subFunctionIndex), subFunctionIndex, functionInputType, this);
+            const childNode = new FunctionNode(sub.substring(subFunctionIndex), subFunctionIndex + diff, functionInputType, this);
             try {
                 childNode.preProcess();
                 this._childNodes.push(childNode);
             }
             catch (error) {
-                // suppress
+                console.warn(error.message);
             }
             start = subFunctionIndex + childNode._functionCode.length - 1;
             subFunctionIndex = sub.indexOf("function", start);
