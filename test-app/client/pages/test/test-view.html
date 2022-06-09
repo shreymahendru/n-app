@@ -3,9 +3,13 @@
     <router-link to="/dashboard">Go to Dashboard</router-link>
     <button v-on:click="go(id)">To Test {{players[0].name}}</button>
     <n-file-select id="foo" mime-types=".xlsx" :max-file-size="500" @select="onFileSelected"></n-file-select>
-    <!-- <component-a :num="id" :sport="players.takeLast()"></component-a>
+    <component-a :num="id" :sport="players.takeLast()"></component-a>
     
-    <component-a :key="player.name" v-for="(player, index) of players"  :sport="player"></component-a>
+    <div v-for="player of players">
+        <button @click="() => console.log(player.nationality)">{{player.name}}</button>
+    </div>
+    
+    <!-- <component-a :key="player.name" v-for="(player, index) of players"  :sport="player"></component-a>
     
     <component-a :key="player.name.split('').reverse().join('')" v-for="player of players" :num="id" :sport="player"></component-a>
     

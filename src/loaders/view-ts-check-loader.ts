@@ -53,7 +53,7 @@ module.exports = function (this: LoaderContext<any>, src: string): string
     if (isDebugFile)
         console.log(renderFn);
     
-    renderFn = transformRenderFns(renderFn, this, className);
+    renderFn = transformRenderFns(isDebugFile, renderFn, this, className);
     
         
     staticRenderFns = staticRenderFns

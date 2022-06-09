@@ -1,7 +1,7 @@
 import { LoaderContext } from "webpack";
 import { FunctionNode } from "./function-node";
 
-export function transformRenderFns(renderFn: string, context: LoaderContext<any>, viewModelClassName: string): string
+export function transformRenderFns(isDebug: boolean, renderFn: string, context: LoaderContext<any>, viewModelClassName: string): string
 {
     // renderFn = renderFn.replaceAll(",\r", ", ").replaceAll(",\n", ", ").replaceAll(",\r\n", ", ")
     //     .replaceAll("(\r", "(").replaceAll("(\n", "(").replaceAll("(\r\n", "(")
@@ -14,7 +14,7 @@ export function transformRenderFns(renderFn: string, context: LoaderContext<any>
     
     
     
-    const node = new FunctionNode(renderFn, 0, viewModelClassName);
+    const node = new FunctionNode(isDebug, renderFn, 0, viewModelClassName);
     node.preProcess();
     
     node.regenerate(context);

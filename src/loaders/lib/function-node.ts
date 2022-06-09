@@ -5,6 +5,7 @@ import { LoaderContext } from "webpack";
 
 export class FunctionNode
 {
+    private readonly _isDebug: boolean;
     private readonly _text: string;
     private readonly _parentRefIndex: number;
     private readonly _functionInputType: string;
@@ -21,8 +22,9 @@ export class FunctionNode
     private _regeneratedCode!: string;
 
 
-    public constructor(text: string, parentRefIndex: number, functionInputType: string, parent?: FunctionNode)
+    public constructor(isDebug: boolean, text: string, parentRefIndex: number, functionInputType: string, parent?: FunctionNode)
     {
+        this._isDebug = isDebug;
         this._text = text;
         this._parentRefIndex = parentRefIndex;
         this._functionInputType = functionInputType;
@@ -98,7 +100,7 @@ export class FunctionNode
                 // eslint-disable-next-line no-useless-escape
                 const test = new RegExp(`_c\\(\\s*\\"${key.substring(1, key.length - 1)}\\"\\s*\\,`, "g");
                 if (test.test(renderFn))
-                    renderFn.replaceAll(test as any, `_c(${key},`);
+                    renderFn = renderFn.replaceAll(test as any, `_c(${key},`);
 
                 let instanceCount = 0;
                 // console.log("key", key);
@@ -246,7 +248,7 @@ export class FunctionNode
         if (!this._isRoot)
         {
             const joined = renderFn;
-            const funcIndex = joined.lastIndexOf("function (",);
+            const funcIndex = joined.indexOf("function (",);
             const funcIndexEnd = joined.indexOf(")", funcIndex);
             const funcParams = joined.substring(funcIndex + "function (".length, funcIndexEnd);
             // console.log("func params", funcParams);
@@ -274,8 +276,14 @@ export class FunctionNode
             
             renderFn = joined.substring(0, funcIndex) + `function (${typedFuncParams.join(",")})`
                 + joined.substring(funcIndexEnd + 1).replace("{", `{
-                    ${extracts.map(t => `var ${t.variable}: ${globalComponentElementTypeCache!.get(t.element)!.attrsSchema} = ${t.value}`).join(";")};`);
+                    ${extracts.isNotEmpty ? extracts.map(t => `var ${t.variable}: ${globalComponentElementTypeCache!.get(t.element)!.attrsSchema} = ${t.value}`).join(";") + ";" : ""}`);
 
+            if (this._isDebug)
+            {
+                console.log("Joined", joined);    
+                console.log("Render", renderFn);
+            }
+            
             // renderFn = (joined.substring(0, funcIndex) + `function (${typedFuncParams.join(",")})` + joined.substring(funcIndexEnd + 1))
             //     .replace(`return ${syntax}`, `var ${variable}: ${globalComponentElementTypeCache!.get(key)!.attrsSchema} = ${extracted}; return ${modifiedSyntax}`) + `attrs: ${variable}` + toExtract.skip(endValue).join("");
         }
@@ -349,12 +357,16 @@ export class FunctionNode
         this._functionCode = this._text.substring(this._functionIndex, this._curlyEnd + 1);
         
         // const dollarTest = /\(\s*\$/;
+        // const emptyTest = /\(\s*\)/;
         // const propTest = /\(\s*props/;
         const signature = this._functionCode.substring(0, this._functionCode.indexOf("{"));
         // if (signature.contains("$") || signature.contains("props"))
         //     throw new Error("Unparsable function");
         if (signature.contains("$"))
-            throw new Error("Unparsable built in function");
+            throw new Error(`Unparsable built in function: ${signature}`);
+            
+        if (!this._isRoot && signature.contains("()"))
+            throw new Error(`Unparsable empty function: ${signature}`);
             
         const scopedSlotsIndex = this._parent?._functionCode.lastIndexOf("scopedSlots", this._parentRefIndex);
         if (scopedSlotsIndex != null && scopedSlotsIndex !== -1)
@@ -378,7 +390,7 @@ export class FunctionNode
             }
 
             if (this._parentRefIndex > scopedSlotCurlyIndex && this._parentRefIndex <= scopedSlotCurlyEndIndex)   
-                throw new Error("Unparsable scoped slot function");    
+                throw new Error(`Unparsable scoped slot function: ${signature}`);    
         }
     }
 
@@ -392,7 +404,7 @@ export class FunctionNode
         {
             const functionInputType = sub.substring(sub.lastIndexOf("(", subFunctionIndex) + 1, sub.lastIndexOf(",", subFunctionIndex));
             
-            const childNode = new FunctionNode(sub.substring(subFunctionIndex), subFunctionIndex + diff, functionInputType, this);
+            const childNode = new FunctionNode(this._isDebug, sub.substring(subFunctionIndex), subFunctionIndex + diff, functionInputType, this);
             try 
             {
                 childNode.preProcess();    
@@ -400,7 +412,8 @@ export class FunctionNode
             }
             catch (error)
             {
-                console.warn((error as Error).message);
+                if (this._isDebug)
+                    console.warn((error as Error).message);
             }
             
             start = subFunctionIndex + childNode._functionCode.length - 1;

@@ -121,7 +121,7 @@ suite("Random stuff", () =>
         renderFn = renderFn.replaceAll("_c( ", "_c(");
         
         
-        const node = new FunctionNode(renderFn, 0, "TestViewModel");
+        const node = new FunctionNode(true, renderFn, 0, "TestViewModel");
         node.preProcess();
         // node.regenerate()
         const moddedCode = node.toModdedCode();
