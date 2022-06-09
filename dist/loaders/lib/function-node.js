@@ -257,14 +257,14 @@ class FunctionNode {
             throw new Error("Unparsable built in function");
         const scopedSlotsIndex = (_a = this._parent) === null || _a === void 0 ? void 0 : _a._functionCode.lastIndexOf("scopedSlots", this._parentRefIndex);
         if (scopedSlotsIndex != null && scopedSlotsIndex !== -1) {
-            const scopedSlotCurlyIndex = this._parent._functionCode.indexOf("{", scopedSlotsIndex);
+            const scopedSlotCurlyIndex = this._parent._functionCode.indexOf("[", scopedSlotsIndex);
             curlyCount = 1;
             let scopedSlotCurlyEndIndex = this._parentRefIndex;
             for (let i = scopedSlotCurlyIndex + 1; i < this._parentRefIndex; i++) {
                 const char = this._parent._functionCode[i];
-                if (char === "{")
+                if (char === "[")
                     curlyCount++;
-                else if (char === "}")
+                else if (char === "]")
                     curlyCount--;
                 if (curlyCount === 0) {
                     scopedSlotCurlyEndIndex = i;
