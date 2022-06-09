@@ -20,10 +20,14 @@ export function populateGlobalElementTypeCache(context: LoaderContext<any>): voi
     {
         globalComponentElementTypeCache = new Map<string, ElementTypeInfo>();
 
-        const isPackage = __dirname.contains("node_modules");
         const paths = [Path.resolve(process.cwd(), "src")];
+        
+        const isPackage = __dirname.contains("node_modules");
         if (isPackage)
-            paths.push(Path.resolve(process.cwd(), "node_modules", "@nivinjoseph", "n-app", "src", "components"));
+        {
+            // do nothing, because monorepos work differently
+            // paths.push(Path.resolve(process.cwd(), "node_modules", "@nivinjoseph", "n-app", "src", "components"));
+        }
         else
             paths.push(Path.resolve(process.cwd(), "test-app"));
 

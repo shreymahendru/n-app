@@ -29,6 +29,10 @@ module.exports = function (this: LoaderContext<any>, src: string): string
     const file = Path.basename(filePath);
     const viewModelFile = file.replace("-view.html", "-view-model.ts");
     
+    let isDebugFile = false;
+    if (isDebug)
+        isDebugFile = debugFiles.some(t => t.contains(this.resourcePath.replace(Path.extname(this.resourcePath), "")));
+    
     if (!dir.contains("node_modules"))
         compile(isDebug, debugFiles, [Path.join(dir, viewModelFile)], declarationCompileConfig, this);
     
@@ -46,7 +50,8 @@ module.exports = function (this: LoaderContext<any>, src: string): string
     let [renderFn, staticRenderFns] = src.split(staticRenderFnsKey);
     staticRenderFns = staticRenderFnsKey + staticRenderFns;
     
-    // console.log(renderFn);
+    if (isDebugFile)
+        console.log(renderFn);
     
     renderFn = transformRenderFns(renderFn, this, className);
     

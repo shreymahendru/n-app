@@ -9,9 +9,9 @@ export class Utilities
     private static readonly _internal = ["ctx", "onCreate", "onMount", "onDestroy", "executeOnCreate", "executeOnDestroy",
         "watch", "unWatch", "bindings", "getBound", "getBoundModel", "setBoundModel", "pathArgs", "queryArgs", "onEnter", "onLeave"];
     
-    private static readonly _forbidden = ["do", "if", "for", "let", "new", "try", "var", "case", "else", "with", "await", "break",
+    public static readonly forbidden = ["do", "if", "for", "let", "new", "try", "var", "case", "else", "with", "await", "break",
         "catch", "class", "const", "super", "throw", "while", "yield", "delete", "export", "import", "return",
-        "switch", "default", "extends", "finally", "continue", "debugger", "function", "arguments", "typeof", "void"];
+        "switch", "default", "extends", "finally", "continue", "debugger", "function", "arguments", "typeof", "void", "props"];
     
     
     
@@ -31,8 +31,8 @@ export class Utilities
             if (name === "constructor" || name.startsWith("_") || name.startsWith("$") || Utilities._internal.some(t => t === name))
                 continue;
 
-            if (Utilities._forbidden.some(t => t === name))
-                throw new ApplicationException(`Class ${Utils.getTypeName(val as Function)} has a member with the forbidden name '${name}'. The following names are forbidden: ${Utilities._forbidden}.`);
+            if (Utilities.forbidden.some(t => t === name))
+                throw new ApplicationException(`Class ${Utils.getTypeName(val as Function)} has a member with the forbidden name '${name}'. The following names are forbidden: ${Utilities.forbidden}.`);
             
             const descriptor = Object.getOwnPropertyDescriptor(val, name)!;
             propertyInfos.push(new PropertyInfo(name, descriptor));

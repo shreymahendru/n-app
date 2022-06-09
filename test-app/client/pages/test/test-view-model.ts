@@ -7,9 +7,10 @@ import { given } from "@nivinjoseph/n-defensive";
 import { TestResolverFoo } from "../../resolvers/test-resolver-foo";
 import { TestResolverBar } from "../../resolvers/test-resolver-bar";
 import { ComponentAViewModel } from "./components/component-a/component-a-view-model";
+import { NonReorderableListViewModel } from "./components/non-reorderable-list/non-reorderable-list-view-model";
 
 
-@components(ComponentAViewModel)
+@components(ComponentAViewModel, NonReorderableListViewModel)
 @template(require("./test-view.html"))
 @route(Routes.test)
 @meta({$key: "name", name: "description", content: "This is test"})    

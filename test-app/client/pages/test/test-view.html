@@ -3,7 +3,7 @@
     <router-link to="/dashboard">Go to Dashboard</router-link>
     <button v-on:click="go(id)">To Test {{players[0].name}}</button>
     <n-file-select id="foo" mime-types=".xlsx" :max-file-size="500" @select="onFileSelected"></n-file-select>
-    <component-a :num="id" :sport="players.takeLast()"></component-a>
+    <!-- <component-a :num="id" :sport="players.takeLast()"></component-a>
     
     <component-a :key="player.name" v-for="(player, index) of players"  :sport="player"></component-a>
     
@@ -20,5 +20,34 @@
     <div :key="player.name" v-for="player of players">
         <component-a :num="id" :sport="player"></component-a>
         <component-a :num="id" :sport="player"></component-a>
-    </div>
+    </div> -->
+    
+    <non-reorderable-list :list-items="players">
+        <template #list-item="pro">
+            <p>{{pro.item.data.name}}</p>
+            
+            <!-- <div class="dx-card p-3 mb-3">
+                <div class="is-flex is-align-items-center">
+                    <drag-handle></drag-handle>
+                    <div class="media is-align-items-center">
+                        <div class="media-left">
+                            <profile-image :user="props.item.data" size="xsmall"></profile-image>
+                        </div>
+                        <div class="media-content">
+                            <h5 class="name">{{props.item.data.firstName}} {{props.item.data.lastName}}</h5>
+                            <h5>{{props.item.data.email}}</h5>
+                        </div>
+                    </div>
+                </div>
+                <div class="is-flex is-justify-content-flex-end">
+                    <button class="is-inline-block button is-text is-danger icon-button py-0 pr-1"
+                        @click="removeRoundRobinUser(props.item.index)">
+                        <span class="icon is-medium">
+                            <i class="material-icons">delete</i>
+                        </span>
+                    </button>
+                </div>
+            </div> -->
+        </template>
+    </non-reorderable-list>
 </div>

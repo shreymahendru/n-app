@@ -4,6 +4,7 @@ import { elementSymbol } from "./element";
 import { ApplicationException } from "@nivinjoseph/n-exception";
 import { bindSymbol } from "./bind";
 import { eventsSymbol } from "./events";
+import { Utilities } from "./utilities";
 
 
 export class ComponentRegistration extends ViewModelRegistration
@@ -52,12 +53,16 @@ export class ComponentRegistration extends ViewModelRegistration
                 });
             });
             
+            const forbidden = [...Utilities.forbidden, "value"];
+            
             given(this._bindings, "bindings")
                 .ensure(t => t.length === t.distinct(u => u.name).length,
                     `duplicate binding declarations detected in ${this.name} binding schema`)
                 .ensure(t => t.some(u => u.name === "model") ? !t.find(u => u.name === "model")!.isOptional : true,
                     "model cannot be declared as optional")
-                .ensure(t => t.every(u => u.name !== "value"), "using forbidden keyword 'value' in binding schema");
+                // .ensure(t => t.every(u => u.name !== "value"), "using forbidden keyword 'value' in binding schema")
+                .ensure(t => t.every(u => !forbidden.contains(u.name)),
+                    `using forbidden keyword in binding schema, the following names are forbidden: ${forbidden}.`);
             
             this._bindingSchema = bindingSchema;
         }

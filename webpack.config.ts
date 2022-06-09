@@ -250,17 +250,17 @@ const moduleRules: Array<any> = [
         // enforce: "post",
         use: [
             {
-                loader: Path.resolve("src/loaders/view-ts-check-loader.js")
-                // options: {
-                //     debug: true,
-                //     debugFiles: [
-                //         // Path.resolve("test-app/client/components/binding-test/binding-test-view-model.ts"),
-                //         // Path.resolve("test-app/client/pages/test/test-view-model.ts")
-                //         Path.resolve("test-app/client/components/score-board/score-board-view-model.ts"),
-                //         Path.resolve("test-app/client/pages/test/test-view-model.ts"),
-                //         Path.resolve("test-app/client/pages/dashboard/dashboard-view-model.ts")
-                //     ]
-                // }
+                loader: Path.resolve("src/loaders/view-ts-check-loader.js"),
+                options: {
+                    debug: true,
+                    debugFiles: [
+                        // Path.resolve("test-app/client/components/binding-test/binding-test-view-model.ts"),
+                        // Path.resolve("test-app/client/pages/test/test-view-model.ts")
+                        // Path.resolve("test-app/client/components/score-board/score-board-view-model.ts"),
+                        // Path.resolve("test-app/client/pages/test/test-view-model.ts")
+                        // Path.resolve("test-app/client/pages/dashboard/dashboard-view-model.ts")
+                    ]
+                }
             },
             {
                 loader: "vue-loader/lib/loaders/templateLoader.js"
