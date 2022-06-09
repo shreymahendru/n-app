@@ -41,7 +41,7 @@ module.exports = function (src) {
     staticRenderFns = staticRenderFnsKey + staticRenderFns;
     if (isDebugFile)
         console.log(renderFn);
-    renderFn = (0, view_transformer_1.transformRenderFns)(renderFn, this, className);
+    renderFn = (0, view_transformer_1.transformRenderFns)(isDebugFile, renderFn, this, className);
     staticRenderFns = staticRenderFns
         .replaceAll(", arguments)", ", arguments as any)")
         .replace("render._withStripped", ";(<any>render)._withStripped");

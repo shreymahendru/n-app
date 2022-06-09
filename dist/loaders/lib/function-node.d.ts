@@ -1,5 +1,6 @@
 import { LoaderContext } from "webpack";
 export declare class FunctionNode {
+    private readonly _isDebug;
     private readonly _text;
     private readonly _parentRefIndex;
     private readonly _functionInputType;
@@ -13,7 +14,7 @@ export declare class FunctionNode {
     private _functionCode;
     private _thinnedCode;
     private _regeneratedCode;
-    constructor(text: string, parentRefIndex: number, functionInputType: string, parent?: FunctionNode);
+    constructor(isDebug: boolean, text: string, parentRefIndex: number, functionInputType: string, parent?: FunctionNode);
     preProcess(): void;
     regenerate(context: LoaderContext<any>): void;
     toModdedCode(): string;

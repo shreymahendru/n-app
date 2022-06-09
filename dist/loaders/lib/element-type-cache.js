@@ -118,7 +118,7 @@ function schemaToType(context, viewModelFilePath, schema, elementInfo) {
     const isTopLevel = elementInfo != null;
     const typeDetails = Object.keys(schema)
         .map(key => {
-        const left = `"${isTopLevel ? key.split("").map(t => /[A-Z]/.test(t) ? `-${t.toLowerCase()}` : t).join("") : key}"`;
+        const left = `"${isTopLevel ? key.split("").map(t => /[A-Z]/.test(t) ? `-${t.toLowerCase()}` : t).join("") : key}"`.trim();
         const right = parseType(context, viewModelFilePath, schema[key]);
         const isOptional = left.contains("?");
         return { left, right, isOptional };
@@ -170,7 +170,15 @@ function schemaToType(context, viewModelFilePath, schema, elementInfo) {
         elementInfo.hasModel = model != null;
         return result;
     }
-    return `{ ${typeDetails.map(t => t.left + ": " + t.right).join(";")} }`;
+    else {
+        const formatted = typeDetails.map(t => (t.left.startsWith("\"") && t.left.endsWith("\"")
+            ? t.left.substring(1, t.left.length - 1)
+            : t.left)
+            + ": "
+            + t.right)
+            .join(";");
+        return `{ ${formatted} }`;
+    }
 }
 function parseType(context, viewModelFilePath, right) {
     if (typeof right === "string") {
