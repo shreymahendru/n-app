@@ -95,6 +95,7 @@ module.exports.pitch = function () {
     // if (this.mode !== "production")
     //     return;
     (0, element_type_cache_1.populateGlobalElementTypeCache)(this);
+    // console.log(globalComponentElementTypeCache);
 };
 // interface Foo
 // {
