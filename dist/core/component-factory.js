@@ -22,6 +22,8 @@ class ComponentFactory {
         if (registration.bindings.isNotEmpty) {
             component.props = registration.bindings
                 .reduce((acc, t) => {
+                if (t.name === "model")
+                    return acc;
                 // const types = ["string", "boolean", "number", "function", "array", "object"];
                 const propSchema = {};
                 propSchema.required = !t.isOptional;
@@ -130,7 +132,7 @@ class ComponentFactory {
             //         .ensureHasStructure(registration.bindingSchema as any);
             // console.log("executing beforeCreate");
             // console.log(Object.keys(this));
-            // console.log(this.$options.propsData);
+            // console.log(this.$options);
         };
         component.created = function () {
             // if (registration.bindings.isNotEmpty)
