@@ -14,6 +14,7 @@ export declare class FunctionNode {
     private _functionCode;
     private _thinnedCode;
     private _regeneratedCode;
+    private _doNotProcess;
     constructor(isDebug: boolean, text: string, parentRefIndex: number, functionInputType: string, parent?: FunctionNode);
     preProcess(): void;
     regenerate(context: LoaderContext<any>): void;
