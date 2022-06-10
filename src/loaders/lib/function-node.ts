@@ -20,6 +20,7 @@ export class FunctionNode
     private _functionCode!: string;
     private _thinnedCode!: string;
     private _regeneratedCode!: string;
+    private _doNotProcess = false;
 
 
     public constructor(isDebug: boolean, text: string, parentRefIndex: number, functionInputType: string, parent?: FunctionNode)
@@ -42,6 +43,13 @@ export class FunctionNode
 
     public regenerate(context: LoaderContext<any>): void
     {
+        if (this._doNotProcess)
+        {
+            this._regeneratedCode = this._thinnedCode;
+            return;
+        }
+            
+        
         let renderFn = this._thinnedCode;
         
         const extracts = new Array<{ element: string; variable: string; value: string; }>();
@@ -357,52 +365,63 @@ export class FunctionNode
         this._functionCode = this._text.substring(this._functionIndex, this._curlyEnd + 1);
         
         
-        
-        
-        // const dollarTest = /\(\s*\$/;
-        // const emptyTest = /\(\s*\)/;
-        // const propTest = /\(\s*props/;
-        const signature = this._functionCode.substring(0, this._functionCode.indexOf("{"));
-        // if (signature.contains("$") || signature.contains("props"))
-        //     throw new Error("Unparsable function");
-        
-        if (!this._isRoot && (this._functionInputType.startsWith("\"") || !this._functionInputType.startsWith("_vm.")))
-            throw new Error(`Unparsable function: ${signature}`);
-        
-        if (signature.contains("$"))
-            throw new Error(`Unparsable built in function: ${signature}`);
-            
-        if (!this._isRoot && signature.contains("()"))
-            throw new Error(`Unparsable empty function: ${signature}`);
-            
-        const scopedSlotsIndex = this._parent?._functionCode.lastIndexOf("scopedSlots", this._parentRefIndex);
-        if (scopedSlotsIndex != null && scopedSlotsIndex !== -1)
+        try
         {
-            const scopedSlotCurlyIndex = this._parent!._functionCode.indexOf("[", scopedSlotsIndex);
-            curlyCount = 1;
-            let scopedSlotCurlyEndIndex = this._parentRefIndex;
-            for (let i = scopedSlotCurlyIndex + 1; i < this._parentRefIndex; i++)
+            // const dollarTest = /\(\s*\$/;
+            // const emptyTest = /\(\s*\)/;
+            // const propTest = /\(\s*props/;
+            const signature = this._functionCode.substring(0, this._functionCode.indexOf("{"));
+            // if (signature.contains("$") || signature.contains("props"))
+            //     throw new Error("Unparsable function");
+
+            if (!this._isRoot && (this._functionInputType.startsWith("\"") || !this._functionInputType.startsWith("_vm.")))
+                throw new Error(`Unparsable function: ${signature}`);
+
+            if (signature.contains("$"))
+                throw new Error(`Unparsable built in function: ${signature}`);
+
+            if (!this._isRoot && signature.contains("()"))
+                throw new Error(`Unparsable empty function: ${signature}`);
+
+            const scopedSlotsIndex = this._parent?._functionCode.lastIndexOf("scopedSlots", this._parentRefIndex);
+            if (scopedSlotsIndex != null && scopedSlotsIndex !== -1)
             {
-                const char = this._parent!._functionCode[i];
-                if (char === "[")
-                    curlyCount++;
-                else if (char === "]")
-                    curlyCount--;
-
-                if (curlyCount === 0)
+                const scopedSlotCurlyIndex = this._parent!._functionCode.indexOf("[", scopedSlotsIndex);
+                curlyCount = 1;
+                let scopedSlotCurlyEndIndex = this._parentRefIndex;
+                for (let i = scopedSlotCurlyIndex + 1; i < this._parentRefIndex; i++)
                 {
-                    scopedSlotCurlyEndIndex = i;
-                    break;
-                }
-            }
+                    const char = this._parent!._functionCode[i];
+                    if (char === "[")
+                        curlyCount++;
+                    else if (char === "]")
+                        curlyCount--;
 
-            if (this._parentRefIndex > scopedSlotCurlyIndex && this._parentRefIndex <= scopedSlotCurlyEndIndex)   
-                throw new Error(`Unparsable scoped slot function: ${signature}`);    
+                    if (curlyCount === 0)
+                    {
+                        scopedSlotCurlyEndIndex = i;
+                        break;
+                    }
+                }
+
+                if (this._parentRefIndex > scopedSlotCurlyIndex && this._parentRefIndex <= scopedSlotCurlyEndIndex)
+                    throw new Error(`Unparsable scoped slot function: ${signature}`);
+            }
+        }
+        catch (error)
+        {
+            if (this._isDebug)
+                console.warn((error as Error).message);
+            
+            this._doNotProcess = true;
         }
     }
 
     private _createChildNodes(): void
     {
+        if (this._doNotProcess)
+            return;
+        
         const sub = this._functionCode.substring(this._functionCode.indexOf("{") + 1);
         const diff = this._functionCode.length - sub.length;
         let start = 0;
@@ -418,16 +437,8 @@ export class FunctionNode
 
             const childNode = new FunctionNode(this._isDebug, sub.substring(subFunctionIndex), subFunctionIndex + diff, functionInputType, this);
             
-            try 
-            {   
-                childNode.preProcess();    
-                this._childNodes.push(childNode);
-            }
-            catch (error)
-            {
-                if (this._isDebug)
-                    console.warn((error as Error).message);
-            }
+            childNode.preProcess();
+            this._childNodes.push(childNode);
             
             start = subFunctionIndex + childNode._functionCode.length - 1;
             subFunctionIndex = sub.indexOf("function", start);
