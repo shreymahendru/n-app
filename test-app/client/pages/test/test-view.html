@@ -6,7 +6,7 @@
     <component-a :num="id" :sport="players.takeLast()"></component-a>
     
     <div v-for="player of players">
-        <button @click="() => console.log(player.nationality)">{{player.name}}</button>
+        <button @click="clicked(player)">{{player.name}}</button>
     </div>
     
     <!-- <component-a :key="player.name" v-for="(player, index) of players"  :sport="player"></component-a>

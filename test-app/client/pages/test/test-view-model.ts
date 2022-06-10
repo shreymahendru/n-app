@@ -59,6 +59,11 @@ export class TestViewModel extends PageViewModel
         console.log("File data", val);
     }
     
+    public clicked(player: Player): void
+    {
+        console.log(player.nationality);
+    }
+    
     protected override onCreate(): void
     {
         super.onCreate();

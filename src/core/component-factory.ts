@@ -34,6 +34,9 @@ export class ComponentFactory
             component.props = registration.bindings
                 .reduce<Record<string, any>>((acc, t) =>
                 {
+                    if (t.name === "model")
+                        return acc;
+                    
                     // const types = ["string", "boolean", "number", "function", "array", "object"];
                     
                     const propSchema: Record<string, any> = {};
@@ -172,7 +175,7 @@ export class ComponentFactory
             
             // console.log("executing beforeCreate");
             // console.log(Object.keys(this));
-            // console.log(this.$options.propsData);
+            // console.log(this.$options);
         };
         
         component.created = function (): void

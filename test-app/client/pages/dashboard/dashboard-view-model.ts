@@ -29,7 +29,7 @@ export class DashboardViewModel extends BasePageViewModel
     
     private readonly _message = "Dashboard view";
     private _score = 10;
-    private _fooParentValue: string;
+    private _fooParentValue: string | null;
     // private _isActive = false;
     
     public get score(): number { return this._score; }
@@ -38,8 +38,12 @@ export class DashboardViewModel extends BasePageViewModel
     public get message(): string { return this._message; }
     
     
-    public get fooParentValue(): string { return this._fooParentValue; }
-    public set fooParentValue(value: string) { this._fooParentValue = value; }
+    public get fooParentValue(): string | null { return this._fooParentValue; }
+    public set fooParentValue(value: string | null)
+    {
+        console.log("setting", value);
+        this._fooParentValue = value;
+    }
     
     
     public constructor(dialogService: DialogService, evenAggregator: EventAggregator,
@@ -55,7 +59,7 @@ export class DashboardViewModel extends BasePageViewModel
 
         // this._fooParentValue = "whatever";
         // this._fooParentValue = null as any;
-        this._fooParentValue = "";
+        this._fooParentValue = null;
 
         this.executeOnDestroy(() => console.log("Destroying dashboard"));
     }
