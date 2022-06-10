@@ -402,11 +402,21 @@ export class FunctionNode
         let subFunctionIndex = sub.indexOf("function", start);
         while (subFunctionIndex !== -1)
         {
-            const functionInputType = sub.substring(sub.lastIndexOf("(", subFunctionIndex) + 1, sub.lastIndexOf(",", subFunctionIndex));
+            const parenIndex = sub.lastIndexOf("(", subFunctionIndex);
+            const commaIndex = sub.lastIndexOf(",", subFunctionIndex);
             
-            const childNode = new FunctionNode(this._isDebug, sub.substring(subFunctionIndex), subFunctionIndex + diff, functionInputType, this);
-            try 
+            const functionInputType = sub.substring(parenIndex + 1, commaIndex).trim();
+            if (parenIndex >= commaIndex || functionInputType.startsWith("\"") || !functionInputType.startsWith("_vm."))
             {
+                start = subFunctionIndex + "function".length + 1;
+                subFunctionIndex = sub.indexOf("function", start);
+                continue;
+            }
+
+            const childNode = new FunctionNode(this._isDebug, sub.substring(subFunctionIndex), subFunctionIndex + diff, functionInputType, this);
+            
+            try 
+            {   
                 childNode.preProcess();    
                 this._childNodes.push(childNode);
             }
