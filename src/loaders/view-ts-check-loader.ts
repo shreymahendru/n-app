@@ -126,6 +126,8 @@ module.exports.pitch = function (this: LoaderContext<any>): void
     //     return;
     
     populateGlobalElementTypeCache(this);
+    
+    // console.log(globalComponentElementTypeCache);
 };
 
 

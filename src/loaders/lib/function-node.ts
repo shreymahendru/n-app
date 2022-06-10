@@ -356,12 +356,19 @@ export class FunctionNode
         this._curlyEnd = lastCurlyIndex;
         this._functionCode = this._text.substring(this._functionIndex, this._curlyEnd + 1);
         
+        
+        
+        
         // const dollarTest = /\(\s*\$/;
         // const emptyTest = /\(\s*\)/;
         // const propTest = /\(\s*props/;
         const signature = this._functionCode.substring(0, this._functionCode.indexOf("{"));
         // if (signature.contains("$") || signature.contains("props"))
         //     throw new Error("Unparsable function");
+        
+        if (!this._isRoot && (this._functionInputType.startsWith("\"") || !this._functionInputType.startsWith("_vm.")))
+            throw new Error(`Unparsable function: ${signature}`);
+        
         if (signature.contains("$"))
             throw new Error(`Unparsable built in function: ${signature}`);
             
@@ -405,13 +412,9 @@ export class FunctionNode
             const parenIndex = sub.lastIndexOf("(", subFunctionIndex);
             const commaIndex = sub.lastIndexOf(",", subFunctionIndex);
             
-            const functionInputType = sub.substring(parenIndex + 1, commaIndex).trim();
-            if (parenIndex >= commaIndex || functionInputType.startsWith("\"") || !functionInputType.startsWith("_vm."))
-            {
-                start = subFunctionIndex + "function".length + 1;
-                subFunctionIndex = sub.indexOf("function", start);
-                continue;
-            }
+            let functionInputType = sub.substring(parenIndex + 1, commaIndex).trim();
+            if (parenIndex >= commaIndex)
+                functionInputType = "flawed" + functionInputType;
 
             const childNode = new FunctionNode(this._isDebug, sub.substring(subFunctionIndex), subFunctionIndex + diff, functionInputType, this);
             
