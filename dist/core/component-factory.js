@@ -22,11 +22,10 @@ class ComponentFactory {
         if (registration.bindings.isNotEmpty) {
             component.props = registration.bindings
                 .reduce((acc, t) => {
-                if (t.name === "model")
-                    return acc;
                 // const types = ["string", "boolean", "number", "function", "array", "object"];
                 const propSchema = {};
-                propSchema.required = !t.isOptional;
+                const isOptional = t.name === "model" ? true : t.isOptional;
+                propSchema.required = !isOptional;
                 if (typeof t.type === "string") {
                     const type = t.type.trim().toLowerCase();
                     switch (type) {
@@ -60,11 +59,10 @@ class ComponentFactory {
                     propSchema.type = Object;
                 else
                     throw new Error(`Unsupported binding prop type '${t.type}'`);
-                const key = t.isOptional ? t.name + "?" : t.name;
                 const validationSchema = {
                     [registration.name]: {
                         "props": {
-                            [key]: t.type
+                            [isOptional ? t.name + "?" : t.name]: t.type
                         }
                     }
                 };
@@ -80,7 +78,7 @@ class ComponentFactory {
                         .ensureHasStructure(validationSchema);
                     return true;
                 };
-                acc[t.name] = propSchema;
+                acc[t.name === "model" ? "value" : t.name] = propSchema;
                 return acc;
             }, {});
         }
