@@ -16,5 +16,6 @@ export class BindingTestViewModel extends ComponentViewModel
         console.log("binding test on create");
         
         super.onCreate();
+        console.log(this.ctx);
     }
 }

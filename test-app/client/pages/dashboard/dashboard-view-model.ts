@@ -60,6 +60,7 @@ export class DashboardViewModel extends BasePageViewModel
         // this._fooParentValue = "whatever";
         // this._fooParentValue = null as any;
         this._fooParentValue = null;
+        // this._fooParentValue = 1 as any;
 
         this.executeOnDestroy(() => console.log("Destroying dashboard"));
     }
