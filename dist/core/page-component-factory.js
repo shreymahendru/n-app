@@ -39,7 +39,7 @@ class PageComponentFactory {
                 // registration.reload(component.___viewModel);
                 // component.___reload = false;
             }
-            container = container.createScope(); // page scope
+            container = registration.persist ? container : container.createScope(); // page scope
             const vm = container.resolve(registration.name);
             const data = {
                 vm: vm,
