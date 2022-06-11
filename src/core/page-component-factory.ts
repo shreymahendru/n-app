@@ -57,7 +57,7 @@ export class PageComponentFactory
                 // component.___reload = false;
             }
             
-            container = container.createScope(); // page scope
+            container = registration.persist ? container : container.createScope(); // page scope
             const vm = container.resolve<any>(registration.name);
             
             const data = {
