@@ -165,7 +165,7 @@
     "dependencies": {
         "@babel/polyfill": "^7.12.1",
         "@nivinjoseph/n-config": "^1.0.35",
-        "@nivinjoseph/n-defensive": "^1.0.40",
+        "@nivinjoseph/n-defensive": "https://github.com/shreymahendru/n-defensive.git#any-structure",
         "@nivinjoseph/n-exception": "^1.0.26",
         "@nivinjoseph/n-ext": "^1.1.35",
         "@nivinjoseph/n-ject": "^2.0.3",

@@ -198,6 +198,8 @@ function parseType(context, viewModelFilePath, right) {
                 break;
             case "object":
                 break;
+            case "any":
+                break;
             default:
                 right = "object";
                 break;
