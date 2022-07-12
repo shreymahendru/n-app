@@ -283,6 +283,8 @@ function parseType(context: LoaderContext<any>, viewModelFilePath: string, right
                 break;
             case "object":
                 break;
+            case "any":
+                break;
             default:
                 right = "object";
                 break;
