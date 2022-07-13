@@ -78,4 +78,4 @@ export class ScoreBoardViewModel extends ComponentViewModel
         
     //     jquery(element).html("<span>replaced</span>");
     // }
-}  
+}
