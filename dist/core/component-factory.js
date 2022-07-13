@@ -47,6 +47,9 @@ class ComponentFactory {
                         case "object":
                             propSchema.type = Object;
                             break;
+                        case "any":
+                            propSchema.type = null;
+                            break;
                         default:
                             throw new Error(`Unsupported binding prop type '${type}'`);
                     }
