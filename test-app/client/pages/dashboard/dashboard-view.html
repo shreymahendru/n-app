@@ -35,6 +35,6 @@
     <score-board v-bind:score="score" @incremented="increment"></score-board>
     <router-link to="/Test/2">Go to Test</router-link>
     <p>{{fooParentValue}}</p>
-    <binding-test v-model="fooParentValue"></binding-test>
+    <binding-test v-model="fooParentValue" :any-val="message"></binding-test>
     <n-scroll-container @foo="increment"></n-scroll-container>
 </div>
