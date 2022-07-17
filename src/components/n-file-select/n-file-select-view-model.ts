@@ -6,7 +6,7 @@ import { inject } from "@nivinjoseph/n-ject";
 import { DialogService } from "../../services/dialog-service/dialog-service";
 import { EventAggregator } from "../../services/event-aggregator/event-aggregator";
 import { given } from "@nivinjoseph/n-defensive";
-import * as $ from "jquery";
+// import * as $ from "jquery";
 import { events } from "../../core/events";
 import { Deferred, TypeHelper } from "@nivinjoseph/n-util";
 

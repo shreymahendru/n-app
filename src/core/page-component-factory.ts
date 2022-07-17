@@ -4,7 +4,7 @@ import { Scope } from "@nivinjoseph/n-ject";
 import { given } from "@nivinjoseph/n-defensive";
 import { Utilities } from "./utilities";
 import { ApplicationException } from "@nivinjoseph/n-exception";
-import * as $ from "jquery";
+// import * as $ from "jquery";
 import { PageHmrHelper } from "./page-hmr-helper";
 
 

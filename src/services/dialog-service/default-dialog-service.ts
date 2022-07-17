@@ -7,7 +7,7 @@ if (!Spinner)
     console.log("No Spinner!!!");
 
 import { DialogLocation, DialogService, DialogServiceOptions } from "./dialog-service";
-import * as $ from "jquery";
+// import * as $ from "jquery";
 import { given } from "@nivinjoseph/n-defensive";
 
 

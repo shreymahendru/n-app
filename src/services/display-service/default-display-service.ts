@@ -1,6 +1,6 @@
 import { DisplayService } from "./display-service";
 import { DisplayType } from "./display-type";
-import * as $ from "jquery";
+// import * as $ from "jquery";
 import { Observable, Observer } from "@nivinjoseph/n-util";
 
 
