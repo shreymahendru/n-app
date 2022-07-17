@@ -6,7 +6,7 @@ import { LoaderContext } from "webpack";
 import { fs as MemFs } from "memfs";
 import { given } from "@nivinjoseph/n-defensive";
 import { populateGlobalElementTypeCache } from "./lib/element-type-cache";
-import { combinedCompileConfig, compile } from "./lib/ts-compiler";
+import { combinedCompileConfig, compile, declarationCompileConfig } from "./lib/ts-compiler";
 import { transformRenderFns } from "./lib/view-transformer";
 const getOptions = require("loader-utils").getOptions;
 
@@ -35,16 +35,14 @@ module.exports = async function (this: LoaderContext<any>, src: string): Promise
         if (isDebug)
             isDebugFile = debugFiles.some(t => t.contains(this.resourcePath.replace(Path.extname(this.resourcePath), "")));
 
-        // if (!dir.contains("node_modules"))
-        //     compile(isDebug, debugFiles, [Path.join(dir, viewModelFile)], declarationCompileConfig, this);
+        if (!dir.contains("node_modules"))
+            compile(isDebug, debugFiles, [Path.join(dir, viewModelFile)], declarationCompileConfig, this);
 
         const declarationFile = file.replace("-view.html", "-view-model.d.ts");
 
-        let declaration = await (dir.contains("node_modules")
-            ? Fs.promises.readFile(Path.join(dir, declarationFile), { encoding: "utf8" })
-            : Fs.promises.readFile(Path.join(dir, viewModelFile), { encoding: "utf8" }));
-
-        declaration = declaration.replaceAll("@ts-expect-error", "@ts-ignore");
+        const declaration = dir.contains("node_modules")
+            ? Fs.readFileSync(Path.join(dir, declarationFile), "utf8")
+            : MemFs.readFileSync(Path.join(dir, declarationFile), "utf8");
 
         const className = file.replace("-view.html", "").split("-")
             .map(t => t.split("").takeFirst().toUpperCase() + t.split("").skip(1).join(""))

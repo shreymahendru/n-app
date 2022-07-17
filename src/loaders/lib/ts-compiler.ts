@@ -5,7 +5,7 @@ import { LoaderContext } from "webpack";
 import { fs as MemFs } from "memfs";
 
 
-export const declarationCompileConfig = {
+export const declarationCompileConfig: ts.CompilerOptions = {
     "module": ts.ModuleKind.CommonJS,
     "moduleResolution": ts.ModuleResolutionKind.NodeJs,
     "target": ts.ScriptTarget.ES2015,
@@ -34,7 +34,7 @@ export const declarationCompileConfig = {
     "pretty": false
 };
 
-export const combinedCompileConfig = {
+export const combinedCompileConfig: ts.CompilerOptions = {
     "module": ts.ModuleKind.CommonJS,
     "moduleResolution": ts.ModuleResolutionKind.NodeJs,
     "target": ts.ScriptTarget.ES2015,
@@ -71,6 +71,7 @@ export function compile(isDebug: boolean, debugFiles: ReadonlyArray<string>, fil
     const host = ts.createCompilerHost(options);
     host.writeFile = (fileName: string, contents: string): void =>
     {
+        // console.log("Writing file ===> " + fileName);
         const dir = Path.dirname(fileName);
         if (!MemFs.existsSync(dir))
             MemFs.mkdirSync(dir, { recursive: true });
