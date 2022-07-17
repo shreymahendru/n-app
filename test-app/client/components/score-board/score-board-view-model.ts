@@ -6,7 +6,9 @@ import { ScopedService } from "../../services/scoped-service";
 
 @template(require("./score-board-view.html"))
 @element("score-board")
-@bind({score: "number"})
+@bind({
+    score: "number"
+})
 @events("incremented")
 @inject("ScopedService")    
 export class ScoreBoardViewModel extends ComponentViewModel

@@ -6,7 +6,9 @@ import "./non-reorderable-list-view.scss";
 
 @element("non-reorderable-list")
 @template(require("./non-reorderable-list-view.html"))
-@bind({"listItems": ["object"]})
+@bind({
+    "listItems": ["object"]
+})
 export class NonReorderableListViewModel extends ComponentViewModel
 {
     // eslint-disable-next-line @typescript-eslint/no-unsafe-return
