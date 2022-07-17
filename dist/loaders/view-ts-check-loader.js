@@ -1,5 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
+const tslib_1 = require("tslib");
 /* eslint-disable @typescript-eslint/no-unsafe-call */
 // import { compileToFunctions } from "vue-template-compiler";
 const Path = require("path");
@@ -11,84 +12,66 @@ const ts_compiler_1 = require("./lib/ts-compiler");
 const view_transformer_1 = require("./lib/view-transformer");
 const getOptions = require("loader-utils").getOptions;
 module.exports = function (src) {
-    // console.log("Ts-check loading", this.resourcePath);
-    // console.log(globalComponentElementTypeCache);
     var _a;
-    // const callback = this.async();
-    const options = (getOptions(this) || {});
-    const isDebug = !!options.debug;
-    let debugFiles = (_a = options.debugFiles) !== null && _a !== void 0 ? _a : [];
-    (0, n_defensive_1.given)(debugFiles, "debugFiles").ensureHasValue().ensureIsArray();
-    debugFiles = debugFiles.map(t => Path.join(Path.dirname(t), Path.basename(t).split(".").takeFirst()));
-    const filePath = this.resourcePath;
-    const dir = Path.dirname(filePath);
-    const file = Path.basename(filePath);
-    const viewModelFile = file.replace("-view.html", "-view-model.ts");
-    let isDebugFile = false;
-    if (isDebug)
-        isDebugFile = debugFiles.some(t => t.contains(this.resourcePath.replace(Path.extname(this.resourcePath), "")));
-    if (!dir.contains("node_modules"))
-        (0, ts_compiler_1.compile)(isDebug, debugFiles, [Path.join(dir, viewModelFile)], ts_compiler_1.declarationCompileConfig, this);
-    const declarationFile = file.replace("-view.html", "-view-model.d.ts");
-    const declaration = dir.contains("node_modules")
-        ? Fs.readFileSync(Path.join(dir, declarationFile), "utf8")
-        : memfs_1.fs.readFileSync(Path.join(dir, declarationFile), "utf8");
-    const className = file.replace("-view.html", "").split("-")
-        .map(t => t.split("").takeFirst().toUpperCase() + t.split("").skip(1).join(""))
-        .join("") + "ViewModel";
-    const staticRenderFnsKey = "var staticRenderFns =";
-    let [renderFn, staticRenderFns] = src.split(staticRenderFnsKey);
-    staticRenderFns = staticRenderFnsKey + staticRenderFns;
-    if (isDebugFile)
-        console.log(renderFn);
-    renderFn = (0, view_transformer_1.transformRenderFns)(isDebugFile, renderFn, this, className);
-    staticRenderFns = staticRenderFns
-        .replaceAll(", arguments)", ", arguments as any)")
-        .replace("render._withStripped", ";(<any>render)._withStripped");
-    const combinedContents = `
+    return tslib_1.__awaiter(this, void 0, void 0, function* () {
+        // console.log("Ts-check loading", this.resourcePath);
+        // console.log(globalComponentElementTypeCache);
+        const callback = this.async();
+        try {
+            const options = (getOptions(this) || {});
+            const isDebug = !!options.debug;
+            let debugFiles = (_a = options.debugFiles) !== null && _a !== void 0 ? _a : [];
+            (0, n_defensive_1.given)(debugFiles, "debugFiles").ensureHasValue().ensureIsArray();
+            debugFiles = debugFiles.map(t => Path.join(Path.dirname(t), Path.basename(t).split(".").takeFirst()));
+            const filePath = this.resourcePath;
+            const dir = Path.dirname(filePath);
+            const file = Path.basename(filePath);
+            const viewModelFile = file.replace("-view.html", "-view-model.ts");
+            let isDebugFile = false;
+            if (isDebug)
+                isDebugFile = debugFiles.some(t => t.contains(this.resourcePath.replace(Path.extname(this.resourcePath), "")));
+            // if (!dir.contains("node_modules"))
+            //     compile(isDebug, debugFiles, [Path.join(dir, viewModelFile)], declarationCompileConfig, this);
+            const declarationFile = file.replace("-view.html", "-view-model.d.ts");
+            let declaration = yield (dir.contains("node_modules")
+                ? Fs.promises.readFile(Path.join(dir, declarationFile), { encoding: "utf8" })
+                : Fs.promises.readFile(Path.join(dir, viewModelFile), { encoding: "utf8" }));
+            declaration = declaration.replaceAll("@ts-expect-error", "@ts-ignore");
+            const className = file.replace("-view.html", "").split("-")
+                .map(t => t.split("").takeFirst().toUpperCase() + t.split("").skip(1).join(""))
+                .join("") + "ViewModel";
+            const staticRenderFnsKey = "var staticRenderFns =";
+            let [renderFn, staticRenderFns] = src.split(staticRenderFnsKey);
+            staticRenderFns = staticRenderFnsKey + staticRenderFns;
+            if (isDebugFile)
+                console.log(renderFn);
+            renderFn = (0, view_transformer_1.transformRenderFns)(isDebugFile, renderFn, this, className);
+            staticRenderFns = staticRenderFns
+                .replaceAll(", arguments)", ", arguments as any)")
+                .replace("render._withStripped", ";(<any>render)._withStripped");
+            const combinedContents = `
     ${declaration}
     
     ${renderFn}
     
     ${staticRenderFns}
     `;
-    const combinedFile = file.replace("-view.html", "-view-model.temp.ts");
-    const combinedFilePath = Path.join(dir, combinedFile);
-    if (!memfs_1.fs.existsSync(dir))
-        memfs_1.fs.mkdirSync(dir, { recursive: true });
-    memfs_1.fs.writeFileSync(combinedFilePath, combinedContents, { encoding: "utf-8" });
-    if (isDebug) {
-        if (debugFiles.contains(combinedFilePath.replace(".temp.ts", "")))
-            Fs.writeFileSync(combinedFilePath, combinedContents, "utf8");
-    }
-    (0, ts_compiler_1.compile)(isDebug, debugFiles, [combinedFilePath], ts_compiler_1.combinedCompileConfig, this, true);
-    // console.log("=====second-pass-end======");
-    // const result = compileToFunctions(src);
-    // console.log(JSON.stringify((<any>result.render)[0]));
-    return src;
-    // const done = this.async();
-    // // @ts-expect-error: unsafe use of this
-    // const options = getOptions(this) || {};
-    // // @ts-expect-error: unsafe use of this
-    // const publicPath = getPublicPath(options, this);
-    // // @ts-expect-error: unsafe use of this
-    // this.cacheable();
-    // try
-    // {
-    //     console.log(src);
-    //     done(null, await evalDependencyGraph({
-    //         // @ts-expect-error: unsafe use of this
-    //         loaderContext: this,
-    //         src,
-    //         // @ts-expect-error: unsafe use of this
-    //         filename: this.resourcePath,
-    //         publicPath
-    //     }));
-    // }
-    // catch (error)
-    // {
-    //     done(error);
-    // }
+            const combinedFile = file.replace("-view.html", "-view-model.temp.ts");
+            const combinedFilePath = Path.join(dir, combinedFile);
+            if (!memfs_1.fs.existsSync(dir))
+                memfs_1.fs.mkdirSync(dir, { recursive: true });
+            memfs_1.fs.writeFileSync(combinedFilePath, combinedContents, { encoding: "utf-8" });
+            if (isDebug) {
+                if (debugFiles.contains(combinedFilePath.replace(".temp.ts", "")))
+                    yield Fs.promises.writeFile(combinedFilePath, combinedContents, "utf8");
+            }
+            (0, ts_compiler_1.compile)(isDebug, debugFiles, [combinedFilePath], ts_compiler_1.combinedCompileConfig, this, true);
+            callback(null, src);
+        }
+        catch (error) {
+            callback(error);
+        }
+    });
 };
 module.exports.pitch = function () {
     // console.log("Ts-check pitching", this.resourcePath);

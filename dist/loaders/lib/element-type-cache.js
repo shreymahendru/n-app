@@ -47,6 +47,7 @@ function createBindingSchema(context, filePath) {
     const viewModelContents = Fs.readFileSync(viewModelFilePath, "utf8");
     const elementDecorator = "@element(";
     const bindDecorator = "@bind(";
+    const eventsDecorator = "@events(";
     const isComponent = viewModelContents.contains(elementDecorator); // && viewModelContents.contains(bindDecorator);
     if (!isComponent)
         return;
@@ -66,6 +67,14 @@ function createBindingSchema(context, filePath) {
         schema = schemaToJson(schema);
         schema = schemaToType(context, viewModelFilePath, JSON.parse(schema), elementInfo);
         // console.log(schema);
+    }
+    if (viewModelContents.contains(eventsDecorator)) {
+        start = viewModelContents.indexOf(eventsDecorator);
+        end = viewModelContents.indexOf(")", start);
+        let schema = viewModelContents.substring(start, end).replace(eventsDecorator, "");
+        schema = schema.replaceAll("\"", "").split(",").map(t => `${t}?: Function`).join("; ");
+        schema = `{ ${schema} }`;
+        elementInfo.eventsSchema = schema;
     }
     exports.globalComponentElementTypeCache.set(element, elementInfo);
 }

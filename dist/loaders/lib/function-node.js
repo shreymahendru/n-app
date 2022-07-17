@@ -26,7 +26,9 @@ class FunctionNode {
             return;
         }
         let renderFn = this._thinnedCode;
-        const extracts = new Array();
+        const attrsExtracts = new Array();
+        // TODO: implement this
+        // const eventsExtracts = new Array<{ element: string; variable: string; value: string; }>();
         [...element_type_cache_1.globalComponentElementTypeCache.keys()]
             .forEach(key => {
             const hasRequiredAttrs = element_type_cache_1.globalComponentElementTypeCache.get(key).hasRequiredAttrs;
@@ -169,7 +171,7 @@ class FunctionNode {
                 }
                 const extracted = toExtract.join("").substring(0, endValue);
                 const variable = `${key.replaceAll("-", "_").replaceAll("\"", "")}_attrs_${instanceCount}`;
-                extracts.push({
+                attrsExtracts.push({
                     element: key,
                     variable,
                     value: extracted
@@ -201,7 +203,7 @@ class FunctionNode {
             });
             renderFn = joined.substring(0, funcIndex) + `function (${typedFuncParams.join(",")})`
                 + joined.substring(funcIndexEnd + 1).replace("{", `{
-                    ${extracts.isNotEmpty ? extracts.map(t => `var ${t.variable}: ${element_type_cache_1.globalComponentElementTypeCache.get(t.element).attrsSchema} = ${t.value}`).join(";") + ";" : ""}`);
+                    ${attrsExtracts.isNotEmpty ? attrsExtracts.map(t => `var ${t.variable}: ${element_type_cache_1.globalComponentElementTypeCache.get(t.element).attrsSchema} = ${t.value}`).join(";") + ";" : ""}`);
             if (this._isDebug) {
                 console.log("Joined", joined);
                 console.log("Render", renderFn);
@@ -215,7 +217,7 @@ class FunctionNode {
                 .replace("function ()", `function (this: ${this._functionInputType})`)
                 .replace("var _vm = this", `var _vm: ${this._functionInputType} = this; var _vm$ = this as any;
                     ${helperTypes}
-                    ${extracts.map(t => `var ${t.variable}: ${element_type_cache_1.globalComponentElementTypeCache.get(t.element).attrsSchema} = ${t.value}`).join(";")};`);
+                    ${attrsExtracts.map(t => `var ${t.variable}: ${element_type_cache_1.globalComponentElementTypeCache.get(t.element).attrsSchema} = ${t.value}`).join(";")};`);
         }
         this._regeneratedCode = renderFn;
         this._childNodes.forEach(childNode => childNode.regenerate(context));
