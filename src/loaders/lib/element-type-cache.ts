@@ -8,6 +8,7 @@ export type ElementTypeInfo = {
     hasRequiredAttrs: boolean;
     modelSchema: string;
     hasModel: boolean;
+    eventsSchema: string;
     filePath: string;
 };
 
@@ -74,6 +75,7 @@ function createBindingSchema(context: LoaderContext<any>, filePath: string): voi
 
     const elementDecorator = "@element(";
     const bindDecorator = "@bind(";
+    const eventsDecorator = "@events(";
     const isComponent = viewModelContents.contains(elementDecorator); // && viewModelContents.contains(bindDecorator);
     if (!isComponent)
         return;
@@ -98,6 +100,16 @@ function createBindingSchema(context: LoaderContext<any>, filePath: string): voi
         schema = schemaToJson(schema);
         schema = schemaToType(context, viewModelFilePath, JSON.parse(schema), elementInfo);
         // console.log(schema);
+    }
+    
+    if (viewModelContents.contains(eventsDecorator))
+    {
+        start = viewModelContents.indexOf(eventsDecorator);
+        end = viewModelContents.indexOf(")", start);
+        let schema = viewModelContents.substring(start, end).replace(eventsDecorator, "");
+        schema = schema.replaceAll("\"", "").split(",").map(t => `${t}?: Function`).join("; ");
+        schema = `{ ${schema} }`;
+        elementInfo.eventsSchema = schema;
     }
 
     globalComponentElementTypeCache!.set(element, elementInfo);

@@ -52,7 +52,9 @@ export class FunctionNode
         
         let renderFn = this._thinnedCode;
         
-        const extracts = new Array<{ element: string; variable: string; value: string; }>();
+        const attrsExtracts = new Array<{ element: string; variable: string; value: string; }>();
+        // TODO: implement this
+        // const eventsExtracts = new Array<{ element: string; variable: string; value: string; }>();
         
         [...globalComponentElementTypeCache!.keys()]
             .forEach(key =>
@@ -205,15 +207,9 @@ export class FunctionNode
                     // }
 
 
-
-
-
-
-
                     const attrsIndex = renderFn.indexOf("attrs:", componentIndex);
-
                     const split = renderFn.split("");
-                    const before = split.take(attrsIndex);
+                    const before = split.take(attrsIndex);                    
                     const after = split.skip(attrsIndex);
                     // const afterMod = after.replace("attrs:", `attrs:<${globalComponentElementTypeCache.get(key)}>`);
                     // console.log(afterMod);
@@ -242,7 +238,7 @@ export class FunctionNode
                     
                     
                     
-                    extracts.push({
+                    attrsExtracts.push({
                         element: key,
                         variable,
                         value: extracted
@@ -284,7 +280,7 @@ export class FunctionNode
             
             renderFn = joined.substring(0, funcIndex) + `function (${typedFuncParams.join(",")})`
                 + joined.substring(funcIndexEnd + 1).replace("{", `{
-                    ${extracts.isNotEmpty ? extracts.map(t => `var ${t.variable}: ${globalComponentElementTypeCache!.get(t.element)!.attrsSchema} = ${t.value}`).join(";") + ";" : ""}`);
+                    ${attrsExtracts.isNotEmpty ? attrsExtracts.map(t => `var ${t.variable}: ${globalComponentElementTypeCache!.get(t.element)!.attrsSchema} = ${t.value}`).join(";") + ";" : ""}`);
 
             if (this._isDebug)
             {
@@ -303,7 +299,7 @@ export class FunctionNode
                 .replace("function ()", `function (this: ${this._functionInputType})`)
                 .replace("var _vm = this", `var _vm: ${this._functionInputType} = this; var _vm$ = this as any;
                     ${helperTypes}
-                    ${extracts.map(t => `var ${t.variable}: ${globalComponentElementTypeCache!.get(t.element)!.attrsSchema} = ${t.value}`).join(";")};`);
+                    ${attrsExtracts.map(t => `var ${t.variable}: ${globalComponentElementTypeCache!.get(t.element)!.attrsSchema} = ${t.value}`).join(";")};`);
         }
         
         this._regeneratedCode = renderFn;

@@ -256,7 +256,7 @@ const moduleRules: Array<any> = [
                     debugFiles: [
                         // Path.resolve("test-app/client/components/binding-test/binding-test-view-model.ts"),
                         // Path.resolve("test-app/client/pages/test/test-view-model.ts")
-                        // Path.resolve("test-app/client/components/score-board/score-board-view-model.ts"),
+                        // Path.resolve("test-app/client/components/score-board/score-board-view-model.ts")
                         // Path.resolve("test-app/client/pages/test/test-view-model.ts")
                         // Path.resolve("test-app/client/pages/dashboard/dashboard-view-model.ts")
                     ]

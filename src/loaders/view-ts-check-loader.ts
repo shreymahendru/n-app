@@ -6,80 +6,93 @@ import { LoaderContext } from "webpack";
 import { fs as MemFs } from "memfs";
 import { given } from "@nivinjoseph/n-defensive";
 import { populateGlobalElementTypeCache } from "./lib/element-type-cache";
-import { combinedCompileConfig, compile, declarationCompileConfig } from "./lib/ts-compiler";
+import { combinedCompileConfig, compile } from "./lib/ts-compiler";
 import { transformRenderFns } from "./lib/view-transformer";
 const getOptions = require("loader-utils").getOptions;
 
 
-module.exports = function (this: LoaderContext<any>, src: string): string
+module.exports = async function (this: LoaderContext<any>, src: string): Promise<void>
 {    
     // console.log("Ts-check loading", this.resourcePath);
     // console.log(globalComponentElementTypeCache);
     
-    // const callback = this.async();
+    const callback = this.async();
     
-    const options = (getOptions(this) || {}) as Record<string, unknown>;
-    const isDebug = !!options.debug;
-    let debugFiles = options.debugFiles as Array<string> | null ?? [];
-    given(debugFiles, "debugFiles").ensureHasValue().ensureIsArray();
-    debugFiles = debugFiles.map(t => Path.join(Path.dirname(t), Path.basename(t).split(".").takeFirst()));
-    
-    const filePath = this.resourcePath;
-    const dir = Path.dirname(filePath);
-    const file = Path.basename(filePath);
-    const viewModelFile = file.replace("-view.html", "-view-model.ts");
-    
-    let isDebugFile = false;
-    if (isDebug)
-        isDebugFile = debugFiles.some(t => t.contains(this.resourcePath.replace(Path.extname(this.resourcePath), "")));
-    
-    if (!dir.contains("node_modules"))
-        compile(isDebug, debugFiles, [Path.join(dir, viewModelFile)], declarationCompileConfig, this);
-    
-    const declarationFile = file.replace("-view.html", "-view-model.d.ts");
-    
-    const declaration = dir.contains("node_modules")
-        ? Fs.readFileSync(Path.join(dir, declarationFile), "utf8")
-        : MemFs.readFileSync(Path.join(dir, declarationFile), "utf8");
-    
-    const className = file.replace("-view.html", "").split("-")
-        .map(t => t.split("").takeFirst().toUpperCase() + t.split("").skip(1).join(""))
-        .join("") + "ViewModel";
-    
-    const staticRenderFnsKey = "var staticRenderFns =";
-    let [renderFn, staticRenderFns] = src.split(staticRenderFnsKey);
-    staticRenderFns = staticRenderFnsKey + staticRenderFns;
-    
-    if (isDebugFile)
-        console.log(renderFn);
-    
-    renderFn = transformRenderFns(isDebugFile, renderFn, this, className);
-    
-        
-    staticRenderFns = staticRenderFns
-        .replaceAll(", arguments)", ", arguments as any)")
-        .replace("render._withStripped", ";(<any>render)._withStripped");
-    
-    const combinedContents = `
+    try 
+    {
+        const options = (getOptions(this) || {}) as Record<string, unknown>;
+        const isDebug = !!options.debug;
+        let debugFiles = options.debugFiles as Array<string> | null ?? [];
+        given(debugFiles, "debugFiles").ensureHasValue().ensureIsArray();
+        debugFiles = debugFiles.map(t => Path.join(Path.dirname(t), Path.basename(t).split(".").takeFirst()));
+
+        const filePath = this.resourcePath;
+        const dir = Path.dirname(filePath);
+        const file = Path.basename(filePath);
+        const viewModelFile = file.replace("-view.html", "-view-model.ts");
+
+        let isDebugFile = false;
+        if (isDebug)
+            isDebugFile = debugFiles.some(t => t.contains(this.resourcePath.replace(Path.extname(this.resourcePath), "")));
+
+        // if (!dir.contains("node_modules"))
+        //     compile(isDebug, debugFiles, [Path.join(dir, viewModelFile)], declarationCompileConfig, this);
+
+        const declarationFile = file.replace("-view.html", "-view-model.d.ts");
+
+        let declaration = await (dir.contains("node_modules")
+            ? Fs.promises.readFile(Path.join(dir, declarationFile), { encoding: "utf8" })
+            : Fs.promises.readFile(Path.join(dir, viewModelFile), { encoding: "utf8" }));
+
+        declaration = declaration.replaceAll("@ts-expect-error", "@ts-ignore");
+
+        const className = file.replace("-view.html", "").split("-")
+            .map(t => t.split("").takeFirst().toUpperCase() + t.split("").skip(1).join(""))
+            .join("") + "ViewModel";
+
+        const staticRenderFnsKey = "var staticRenderFns =";
+        let [renderFn, staticRenderFns] = src.split(staticRenderFnsKey);
+        staticRenderFns = staticRenderFnsKey + staticRenderFns;
+
+        if (isDebugFile)
+            console.log(renderFn);
+
+        renderFn = transformRenderFns(isDebugFile, renderFn, this, className);
+
+
+        staticRenderFns = staticRenderFns
+            .replaceAll(", arguments)", ", arguments as any)")
+            .replace("render._withStripped", ";(<any>render)._withStripped");
+
+        const combinedContents = `
     ${declaration}
     
     ${renderFn}
     
     ${staticRenderFns}
     `;
-    
-    const combinedFile = file.replace("-view.html", "-view-model.temp.ts");
-    const combinedFilePath = Path.join(dir, combinedFile);
-    if (!MemFs.existsSync(dir))
-        MemFs.mkdirSync(dir, { recursive: true });
-    MemFs.writeFileSync(combinedFilePath, combinedContents, { encoding: "utf-8" });
-    if (isDebug)
+
+        const combinedFile = file.replace("-view.html", "-view-model.temp.ts");
+        const combinedFilePath = Path.join(dir, combinedFile);
+        if (!MemFs.existsSync(dir))
+            MemFs.mkdirSync(dir, { recursive: true });
+        MemFs.writeFileSync(combinedFilePath, combinedContents, { encoding: "utf-8" });
+        if (isDebug)
+        {
+            if (debugFiles.contains(combinedFilePath.replace(".temp.ts", "")))
+                await Fs.promises.writeFile(combinedFilePath, combinedContents, "utf8");
+        }
+
+        compile(isDebug, debugFiles, [combinedFilePath], combinedCompileConfig, this, true);
+        
+        callback(null, src);
+    }
+    catch (error)
     {
-        if (debugFiles.contains(combinedFilePath.replace(".temp.ts", "")))
-            Fs.writeFileSync(combinedFilePath, combinedContents, "utf8");
+        callback(error as any);
     }
     
-    compile(isDebug, debugFiles, [combinedFilePath], combinedCompileConfig, this, true);
+    
     
     // console.log("=====second-pass-end======");
     
@@ -89,7 +102,8 @@ module.exports = function (this: LoaderContext<any>, src: string): string
     // console.log(JSON.stringify((<any>result.render)[0]));
     
     
-    return src;
+    
+    // return src;
     
     
     // const done = this.async();
