@@ -5,7 +5,7 @@ const route_args_1 = require("./route-args");
 const n_defensive_1 = require("@nivinjoseph/n-defensive");
 const utilities_1 = require("./utilities");
 const n_exception_1 = require("@nivinjoseph/n-exception");
-const $ = require("jquery");
+// import * as $ from "jquery";
 const page_hmr_helper_1 = require("./page-hmr-helper");
 class PageComponentFactory {
     create(registration) {

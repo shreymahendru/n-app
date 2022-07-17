@@ -8,7 +8,7 @@ const Spinner = require("./../../../vendor/spin.js");
 if (!Spinner)
     console.log("No Spinner!!!");
 const dialog_service_1 = require("./dialog-service");
-const $ = require("jquery");
+// import * as $ from "jquery";
 const n_defensive_1 = require("@nivinjoseph/n-defensive");
 class DefaultDialogService {
     constructor(options) {

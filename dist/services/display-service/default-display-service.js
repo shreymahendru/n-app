@@ -2,7 +2,7 @@
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.DefaultDisplayService = void 0;
 const display_type_1 = require("./display-type");
-const $ = require("jquery");
+// import * as $ from "jquery";
 const n_util_1 = require("@nivinjoseph/n-util");
 class DefaultDisplayService {
     constructor() {

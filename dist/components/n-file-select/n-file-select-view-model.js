@@ -8,7 +8,7 @@ const bind_1 = require("../../core/bind");
 const component_view_model_1 = require("../../core/component-view-model");
 const n_ject_1 = require("@nivinjoseph/n-ject");
 const n_defensive_1 = require("@nivinjoseph/n-defensive");
-const $ = require("jquery");
+// import * as $ from "jquery";
 const events_1 = require("../../core/events");
 const n_util_1 = require("@nivinjoseph/n-util");
 let NFileSelectViewModel = class NFileSelectViewModel extends component_view_model_1.ComponentViewModel {
