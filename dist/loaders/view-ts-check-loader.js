@@ -30,13 +30,12 @@ module.exports = function (src) {
             let isDebugFile = false;
             if (isDebug)
                 isDebugFile = debugFiles.some(t => t.contains(this.resourcePath.replace(Path.extname(this.resourcePath), "")));
-            // if (!dir.contains("node_modules"))
-            //     compile(isDebug, debugFiles, [Path.join(dir, viewModelFile)], declarationCompileConfig, this);
+            if (!dir.contains("node_modules"))
+                (0, ts_compiler_1.compile)(isDebug, debugFiles, [Path.join(dir, viewModelFile)], ts_compiler_1.declarationCompileConfig, this);
             const declarationFile = file.replace("-view.html", "-view-model.d.ts");
-            let declaration = yield (dir.contains("node_modules")
-                ? Fs.promises.readFile(Path.join(dir, declarationFile), { encoding: "utf8" })
-                : Fs.promises.readFile(Path.join(dir, viewModelFile), { encoding: "utf8" }));
-            declaration = declaration.replaceAll("@ts-expect-error", "@ts-ignore");
+            const declaration = dir.contains("node_modules")
+                ? Fs.readFileSync(Path.join(dir, declarationFile), "utf8")
+                : memfs_1.fs.readFileSync(Path.join(dir, declarationFile), "utf8");
             const className = file.replace("-view.html", "").split("-")
                 .map(t => t.split("").takeFirst().toUpperCase() + t.split("").skip(1).join(""))
                 .join("") + "ViewModel";

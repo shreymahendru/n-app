@@ -65,6 +65,7 @@ exports.combinedCompileConfig = {
 function compile(isDebug, debugFiles, fileNames, options, loaderContext, isView = false) {
     const host = ts.createCompilerHost(options);
     host.writeFile = (fileName, contents) => {
+        // console.log("Writing file ===> " + fileName);
         const dir = Path.dirname(fileName);
         if (!memfs_1.fs.existsSync(dir))
             memfs_1.fs.mkdirSync(dir, { recursive: true });
