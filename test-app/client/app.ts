@@ -1,5 +1,3 @@
-import "@babel/polyfill";
-
 import "@nivinjoseph/n-ext";
 import { ClientApp, DefaultDialogService, DialogLocation } from "./../../src/index";
 import { ScoreBoardViewModel } from "./components/score-board/score-board-view-model";

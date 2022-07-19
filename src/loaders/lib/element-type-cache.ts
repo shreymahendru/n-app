@@ -2,6 +2,8 @@ import { LoaderContext } from "webpack";
 import * as Path from "path";
 import * as Fs from "fs";
 import { given } from "@nivinjoseph/n-defensive";
+// import strip = require("strip-comments");
+import * as Strip from "strip-comments";
 
 export type ElementTypeInfo = {
     attrsSchema: string;
@@ -71,7 +73,7 @@ function createBindingSchema(context: LoaderContext<any>, filePath: string): voi
     if (!Fs.existsSync(viewModelFilePath))
         return;
 
-    const viewModelContents = Fs.readFileSync(viewModelFilePath, "utf8");
+    const viewModelContents = Strip(Fs.readFileSync(viewModelFilePath, "utf8"));
 
     const elementDecorator = "@element(";
     const bindDecorator = "@bind(";
