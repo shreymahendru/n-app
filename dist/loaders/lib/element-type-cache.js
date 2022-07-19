@@ -4,6 +4,8 @@ exports.populateGlobalElementTypeCache = exports.globalComponentElementTypeCache
 const Path = require("path");
 const Fs = require("fs");
 const n_defensive_1 = require("@nivinjoseph/n-defensive");
+// import strip = require("strip-comments");
+const Strip = require("strip-comments");
 exports.globalComponentElementTypeCache = null;
 function populateGlobalElementTypeCache(context) {
     if (exports.globalComponentElementTypeCache == null) {
@@ -44,7 +46,7 @@ function createBindingSchema(context, filePath) {
     const viewModelFilePath = Path.join(dir, viewModelFile);
     if (!Fs.existsSync(viewModelFilePath))
         return;
-    const viewModelContents = Fs.readFileSync(viewModelFilePath, "utf8");
+    const viewModelContents = Strip(Fs.readFileSync(viewModelFilePath, "utf8"));
     const elementDecorator = "@element(";
     const bindDecorator = "@bind(";
     const eventsDecorator = "@events(";
