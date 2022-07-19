@@ -430,5 +430,5 @@ require("./toastr.css.js");
         })();
     });
 }(function (factory) {
-        window.toastr = factory(require("jquery"));
+        window.toastr = factory($);
 }));
