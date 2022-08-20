@@ -67,7 +67,8 @@ export default function (this: LoaderContext<any>, content: string): string
         return content;
     
     const viewFileName = fileName.replace(isJs ? "-view-model.js" : "-view-model.ts", "-view.html");
-    const relativeViewFilePath = "." + Path.sep + viewFileName;
+    // const relativeViewFilePath = "." + Path.sep + viewFileName; // wrong
+    const relativeViewFilePath = "." + "/" + viewFileName; // correct: because this is used in require statement and it only supports forward slash => https://github.com/nodejs/node/issues/6049
     // const relativeViewFilePath = relativeFilePath.substr(0, relativeFilePath.length - "-view-model.js".length) + "-view.html";
     
     // eslint-disable-next-line @typescript-eslint/no-unsafe-call
