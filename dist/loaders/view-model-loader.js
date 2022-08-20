@@ -49,7 +49,8 @@ function default_1(content) {
     if (n_config_1.ConfigurationManager.getConfig("env") !== "dev")
         return content;
     const viewFileName = fileName.replace(isJs ? "-view-model.js" : "-view-model.ts", "-view.html");
-    const relativeViewFilePath = "." + Path.sep + viewFileName;
+    // const relativeViewFilePath = "." + Path.sep + viewFileName; // wrong
+    const relativeViewFilePath = "." + "/" + viewFileName; // correct: because this is used in require statement and it only supports forward slash => https://github.com/nodejs/node/issues/6049
     // const relativeViewFilePath = relativeFilePath.substr(0, relativeFilePath.length - "-view-model.js".length) + "-view.html";
     // eslint-disable-next-line @typescript-eslint/no-unsafe-call
     const id = hash(className);
