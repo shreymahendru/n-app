@@ -5,6 +5,10 @@ if (!Toastr)
 const Spinner = require("./../../../vendor/spin.js");
 if (!Spinner)
     console.log("No Spinner!!!");
+    
+const Topbar = require("./../../../vendor/topbar.js");
+if (!Topbar)
+    console.log("No Topbar!!!");
 
 import { DialogLocation, DialogService, DialogServiceOptions } from "./dialog-service";
 // import * as $ from "jquery";
@@ -13,8 +17,9 @@ import { given } from "@nivinjoseph/n-defensive";
 
 export class DefaultDialogService implements DialogService
 {
-    private readonly _accentColor: string = "#000";
+    private readonly _accentColor: string;
     private readonly _toastr: Toastr;
+    private readonly _loadingScreenType: "spinner" | "topbar";
     private _loadingScreenCount = 0;
     private _loadingScreen: JQuery<HTMLElement> | null = null;
     private _spinner: any = null;
@@ -22,18 +27,22 @@ export class DefaultDialogService implements DialogService
 
     public constructor(options?: DialogServiceOptions)
     {
-        const accentColor = options?.accentColor;
+        const accentColor = options?.accentColor ?? "#000";
         const dialogLocation = options?.dialogLocation ?? DialogLocation.bottomRight;
         const newestOnTop = options?.newestOnTop ?? false;
         const enableCloseButton = options?.enableCloseButton ?? false;
+        const loadingScreen = options?.loadingScreen ?? "spinner";
 
-        given(accentColor, "accentColor").ensureIsString().ensure(t => t.trim().startsWith("#"), "must be hex value");
+        given(accentColor, "accentColor").ensureHasValue().ensureIsString().ensure(t => t.trim().startsWith("#"), "must be hex value");
         given(dialogLocation, "dialogLocation").ensureHasValue().ensureIsEnum(DialogLocation);
         given(newestOnTop, "newestOnTop").ensureHasValue().ensureIsBoolean();
         given(enableCloseButton, "enableCloseButton").ensureHasValue().ensureIsBoolean();
+        given(loadingScreen, "loadingScreen").ensureHasValue().ensureIsString()
+            .ensure(t => t === "spinner" || t === "topbar");
 
-        if (accentColor)
-            this._accentColor = accentColor.trim();
+        this._accentColor = accentColor.trim();
+        
+        this._loadingScreenType = loadingScreen;
 
         this._toastr = (<any>window).toastr;
 
@@ -41,42 +50,30 @@ export class DefaultDialogService implements DialogService
         this._toastr.options.positionClass = dialogLocation;
         this._toastr.options.newestOnTop = newestOnTop;
         this._toastr.options.closeButton = enableCloseButton;
-    }
-
-
-    public showLoadingScreen(): void
-    {
-        if (this._loadingScreenCount === 0)
-        {
-            if (!this._loadingScreen)
-            {
-                this._createLoadingScreen();
+        
+        // eslint-disable-next-line @typescript-eslint/no-unsafe-call
+        Topbar.config({
+            barThickness: 4,
+            barColors: {
+                "0": this._accentColor
             }
-
-            this._loadingScreen!.show();
-            // eslint-disable-next-line @typescript-eslint/no-unsafe-call
-            this._spinner.spin(document.getElementById("spinnerLocation"));
-        }
-
-        this._loadingScreenCount++;
+        });
     }
-
-    public hideLoadingScreen(): void
+    
+    public showLoadingScreen(): void 
     {
-        this._loadingScreenCount--;
-
-        if (this._loadingScreenCount < 0)
-            this._loadingScreenCount = 0;
-
-        if (this._loadingScreenCount === 0)
-        {
-            if (this._loadingScreen && this._spinner)
-            {
-                // eslint-disable-next-line @typescript-eslint/no-unsafe-call
-                this._spinner.stop();
-                this._loadingScreen.hide();
-            }
-        }
+        if (this._loadingScreenType === "topbar")
+            this._showTopBar();
+        else
+            this._showSpinner();
+    }
+    
+    public hideLoadingScreen(): void 
+    {
+        if (this._loadingScreenType === "topbar")
+            this._hideTopBar();
+        else
+            this._hideSpinner();
     }
 
     public showMessage(message: string, title?: string): void
@@ -131,7 +128,66 @@ export class DefaultDialogService implements DialogService
     {
         this._toastr.clear();
     }
+    
+    private _showSpinner(): void
+    {
+        if (this._loadingScreenCount === 0)
+        {
+            if (!this._loadingScreen)
+            {
+                this._createLoadingScreen();
+            }
 
+            this._loadingScreen!.show();
+            // eslint-disable-next-line @typescript-eslint/no-unsafe-call
+            this._spinner.spin(document.getElementById("spinnerLocation"));
+        }
+
+        this._loadingScreenCount++;
+    }
+
+    private _hideSpinner(): void
+    {
+        this._loadingScreenCount--;
+
+        if (this._loadingScreenCount < 0)
+            this._loadingScreenCount = 0;
+
+        if (this._loadingScreenCount === 0)
+        {
+            if (this._loadingScreen && this._spinner)
+            {
+                // eslint-disable-next-line @typescript-eslint/no-unsafe-call
+                this._spinner.stop();
+                this._loadingScreen.hide();
+            }
+        }
+    }
+
+    private _showTopBar(): void
+    {
+        if (this._loadingScreenCount === 0)
+        {
+            // eslint-disable-next-line @typescript-eslint/no-unsafe-call
+            Topbar.show();
+        }
+
+        this._loadingScreenCount++;
+    }
+
+    private _hideTopBar(): void
+    {
+        this._loadingScreenCount--;
+
+        if (this._loadingScreenCount < 0)
+            this._loadingScreenCount = 0;
+
+        if (this._loadingScreenCount === 0)
+        {
+            // eslint-disable-next-line @typescript-eslint/no-unsafe-call
+            Topbar.hide();
+        }
+    }
 
     private _createLoadingScreen(): void
     {

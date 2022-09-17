@@ -38,6 +38,7 @@ const dialogService = new DefaultDialogService({
     dialogLocation: DialogLocation.bottomRight,
     newestOnTop: true,
     enableCloseButton: true
+    // loadingScreen: "spinner"
 });
 
 const app = new ClientApp("#app", "router-view")

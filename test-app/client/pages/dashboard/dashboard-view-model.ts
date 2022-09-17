@@ -5,7 +5,7 @@ import { inject } from "@nivinjoseph/n-ject";
 import "./dashboard-view.scss";
 import { ScopedService } from "../../services/scoped-service";
 import { BindingTestViewModel } from "../../components/binding-test/binding-test-view-model";
-import { Duration, synchronize } from "@nivinjoseph/n-util";
+import { Delay, Duration, synchronize } from "@nivinjoseph/n-util";
 // import { Delay } from "@nivinjoseph/n-util";
 
 
@@ -104,6 +104,16 @@ export class DashboardViewModel extends BasePageViewModel
         // this._navigationService.navigate(Routes.updateTodo, { id: 5 });
         
         // this._isActive = false;
+    }
+    
+    public async loading(): Promise<void>
+    {
+        console.log("loading clicked");
+        this._dialogService.showLoadingScreen();
+        
+        await Delay.seconds(3);
+        
+        this._dialogService.hideLoadingScreen();
     }
 }
 
