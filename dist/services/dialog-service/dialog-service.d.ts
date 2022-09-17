@@ -45,6 +45,7 @@ export interface DialogServiceOptions {
     dialogLocation?: DialogLocation;
     newestOnTop?: boolean;
     enableCloseButton?: boolean;
+    loadingScreen?: "spinner" | "topbar";
 }
 export declare enum DialogLocation {
     topLeft = "toast-top-left",

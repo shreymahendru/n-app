@@ -7,54 +7,55 @@ if (!Toastr)
 const Spinner = require("./../../../vendor/spin.js");
 if (!Spinner)
     console.log("No Spinner!!!");
+const Topbar = require("./../../../vendor/topbar.js");
+if (!Topbar)
+    console.log("No Topbar!!!");
 const dialog_service_1 = require("./dialog-service");
 // import * as $ from "jquery";
 const n_defensive_1 = require("@nivinjoseph/n-defensive");
 class DefaultDialogService {
     constructor(options) {
-        var _a, _b, _c;
-        this._accentColor = "#000";
+        var _a, _b, _c, _d, _e;
         this._loadingScreenCount = 0;
         this._loadingScreen = null;
         this._spinner = null;
-        const accentColor = options === null || options === void 0 ? void 0 : options.accentColor;
-        const dialogLocation = (_a = options === null || options === void 0 ? void 0 : options.dialogLocation) !== null && _a !== void 0 ? _a : dialog_service_1.DialogLocation.bottomRight;
-        const newestOnTop = (_b = options === null || options === void 0 ? void 0 : options.newestOnTop) !== null && _b !== void 0 ? _b : false;
-        const enableCloseButton = (_c = options === null || options === void 0 ? void 0 : options.enableCloseButton) !== null && _c !== void 0 ? _c : false;
-        (0, n_defensive_1.given)(accentColor, "accentColor").ensureIsString().ensure(t => t.trim().startsWith("#"), "must be hex value");
+        const accentColor = (_a = options === null || options === void 0 ? void 0 : options.accentColor) !== null && _a !== void 0 ? _a : "#000";
+        const dialogLocation = (_b = options === null || options === void 0 ? void 0 : options.dialogLocation) !== null && _b !== void 0 ? _b : dialog_service_1.DialogLocation.bottomRight;
+        const newestOnTop = (_c = options === null || options === void 0 ? void 0 : options.newestOnTop) !== null && _c !== void 0 ? _c : false;
+        const enableCloseButton = (_d = options === null || options === void 0 ? void 0 : options.enableCloseButton) !== null && _d !== void 0 ? _d : false;
+        const loadingScreen = (_e = options === null || options === void 0 ? void 0 : options.loadingScreen) !== null && _e !== void 0 ? _e : "spinner";
+        (0, n_defensive_1.given)(accentColor, "accentColor").ensureHasValue().ensureIsString().ensure(t => t.trim().startsWith("#"), "must be hex value");
         (0, n_defensive_1.given)(dialogLocation, "dialogLocation").ensureHasValue().ensureIsEnum(dialog_service_1.DialogLocation);
         (0, n_defensive_1.given)(newestOnTop, "newestOnTop").ensureHasValue().ensureIsBoolean();
         (0, n_defensive_1.given)(enableCloseButton, "enableCloseButton").ensureHasValue().ensureIsBoolean();
-        if (accentColor)
-            this._accentColor = accentColor.trim();
+        (0, n_defensive_1.given)(loadingScreen, "loadingScreen").ensureHasValue().ensureIsString()
+            .ensure(t => t === "spinner" || t === "topbar");
+        this._accentColor = accentColor.trim();
+        this._loadingScreenType = loadingScreen;
         this._toastr = window.toastr;
         this._toastr.options.timeOut = 4000;
         this._toastr.options.positionClass = dialogLocation;
         this._toastr.options.newestOnTop = newestOnTop;
         this._toastr.options.closeButton = enableCloseButton;
+        // eslint-disable-next-line @typescript-eslint/no-unsafe-call
+        Topbar.config({
+            barThickness: 4,
+            barColors: {
+                "0": this._accentColor
+            }
+        });
     }
     showLoadingScreen() {
-        if (this._loadingScreenCount === 0) {
-            if (!this._loadingScreen) {
-                this._createLoadingScreen();
-            }
-            this._loadingScreen.show();
-            // eslint-disable-next-line @typescript-eslint/no-unsafe-call
-            this._spinner.spin(document.getElementById("spinnerLocation"));
-        }
-        this._loadingScreenCount++;
+        if (this._loadingScreenType === "topbar")
+            this._showTopBar();
+        else
+            this._showSpinner();
     }
     hideLoadingScreen() {
-        this._loadingScreenCount--;
-        if (this._loadingScreenCount < 0)
-            this._loadingScreenCount = 0;
-        if (this._loadingScreenCount === 0) {
-            if (this._loadingScreen && this._spinner) {
-                // eslint-disable-next-line @typescript-eslint/no-unsafe-call
-                this._spinner.stop();
-                this._loadingScreen.hide();
-            }
-        }
+        if (this._loadingScreenType === "topbar")
+            this._hideTopBar();
+        else
+            this._hideSpinner();
     }
     showMessage(message, title) {
         if (title) {
@@ -90,6 +91,45 @@ class DefaultDialogService {
     }
     clearMessages() {
         this._toastr.clear();
+    }
+    _showSpinner() {
+        if (this._loadingScreenCount === 0) {
+            if (!this._loadingScreen) {
+                this._createLoadingScreen();
+            }
+            this._loadingScreen.show();
+            // eslint-disable-next-line @typescript-eslint/no-unsafe-call
+            this._spinner.spin(document.getElementById("spinnerLocation"));
+        }
+        this._loadingScreenCount++;
+    }
+    _hideSpinner() {
+        this._loadingScreenCount--;
+        if (this._loadingScreenCount < 0)
+            this._loadingScreenCount = 0;
+        if (this._loadingScreenCount === 0) {
+            if (this._loadingScreen && this._spinner) {
+                // eslint-disable-next-line @typescript-eslint/no-unsafe-call
+                this._spinner.stop();
+                this._loadingScreen.hide();
+            }
+        }
+    }
+    _showTopBar() {
+        if (this._loadingScreenCount === 0) {
+            // eslint-disable-next-line @typescript-eslint/no-unsafe-call
+            Topbar.show();
+        }
+        this._loadingScreenCount++;
+    }
+    _hideTopBar() {
+        this._loadingScreenCount--;
+        if (this._loadingScreenCount < 0)
+            this._loadingScreenCount = 0;
+        if (this._loadingScreenCount === 0) {
+            // eslint-disable-next-line @typescript-eslint/no-unsafe-call
+            Topbar.hide();
+        }
     }
     _createLoadingScreen() {
         this._loadingScreen = $("<div style='position:fixed;top:0;left:0;right:0;bottom:0;z-index:100000000;background-color:rgba(255, 255, 255, 0.1);'><div id='spinnerLocation' style='position:absolute;top:50%;left:50%;'></div></div>")
