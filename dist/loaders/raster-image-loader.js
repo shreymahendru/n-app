@@ -7,7 +7,10 @@ const loaderUtils = require("loader-utils");
 const Path = require("path");
 const n_util_1 = require("@nivinjoseph/n-util");
 const imagemin = require("imagemin");
-function resize(data, width, height, format, jpegQuality, background) {
+const n_defensive_1 = require("@nivinjoseph/n-defensive");
+function resize(data, width, height, format, quality, background) {
+    (0, n_defensive_1.given)(format, "format").ensureIsString()
+        .ensure(t => ["jpeg", "webp"].contains(t), "invalid format [must be jpeg or webp]");
     const promise = new Promise((resolve, reject) => {
         let s = Sharp(data);
         if (width || height)
@@ -26,7 +29,10 @@ function resize(data, width, height, format, jpegQuality, background) {
                     console.warn("SUPPLIED BACKGROUND PARAMETER IS NOT A VALID HEX COLOR.");
                 }
             }
-            s = s.jpeg({ quality: jpegQuality });
+            s = s.jpeg({ quality: quality });
+        }
+        else if (format === "webp") {
+            s = s.webp({ quality: quality });
         }
         s.toBuffer((err, buf, info) => {
             if (err)
@@ -104,33 +110,39 @@ module.exports = function (content) {
         .forEach(t => parsedResourceQuery[t] = n_util_1.TypeHelper.parseNumber(parsedResourceQuery[t]));
     const { width, height, format, background } = parsedResourceQuery;
     // console.log(parsedResourceQuery);
+    // @ts-expect-error: unsafe use of this
+    const callback = this.async();
+    if (ext === "svg" && format == null) {
+        callback(null, content);
+        return;
+    }
     const options = loaderUtils.getOptions(this) || {};
     // const context = options.context || this.rootContext;
     // const limit = options.urlEncodeLimit;
-    const jpegQuality = options.jpegQuality || 80;
-    const pngQuality = Number.parseFloat(((options.pngQuality || 80) / 100).toFixed(1));
+    const jpegQuality = options.jpegQuality || 75;
+    const pngQuality = Number.parseFloat(((options.pngQuality || 75) / 100).toFixed(1));
+    const webpQuality = options.webpQuality || 75;
     // console.log("LIMIT", limit);
-    // @ts-expect-error: unsafe use of this
-    const callback = this.async();
     const plugins = [
         require("imagemin-gifsicle")({}),
         require("imagemin-mozjpeg")({ quality: jpegQuality }),
         require("imagemin-svgo")({}),
         require("imagemin-pngquant")({ quality: [pngQuality, pngQuality] }),
         // require("imagemin-optipng")({}),
-        require("imagemin-webp")({})
+        require("imagemin-webp")({ quality: webpQuality })
     ];
-    const isFormatted = ext === "svg" || format === "jpeg";
-    resize(content, width, height, isFormatted ? "jpeg" : null, jpegQuality, background)
+    // const isFormatted = ext === "svg" || format === "jpeg";
+    resize(content, width, height, format === null || format === void 0 ? void 0 : format.trim(), jpegQuality, background)
         .then(resized => {
         // console.log(this.resourcePath, " ==> ", resized.ext);
+        // eslint-disable-next-line @typescript-eslint/no-unsafe-return
         return imagemin.buffer(resized.data, { plugins });
     })
         .then(data => {
         // callback(null, data);
-        if (isFormatted) {
+        if (format != null) {
             // @ts-expect-error: unsafe use of this
-            this.resourcePath = this.resourcePath.replace(new RegExp(`.${ext}`, "i"), ".jpeg");
+            this.resourcePath = this.resourcePath.replace(new RegExp(`.${ext}`, "i"), "." + format);
             // const context = options.context || this.rootContext;
             // const name = `[name]_${ext}.jpeg`;
             // const name = `[name].[ext]`;
