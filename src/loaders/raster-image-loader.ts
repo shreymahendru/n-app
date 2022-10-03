@@ -5,6 +5,7 @@ const loaderUtils = require("loader-utils");
 import * as Path from "path";
 import { TypeHelper } from "@nivinjoseph/n-util";
 const imagemin = require("imagemin");
+import { given } from "@nivinjoseph/n-defensive";
 
 
 interface ResizedImage
@@ -17,8 +18,11 @@ interface ResizedImage
     data: Buffer;
 }
 
-function resize(data: Buffer, width: number, height: number, format: string | null, jpegQuality: number, background: string): Promise<ResizedImage>
+function resize(data: Buffer, width: number, height: number, format: string | null, quality: number, background: string): Promise<ResizedImage>
 {
+    given(format, "format").ensureIsString()
+        .ensure(t => ["jpeg", "webp"].contains(t), "invalid format [must be jpeg or webp]");
+    
     const promise = new Promise<ResizedImage>((resolve, reject) =>
     {
         let s = Sharp(data);
@@ -44,10 +48,14 @@ function resize(data: Buffer, width: number, height: number, format: string | nu
                     console.warn("SUPPLIED BACKGROUND PARAMETER IS NOT A VALID HEX COLOR.");
                 }
             }
-            s = s.jpeg({ quality: jpegQuality });
+            s = s.jpeg({ quality: quality });
+        }
+        else if (format === "webp")
+        {
+            s = s.webp({ quality: quality });
         }
 
-        s.toBuffer((err: any, buf: any, info) =>
+        s.toBuffer((err: any, buf: any, info: any) =>
         {
             if (err)
                 reject(err);
@@ -141,16 +149,25 @@ module.exports = function (content: any): void
 
     const { width, height, format, background } = parsedResourceQuery;
     // console.log(parsedResourceQuery);
+    
+    // @ts-expect-error: unsafe use of this
+    const callback = this.async();
+    
+    if(ext === "svg" && format == null)
+    {
+        callback(null, content);
+        return;
+    }
 
     const options = loaderUtils.getOptions(this) || {};
     // const context = options.context || this.rootContext;
 
     // const limit = options.urlEncodeLimit;
-    const jpegQuality = options.jpegQuality || 80;
-    const pngQuality = Number.parseFloat(((options.pngQuality || 80) / 100).toFixed(1));
+    const jpegQuality = options.jpegQuality || 75;
+    const pngQuality = Number.parseFloat(((options.pngQuality || 75) / 100).toFixed(1));
+    const webpQuality = options.webpQuality || 75;
     // console.log("LIMIT", limit);
-    // @ts-expect-error: unsafe use of this
-    const callback = this.async();
+
 
     const plugins = [
         require("imagemin-gifsicle")({}),
@@ -158,26 +175,27 @@ module.exports = function (content: any): void
         require("imagemin-svgo")({}),
         require("imagemin-pngquant")({ quality: [pngQuality, pngQuality] }),
         // require("imagemin-optipng")({}),
-        require("imagemin-webp")({})
+        require("imagemin-webp")({ quality: webpQuality })
     ];
     
-    const isFormatted = ext === "svg" || format === "jpeg";
+    // const isFormatted = ext === "svg" || format === "jpeg";
     
-    resize(content, width, height, isFormatted ? "jpeg" : null, jpegQuality, background)
+    resize(content, width, height, format?.trim(), jpegQuality, background)
         .then(resized =>
         {
             // console.log(this.resourcePath, " ==> ", resized.ext);
             
-            return imagemin.buffer(resized.data, { plugins }) as Buffer;
+            // eslint-disable-next-line @typescript-eslint/no-unsafe-return
+            return imagemin.buffer(resized.data, { plugins });
         })
         .then(data =>
         {
             // callback(null, data);
             
-            if (isFormatted)
+            if (format != null)
             {
                 // @ts-expect-error: unsafe use of this
-                this.resourcePath = this.resourcePath.replace(new RegExp(`.${ext}`, "i"), ".jpeg");
+                this.resourcePath = this.resourcePath.replace(new RegExp(`.${ext}`, "i"), "." + format);
                 
                 // const context = options.context || this.rootContext;
                 // const name = `[name]_${ext}.jpeg`;

@@ -94,12 +94,12 @@ const moduleRules: Array<any> = [
         ]
     },
     {
-        test: /\.(png|jpg|jpeg|gif)$/,
+        test: /\.(png|jpg|jpeg|gif|webp|svg)$/,
         use: [
             {
                 loader: "url-loader",
                 options: {
-                    limit: 9000,
+                    limit: 1000,
                     fallback: "file-loader",
                     esModule: false,
                     name: (_resourcePath: string, _resourceQuery: string): string =>
@@ -123,22 +123,23 @@ const moduleRules: Array<any> = [
                 options: {
                     // urlEncodeLimit: isDev ? 9000000000 : 900000,
                     jpegQuality: 80,
-                    pngQuality: 60
+                    pngQuality: 60,
+                    webpQuality: 80
                 }
             }
         ]
     },
-    {
-        test: /\.svg$/,
-        use: [
-            {
-                loader: "file-loader",
-                options: {
-                    esModule: false
-                }
-            }
-        ]
-    },
+    // {
+    //     test: /\.svg$/,
+    //     use: [
+    //         {
+    //             loader: "file-loader",
+    //             options: {
+    //                 esModule: false
+    //             }
+    //         }
+    //     ]
+    // },
     {
         test: /\.(woff|woff2|eot|ttf|otf)$/,
         use: [
