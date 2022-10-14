@@ -29,9 +29,10 @@ export interface FileInfo
     id: "string",
     mimeTypes: "string",
     "maxFileSize?": "number",
-    "multiple?": "boolean"
+    "multiple?": "boolean",
+    "hideLoadingOnProcessingFile?": "boolean"
 })
-@events("select")
+@events("select", "processingStarted", "processingCompleted")
 @inject("DialogService", "EventAggregator")
 export class NFileSelectViewModel extends ComponentViewModel
 {
@@ -46,7 +47,10 @@ export class NFileSelectViewModel extends ComponentViewModel
     private get _mimeTypesList(): string { return this.getBound("mimeTypes"); }
     private get _maxFileSizeValue(): number | null { return TypeHelper.parseNumber(this.getBound("maxFileSize")); }
     private get _isMultiple(): boolean { return this.getBound("multiple") != null && this.getBound("multiple") === true; }
-
+    private get _hideLoadingOnProcessingFile(): boolean
+    {
+        return this.getBound<boolean | null>("hideLoadingOnProcessingFile") ?? false;
+    }
 
     public constructor(dialogService: DialogService, eventAggregator: EventAggregator)
     {
@@ -101,10 +105,13 @@ export class NFileSelectViewModel extends ComponentViewModel
 
     private _processFiles(files: FileList | null): void
     {
-        this._dialogService.showLoadingScreen();
-
         if (files == null || files.length === 0)
             return;
+
+        if (!this._hideLoadingOnProcessingFile)
+            this._dialogService.showLoadingScreen();
+
+        this.emit("processingStarted");
 
         const promises = new Array<Promise<FileInfo>>();
 
@@ -131,13 +138,20 @@ export class NFileSelectViewModel extends ComponentViewModel
                 if (processedFiles.length > 0)
                     this.emit("select", this._isMultiple ? processedFiles : processedFiles[0]);
 
-                this._dialogService.hideLoadingScreen();
+                if (!this._hideLoadingOnProcessingFile)
+                    this._dialogService.hideLoadingScreen();
+
+                this.emit("processingCompleted");
             })
             .catch((e) =>
             {
                 console.error(e);
                 this._dialogService.showErrorMessage("An error occurred while processing the files.", "ERROR");
-                this._dialogService.hideLoadingScreen();
+
+                if (!this._hideLoadingOnProcessingFile)
+                    this._dialogService.hideLoadingScreen();
+
+                this.emit("processingCompleted");
             });
     }
 
