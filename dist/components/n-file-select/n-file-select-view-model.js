@@ -52,9 +52,9 @@ let NFileSelectViewModel = class NFileSelectViewModel extends component_view_mod
         this._inputElement.change(fchange).appendTo($(element));
     }
     _processFiles(files) {
-        this._dialogService.showLoadingScreen();
         if (files == null || files.length === 0)
             return;
+        this.emit("processingStarted");
         const promises = new Array();
         for (const file of files)
             promises.push(this._createFileInfo(file));
@@ -71,12 +71,12 @@ let NFileSelectViewModel = class NFileSelectViewModel extends component_view_mod
             failedFiles.forEach(t => this._dialogService.showWarningMessage("File {0} exceeded the file size limit of {1} MB.".format(t.fileName, this._maxFileSizeValue)));
             if (processedFiles.length > 0)
                 this.emit("select", this._isMultiple ? processedFiles : processedFiles[0]);
-            this._dialogService.hideLoadingScreen();
+            this.emit("processingCompleted");
         })
             .catch((e) => {
             console.error(e);
             this._dialogService.showErrorMessage("An error occurred while processing the files.", "ERROR");
-            this._dialogService.hideLoadingScreen();
+            this.emit("processingCompleted");
         });
     }
     _createFileInfo(file) {
@@ -124,7 +124,7 @@ NFileSelectViewModel = tslib_1.__decorate([
         "maxFileSize?": "number",
         "multiple?": "boolean"
     }),
-    (0, events_1.events)("select"),
+    (0, events_1.events)("select", "processingStarted", "processingCompleted"),
     (0, n_ject_1.inject)("DialogService", "EventAggregator"),
     tslib_1.__metadata("design:paramtypes", [Object, Object])
 ], NFileSelectViewModel);
