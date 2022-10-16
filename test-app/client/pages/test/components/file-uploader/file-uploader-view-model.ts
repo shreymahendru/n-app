@@ -14,14 +14,11 @@ export class FileUploaderViewModel extends ComponentViewModel
 
     private _file: FileInfo | null = null;
     private _isProcessing = false;
-    private _hideLoadingOnProcessing = true;
 
 
     public get file(): FileInfo | null { return this._file; }
     public get isProcessing(): boolean { return this._isProcessing; }
 
-    public get hideLoadingOnProcessing(): boolean { return this._hideLoadingOnProcessing; }
-    public set hideLoadingOnProcessing(val: boolean) { this._hideLoadingOnProcessing = val; }
 
     public constructor(eventAggregator: EventAggregator)
     {
