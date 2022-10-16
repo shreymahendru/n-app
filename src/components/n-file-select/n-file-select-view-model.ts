@@ -31,7 +31,7 @@ export interface FileInfo
     "maxFileSize?": "number",
     "multiple?": "boolean"
 })
-@events("select")
+@events("select", "processingStarted", "processingCompleted")
 @inject("DialogService", "EventAggregator")
 export class NFileSelectViewModel extends ComponentViewModel
 {
@@ -101,10 +101,10 @@ export class NFileSelectViewModel extends ComponentViewModel
 
     private _processFiles(files: FileList | null): void
     {
-        this._dialogService.showLoadingScreen();
-
         if (files == null || files.length === 0)
             return;
+
+        this.emit("processingStarted");
 
         const promises = new Array<Promise<FileInfo>>();
 
@@ -131,13 +131,14 @@ export class NFileSelectViewModel extends ComponentViewModel
                 if (processedFiles.length > 0)
                     this.emit("select", this._isMultiple ? processedFiles : processedFiles[0]);
 
-                this._dialogService.hideLoadingScreen();
+                this.emit("processingCompleted");
             })
             .catch((e) =>
             {
                 console.error(e);
                 this._dialogService.showErrorMessage("An error occurred while processing the files.", "ERROR");
-                this._dialogService.hideLoadingScreen();
+
+                this.emit("processingCompleted");
             });
     }
 
