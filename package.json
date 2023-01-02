@@ -25,7 +25,7 @@
         "test-ci": "mocha --reporter spec --ui tdd --require ts-node/register './test/**/*.test.js'",
         "publish-package": "npm run ts-build-dist && git add . && git commit -m 'preparing to publish new version' && npm version patch && git push && npm publish --access=public",
         "prebundle": "npm run ts-build",
-        "webpack-build": "webpack",
+        "webpack-build": "webpack --config ./my-webpack.config.js",
         "webpack-build-watch": "npm run webpack-build -- -w",
         "nodemon": "nodemon --ignore src/ --ignore test/ --ignore test-app/client/ --inspect=4001 ./test-app/server.js env=dev",
         "predev": "npm run ts-build",
@@ -103,7 +103,7 @@
     "devDependencies": {
         "@babel/core": "^7.18.0",
         "@babel/preset-env": "^7.18.0",
-        "@nivinjoseph/n-web": "^4.0.10",
+        "@nivinjoseph/n-web": "github:shreymahendru/n-web#webpack-file-path",
         "@types/jquery": "^3.5.14",
         "@types/mocha": "^9.1.1",
         "@types/node": "^16.11.38",

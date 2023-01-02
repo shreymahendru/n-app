@@ -4,8 +4,7 @@ import * as path from "path";
 const getOptions = require("loader-utils").getOptions;
 // const resolve = require("resolve");
 const btoa = require("btoa");
-const config = require(path.resolve(process.cwd(), "webpack.config.js"));
-const resolve = require("enhanced-resolve").create.sync({ alias: config.resolve && config.resolve.alias || [] });
+const enhancedResolve = require("enhanced-resolve");
 
 /**
  * @typedef {Object} LoaderContext
@@ -32,6 +31,7 @@ export default async function extractLoader(src: string): Promise<void>
     const options = getOptions(this) || {};
     // @ts-expect-error: unsafe use of this
     const publicPath = getPublicPath(options, this);
+
     // @ts-expect-error: unsafe use of this
     this.cacheable();
 
@@ -139,12 +139,15 @@ function evalDependencyGraph({ loaderContext, src, filename, publicPath = "" }: 
                 const indexOfLastExclMark = relativePathWithoutQuery.lastIndexOf("!");
                 const loaders = givenRelativePath.slice(0, indexOfLastExclMark + 1);
                 const relativePath = relativePathWithoutQuery.slice(indexOfLastExclMark + 1);
-                
+
                 // const absolutePath = resolve.sync(relativePath, {
                 //     basedir: path.dirname(filename),
                 // });
+                const resolveOptions = loaderContext._compilation.options.resolve;
+                const resolve = enhancedResolve.create.sync({ alias: resolveOptions && resolveOptions.alias || [] });
+
                 const absolutePath = resolve(path.dirname(filename), relativePath);
-                
+
                 const ext = path.extname(absolutePath);
 
                 if (moduleCache.has(absolutePath))
@@ -170,7 +173,7 @@ function evalDependencyGraph({ loaderContext, src, filename, publicPath = "" }: 
                 }
 
                 const rndPlaceholder = "__EXTRACT_LOADER_PLACEHOLDER__" + rndNumber() + rndNumber();
-                
+
                 newDependencies.push({
                     absolutePath,
                     absoluteRequest: loaders + absolutePath + query,

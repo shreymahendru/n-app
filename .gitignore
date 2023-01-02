@@ -54,3 +54,7 @@ test-app/client/dist
 # Webpack config compiled artifacts
 webpack.config.js
 webpack.config.js.map
+
+# Webpack config compiled artifacts
+my-webpack.config.js
+my-webpack.config.js.map
