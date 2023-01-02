@@ -454,8 +454,7 @@ module.exports = {
             // https://feathericons.com/
             feather: Path.resolve(__dirname, "node_modules/feather-icons/dist/feather-sprite.svg"),
             vue: isDev ? "@nivinjoseph/vue/dist/vue.js" : "@nivinjoseph/vue/dist/vue.runtime.common.prod.js",
-            "tslib$": "tslib/tslib.es6.js", 
-            blah: Path.resolve(__dirname, "node_modules/feather-icons/dist/feather-sprite.svg")
+            "tslib$": "tslib/tslib.es6.js"
         }
     }
 };
