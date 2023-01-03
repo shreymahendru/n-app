@@ -7,8 +7,9 @@ const path = require("path");
 const getOptions = require("loader-utils").getOptions;
 // const resolve = require("resolve");
 const btoa = require("btoa");
-const config = require(path.resolve(process.cwd(), "webpack.config.js"));
-const resolve = require("enhanced-resolve").create.sync({ alias: config.resolve && config.resolve.alias || [] });
+// const config = require(path.resolve(process.cwd(), "webpack.config.js"));
+// const resolve = require("enhanced-resolve").create.sync({ alias: config.resolve && config.resolve.alias || [] });
+const enhancedResolve = require("enhanced-resolve");
 /**
  * @typedef {Object} LoaderContext
  * @property {function} cacheable
@@ -119,6 +120,8 @@ function evalDependencyGraph({ loaderContext, src, filename, publicPath = "" }) 
                     // const absolutePath = resolve.sync(relativePath, {
                     //     basedir: path.dirname(filename),
                     // });
+                    const resolveOptions = loaderContext._compilation.options.resolve;
+                    const resolve = enhancedResolve.create.sync({ alias: resolveOptions && resolveOptions.alias || [] });
                     const absolutePath = resolve(path.dirname(filename), relativePath);
                     const ext = path.extname(absolutePath);
                     if (moduleCache.has(absolutePath)) {
