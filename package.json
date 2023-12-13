@@ -1,6 +1,6 @@
 {
     "name": "@nivinjoseph/n-app",
-    "version": "4.0.35",
+    "version": "4.0.36",
     "description": "Vue.js based application framework",
     "main": "./dist/index.js",
     "types": "./dist/index.d.ts",
@@ -166,7 +166,7 @@
         "worker-loader": "^3.0.8"
     },
     "dependencies": {
-        "@nivinjoseph/n-config": "^1.0.35",
+        "@nivinjoseph/n-config": "^1.0.36",
         "@nivinjoseph/n-defensive": "^1.0.41",
         "@nivinjoseph/n-exception": "^1.0.26",
         "@nivinjoseph/n-ext": "^1.1.35",
