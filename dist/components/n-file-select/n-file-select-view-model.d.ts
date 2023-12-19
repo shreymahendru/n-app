@@ -21,9 +21,11 @@ export declare class NFileSelectViewModel extends ComponentViewModel {
     private get _maxFileSizeValue();
     private get _isMultiple();
     constructor(dialogService: DialogService, eventAggregator: EventAggregator);
+    protected onCreate(): void;
     protected onMount(element: HTMLElement): void;
     private _processFiles;
     private _createFileInfo;
     private _ensureFileSizeIsAllowed;
+    private _ensureFileTypeIsAllowed;
     private _initializeMaxFileSizeBytes;
 }

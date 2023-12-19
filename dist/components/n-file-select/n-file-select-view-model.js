@@ -35,6 +35,15 @@ let NFileSelectViewModel = class NFileSelectViewModel extends component_view_mod
     get _mimeTypesList() { return this.getBound("mimeTypes"); }
     get _maxFileSizeValue() { return n_util_1.TypeHelper.parseNumber(this.getBound("maxFileSize")); }
     get _isMultiple() { return this.getBound("multiple") != null && this.getBound("multiple") === true; }
+    onCreate() {
+        super.onCreate();
+        (0, n_defensive_1.given)(this._mimeTypesList, "mimeTypesList")
+            .ensure(t => t.split(",").every(mime => {
+            mime = mime.trim();
+            return (mime.startsWith(".") && !mime.contains("/"))
+                || (!mime.startsWith(".") && mime.contains("/"));
+        }));
+    }
     onMount(element) {
         this._initializeMaxFileSizeBytes();
         const inputText = this._isMultiple
@@ -61,14 +70,18 @@ let NFileSelectViewModel = class NFileSelectViewModel extends component_view_mod
         Promise.all(promises)
             .then((results) => {
             const processedFiles = new Array();
-            const failedFiles = new Array();
+            const sizeRestrictionFailedFiles = new Array();
+            const fileMimeRestrictionFailedFiles = new Array();
             results.forEach(t => {
-                if (this._ensureFileSizeIsAllowed(t))
-                    processedFiles.push(t);
+                if (!this._ensureFileSizeIsAllowed(t))
+                    sizeRestrictionFailedFiles.push(t);
+                else if (!this._ensureFileTypeIsAllowed(t))
+                    fileMimeRestrictionFailedFiles.push(t);
                 else
-                    failedFiles.push(t);
+                    processedFiles.push(t);
             });
-            failedFiles.forEach(t => this._dialogService.showWarningMessage("File {0} exceeded the file size limit of {1} MB.".format(t.fileName, this._maxFileSizeValue)));
+            sizeRestrictionFailedFiles.forEach(t => this._dialogService.showWarningMessage("File {0} exceeded the file size limit of {1} MB.".format(t.fileName, this._maxFileSizeValue)));
+            fileMimeRestrictionFailedFiles.forEach(t => this._dialogService.showWarningMessage(`File ${t.fileName} is of invalid type`));
             if (processedFiles.length > 0)
                 this.emit("select", this._isMultiple ? processedFiles : processedFiles[0]);
             this.emit("processingCompleted");
@@ -110,6 +123,30 @@ let NFileSelectViewModel = class NFileSelectViewModel extends component_view_mod
     }
     _ensureFileSizeIsAllowed(fileInfo) {
         return this._maxFileSizeBytes != null ? fileInfo.fileSize <= this._maxFileSizeBytes : true;
+    }
+    // this is a weak check. because this doesn't validate the file correctly if file ext is modified,
+    // the ideal way to do this would be evaluating file headers
+    _ensureFileTypeIsAllowed(fileInfo) {
+        return this._mimeTypesList.split(",").some(t => {
+            t = t.trim();
+            if (t.startsWith(".")) {
+                const jpegExt = ["jpg", "jpeg"];
+                const ext = fileInfo.fileName.split(".").takeLast();
+                if (jpegExt.contains(t.substring(1)))
+                    return jpegExt.contains(ext);
+                return ext === t.substring(1);
+            }
+            else {
+                if (t.endsWith("*"))
+                    return fileInfo.fileMime.startsWith(t.slice(0, -1));
+                else {
+                    const jpegMimeTypes = ["image/jpg", "image/jpeg"];
+                    if (jpegMimeTypes.contains(t))
+                        return jpegMimeTypes.contains(fileInfo.fileMime);
+                    return fileInfo.fileMime === t;
+                }
+            }
+        });
     }
     _initializeMaxFileSizeBytes() {
         this._maxFileSizeBytes = this._maxFileSizeValue != null ? Number.parseInt(this._maxFileSizeValue.toString()) * 1024 * 1024 : null;
