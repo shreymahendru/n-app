@@ -7,6 +7,7 @@ import { PageTreeBuilder } from "./page-tree-builder.js";
 import { Resolver, Resolution } from "./resolve.js";
 import { ComponentManager } from "./component-manager.js";
 import VueRouter from "vue-router";
+import { PageViewModelClass } from "./page-view-model.js";
 
 
 export class PageManager
@@ -14,10 +15,10 @@ export class PageManager
     private readonly _vueRouter: any;
     private readonly _container: Container;
     private readonly _componentManager: ComponentManager;
-    private readonly _pageViewModelClasses = new Array<Function>();
+    private readonly _pageViewModelClasses = new Array<PageViewModelClass<any>>();
     private readonly _registrations = new Array<PageRegistration>();
     private readonly _resolvers = new Array<string>();
-    private _vueRouterInstance: VueRouter | null = null;
+    private _vueRouterInstance: VueRouter.default | null = null;
     private _initialRoute: string | null = null;
     private _unknownRoute: string | null = null;
     // private _defaultPageTitle: string | null = null;
@@ -25,9 +26,9 @@ export class PageManager
     private _useHistoryMode = false;
 
 
-    public get hasRegistrations(): boolean { return this._registrations.isNotEmpty;  }
+    public get hasRegistrations(): boolean { return this._registrations.isNotEmpty; }
     public get useHistoryMode(): boolean { return this._useHistoryMode; }
-    public get vueRouterInstance(): VueRouter
+    public get vueRouterInstance(): VueRouter.default
     {
         given(this, "this").ensure(t => t._vueRouterInstance != null, "not bootstrapped");
         return this._vueRouterInstance!;
@@ -38,16 +39,16 @@ export class PageManager
     {
         given(vueRouter as object, "vueRouter").ensureHasValue();
         this._vueRouter = vueRouter;
-        
+
         given(container, "container").ensureHasValue().ensureIsObject();
         this._container = container;
-        
+
         given(componentManager, "componentManager").ensureHasValue().ensureIsObject();
         this._componentManager = componentManager;
     }
 
 
-    public registerPages(...pageViewModelClasses: Array<Function>): void
+    public registerPages(...pageViewModelClasses: Array<PageViewModelClass<any>>): void
     {
         this._pageViewModelClasses.push(...pageViewModelClasses);
     }
@@ -97,9 +98,9 @@ export class PageManager
         this._configureResolves();
         // this.configureInitialRoute();
     }
-    
 
-    private _registerPage(pageViewModelClass: Function): void
+
+    private _registerPage(pageViewModelClass: PageViewModelClass<any>): void
     {
         // const registration = new PageRegistration(pageViewModelClass, this._defaultPageTitle, this._defaultPageMetas);
         const registration = new PageRegistration(pageViewModelClass, null, null);
@@ -111,12 +112,12 @@ export class PageManager
             throw new ApplicationException(`Route conflict detected for Page registration with name '${registration.name}'`);
 
         this._registrations.push(registration);
-        
+
         if (registration.persist)
             this._container.registerSingleton(registration.name, registration.viewModel);
         else
             this._container.registerTransient(registration.name, registration.viewModel);
-        
+
         if (registration.resolvers && registration.resolvers.isNotEmpty)
             registration.resolvers.forEach(t =>
             {
@@ -126,10 +127,10 @@ export class PageManager
                 this._container.registerTransient(t.name, t.value);
                 this._resolvers.push(t.name);
             });
-        
+
         if (registration.components && registration.components.isNotEmpty)
             this._componentManager.registerComponents(...registration.components);
-        
+
         if (registration.pages && registration.pages.isNotEmpty)
             registration.pages.forEach(t => this._registerPage(t));
     }
@@ -196,14 +197,14 @@ export class PageManager
                             next(false);
                             return;
                         }
-                        
+
                         const redirectRes = resolutions.find(t => !!(<Resolution>t).redirect);
                         if (redirectRes && redirectRes.redirect)
                         {
                             next(redirectRes.redirect);
                             return;
                         }
-                        
+
                         // eslint-disable-next-line @typescript-eslint/no-unsafe-return
                         registration.resolvedValues = resolutions.filter(t => (<any>t).value != null).map(t => (<Resolution>t).value);
                         next();

@@ -7,7 +7,7 @@ import VueRouter from "vue-router";
 
 export class DefaultNavigationService implements NavigationService
 {
-    private readonly _vueRouter: VueRouter;
+    private readonly _vueRouter: VueRouter.default;
     
     
     public get currentRoutePath(): string { return this._vueRouter.currentRoute.path; }
@@ -15,7 +15,7 @@ export class DefaultNavigationService implements NavigationService
     public get currentRouteHash(): string | null { return this._getHash(); }
 
 
-    public constructor(vueRouter: VueRouter)
+    public constructor(vueRouter: VueRouter.default)
     {
         given(vueRouter, "vueRouter").ensureHasValue().ensureIsObject();
         this._vueRouter = vueRouter;

@@ -1,6 +1,6 @@
 import { given } from "@nivinjoseph/n-defensive";
 import { inject } from "@nivinjoseph/n-ject";
-import { ComponentViewModel, element, EventAggregator, FileInfo, template } from "../../../../../../src/index.js";
+import { ComponentViewModel, element, EventAggregator, template } from "../../../../../../src/index.js";
 import "./file-uploader-view.scss";
 
 
@@ -12,11 +12,11 @@ export class FileUploaderViewModel extends ComponentViewModel
     private readonly _eventAggregator: EventAggregator;
 
 
-    private _file: FileInfo | null = null;
+    // private _file: FileInfo | null = null;
     private _isProcessing = false;
 
 
-    public get file(): FileInfo | null { return this._file; }
+    // public get file(): FileInfo | null { return this._file; }
     public get isProcessing(): boolean { return this._isProcessing; }
 
 
@@ -34,12 +34,12 @@ export class FileUploaderViewModel extends ComponentViewModel
         this._eventAggregator.publish("openFileSelect", "fileField");
     }
 
-    public onFileSelected(val: FileInfo): void
-    {
-        console.log("File data", val);
+    // public onFileSelected(val: FileInfo): void
+    // {
+    //     console.log("File data", val);
 
-        this._file = val;
-    }
+    //     this._file = val;
+    // }
 
     public onProcessing(): void
     {

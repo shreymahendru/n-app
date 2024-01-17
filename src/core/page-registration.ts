@@ -1,13 +1,14 @@
 import { given } from "@nivinjoseph/n-defensive";
-import { ViewModelRegistration } from "./view-model-registration.js";
-import { appRouteSymbol } from "./route.js";
 import { ApplicationException } from "@nivinjoseph/n-exception";
+import { MetaDetail, metaSymbol } from "./meta.js";
 import { RouteInfo } from "./route-info.js";
+import { RouteDecoratorMetadata, appRouteSymbol } from "./route.js";
 import { titleSymbol } from "./title.js";
-import { metaSymbol, MetaDetail } from "./meta.js";
+import { ViewModelRegistration } from "./view-model-registration.js";
 // import { authorizeSymbol } from "./authorize";
-import { resolveSymbol } from "./resolve.js";
+import { PageViewModelClass } from "./page-view-model.js";
 import { pagesSymbol } from "./pages.js";
+import { ResolveDecoratorMetadata, resolveSymbol } from "./resolve.js";
 
 
 export class PageRegistration extends ViewModelRegistration
@@ -16,9 +17,9 @@ export class PageRegistration extends ViewModelRegistration
     private readonly _redirect: string | null;
     private readonly _title: string | null;
     private readonly _metadata: ReadonlyArray<MetaDetail>;
-    private readonly _resolvers: ReadonlyArray<any> | null = null;
-    private readonly _pages: ReadonlyArray<Function> | null = null;
-    
+    private readonly _resolvers: ReadonlyArray<ResolveDecoratorMetadata> | null = null;
+    private readonly _pages: ReadonlyArray<PageViewModelClass<any>> | null = null;
+
     private _resolvedValues: ReadonlyArray<any> | null = null;
 
 
@@ -26,56 +27,54 @@ export class PageRegistration extends ViewModelRegistration
     public get redirect(): string | null { return this._redirect; }
     public get title(): string | null { return this._title; }
     public get metadata(): ReadonlyArray<MetaDetail> { return this._metadata; }
-    public get resolvers(): ReadonlyArray<any> | null { return this._resolvers; }
-    public get pages(): ReadonlyArray<Function> | null { return this._pages; }
-    
+    public get resolvers(): ReadonlyArray<ResolveDecoratorMetadata> | null { return this._resolvers; }
+    public get pages(): ReadonlyArray<PageViewModelClass<any>> | null { return this._pages; }
+
     public get resolvedValues(): ReadonlyArray<any> | null { return this._resolvedValues; }
     public set resolvedValues(value: ReadonlyArray<any> | null) { this._resolvedValues = value; }
-    
 
-    public constructor(page: Function, defaultPageTitle: string | null, defaultPageMetas: ReadonlyArray<MetaDetail> | null)
+
+    public constructor(page: PageViewModelClass<any>, defaultPageTitle: string | null, defaultPageMetas: ReadonlyArray<MetaDetail> | null)
     {
-        given(page, "page").ensureHasValue().ensureIsFunction();
-        given(defaultPageTitle as string, "defaultPageTitle").ensureIsString();
-        given(defaultPageMetas as Array<MetaDetail>, "defaultPageMetas").ensureIsArray();
+        given(page as Function, "page").ensureHasValue().ensureIsFunction();
+        given(defaultPageTitle, "defaultPageTitle").ensureIsString();
+        given(defaultPageMetas, "defaultPageMetas").ensureIsArray();
 
         super(page);
 
-        if (!Reflect.hasOwnMetadata(appRouteSymbol, this.viewModel))
+        const metadata = page[Symbol.metadata]!;
+
+        const routeData = metadata[appRouteSymbol] as RouteDecoratorMetadata | undefined;
+        if (routeData == null)
             throw new ApplicationException(`PageViewModel '${this.name}' does not have @route applied.`);
 
-        const routeData = Reflect.getOwnMetadata(appRouteSymbol, this.viewModel);
-
         this._route = new RouteInfo(routeData.route);
-        this._redirect = routeData.redirect as string | null;
+        this._redirect = routeData.redirect ?? null;
 
-        let title = defaultPageTitle || null;
-        if (Reflect.hasOwnMetadata(titleSymbol, this.viewModel))
-            title = Reflect.getOwnMetadata(titleSymbol, this.viewModel);
+        let title = metadata[titleSymbol] as string | undefined;
+        if (title == null)
+            title = defaultPageTitle ?? undefined;
 
-        this._title = title;
+        this._title = title ?? null;
 
-        const metas: Array<MetaDetail> = defaultPageMetas ? [...defaultPageMetas] : [];
-        if (Reflect.hasOwnMetadata(metaSymbol, this.viewModel))
-            metas.push(...Reflect.getOwnMetadata(metaSymbol, this.viewModel));
+        const allMeta: Array<MetaDetail> = defaultPageMetas ? [...defaultPageMetas] : [];
 
-        // this._metadata = metas
-        //     .reduce((acc: any, t) =>
-        //     {
-        //         acc[t.name] = t.content;
-        //         return acc;
-        //     }, {});
-        
-        this._metadata = metas;
-        
-        if (Reflect.hasOwnMetadata(resolveSymbol, this.viewModel))
-            this._resolvers = Reflect.getOwnMetadata(resolveSymbol, this.viewModel);
-        
-        if (Reflect.hasOwnMetadata(pagesSymbol, this.viewModel))
-            this._pages = Reflect.getOwnMetadata(pagesSymbol, this.viewModel);
+        const metas = metadata[metaSymbol] as ReadonlyArray<MetaDetail> | undefined;
+        if (metas != null)
+            allMeta.push(...metas);
+
+        this._metadata = allMeta;
+
+        const resolvers = metadata[resolveSymbol] as ReadonlyArray<ResolveDecoratorMetadata> | undefined;
+        if (resolvers != null)
+            this._resolvers = resolvers;
+
+        const pages = metadata[pagesSymbol] as ReadonlyArray<PageViewModelClass<any>> | undefined;
+        if (pages != null)
+            this._pages = pages;
     }
-    
-    
+
+
     // public reload(page: Function): void
     // {
     //     given(page, "page").ensureHasValue().ensureIsFunction();

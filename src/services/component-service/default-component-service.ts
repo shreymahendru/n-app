@@ -5,11 +5,12 @@ import { Container, Scope } from "@nivinjoseph/n-ject";
 import { ApplicationException } from "@nivinjoseph/n-exception";
 import { Utilities } from "../../core/utilities.js";
 import { ComponentOptions } from "./component-options.js";
+import { ComponentViewModelClass } from "../../core/component-view-model.js";
 
 
 export class DefaultComponentService implements ComponentService
 {
-    public compile(componentViewModelClass: Function, cache?: boolean): ComponentOptions
+    public compile(componentViewModelClass: ComponentViewModelClass<any>, cache?: boolean): ComponentOptions
     {
         given(componentViewModelClass, "componentViewModelClass").ensureHasValue().ensureIsFunction();
         given(cache as boolean, "cache").ensureIsBoolean();

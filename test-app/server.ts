@@ -6,7 +6,7 @@ import { ConfigurationManager } from "@nivinjoseph/n-config";
 const app = new WebApp(ConfigurationManager.getConfig<number>("port"), null);
 
 app
-    .enableWebPackDevMiddleware()
+    // .enableWebPackDevMiddleware()
     .useViewResolutionRoot("test-app/client/dist")
     .registerStaticFilePath("test-app/client/dist")
     .registerControllers(IndexController);

@@ -22,7 +22,7 @@ import { ComponentService } from "./services/component-service/component-service
 import { ComponentOptions } from "./services/component-service/component-options.js";
 import { resolve, Resolution, Resolver } from "./core/resolve.js";
 import { NavRoute } from "./core/nav-route.js";
-import { FileInfo } from "./components/n-file-select/n-file-select-view-model.js";
+// import { FileInfo } from "./components/n-file-select/n-file-select-view-model.js";
 import { persist } from "./core/persist.js";
 import { DefaultDialogService } from "./services/dialog-service/default-dialog-service.js";
 
@@ -50,7 +50,7 @@ export
     DisplayService, DisplayType,
     ComponentService, ComponentOptions,
 
-    resolve, Resolver, NavRoute, Resolution,
+    resolve, Resolver, NavRoute, Resolution
 
-    FileInfo
+    // FileInfo
 };

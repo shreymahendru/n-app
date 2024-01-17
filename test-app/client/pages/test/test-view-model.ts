@@ -30,7 +30,7 @@ export class TestViewModel extends PageViewModel
 
     public get id(): number { return this._id; }
 
-    public get players(): ReadonlyArray<Player> { return [{ name: 'Shrey', nationality: null }, { name: 'Albert', nationality: "India" }]; }
+    public get players(): ReadonlyArray<Player> { return [{ name: "Shrey", nationality: null }, { name: "Albert", nationality: "India" }]; }
 
 
     public constructor(todoRepository: TodoRepository, navigationService: NavigationService, eventAggregator: EventAggregator)

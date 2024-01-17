@@ -9,25 +9,24 @@ import VueRouter from "vue-router";
 // eslint-disable-next-line @typescript-eslint/no-unsafe-call
 Vue.use(VueRouter);
 
-import "@nivinjoseph/n-ext";
+import { ConfigurationManager } from "@nivinjoseph/n-config";
 import { given } from "@nivinjoseph/n-defensive";
-import { Container, ComponentInstaller } from "@nivinjoseph/n-ject";
-import { ComponentManager } from "./component-manager.js";
-import { PageManager } from "./page-manager.js";
+import "@nivinjoseph/n-ext";
+import { ComponentInstaller, Container } from "@nivinjoseph/n-ject";
+import { DefaultComponentService } from "../services/component-service/default-component-service.js";
+import { DefaultDisplayService } from "../services/display-service/default-display-service.js";
 import { DefaultDialogService } from "./../services/dialog-service/default-dialog-service.js";
 import { DefaultEventAggregator } from "./../services/event-aggregator/default-event-aggregator.js";
 import { DefaultNavigationService } from "./../services/navigation-service/default-navigation-service.js";
 import { DefaultStorageService } from "./../services/storage-service/default-storage-service.js";
-import { ConfigurationManager } from "@nivinjoseph/n-config";
-import { DefaultDisplayService } from "../services/display-service/default-display-service.js";
-import { DefaultComponentService } from "../services/component-service/default-component-service.js";
-import { NFileSelectViewModel } from "../components/n-file-select/n-file-select-view-model.js";
-import { NExpandingContainerViewModel } from "../components/n-expanding-container/n-expanding-container-view-model.js";
-import { NScrollContainerViewModel } from "../components/n-scroll-container/n-scroll-container-view-model.js";
-import { ClassHierarchy } from "@nivinjoseph/n-util";
-import { ComponentViewModel } from "./component-view-model.js";
-import { PageViewModel } from "./page-view-model.js";
+import { ComponentManager } from "./component-manager.js";
+import { PageManager } from "./page-manager.js";
+// import { NFileSelectViewModel } from "../components/n-file-select/n-file-select-view-model.js";
+// import { NExpandingContainerViewModel } from "../components/n-expanding-container/n-expanding-container-view-model.js";
+// import { NScrollContainerViewModel } from "../components/n-scroll-container/n-scroll-container-view-model.js";
 import { DialogService } from "../services/dialog-service/dialog-service.js";
+import { ComponentViewModelClass } from "./component-view-model.js";
+import { PageViewModelClass } from "./page-view-model.js";
 
 // declare const makeHot: (options: any) => void;
 
@@ -78,8 +77,8 @@ export class ClientApp
     private _isDialogServiceRegistered = false;
     private _errorTrackingConfigurationCallback: ((vueRouter: any) => void) | null = null;
     private _isBootstrapped = false;
-    
-    
+
+
     public get container(): Container { return this._container; }
 
 
@@ -91,23 +90,24 @@ export class ClientApp
      * @description Requires dev dependencies
      * Check the dev dependencies in package.json
      */
-    
+
     public constructor(appElementId: string, rootComponentElement: string, options?: object)
     {
         given(appElementId, "appElementId").ensureHasValue().ensureIsString().ensure(t => t.startsWith("#"));
         this._appElementId = appElementId;
-        
+
         given(rootComponentElement, "rootComponentElement").ensureHasValue().ensureIsString();
         this._rootComponentElement = rootComponentElement;
-        
+
         given(options as object, "options").ensureIsObject();
         this._options = options ?? {};
-        
+
         this._container = new Container();
         this._componentManager = new ComponentManager(Vue, this._container);
-        this._componentManager.registerComponents(
-            NFileSelectViewModel, NExpandingContainerViewModel, NScrollContainerViewModel
-        );
+        // FIXME: Fix this 
+        // this._componentManager.registerComponents(
+        //     NFileSelectViewModel, NExpandingContainerViewModel, NScrollContainerViewModel
+        // );
         this._pageManager = new PageManager(VueRouter, this._container, this._componentManager);
 
         Vue.config.silent = false;
@@ -139,7 +139,7 @@ export class ClientApp
         return this;
     }
 
-    public registerComponents(...componentViewModelClasses: Array<ClassHierarchy<ComponentViewModel>>): this
+    public registerComponents(...componentViewModelClasses: Array<ComponentViewModelClass<any>>): this
     {
         given(this, "this").ensure(t => !t._isBootstrapped, "already bootstrapped");
 
@@ -147,7 +147,7 @@ export class ClientApp
         return this;
     }
 
-    public registerPages(...pageViewModelClasses: Array<ClassHierarchy<PageViewModel>>): this
+    public registerPages(...pageViewModelClasses: Array<PageViewModelClass<any>>): this
     {
         given(this, "this").ensure(t => !t._isBootstrapped, "already bootstrapped");
 
@@ -172,7 +172,7 @@ export class ClientApp
         this._pageManager.useAsUnknownRoute(route);
         return this;
     }
-    
+
     // /**
     //  * @deprecated
     //  */
@@ -180,12 +180,12 @@ export class ClientApp
     // {
     //     if (this._isBootstrapped)
     //         throw new InvalidOperationException("useAsDefaultPageTitle");
-        
+
     //     given(title, "title").ensureHasValue().ensureIsString();
     //     this._pageManager.useAsDefaultPageTitle(title);
     //     return this;
     // }
-    
+
     // /**
     //  * @deprecated
     //  */
@@ -193,19 +193,19 @@ export class ClientApp
     // {
     //     if (this._isBootstrapped)
     //         throw new InvalidOperationException("useAsDefaultPageMetadata");
-        
+
     //     given(metas, "metas").ensureHasValue().ensureIsArray().ensure(t => t.length > 0);
     //     this._pageManager.useAsDefaultPageMetadata(metas);
     //     return this;
     // }
-    
+
     public useHistoryModeRouting(): this
     {
         given(this, "this").ensure(t => !t._isBootstrapped, "already bootstrapped");
 
         // if (this._initialRoute)
         //     throw new InvalidOperationException("Cannot use history mode with initial route.");
-        
+
         this._pageManager.useHistoryModeRouting();
         return this;
     }
@@ -244,7 +244,7 @@ export class ClientApp
         this._isBootstrapped = true;
         // this._pageManager.handleInitialRoute();
     }
-    
+
     public retrieveRouterInstance(): object
     {
         given(this, "this").ensure(t => t._isBootstrapped, "calling retrieveRouterInstance before calling bootstrap")
@@ -252,8 +252,8 @@ export class ClientApp
 
         return this._pageManager.vueRouterInstance;
     }
-    
-    
+
+
     private _configureGlobalConfig(): void
     {
         if (ConfigurationManager.getConfig("env") === "dev")
@@ -272,7 +272,7 @@ export class ClientApp
             Vue.config.performance = false;
             Vue.config.productionTip = false;
         }
-        
+
         // console.log(`Bootstrapping in ${ConfigurationManager.getConfig("env")} mode.`);
 
         // Vue.config.silent = false;
@@ -291,7 +291,7 @@ export class ClientApp
     {
         this._pageManager.bootstrap();
     }
-    
+
     private _configureErrorTracking(): void
     {
         if (this._errorTrackingConfigurationCallback != null)
@@ -307,7 +307,7 @@ export class ClientApp
             .registerInstance("DisplayService", new DefaultDisplayService())
             .registerInstance("ComponentService", new DefaultComponentService())
             ;
-        
+
         if (!this._isDialogServiceRegistered)
             this._container.registerInstance("DialogService", new DefaultDialogService());
     }
@@ -320,7 +320,7 @@ export class ClientApp
     private _configureRoot(): void
     {
         const container = this._container;
-        
+
         const componentOptions = {
             el: this._appElementId,
             // eslint-disable-next-line @typescript-eslint/no-unsafe-return
@@ -334,16 +334,16 @@ export class ClientApp
             },
             ...this._options
         };
-        
-        
+
+
         if (makeHot)
         {
             makeHot(componentOptions);
             console.log(`🔥 Hot Reload enabled`);
         }
-        
-        
-        
+
+
+
         // eslint-disable-next-line @typescript-eslint/no-unsafe-call
         this._app = new Vue(componentOptions);
     }

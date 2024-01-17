@@ -1,7 +1,7 @@
 import { element, bind, ComponentViewModel, template, events } from "./../../../../src/index.js";
 import "./score-board-view.scss";
 import { inject } from "@nivinjoseph/n-ject";
-import { ScopedService } from "../../services/scoped-service";
+import { ScopedService } from "../../services/scoped-service.js";
 
 
 @template(require("./score-board-view.html"))
