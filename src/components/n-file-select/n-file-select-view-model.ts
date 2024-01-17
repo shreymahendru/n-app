@@ -1,13 +1,13 @@
-import { template } from "../../core/template";
-import { element } from "../../core/element";
-import { bind } from "../../core/bind";
-import { ComponentViewModel } from "../../core/component-view-model";
+import { template } from "../../core/template.js";
+import { element } from "../../core/element.js";
+import { bind } from "../../core/bind.js";
+import { ComponentViewModel } from "../../core/component-view-model.js";
 import { inject } from "@nivinjoseph/n-ject";
-import { DialogService } from "../../services/dialog-service/dialog-service";
-import { EventAggregator } from "../../services/event-aggregator/event-aggregator";
+import { DialogService } from "../../services/dialog-service/dialog-service.js";
+import { EventAggregator } from "../../services/event-aggregator/event-aggregator.js";
 import { given } from "@nivinjoseph/n-defensive";
 // import * as $ from "jquery";
-import { events } from "../../core/events";
+import { events } from "../../core/events.js";
 import { Deferred, TypeHelper } from "@nivinjoseph/n-util";
 
 // public
