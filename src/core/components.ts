@@ -1,6 +1,6 @@
 import "reflect-metadata";
 import { given } from "@nivinjoseph/n-defensive";
-import { ComponentViewModel } from "./component-view-model";
+import { ComponentViewModel } from "./component-view-model.js";
 
 
 export const componentsSymbol = Symbol.for("@nivinjoseph/n-app/components");

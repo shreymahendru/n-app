@@ -1,6 +1,6 @@
 import { given } from "@nivinjoseph/n-defensive";
 import { inject } from "@nivinjoseph/n-ject";
-import { ComponentViewModel, element, EventAggregator, FileInfo, template } from "../../../../../../src";
+import { ComponentViewModel, element, EventAggregator, FileInfo, template } from "../../../../../../src/index.js";
 import "./file-uploader-view.scss";
 
 

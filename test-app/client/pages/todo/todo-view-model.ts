@@ -1,10 +1,10 @@
-import { route, template, resolve, pages } from "./../../../../src/index";
-import * as Routes from "./../routes";
-import { BasePageViewModel } from "../base-page-view-model";
-import { TestResolverFoo } from "../../resolvers/test-resolver-foo";
-import { ListTodosViewModel } from "./list-todos/list-todos-view-model";
-import { CreateTodoViewModel } from "./create-todo/create-todo-view-model";
-import { UpdateTodoViewModel } from "./update-todo/update-todo-view-model";
+import { route, template, resolve, pages } from "./../../../../src/index.js";
+import * as Routes from "./../routes.js";
+import { BasePageViewModel } from "../base-page-view-model.js";
+import { TestResolverFoo } from "../../resolvers/test-resolver-foo.js";
+import { ListTodosViewModel } from "./list-todos/list-todos-view-model.js";
+import { CreateTodoViewModel } from "./create-todo/create-todo-view-model.js";
+import { UpdateTodoViewModel } from "./update-todo/update-todo-view-model.js";
 
 
 @pages(ListTodosViewModel, CreateTodoViewModel, UpdateTodoViewModel)

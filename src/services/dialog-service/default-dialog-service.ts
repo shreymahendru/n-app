@@ -10,7 +10,7 @@ const Topbar = require("./../../../vendor/topbar.js");
 if (!Topbar)
     console.log("No Topbar!!!");
 
-import { DialogLocation, DialogService, DialogServiceOptions } from "./dialog-service";
+import { DialogLocation, DialogService, DialogServiceOptions } from "./dialog-service.js";
 // import * as $ from "jquery";
 import { given } from "@nivinjoseph/n-defensive";
 

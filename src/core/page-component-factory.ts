@@ -1,11 +1,11 @@
-import { PageRegistration } from "./page-registration";
-import { RouteArgs } from "./route-args";
+import { PageRegistration } from "./page-registration.js";
+import { RouteArgs } from "./route-args.js";
 import { Scope } from "@nivinjoseph/n-ject";
 import { given } from "@nivinjoseph/n-defensive";
-import { Utilities } from "./utilities";
+import { Utilities } from "./utilities.js";
 import { ApplicationException } from "@nivinjoseph/n-exception";
 // import * as $ from "jquery";
-import { PageHmrHelper } from "./page-hmr-helper";
+import { PageHmrHelper } from "./page-hmr-helper.js";
 
 
 export class PageComponentFactory

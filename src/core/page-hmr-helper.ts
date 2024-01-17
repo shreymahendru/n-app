@@ -1,5 +1,5 @@
-import { PageRegistration } from "./page-registration";
-import { RouteArgs } from "./route-args";
+import { PageRegistration } from "./page-registration.js";
+import { RouteArgs } from "./route-args.js";
 import { given } from "@nivinjoseph/n-defensive";
 
 

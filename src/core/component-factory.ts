@@ -1,7 +1,7 @@
 import { given } from "@nivinjoseph/n-defensive";
 import { Container, Scope } from "@nivinjoseph/n-ject";
-import { Utilities } from "./utilities";
-import { ComponentRegistration } from "./component-registration";
+import { Utilities } from "./utilities.js";
+import { ComponentRegistration } from "./component-registration.js";
 import "@nivinjoseph/n-ext";
 import { ApplicationException } from "@nivinjoseph/n-exception";
 

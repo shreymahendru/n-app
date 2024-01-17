@@ -1,5 +1,5 @@
 import { Uuid } from "@nivinjoseph/n-util";
-import { globalComponentElementTypeCache } from "./element-type-cache";
+import { globalComponentElementTypeCache } from "./element-type-cache.js";
 import { LoaderContext } from "webpack";
 
 

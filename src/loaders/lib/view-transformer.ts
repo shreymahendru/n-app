@@ -1,5 +1,5 @@
 import { LoaderContext } from "webpack";
-import { FunctionNode } from "./function-node";
+import { FunctionNode } from "./function-node.js";
 
 export function transformRenderFns(isDebug: boolean, renderFn: string, context: LoaderContext<any>, viewModelClassName: string): string
 {

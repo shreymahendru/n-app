@@ -1,4 +1,4 @@
-import { element, bind, ComponentViewModel, template } from "./../../../../src/index";
+import { element, bind, ComponentViewModel, template } from "./../../../../src/index.js";
 import "./binding-test-view.scss";
 
 

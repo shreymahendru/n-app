@@ -1,6 +1,6 @@
 import { given } from "@nivinjoseph/n-defensive";
 import { Container } from "@nivinjoseph/n-ject";
-import { ComponentRegistration } from "./component-registration";
+import { ComponentRegistration } from "./component-registration.js";
 import { ApplicationException } from "@nivinjoseph/n-exception";
 // import { ComponentFactory } from "./component-factory";
 

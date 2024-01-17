@@ -1,5 +1,5 @@
 import { WebApp } from "@nivinjoseph/n-web";
-import { IndexController } from "./controllers/index-controller";
+import { IndexController } from "./controllers/index-controller.js";
 import { ConfigurationManager } from "@nivinjoseph/n-config";
 
 

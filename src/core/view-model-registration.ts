@@ -1,10 +1,10 @@
 import { given } from "@nivinjoseph/n-defensive";
 import "@nivinjoseph/n-ext";
-import { templateSymbol } from "./template";
+import { templateSymbol } from "./template.js";
 import { ApplicationException } from "@nivinjoseph/n-exception";
-import { componentsSymbol } from "./components";
-import { persistSymbol } from "./persist";
-import { Utils } from "./utils";
+import { componentsSymbol } from "./components.js";
+import { persistSymbol } from "./persist.js";
+import { Utils } from "./utils.js";
 
 
 type RenderInfo = { render: Function; staticRenderFns: Array<Function>; };

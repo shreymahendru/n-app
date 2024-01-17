@@ -1,6 +1,6 @@
 // eslint-disable-next-line @typescript-eslint/triple-slash-reference
 /// <reference path="../../../../3rd-party/lib/gc.d.ts" />
-import { bind, ComponentViewModel, element, template } from "../../../../../../src";
+import { bind, ComponentViewModel, element, template } from "../../../../../../src/index.js";
 import "./component-a-view.scss";
 
 @template(require("./component-a-view.html"))

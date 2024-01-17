@@ -1,5 +1,5 @@
 import * as Assert from "assert";
-import { FunctionNode } from "../src/loaders/lib/function-node";
+import { FunctionNode } from "../src/loaders/lib/function-node.js";
 
 suite("Random stuff", () =>
 {

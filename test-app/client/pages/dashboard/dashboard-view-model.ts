@@ -1,10 +1,10 @@
-import { route, template, DialogService, EventAggregator, NavigationService, StorageService, title, components } from "./../../../../src/index";
-import * as Routes from "./../routes";
-import { BasePageViewModel } from "./../base-page-view-model";
+import { route, template, DialogService, EventAggregator, NavigationService, StorageService, title, components } from "./../../../../src/index.js";
+import * as Routes from "./../routes.js";
+import { BasePageViewModel } from "./../base-page-view-model.js";
 import { inject } from "@nivinjoseph/n-ject";
 import "./dashboard-view.scss";
-import { ScopedService } from "../../services/scoped-service";
-import { BindingTestViewModel } from "../../components/binding-test/binding-test-view-model";
+import { ScopedService } from "../../services/scoped-service.js";
+import { BindingTestViewModel } from "../../components/binding-test/binding-test-view-model.js";
 import { Delay, Duration, synchronize } from "@nivinjoseph/n-util";
 // import { Delay } from "@nivinjoseph/n-util";
 

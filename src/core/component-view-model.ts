@@ -1,8 +1,8 @@
 import { given } from "@nivinjoseph/n-defensive";
 import { InvalidOperationException } from "@nivinjoseph/n-exception";
-import { BaseViewModel } from "./base-view-model";
-import { ComponentRegistration } from "./component-registration";
-import { ComponentFactory } from "./component-factory";
+import { BaseViewModel } from "./base-view-model.js";
+import { ComponentRegistration } from "./component-registration.js";
+import { ComponentFactory } from "./component-factory.js";
 
 
 // public

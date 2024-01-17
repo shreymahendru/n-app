@@ -2,7 +2,9 @@
     "name": "@nivinjoseph/n-app",
     "version": "4.0.37",
     "description": "Vue.js based application framework",
-    "main": "./dist/index.js",
+    "packageManager": "yarn@4.0.2",
+    "type": "module",
+    "exports": "./dist/index.js",
     "types": "./dist/index.d.ts",
     "scripts": {
         "ts-compile": "tsc -p tsconfig.json",
@@ -166,18 +168,18 @@
         "worker-loader": "^3.0.8"
     },
     "dependencies": {
-        "@nivinjoseph/n-config": "^1.0.38",
-        "@nivinjoseph/n-defensive": "^1.0.44",
-        "@nivinjoseph/n-exception": "^1.0.26",
-        "@nivinjoseph/n-ext": "^1.1.36",
-        "@nivinjoseph/n-ject": "^2.0.5",
-        "@nivinjoseph/n-util": "^1.1.1",
+        "@nivinjoseph/n-config": "^2.0.1",
+        "@nivinjoseph/n-defensive": "^2.0.1",
+        "@nivinjoseph/n-exception": "^2.0.1",
+        "@nivinjoseph/n-ext": "^2.0.1",
+        "@nivinjoseph/n-ject": "^3.0.2",
+        "@nivinjoseph/n-util": "^2.0.1",
         "@nivinjoseph/vue": "2.6.14",
         "jquery": "^3.6.0",
         "reflect-metadata": "^0.1.13",
         "simplebar": "^5.3.6",
         "source-map-support": "^0.5.21",
-        "tslib": "^2.4.0",
+        "tslib": "^2.6.2",
         "vue-router": "3.1.6"
     },
     "overrides": {

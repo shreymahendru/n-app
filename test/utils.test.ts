@@ -1,5 +1,5 @@
 import * as Assert from "assert";
-import { Utils } from "./../src/core/utils";
+import { Utils } from "./../src/core/utils.js";
 
 
 suite.skip("Utils - generateUrl", () =>

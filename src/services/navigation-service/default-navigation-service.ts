@@ -1,7 +1,7 @@
-import { NavigationService } from "./navigation-service";
+import { NavigationService } from "./navigation-service.js";
 import { given } from "@nivinjoseph/n-defensive";
 import "@nivinjoseph/n-ext";
-import { Utils } from "../../core/utils";
+import { Utils } from "../../core/utils.js";
 import VueRouter from "vue-router";
 
 

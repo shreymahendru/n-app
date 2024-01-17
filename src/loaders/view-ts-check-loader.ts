@@ -5,9 +5,9 @@ import * as Fs from "fs";
 import { LoaderContext } from "webpack";
 import { fs as MemFs } from "memfs";
 import { given } from "@nivinjoseph/n-defensive";
-import { populateGlobalElementTypeCache } from "./lib/element-type-cache";
-import { combinedCompileConfig, compile, declarationCompileConfig } from "./lib/ts-compiler";
-import { transformRenderFns } from "./lib/view-transformer";
+import { populateGlobalElementTypeCache } from "./lib/element-type-cache.js";
+import { combinedCompileConfig, compile, declarationCompileConfig } from "./lib/ts-compiler.js";
+import { transformRenderFns } from "./lib/view-transformer.js";
 const getOptions = require("loader-utils").getOptions;
 
 

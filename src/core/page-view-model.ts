@@ -1,10 +1,10 @@
-import { RouteArgs } from "./route-args";
-import { BaseViewModel } from "./base-view-model";
+import { RouteArgs } from "./route-args.js";
+import { BaseViewModel } from "./base-view-model.js";
 import "@nivinjoseph/n-ext";
 import { given } from "@nivinjoseph/n-defensive";
-import { PageRegistration } from "./page-registration";
-import { PageComponentFactory } from "./page-component-factory";
-import { MetaDetail } from "./meta";
+import { PageRegistration } from "./page-registration.js";
+import { PageComponentFactory } from "./page-component-factory.js";
+import { MetaDetail } from "./meta.js";
 
 
 // public

@@ -1,5 +1,5 @@
 import { given } from "@nivinjoseph/n-defensive";
-import { PageRegistration } from "./page-registration";
+import { PageRegistration } from "./page-registration.js";
 // import { PageComponentFactory } from "./page-component-factory";
 
 

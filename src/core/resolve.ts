@@ -1,7 +1,7 @@
 import "reflect-metadata";
-import { NavRoute } from "./nav-route";
+import { NavRoute } from "./nav-route.js";
 import { given } from "@nivinjoseph/n-defensive";
-import { Utils } from "./utils";
+import { Utils } from "./utils.js";
 
 
 

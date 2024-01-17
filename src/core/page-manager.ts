@@ -1,11 +1,11 @@
 import { given } from "@nivinjoseph/n-defensive";
 import { Container } from "@nivinjoseph/n-ject";
-import { PageRegistration } from "./page-registration";
+import { PageRegistration } from "./page-registration.js";
 import { ApplicationException } from "@nivinjoseph/n-exception";
-import { Page } from "./page";
-import { PageTreeBuilder } from "./page-tree-builder";
-import { Resolver, Resolution } from "./resolve";
-import { ComponentManager } from "./component-manager";
+import { Page } from "./page.js";
+import { PageTreeBuilder } from "./page-tree-builder.js";
+import { Resolver, Resolution } from "./resolve.js";
+import { ComponentManager } from "./component-manager.js";
 import VueRouter from "vue-router";
 
 

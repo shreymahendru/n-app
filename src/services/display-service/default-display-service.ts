@@ -1,5 +1,5 @@
-import { DisplayService } from "./display-service";
-import { DisplayType } from "./display-type";
+import { DisplayService } from "./display-service.js";
+import { DisplayType } from "./display-type.js";
 // import * as $ from "jquery";
 import { Observable, Observer } from "@nivinjoseph/n-util";
 

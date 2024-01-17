@@ -1,14 +1,14 @@
-import { route, template, meta, NavigationService, resolve, EventAggregator, PageViewModel, components } from "./../../../../src/index";
-import * as Routes from "./../routes";
+import { route, template, meta, NavigationService, resolve, EventAggregator, PageViewModel, components } from "./../../../../src/index.js";
+import * as Routes from "./../routes.js";
 import "./test-view.scss";
 import { inject } from "@nivinjoseph/n-ject";
-import { TodoRepository } from "../../services/todo-repository/todo-repository";
+import { TodoRepository } from "../../services/todo-repository/todo-repository.js";
 import { given } from "@nivinjoseph/n-defensive";
-import { TestResolverFoo } from "../../resolvers/test-resolver-foo";
-import { TestResolverBar } from "../../resolvers/test-resolver-bar";
-import { ComponentAViewModel } from "./components/component-a/component-a-view-model";
-import { NonReorderableListViewModel } from "./components/non-reorderable-list/non-reorderable-list-view-model";
-import { FileUploaderViewModel } from "./components/file-uploader/file-uploader-view-model";
+import { TestResolverFoo } from "../../resolvers/test-resolver-foo.js";
+import { TestResolverBar } from "../../resolvers/test-resolver-bar.js";
+import { ComponentAViewModel } from "./components/component-a/component-a-view-model.js";
+import { NonReorderableListViewModel } from "./components/non-reorderable-list/non-reorderable-list-view-model.js";
+import { FileUploaderViewModel } from "./components/file-uploader/file-uploader-view-model.js";
 
 
 @components(ComponentAViewModel, NonReorderableListViewModel, FileUploaderViewModel)

@@ -1,10 +1,10 @@
 import { given } from "@nivinjoseph/n-defensive";
-import { ViewModelRegistration } from "./view-model-registration";
-import { elementSymbol } from "./element";
+import { ViewModelRegistration } from "./view-model-registration.js";
+import { elementSymbol } from "./element.js";
 import { ApplicationException } from "@nivinjoseph/n-exception";
-import { bindSymbol } from "./bind";
-import { eventsSymbol } from "./events";
-import { Utilities } from "./utilities";
+import { bindSymbol } from "./bind.js";
+import { eventsSymbol } from "./events.js";
+import { Utilities } from "./utilities.js";
 
 
 export class ComponentRegistration extends ViewModelRegistration

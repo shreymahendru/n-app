@@ -1,6 +1,6 @@
 import "reflect-metadata";
 import { given } from "@nivinjoseph/n-defensive";
-import { PageViewModel } from "./page-view-model";
+import { PageViewModel } from "./page-view-model.js";
 import { ClassHierarchy } from "@nivinjoseph/n-util";
 
 

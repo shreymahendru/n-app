@@ -1,10 +1,10 @@
 import { given } from "@nivinjoseph/n-defensive";
-import { ComponentService } from "./component-service";
-import { ViewModelRegistration } from "../../core/view-model-registration";
+import { ComponentService } from "./component-service.js";
+import { ViewModelRegistration } from "../../core/view-model-registration.js";
 import { Container, Scope } from "@nivinjoseph/n-ject";
 import { ApplicationException } from "@nivinjoseph/n-exception";
-import { Utilities } from "../../core/utilities";
-import { ComponentOptions } from "./component-options";
+import { Utilities } from "../../core/utilities.js";
+import { ComponentOptions } from "./component-options.js";
 
 
 export class DefaultComponentService implements ComponentService
