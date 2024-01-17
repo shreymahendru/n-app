@@ -1,9 +1,10 @@
-import * as Assert from "assert";
+import assert from "node:assert";
 import { FunctionNode } from "../src/loaders/lib/function-node.js";
+import { describe, test } from "node:test";
 
-suite("Random stuff", () =>
+await describe("Random stuff", async () =>
 {
-    test("string splitting", () =>
+    await test("string splitting", () =>
     {
         // let value = "/home/todo";
         const value = "/";
@@ -12,21 +13,21 @@ suite("Random stuff", () =>
         console.log(splitted);
         console.log(splitted.map(t => t.length));
     });
-    
+
     // test.only("Schema conversion", () =>
     // {
     //     const schema = '{"foo?": "string", "bar": [], "baz": Nove, box: {b: "string"}}';
-        
+
     //     const result = schemaToType(schema);
-        
+
     //     console.log(result);
     //     const parsed = JSON.parse(result);
     //     console.log(parsed);
-        
+
     //     Assert.ok(true);
     // });
-    
-    test.only("Closure parsing", () =>
+
+    await test.only("Closure parsing", () =>
     {
         let renderFn = `
         var render = function () {
@@ -109,8 +110,8 @@ suite("Random stuff", () =>
   )
 }
         `.trim();
-        
-        
+
+
         renderFn = renderFn.replaceAll(",\r", ", ").replaceAll(",\n", ", ").replaceAll(",\r\n", ", ")
             .replaceAll("(\r", "(").replaceAll("(\n", "(").replaceAll("(\r\n", "(")
             .replaceAll(/[a-zA-Z0-9_]\\n/ig as any, ";");
@@ -119,19 +120,19 @@ suite("Random stuff", () =>
             renderFn = renderFn.replaceAll("  ", " ");
 
         renderFn = renderFn.replaceAll("_c( ", "_c(");
-        
-        
+
+
         const node = new FunctionNode(true, renderFn, 0, "TestViewModel");
         node.preProcess();
         // node.regenerate()
         const moddedCode = node.toModdedCode();
-        
+
         console.log(renderFn);
         console.log("<===================>");
         console.log(moddedCode);
-        
-        
-        Assert.strictEqual(moddedCode, renderFn);
+
+
+        assert.strictEqual(moddedCode, renderFn);
     });
 });
 

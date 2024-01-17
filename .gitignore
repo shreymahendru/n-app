@@ -54,3 +54,11 @@ test-app/client/dist
 # Webpack config compiled artifacts
 webpack.config.js
 webpack.config.js.map
+
+.pnp.*
+.yarn/*
+!.yarn/patches
+!.yarn/plugins
+!.yarn/releases
+!.yarn/sdks
+!.yarn/versions

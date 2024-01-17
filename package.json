@@ -108,7 +108,7 @@
         "@nivinjoseph/n-web": "^4.0.10",
         "@types/jquery": "^3.5.14",
         "@types/mocha": "^9.1.1",
-        "@types/node": "^16.11.38",
+        "@types/node": "^20.10",
         "@types/sharp": "^0.30.2",
         "@types/strip-comments": "^2.0.1",
         "@types/toastr": "^2.1.39",
@@ -141,7 +141,6 @@
         "loader-utils": "^2.0.0",
         "memfs": "^3.4.4",
         "mini-css-extract-plugin": "^2.6.0",
-        "mocha": "^10.0.0",
         "node-sass": "^7.0.1",
         "nodemon": "^2.0.16",
         "postcss": "^8.4.14",
@@ -181,6 +180,10 @@
         "source-map-support": "^0.5.21",
         "tslib": "^2.6.2",
         "vue-router": "3.1.6"
+    },
+    "engineStrict": true,
+    "engines": {
+        "node": ">=20.10"
     },
     "overrides": {
         "vue": "2.6.14"
