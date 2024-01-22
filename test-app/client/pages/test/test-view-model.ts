@@ -1,8 +1,8 @@
-import { route, template, meta, NavigationService, resolve, EventAggregator, PageViewModel, components } from "./../../../../src/index.js";
+import { route, template, meta, type NavigationService, resolve, type EventAggregator, PageViewModel, components } from "./../../../../src/index.js";
 import * as Routes from "./../routes.js";
 import "./test-view.scss";
 import { inject } from "@nivinjoseph/n-ject";
-import { TodoRepository } from "../../services/todo-repository/todo-repository.js";
+import type { TodoRepository } from "../../services/todo-repository/todo-repository.js";
 import { given } from "@nivinjoseph/n-defensive";
 import { TestResolverFoo } from "../../resolvers/test-resolver-foo.js";
 import { TestResolverBar } from "../../resolvers/test-resolver-bar.js";
@@ -12,7 +12,7 @@ import { FileUploaderViewModel } from "./components/file-uploader/file-uploader-
 
 
 @components(ComponentAViewModel, NonReorderableListViewModel, FileUploaderViewModel)
-@template(require("./test-view.html"))
+@template(require("./test-view.html?raw"))
 @route(Routes.test)
 @meta({ $key: "name", name: "description", content: "This is test" })
 @inject("TodoRepository", "NavigationService", "EventAggregator")

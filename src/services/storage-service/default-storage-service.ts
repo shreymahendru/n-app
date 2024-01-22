@@ -1,4 +1,4 @@
-import { StorageService } from "./storage-service.js";
+import type { StorageService } from "./storage-service.js";
 import { given } from "@nivinjoseph/n-defensive";
 
 

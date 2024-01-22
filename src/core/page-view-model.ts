@@ -4,22 +4,19 @@ import "@nivinjoseph/n-ext";
 import { given } from "@nivinjoseph/n-defensive";
 import { PageRegistration } from "./page-registration.js";
 import { PageComponentFactory } from "./page-component-factory.js";
-import { MetaDetail } from "./meta.js";
-import { ClassDefinition } from "@nivinjoseph/n-util";
+import type { MetaDetail } from "./meta.js";
+import type { ClassDefinition } from "@nivinjoseph/n-util";
 
 
 // public
 export class PageViewModel extends BaseViewModel
 {
-    protected get currentRoute(): string | null
+    protected get currentRoute(): string
     {
-        let route: string | null = this.ctx.$route ? this.ctx.$route.fullPath : null;
-        route = route ? route.trim() : null;
-        if (route)
-        {
-            while (route.endsWith("/") || route.endsWith("?"))
-                route = route.substr(0, route.length - 1).trimRight();
-        }
+        let route = this.ctx.$route.fullPath;
+        while (route.endsWith("/") || route.endsWith("?"))
+            route = route.substr(0, route.length - 1).trimRight();
+        
         return route;
     }
 

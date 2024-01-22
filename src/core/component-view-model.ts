@@ -1,9 +1,7 @@
 import { given } from "@nivinjoseph/n-defensive";
 import { InvalidOperationException } from "@nivinjoseph/n-exception";
 import { BaseViewModel } from "./base-view-model.js";
-import { ComponentRegistration } from "./component-registration.js";
-import { ComponentFactory } from "./component-factory.js";
-import { ClassDefinition } from "@nivinjoseph/n-util";
+import type { ClassDefinition } from "@nivinjoseph/n-util";
 
 
 // public
@@ -12,14 +10,8 @@ export abstract class ComponentViewModel extends BaseViewModel
     private get _myBindings(): ReadonlyArray<string> { return (<any>this)["_bindings"] as Array<string>; }
     private get _myEvents(): ReadonlyArray<string> { return (<any>this)["_events"] as Array<string>; }
 
-    public static createComponentOptions(component: ClassDefinition<ComponentViewModel>): object
-    {
-        given(component, "component").ensureHasValue().ensureIsFunction();
+    private get _myProps(): Record<string, any> { return this.ctx.$props; }
 
-        const registration = new ComponentRegistration(component);
-        const factory = new ComponentFactory();
-        return factory.create(registration);
-    }
 
     protected getBound<T>(propertyName: string): T
     {
@@ -30,7 +22,7 @@ export abstract class ComponentViewModel extends BaseViewModel
         given(propertyName, "propertyName").ensureHasValue()
             .ensure(t => this._myBindings.contains(t), `No binding with the name '${propertyName}' found`);
 
-        return this.ctx[propertyName] as T;
+        return this._myProps[propertyName] as T;
     }
 
     protected getBoundModel<T>(): T
@@ -42,7 +34,7 @@ export abstract class ComponentViewModel extends BaseViewModel
         if (!this._myBindings.contains("model"))
             throw new InvalidOperationException("calling getBoundModel() without defining 'model' in bind");
 
-        return this.ctx["value"] as T;
+        return this._myProps["modelValue"] as T;
     }
 
     protected setBoundModel(value: unknown): void
@@ -54,8 +46,7 @@ export abstract class ComponentViewModel extends BaseViewModel
         if (!this._myBindings.contains("model"))
             throw new InvalidOperationException("calling setBoundModel() without defining 'model' in bind");
 
-        // eslint-disable-next-line @typescript-eslint/no-unsafe-call
-        this.ctx.$emit("input", value);
+        this.ctx.$emit("update:modelValue", value);
     }
 
     protected emit(event: string, ...eventArgs: Array<any>): void
@@ -65,7 +56,6 @@ export abstract class ComponentViewModel extends BaseViewModel
 
         event = this._camelCaseToKebabCase(event);
 
-        // eslint-disable-next-line @typescript-eslint/no-unsafe-call
         this.ctx.$emit(event, ...eventArgs);
     }
 

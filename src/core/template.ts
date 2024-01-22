@@ -1,7 +1,7 @@
 import { given } from "@nivinjoseph/n-defensive";
 import "@nivinjoseph/n-ext";
-import { ComponentViewModel, ComponentViewModelClass } from "./component-view-model.js";
-import { PageViewModel, PageViewModelClass } from "./page-view-model.js";
+import { ComponentViewModel, type ComponentViewModelClass } from "./component-view-model.js";
+import type { PageViewModel, PageViewModelClass } from "./page-view-model.js";
 
 
 export const templateSymbol = Symbol.for("@nivinjoseph/n-app/template");
@@ -17,15 +17,14 @@ export function template<This extends (PageViewModel | ComponentViewModel)>(temp
         given(template, "template").ensureIsObject();
 
 
-    const decorator: TemplateViewModelDecorator<This> = (target, context) =>
+    const decorator: TemplateViewModelDecorator<This> = (_, context) =>
     {
         given(context, "context")
             // @ts-expect-error chill
             .ensure(t => t.kind === "class", "template decorator should only be used on a class");
 
         const className = context.name!;
-        given(className, className).ensureHasValue().ensureIsString()
-            .ensure(_ => target.prototype instanceof PageViewModel || target.prototype instanceof ComponentViewModel, `class '${className}' decorated with template must extend PageViewModel ot ComponentViewModel class`);
+        given(className, className).ensureHasValue().ensureIsString();
 
         context.metadata[templateSymbol] = template;
     };

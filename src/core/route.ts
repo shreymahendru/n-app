@@ -1,6 +1,6 @@
 import { given } from "@nivinjoseph/n-defensive";
 import "@nivinjoseph/n-ext";
-import { PageViewModel, PageViewModelClass } from "./page-view-model.js";
+import type { PageViewModel, PageViewModelClass } from "./page-view-model.js";
 
 export const appRouteSymbol = Symbol.for("@nivinjoseph/n-app/appRoute");
 
@@ -10,7 +10,7 @@ export function route<This extends PageViewModel>(route: string, redirect?: stri
     given(route, "route").ensureHasValue().ensureIsString()
         .ensure(t => t.trim().startsWith("/"), "has to begin with '/'");
 
-    given(redirect, "redirect").ensureIsString().ensureHasValue()
+    given(redirect, "redirect").ensureIsString()
         .ensure(t => t.trim().startsWith("/"), "has to begin with '/'")
         .ensure(t => t.trim().startsWith(route.trim()), "has to be a nested route")
         .ensure(t => t !== route, "route and redirect must not be same");
@@ -19,15 +19,14 @@ export function route<This extends PageViewModel>(route: string, redirect?: stri
     route = route.trim().replaceAll(" ", "");
     redirect = redirect?.trim().replaceAll(" ", "");
 
-    const decorator: RoutePageViewModelDecorator<This> = (target, context) =>
+    const decorator: RoutePageViewModelDecorator<This> = (_, context) =>
     {
         given(context, "context")
             // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
             .ensure(t => t.kind === "class", "route decorator should only be used on a class");
 
         const className = context.name!;
-        given(className, className).ensureHasValue().ensureIsString()
-            .ensure(_ => target.prototype instanceof PageViewModel, `class '${className}' decorated with route must extend PageViewModel class`);
+        given(className, className).ensureHasValue().ensureIsString();
 
         context.metadata[appRouteSymbol] = {
             route,

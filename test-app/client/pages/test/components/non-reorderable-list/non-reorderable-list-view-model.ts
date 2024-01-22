@@ -5,7 +5,7 @@ import "./non-reorderable-list-view.scss";
 // type OnReorderCallback = (fromIndex: number, toIndex: number) => void;
 
 @element("non-reorderable-list")
-@template(require("./non-reorderable-list-view.html"))
+@template(require("./non-reorderable-list-view.html?raw"))
 @bind({
     "listItems": ["object"]
 })

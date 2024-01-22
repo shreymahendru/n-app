@@ -1,7 +1,7 @@
 import { given } from "@nivinjoseph/n-defensive";
 import { ApplicationException } from "@nivinjoseph/n-exception";
 import { bindSymbol } from "./bind.js";
-import { ComponentViewModelClass } from "./component-view-model.js";
+import type { ComponentViewModelClass } from "./component-view-model.js";
 import { elementSymbol } from "./element.js";
 import { eventsSymbol } from "./events.js";
 import { Utilities } from "./utilities.js";
@@ -57,7 +57,7 @@ export class ComponentRegistration extends ViewModelRegistration
                 });
             });
 
-            const forbidden = [...Utilities.forbidden, "value"];
+            const forbidden = [...Utilities.forbidden, "value", "modelValue"];
 
             given(this._bindings, "bindings")
                 .ensure(t => t.length === t.distinct(u => u.name).length,
@@ -76,6 +76,9 @@ export class ComponentRegistration extends ViewModelRegistration
         const events = metadata[eventsSymbol] as ReadonlyArray<string> | undefined;
         if (events != null)
             this._events.push(...events);
+
+        if (this._hasModel)
+            this._events.push("update:modelValue");
     }
 
 

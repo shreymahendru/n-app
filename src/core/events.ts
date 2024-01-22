@@ -1,6 +1,6 @@
 import { given } from "@nivinjoseph/n-defensive";
 import "@nivinjoseph/n-ext";
-import { ComponentViewModel, ComponentViewModelClass } from "./component-view-model.js";
+import type { ComponentViewModel, ComponentViewModelClass } from "./component-view-model.js";
 
 
 export const eventsSymbol = Symbol("events");
@@ -17,15 +17,14 @@ export function events<This extends ComponentViewModel>(...events: readonly [str
         .ensure(t => t.every(u => u.trim().toLowerCase() !== "input"), "event cannot be reserved event input")
         .ensure(t => t.every(u => initChars.contains(u.trim()[0].toLowerCase())), "event name has to start with alphabet");
 
-    const decorator: EventsComponentViewModelDecorator<This> = (target, context) =>
+    const decorator: EventsComponentViewModelDecorator<This> = (_, context) =>
     {
         given(context, "context")
             // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
             .ensure(t => t.kind === "class", "events decorator should only be used on a class");
 
         const className = context.name!;
-        given(className, className).ensureHasValue().ensureIsString()
-            .ensure(_ => target.prototype instanceof ComponentViewModel, `class '${className}' decorated with events must extend ComponentViewModel class`);
+        given(className, className).ensureHasValue().ensureIsString();
 
         context.metadata[eventsSymbol] = events;
     };

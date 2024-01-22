@@ -1,11 +1,12 @@
 import { PageRegistration } from "./page-registration.js";
 import { RouteArgs } from "./route-args.js";
-import { Scope } from "@nivinjoseph/n-ject";
+import type { Scope } from "@nivinjoseph/n-ject";
 import { given } from "@nivinjoseph/n-defensive";
 import { Utilities } from "./utilities.js";
 import { ApplicationException } from "@nivinjoseph/n-exception";
-// import * as $ from "jquery";
-import { PageHmrHelper } from "./page-hmr-helper.js";
+import { type ComponentOptions, type Ref, type UnwrapRef, inject, provide, ref } from "vue";
+import { PageViewModel } from "./page-view-model.js";
+import type { ComponentViewModel } from "./component-view-model.js";
 
 
 export class PageComponentFactory
@@ -14,93 +15,6 @@ export class PageComponentFactory
     {
         given(registration, "registration").ensureHasValue();
 
-        const component: any = {};
-       
-        // component.template = registration.template;
-        
-        // component.render = (<any>registration.viewModel).___render;
-        // component.staticRenderFns = (<any>registration.viewModel).___staticRenderFns;
-        
-        if (typeof registration.template === "string")
-        {
-            component.template = registration.template;
-        }
-        else
-        {
-            component.render = registration.template.render;
-            component.staticRenderFns = registration.template.staticRenderFns;    
-        }
-
-        component.inject = ["rootScopeContainer"];
-        
-        component.data = function (): { vm: any; pageScopeContainer: Scope; }
-        {
-            // console.log("INVOKED data");
-            
-            // eslint-disable-next-line @typescript-eslint/no-this-alias
-            const vueVm = this;
-            
-            let container: Scope | null = vueVm.rootScopeContainer;
-            if (!container)
-                throw new ApplicationException("Could not get rootScopeContainer.");
-            
-            if (component.___reload)
-            {
-                const c = container as any;
-                // eslint-disable-next-line @typescript-eslint/no-unsafe-call
-                const cReg = c.componentRegistry.find(registration.name);
-                cReg._component = component.___viewModel;
-                // eslint-disable-next-line @typescript-eslint/no-unsafe-call
-                cReg._dependencies = cReg.getDependencies();
-                // registration.reload(component.___viewModel);
-                
-                // component.___reload = false;
-            }
-            
-            container = registration.persist ? container : container.createScope(); // page scope
-            const vm = container.resolve<any>(registration.name);
-            
-            const data = {
-                vm: vm,
-                pageScopeContainer: container
-            };
-            const methods: { [index: string]: any; } = {};
-            const computed: { [index: string]: any; } = {};
-
-            const propertyInfos = Utilities.getPropertyInfos(vm);
-            for (const info of propertyInfos)
-            {
-                if (typeof info.descriptor.value === "function")
-                    methods[info.name] = (info.descriptor.value as Function).bind(vm);
-                else if (info.descriptor.get || info.descriptor.set)
-                {
-                    computed[info.name] = {
-                        get: info.descriptor.get ? info.descriptor.get.bind(vm) : undefined,
-                        set: info.descriptor.set ? info.descriptor.set.bind(vm) : undefined
-                    };
-                }
-            }
-
-            vueVm.$options.methods = methods;
-            vueVm.$options.computed = computed;
-            vm._ctx = vueVm;
-            
-            return data;
-        };
-        
-        component.provide = function (): { pageScopeContainer: any; }
-        {
-            return {
-                pageScopeContainer: this.pageScopeContainer
-            };
-        };
-
-        component.beforeCreate = function (): void
-        {
-            // console.log("executing beforeCreate");
-            // console.log(this.vm);
-        };
-        
         const setDocumentMetadata = (): void =>
         {
             if (registration.title)
@@ -108,107 +22,142 @@ export class PageComponentFactory
 
             registration.metadata.forEach((metadata) =>
             {
+                // eslint-disable-next-line @typescript-eslint/no-unsafe-call
                 $(`meta[${metadata.$key}="${metadata[metadata.$key]}"]`).remove();
 
+                // eslint-disable-next-line @typescript-eslint/no-unsafe-call
                 $("head").append(`<meta ${Object.keys(metadata).where(t => t !== "$key").map(t => `${t}="${metadata[t]}"`).join(" ")}>`);
             });
         };
 
-        component.created = function (): void
-        {
-            // console.log("executing created");
-            // console.log(this.vm);
 
-            if (this.vm.onCreate)
+        const component: ComponentOptions = {
+            name: registration.name,
+
+            setup: function <T extends ComponentViewModel>(): { nAppVm: Ref<UnwrapRef<T>>; }
             {
-                if (registration.persist && registration.isCreated)
+                let container: Scope | undefined = inject("rootScopeContainer");
+                if (container == null)
+                    throw new ApplicationException("Could not get pageScopeContainer or rootScopeContainer.");
+
+                container = registration.persist ? container : container.createScope(); // page scope
+
+                const nAppVm = container.resolve<T>(registration.name);
+
+                provide("pageScopeContainer", container);
+
+                return {
+                    nAppVm: ref(nAppVm)
+                };
+            },
+
+            beforeCreate: function <T extends PageViewModel>()
+            {
+                // console.log("beforeCreate for ", registration.name, this);
+
+                const vm = this.nAppVm as T;
+
+                const methods: { [index: string]: Function; } = {};
+                const computed: { [index: string]: { get?(): any; set?(val: any): void; }; } = {};
+
+                const propertyInfos = Utilities.getPropertyInfos(vm);
+                for (const info of propertyInfos)
                 {
-                    // no op
+                    if (typeof info.descriptor.value === "function")
+                        methods[info.name] = (info.descriptor.value as Function).bind(vm);
+                    else if (info.descriptor.get || info.descriptor.set)
+                    {
+                        computed[info.name] = {
+                            get: info.descriptor.get ? info.descriptor.get.bind(vm) : undefined,
+                            set: info.descriptor.set ? info.descriptor.set.bind(vm) : undefined
+                        };
+                    }
                 }
-                else
-                    // eslint-disable-next-line @typescript-eslint/no-unsafe-call
-                    this.vm.onCreate();
-            }
-            
-            registration.created();
-            
-            if (component.___reload)
+
+                this.$options.methods = methods;
+                this.$options.computed = computed;
+
+                (<any>vm)._ctx = this;
+            },
+
+            created: function () 
             {
-                component.___reload = false;
-                setDocumentMetadata();
-                const routeArgs = PageHmrHelper.restore(registration);
-                this.vm.__routeArgs = routeArgs;
-                if (this.vm.onEnter)
+                if (this.nAppVm.onCreate) // TODO: why would the vm not have onCreate?
                 {
-                    if (routeArgs.routeArgs.isNotEmpty)
-                        // eslint-disable-next-line @typescript-eslint/no-unsafe-call
-                        this.vm.onEnter(...routeArgs.routeArgs,
-                            ...registration.resolvedValues ? registration.resolvedValues : []);
+                    if (registration.persist && registration.isCreated)
+                    {
+                        // no op
+                    }
                     else
                         // eslint-disable-next-line @typescript-eslint/no-unsafe-call
-                        this.vm.onEnter();
+                        this.nAppVm.onCreate();
                 }
+
+                registration.created();
+            },
+            // eslint-disable-next-line @typescript-eslint/no-empty-function
+            beforeMount: function ()
+            {
+                // console.log("beforeMount for ", registration.name, this);
+            },
+            mounted: function ()
+            {
+                // console.log("mounted for ", registration.name, this);
+
+                if (this.nAppVm.onMount)
+                    // eslint-disable-next-line @typescript-eslint/no-unsafe-call
+                    this.nAppVm.onMount(this.$el);
+            },
+            beforeUpdate: function ()
+            {
+                // console.log("beforeUpdate for ", registration.name, this);
+            },
+            // eslint-disable-next-line @typescript-eslint/no-empty-function
+            updated: function ()
+            {
+                // console.log("updated for ", registration.name, this);
+            },
+            beforeUnmount: function ()
+            {
+                // console.log("beforeUnmount for ", registration.name, this);
+
+                if (this.nAppVm.onDismount)
+                    // eslint-disable-next-line @typescript-eslint/no-unsafe-call
+                    this.nAppVm.onDismount();
+            },
+            unmounted: function ()
+            {
+                // console.log("unmounted for ", registration.name, this);
+
+                if (this.nAppVm.onDestroy && !registration.persist)
+                    // eslint-disable-next-line @typescript-eslint/no-unsafe-call
+                    this.nAppVm.onDestroy();
+
+                this.nAppVm._ctx.$options.methods = null;
+                this.nAppVm._ctx.$options.computed = null;
+                // this.vm._ctx = null;
+                this.nAppVm = null;
+            },
+            data: function (vm)
+            {
+                // console.log("data", vm);
+                // don't need this here but exposing it so we can check the properties 
+                // when using vue dev tools in the browsers.
+                return {
+                    vm: vm.nAppVm
+                };
             }
         };
 
-        component.beforeMount = function (): void
-        {
-            // console.log("executing beforeMount");
-            // console.log(this.vm);
-        };
+        if (typeof registration.template === "string")
+            component.template = registration.template;
+        else
+            component.render = registration.template.render;
 
-        component.mounted = function (): void
-        {
-            // console.log("executing mounted");
-            // console.log(this.vm);
 
-            if (this.vm.onMount)
-                // eslint-disable-next-line @typescript-eslint/no-unsafe-call
-                this.vm.onMount(this.$el);
-        };
 
-        component.beforeUpdate = function (): void
-        {
-            // console.log("executing beforeUpdate");
-            // console.log(this.vm);
-        };
 
-        component.updated = function (): void
-        {
-            // console.log("executing updated");
-            // console.log(this.vm);
-        };
 
-        component.beforeDestroy = function (): void
-        {
-            // console.log("executing beforeDestroy");
-            // console.log(this.vm);
-            
-            if (this.vm.onDismount)
-                // eslint-disable-next-line @typescript-eslint/no-unsafe-call
-                this.vm.onDismount();
-        };
-
-        component.destroyed = function (): void
-        {
-            // console.log("executing destroyed");
-            // console.log(this.vm);
-
-            if (this.vm.onDestroy && !registration.persist)
-                // eslint-disable-next-line @typescript-eslint/no-unsafe-call
-                this.vm.onDestroy();
-            
-            this.vm._ctx.$options.methods = null;
-            this.vm._ctx.$options.computed = null;
-            // this.vm._ctx = null;
-            this.vm = null;
-        };
-        
-        
-        
-        
-        
-        
         /* The Full Navigation Resolution Flow
                 Navigation triggered
                 Call leave guards in deactivated components
@@ -223,15 +172,15 @@ export class PageComponentFactory
                 DOM updates triggered.
                 Call callbacks passed to next in beforeRouteEnter guards with instantiated instances.
          */
-        
+
         component.beforeRouteEnter = function (to: any, _from: any, next: Function): void
         {
             // called before the route that renders this component is confirmed.
             // does NOT have access to `this` component instance,
             // because it has not been created yet when this guard is called!
-            
+
             let routeArgs: RouteArgs | null = null;
-            
+
             try 
             {
                 routeArgs = RouteArgs.create(registration.route, to);
@@ -242,18 +191,18 @@ export class PageComponentFactory
                 next(false);
                 return;
             }
-            
+
             setDocumentMetadata();
             next((vueModel: any) =>
             {
                 setDocumentMetadata();
-                const vm = vueModel.vm;
+                const vm = vueModel.nAppVm;
                 vm.__routeArgs = routeArgs;
                 // console.log("invoked on enter", routeArgs);
-                
-                if ((<any>module).hot)
-                    PageHmrHelper.track(registration, routeArgs!);
-                
+
+                // if ((<any>module).hot)
+                //     PageHmrHelper.track(registration, routeArgs!);
+
                 if (vm.onEnter)
                     if (routeArgs!.routeArgs.isNotEmpty)
                         // eslint-disable-next-line @typescript-eslint/no-unsafe-call
@@ -265,7 +214,7 @@ export class PageComponentFactory
                         vm.onEnter();
             });
         };
-        
+
         component.beforeRouteUpdate = function (to: any, from: any, next: Function): void
         {
             // called when the route that renders this component has changed,
@@ -274,8 +223,8 @@ export class PageComponentFactory
             // navigate between /foo/1 and /foo/2, the same Foo component instance
             // will be reused, and this hook will be called when that happens.
             // has access to `this` component instance.
-            
-            let routeArgs: RouteArgs | null  = null;
+
+            let routeArgs: RouteArgs | null = null;
             try 
             {
                 routeArgs = RouteArgs.create(registration.route, to);
@@ -286,7 +235,7 @@ export class PageComponentFactory
                 next(false);
                 return;
             }
-            
+
             let fromRouteArgs: RouteArgs | null = null;
             try 
             {
@@ -303,9 +252,9 @@ export class PageComponentFactory
                 setDocumentMetadata();
                 next();
                 return;
-            }   
-            
-            const vm = this.vm;
+            }
+
+            const vm = this.nAppVm;
             if (vm.onLeave)    
             {
                 try 
@@ -315,16 +264,16 @@ export class PageComponentFactory
                 }
                 catch (error)
                 {
-                    next(false);   
+                    next(false);
                     return;
                 }
             }
-            
+
             vm.__routeArgs = routeArgs;
             // console.log("invoked on update", routeArgs);
-            if ((<any>module).hot)
-                PageHmrHelper.track(registration, routeArgs);
-            
+            // if ((<any>module).hot)
+            //     PageHmrHelper.track(registration, routeArgs);
+
             if (vm.onEnter)
                 if (routeArgs.routeArgs.length > 0)
                     // eslint-disable-next-line @typescript-eslint/no-unsafe-call
@@ -334,18 +283,18 @@ export class PageComponentFactory
                 else
                     // eslint-disable-next-line @typescript-eslint/no-unsafe-call
                     vm.onEnter();
-            
+
             setDocumentMetadata();
             next();
         };
-        
+
         component.beforeRouteLeave = function (_to: any, _from: any, next: Function): void
         {
             // called when the route that renders this component is about to
             // be navigated away from.
             // has access to `this` component instance.
 
-            const vm = this.vm;
+            const vm = this.nAppVm;
             if (vm.onLeave)
             {
                 try 
@@ -359,10 +308,10 @@ export class PageComponentFactory
                     return;
                 }
             }
-            
+
             next();
         };
-        
+
         // eslint-disable-next-line @typescript-eslint/no-unsafe-return
         return component;
     }

@@ -1,6 +1,6 @@
-import { given, TypeStructure } from "@nivinjoseph/n-defensive";
+import { given, type TypeStructure } from "@nivinjoseph/n-defensive";
 import "@nivinjoseph/n-ext";
-import { ComponentViewModel, ComponentViewModelClass } from "./component-view-model.js";
+import type { ComponentViewModel, ComponentViewModelClass } from "./component-view-model.js";
 
 
 export const bindSymbol = Symbol.for("@nivinjoseph/n-app/bind");
@@ -10,15 +10,14 @@ export function bind<This extends ComponentViewModel>(schema: TypeStructure): Bi
 {
     given(schema, "schema").ensureHasValue().ensureIsObject();
 
-    const decorator: BindComponentViewModelDecorator<This> = (target, context) =>
+    const decorator: BindComponentViewModelDecorator<This> = (_, context) =>
     {
         given(context, "context")
             // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
             .ensure(t => t.kind === "class", "bind decorator should only be used on a class");
 
         const className = context.name!;
-        given(className, className).ensureHasValue().ensureIsString()
-            .ensure(_ => target.prototype instanceof ComponentViewModel, `class '${className}' decorated with bind must extend ComponentViewModel class`);
+        given(className, className).ensureHasValue().ensureIsString();
 
         context.metadata[bindSymbol] = schema;
     };

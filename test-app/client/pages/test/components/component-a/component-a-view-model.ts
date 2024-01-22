@@ -3,7 +3,7 @@
 import { bind, ComponentViewModel, element, template } from "../../../../../../src/index.js";
 import "./component-a-view.scss";
 
-@template(require("./component-a-view.html"))
+@template(require("./component-a-view.html?raw"))
 @element("component-a")
 @bind({
     sport: {

@@ -43,13 +43,17 @@ jspm_packages
 tsconfig.tsbuildinfo
 src/**/*.js
 src/**/*.map
+src/**/*.d.ts
 test/**/*.js
 test/**/*.map
+test/**/*.d.ts
 test-app/**/*.js
 test-app/**/*.map
+test-app/**/*.d.ts
 
 # Client dist folder, this is a build artifact of test-app
 test-app/client/dist
+test-app-new/client/dist
 
 # Webpack config compiled artifacts
 webpack.config.js

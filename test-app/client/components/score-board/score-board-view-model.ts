@@ -4,7 +4,7 @@ import { inject } from "@nivinjoseph/n-ject";
 import { ScopedService } from "../../services/scoped-service.js";
 
 
-@template(require("./score-board-view.html"))
+@template(require("./score-board-view.html?raw"))
 @element("score-board")
 @bind({
     score: "number"

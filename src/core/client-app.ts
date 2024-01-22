@@ -1,18 +1,13 @@
-// const Vue = require("@nivinjoseph/vue/dist/vue.js");
 // import Vue from "@nivinjoseph/vue";
-const Vue = require("vue");
+// const Vue = require("vue");
 
 // public
-export { Vue };
-
-import VueRouter from "vue-router";
-// eslint-disable-next-line @typescript-eslint/no-unsafe-call
-Vue.use(VueRouter);
+import { createApp, type App, type ComponentOptions, h } from "vue";
 
 import { ConfigurationManager } from "@nivinjoseph/n-config";
 import { given } from "@nivinjoseph/n-defensive";
 import "@nivinjoseph/n-ext";
-import { ComponentInstaller, Container } from "@nivinjoseph/n-ject";
+import { type ComponentInstaller, Container } from "@nivinjoseph/n-ject";
 import { DefaultComponentService } from "../services/component-service/default-component-service.js";
 import { DefaultDisplayService } from "../services/display-service/default-display-service.js";
 import { DefaultDialogService } from "./../services/dialog-service/default-dialog-service.js";
@@ -21,47 +16,48 @@ import { DefaultNavigationService } from "./../services/navigation-service/defau
 import { DefaultStorageService } from "./../services/storage-service/default-storage-service.js";
 import { ComponentManager } from "./component-manager.js";
 import { PageManager } from "./page-manager.js";
-// import { NFileSelectViewModel } from "../components/n-file-select/n-file-select-view-model.js";
-// import { NExpandingContainerViewModel } from "../components/n-expanding-container/n-expanding-container-view-model.js";
-// import { NScrollContainerViewModel } from "../components/n-scroll-container/n-scroll-container-view-model.js";
-import { DialogService } from "../services/dialog-service/dialog-service.js";
-import { ComponentViewModelClass } from "./component-view-model.js";
-import { PageViewModelClass } from "./page-view-model.js";
+import type { DialogService } from "../services/dialog-service/dialog-service.js";
+import type { ComponentViewModelClass } from "./component-view-model.js";
+import type { PageViewModelClass } from "./page-view-model.js";
+import type { Router } from "vue-router";
+import { NFileSelectViewModel } from "../components/n-file-select/n-file-select-view-model.js";
+import { NExpandingContainerViewModel } from "../components/n-expanding-container/n-expanding-container-view-model.js";
+import { NScrollContainerViewModel } from "../components/n-scroll-container/n-scroll-container-view-model.js";
 
 // declare const makeHot: (options: any) => void;
 
 let makeHot: Function | null;
 
-if ((<any>module).hot)
-{
-    makeHot = function (options: any): void
-    {
-        // console.log('is Hot');
-        const api = require("vue-hot-reload-api");
-        // eslint-disable-next-line @typescript-eslint/no-unsafe-call
-        api.install(require("@nivinjoseph/vue"));
+// if ((<any>module).hot)
+// {
+//     makeHot = function (options: any): void
+//     {
+//         // console.log('is Hot');
+//         const api = require("vue-hot-reload-api");
+//         // eslint-disable-next-line @typescript-eslint/no-unsafe-call
+//         api.install(require("@nivinjoseph/vue"));
 
-        if (!api.compatible)
-            throw new Error("vue-hot-reload-api is not compatible with the version of Vue you are using.");
+//         if (!api.compatible)
+//             throw new Error("vue-hot-reload-api is not compatible with the version of Vue you are using.");
 
-        // eslint-disable-next-line @typescript-eslint/no-unsafe-call
-        (<any>module).hot.accept();
+//         // eslint-disable-next-line @typescript-eslint/no-unsafe-call
+//         (<any>module).hot.accept();
 
-        // eslint-disable-next-line @typescript-eslint/no-unsafe-call
-        if (!api.isRecorded("ClientAppRoot")) 
-        {
-            // eslint-disable-next-line @typescript-eslint/no-unsafe-call
-            api.createRecord("ClientAppRoot", options);
-            // console.log("creating record", "${id}");
-        }
-        else 
-        {
-            // eslint-disable-next-line @typescript-eslint/no-unsafe-call
-            api.reload("ClientAppRoot", options);
-            // console.log("updating record", "${id}");
-        }
-    };
-}
+//         // eslint-disable-next-line @typescript-eslint/no-unsafe-call
+//         if (!api.isRecorded("ClientAppRoot")) 
+//         {
+//             // eslint-disable-next-line @typescript-eslint/no-unsafe-call
+//             api.createRecord("ClientAppRoot", options);
+//             // console.log("creating record", "${id}");
+//         }
+//         else 
+//         {
+//             // eslint-disable-next-line @typescript-eslint/no-unsafe-call
+//             api.reload("ClientAppRoot", options);
+//             // console.log("updating record", "${id}");
+//         }
+//     };
+// }
 
 // public
 export class ClientApp
@@ -72,10 +68,9 @@ export class ClientApp
     private readonly _container: Container;
     private readonly _componentManager: ComponentManager;
     private readonly _pageManager: PageManager;
-    // @ts-expect-error: not used atm
-    private _app: any;
+    private readonly _app: App;
     private _isDialogServiceRegistered = false;
-    private _errorTrackingConfigurationCallback: ((vueRouter: any) => void) | null = null;
+    private _errorTrackingConfigurationCallback: ((vueRouter: Router) => void) | null = null;
     private _isBootstrapped = false;
 
 
@@ -103,17 +98,37 @@ export class ClientApp
         this._options = options ?? {};
 
         this._container = new Container();
-        this._componentManager = new ComponentManager(Vue, this._container);
-        // FIXME: Fix this 
-        // this._componentManager.registerComponents(
-        //     NFileSelectViewModel, NExpandingContainerViewModel, NScrollContainerViewModel
-        // );
-        this._pageManager = new PageManager(VueRouter, this._container, this._componentManager);
 
-        Vue.config.silent = false;
-        Vue.config.devtools = false;
-        Vue.config.performance = false;
-        Vue.config.productionTip = false;
+        this._app = createApp({
+            template: `<router-view></router-view>`
+        });
+
+
+        // this._app = createApp({
+        //     provide: function (): { rootScopeContainer: Container; }
+        //     {
+        //         return {
+        //             rootScopeContainer: this._container
+        //         };
+        //     }
+        // });
+
+        this._componentManager = new ComponentManager(this._app, this._container);
+
+        // const router = createRouter({
+        //     history: 
+        // });
+
+        this._componentManager.registerComponents(
+            NFileSelectViewModel, NExpandingContainerViewModel, NScrollContainerViewModel
+        );
+        this._pageManager = new PageManager(this._container, this._componentManager);
+
+        this._app.config.performance = false;
+        // Vue.config.silent = false;
+        // Vue.config.devtools = false;
+        // Vue.config.performance = false;
+        // Vue.config.productionTip = false;
     }
 
 
@@ -233,13 +248,22 @@ export class ClientApp
     {
         given(this, "this").ensure(t => !t._isBootstrapped, "already bootstrapped");
 
+        // this._app = createApp()
+
         this._configureGlobalConfig();
         this._configurePages();
         this._configureErrorTracking();
         this._configureComponents();
         this._configureCoreServices();
         this._configureContainer();
-        this._configureRoot();
+
+        this._app.provide("rootScopeContainer", this._container);
+        this._app.use(this._pageManager.vueRouterInstance);
+
+        this._app.mount(this._appElementId);
+
+
+        // this._configureRoot();
 
         this._isBootstrapped = true;
         // this._pageManager.handleInitialRoute();
@@ -260,17 +284,17 @@ export class ClientApp
         {
             console.log("Bootstrapping in DEV mode.");
 
-            Vue.config.silent = false;
-            Vue.config.devtools = true;
-            Vue.config.performance = true;
-            Vue.config.productionTip = true;
+            // Vue.config.silent = false;
+            // Vue.config.devtools = true;
+            // Vue.config.performance = true;
+            // Vue.config.productionTip = true;
         }
         else
         {
-            Vue.config.silent = true;
-            Vue.config.devtools = false;
-            Vue.config.performance = false;
-            Vue.config.productionTip = false;
+            // Vue.config.silent = true;
+            // Vue.config.devtools = false;
+            // Vue.config.performance = false;
+            // Vue.config.productionTip = false;
         }
 
         // console.log(`Bootstrapping in ${ConfigurationManager.getConfig("env")} mode.`);
@@ -317,15 +341,17 @@ export class ClientApp
         this._container.bootstrap();
     }
 
+    // @ts-expect-error not used atm
     private _configureRoot(): void
     {
         const container = this._container;
 
-        const componentOptions = {
+        const componentOptions: ComponentOptions = {
             el: this._appElementId,
-            // eslint-disable-next-line @typescript-eslint/no-unsafe-return
-            render: (createElement: Function) => createElement(this._rootComponentElement),
-            router: this._pageManager.vueRouterInstance,
+
+            render: () => h(this._rootComponentElement),
+            // render: (createElement: Function) => createElement(this._rootComponentElement),
+            // router: this._pageManager.vueRouterInstance,
             provide: function (): { rootScopeContainer: Container; }
             {
                 return {
@@ -342,9 +368,9 @@ export class ClientApp
             console.log(`🔥 Hot Reload enabled`);
         }
 
-
+        // this._app
 
         // eslint-disable-next-line @typescript-eslint/no-unsafe-call
-        this._app = new Vue(componentOptions);
+        // this._app = new Vue(componentOptions);
     }
 }

@@ -1,14 +1,23 @@
 {
     "compilerOptions": {
-        "module": "NodeNext",
-        "target": "ES2022",
         "lib": [
-            "ES2023",
-            "esnext.decorators", 
+            "ESNext",
+            "esnext.decorators",
             "DOM"
         ],
+        "target": "ESNext",
         "strict": true,
         "strictNullChecks": true,
+        "skipLibCheck": true,
+        "forceConsistentCasingInFileNames": true,
+        "composite": true,
+        "verbatimModuleSyntax": true,
+        "module": "ESNext",
+        "moduleResolution": "Bundler",
+        "types": [
+            "node",
+            "jquery"
+        ],
         "strictFunctionTypes": true,
         "noImplicitThis": true,
         "noImplicitReturns": true,
@@ -18,14 +27,11 @@
         "noEmitOnError": true,
         "sourceMap": true,
         "removeComments": false,
-        "forceConsistentCasingInFileNames": true,
-        "incremental": false,
-        "skipLibCheck": true,
         "importHelpers": true,
         "noEmitHelpers": true,
         "noImplicitOverride": true,
         "pretty": true,
         "esModuleInterop": true,
-        "allowSyntheticDefaultImports": true
+        "allowSyntheticDefaultImports": true,
     }
 }

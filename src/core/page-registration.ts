@@ -1,14 +1,14 @@
 import { given } from "@nivinjoseph/n-defensive";
 import { ApplicationException } from "@nivinjoseph/n-exception";
-import { MetaDetail, metaSymbol } from "./meta.js";
+import { metaSymbol, type MetaDetail } from "./meta.js";
 import { RouteInfo } from "./route-info.js";
-import { RouteDecoratorMetadata, appRouteSymbol } from "./route.js";
+import { appRouteSymbol, type RouteDecoratorMetadata } from "./route.js";
 import { titleSymbol } from "./title.js";
 import { ViewModelRegistration } from "./view-model-registration.js";
 // import { authorizeSymbol } from "./authorize";
-import { PageViewModelClass } from "./page-view-model.js";
+import type { PageViewModelClass } from "./page-view-model.js";
 import { pagesSymbol } from "./pages.js";
-import { ResolveDecoratorMetadata, resolveSymbol } from "./resolve.js";
+import { resolveSymbol, type ResolveDecoratorMetadata } from "./resolve.js";
 
 
 export class PageRegistration extends ViewModelRegistration

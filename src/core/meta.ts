@@ -1,6 +1,6 @@
 import { given } from "@nivinjoseph/n-defensive";
 import "@nivinjoseph/n-ext";
-import { PageViewModel, PageViewModelClass } from "./page-view-model.js";
+import type { PageViewModel, PageViewModelClass } from "./page-view-model.js";
 
 
 export const metaSymbol = Symbol.for("@nivinjoseph/n-app/meta");
@@ -11,17 +11,16 @@ export function meta<This extends PageViewModel>(...metas: readonly [MetaDetail,
     given(metas, "metas").ensureHasValue().ensureIsArray()
         .ensure(t => t.isNotEmpty);
 
-    const decorator: MetaPageViewModelDecorator<This> = (target, context) =>
+    const decorator: MetaPageViewModelDecorator<This> = (_, context) =>
     {
         given(context, "context")
             // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
             .ensure(t => t.kind === "class", "meta decorator should only be used on a class");
 
         const className = context.name!;
-        given(className, className).ensureHasValue().ensureIsString()
-            .ensure(_ => target.prototype instanceof PageViewModel, `class '${className}' decorated with meta must extend PageViewModel class`);
+        given(className, className).ensureHasValue().ensureIsString();
 
-        context.metadata[metaSymbol] = meta;
+        context.metadata[metaSymbol] = metas;
     };
 
     return decorator;

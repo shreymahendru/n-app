@@ -2,7 +2,7 @@ import { element, bind, ComponentViewModel, template } from "./../../../../src/i
 import "./binding-test-view.scss";
 
 
-@template(require("./binding-test-view.html"))
+@template(require("./binding-test-view.html?raw"))
 @element("binding-test")
 @bind({
     "model": "string",

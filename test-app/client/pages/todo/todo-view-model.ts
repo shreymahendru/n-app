@@ -8,14 +8,14 @@ import { UpdateTodoViewModel } from "./update-todo/update-todo-view-model.js";
 
 
 @pages(ListTodosViewModel, CreateTodoViewModel, UpdateTodoViewModel)
-@template(require("./todo-view.html"))
+@template(require("./todo-view.html?raw"))
 @route(Routes.todo, Routes.listTodos)
-@resolve(TestResolverFoo)    
+@resolve(TestResolverFoo)
 export class TodoViewModel extends BasePageViewModel
 {
     private readonly _message = "Todo View";
-    
-    
+
+
     public get message(): string { return this._message; }
 }
 

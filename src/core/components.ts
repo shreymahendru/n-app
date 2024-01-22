@@ -1,6 +1,6 @@
 import { given } from "@nivinjoseph/n-defensive";
-import { ComponentViewModelClass } from "./component-view-model.js";
-import { PageViewModel, PageViewModelClass } from "./page-view-model.js";
+import type { ComponentViewModelClass } from "./component-view-model.js";
+import type { PageViewModel, PageViewModelClass } from "./page-view-model.js";
 
 
 export const componentsSymbol = Symbol.for("@nivinjoseph/n-app/components");
@@ -8,7 +8,7 @@ export const componentsSymbol = Symbol.for("@nivinjoseph/n-app/components");
 // public
 export function components<This extends PageViewModel>(...components: [ComponentViewModelClass<any>, ...Array<ComponentViewModelClass<any>>]): ComponentsPageViewModelDecorator<This>
 {
-    const decorator: ComponentsPageViewModelDecorator<This> = (target, context) =>
+    const decorator: ComponentsPageViewModelDecorator<This> = (_, context) =>
     {
         given(context, "context")
             // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
@@ -16,8 +16,7 @@ export function components<This extends PageViewModel>(...components: [Component
 
         // TODO: Change this so this can be used with ComponentViewModel as well
         const className = context.name!;
-        given(className, className).ensureHasValue().ensureIsString()
-            .ensure(_ => target.prototype instanceof PageViewModel, `class '${className}' decorated with components must extend PageViewModel class`);
+        given(className, className).ensureHasValue().ensureIsString();
 
         context.metadata[componentsSymbol] = components;
     };

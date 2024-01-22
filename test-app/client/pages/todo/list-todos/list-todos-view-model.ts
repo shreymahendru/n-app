@@ -4,7 +4,7 @@ import { BasePageViewModel } from "../../base-page-view-model.js";
 import { TestResolverFoo } from "../../../resolvers/test-resolver-foo.js";
 
 
-@template(require("./list-todos-view.html"))
+@template(require("./list-todos-view.html?raw"))
 @route(Routes.listTodos)
 @resolve(TestResolverFoo)  
 export class ListTodosViewModel extends BasePageViewModel

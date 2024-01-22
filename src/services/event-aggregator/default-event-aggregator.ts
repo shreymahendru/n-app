@@ -1,4 +1,4 @@
-import { EventAggregator, EventSubscription } from "./event-aggregator.js";
+import type { EventAggregator, EventSubscription } from "./event-aggregator.js";
 import { given } from "@nivinjoseph/n-defensive";
 
 

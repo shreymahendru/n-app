@@ -1,4 +1,4 @@
-import { Observable } from "@nivinjoseph/n-util";
+import type { Observable } from "@nivinjoseph/n-util";
 import { DisplayType } from "./display-type.js";
 
 

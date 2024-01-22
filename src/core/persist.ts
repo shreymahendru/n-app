@@ -1,21 +1,20 @@
 import "@nivinjoseph/n-ext";
 import { given } from "@nivinjoseph/n-defensive";
-import { ComponentViewModel, ComponentViewModelClass } from "./component-view-model.js";
-import { PageViewModel, PageViewModelClass } from "./page-view-model.js";
+import { ComponentViewModel, type ComponentViewModelClass } from "./component-view-model.js";
+import type { PageViewModel, PageViewModelClass } from "./page-view-model.js";
 
 
 export const persistSymbol = Symbol.for("@nivinjoseph/n-app/persist");
 
 // public
-export function persist<This extends (ComponentViewModel | PageViewModel)>(target: PersistDecoratorTarget<This>, context: PersistDecoratorContext<This>): void
+export function persist<This extends (ComponentViewModel | PageViewModel)>(_: PersistDecoratorTarget<This>, context: PersistDecoratorContext<This>): void
 {
     given(context, "context")
         // @ts-expect-error chill
         .ensure(t => t.kind === "class", "persist decorator should only be used on a class");
 
     const className = context.name!;
-    given(className, className).ensureHasValue().ensureIsString()
-        .ensure(_ => target.prototype instanceof PageViewModel || target.prototype instanceof ComponentViewModel, `class '${className}' decorated with persist must extend PageViewModel ot ComponentViewModel class`);
+    given(className, className).ensureHasValue().ensureIsString();
 
     context.metadata[persistSymbol] = true;
 }

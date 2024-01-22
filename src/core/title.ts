@@ -1,6 +1,6 @@
 import { given } from "@nivinjoseph/n-defensive";
 import "@nivinjoseph/n-ext";
-import { PageViewModel, PageViewModelClass } from "./page-view-model.js";
+import type { PageViewModel, PageViewModelClass } from "./page-view-model.js";
 
 
 export const titleSymbol = Symbol.for("@nivinjoseph/n-app/title");
@@ -11,15 +11,14 @@ export function title<This extends PageViewModel>(title: string): TitlePageViewM
     given(title, "title").ensureHasValue().ensureIsString();
     title = title.trim();
 
-    const decorator: TitlePageViewModelDecorator<This> = (target, context) =>
+    const decorator: TitlePageViewModelDecorator<This> = (_, context) =>
     {
         given(context, "context")
             // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
             .ensure(t => t.kind === "class", "title decorator should only be used on a class");
 
         const className = context.name!;
-        given(className, className).ensureHasValue().ensureIsString()
-            .ensure(_ => target.prototype instanceof PageViewModel, `class '${className}' decorated with title must extend PageViewModel class`);
+        given(className, className).ensureHasValue().ensureIsString();
 
         context.metadata[titleSymbol] = title;
     };

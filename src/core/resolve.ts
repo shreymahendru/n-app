@@ -1,7 +1,7 @@
 import { given } from "@nivinjoseph/n-defensive";
-import { ClassDefinition } from "@nivinjoseph/n-util";
-import { NavRoute } from "./nav-route.js";
-import { PageViewModel, PageViewModelClass } from "./page-view-model.js";
+import type { ClassDefinition } from "@nivinjoseph/n-util";
+import type { NavRoute } from "./nav-route.js";
+import type { PageViewModel, PageViewModelClass } from "./page-view-model.js";
 import { Utils } from "./utils.js";
 
 
@@ -21,15 +21,14 @@ export function resolve<This extends PageViewModel>(...resolvers: readonly [Reso
         };
     });
 
-    const decorator: ResolvePageViewModelDecorator<This> = (target, context) =>
+    const decorator: ResolvePageViewModelDecorator<This> = (_, context) =>
     {
         given(context, "context")
             // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
             .ensure(t => t.kind === "class", "resolve decorator should only be used on a class");
 
         const className = context.name!;
-        given(className, className).ensureHasValue().ensureIsString()
-            .ensure(_ => target.prototype instanceof PageViewModel, `class '${className}' decorated with resolve must extend PageViewModel class`);
+        given(className, className).ensureHasValue().ensureIsString();
 
         context.metadata[resolveSymbol] = mapped;
     };

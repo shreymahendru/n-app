@@ -1,4 +1,4 @@
-import { TodoRepository } from "./todo-repository.js";
+import type { TodoRepository } from "./todo-repository.js";
 import { Todo } from "./../../models/todo.js";
 import "@nivinjoseph/n-ext";
 import { ApplicationException } from "@nivinjoseph/n-exception";

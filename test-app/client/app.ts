@@ -1,7 +1,7 @@
 import "@nivinjoseph/n-ext";
 import { ClientApp, DefaultDialogService, DialogLocation } from "./../../src/index.js";
 import { ScoreBoardViewModel } from "./components/score-board/score-board-view-model.js";
-import { ComponentInstaller, Registry } from "@nivinjoseph/n-ject";
+import type { ComponentInstaller, Registry } from "@nivinjoseph/n-ject";
 import { InmemoryTodoRepository } from "./services/todo-repository/inmemory-todo-repository.js";
 import { DashboardViewModel } from "./pages/dashboard/dashboard-view-model.js";
 import { TestViewModel } from "./pages/test/test-view-model.js";

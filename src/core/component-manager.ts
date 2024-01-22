@@ -2,23 +2,25 @@ import { given } from "@nivinjoseph/n-defensive";
 import { ApplicationException } from "@nivinjoseph/n-exception";
 import { Container } from "@nivinjoseph/n-ject";
 import { ComponentRegistration } from "./component-registration.js";
-import { ComponentViewModelClass } from "./component-view-model.js";
+import type { ComponentViewModelClass } from "./component-view-model.js";
+import type { App } from "vue";
+import { ComponentFactory } from "./component-factory.js";
 // import { ComponentFactory } from "./component-factory";
 
 
 export class ComponentManager
 {
-    private readonly _vue: any;
+    private readonly _vueApp: App;
     private readonly _container: Container;
     private readonly _registrations = new Array<ComponentRegistration>();
 
 
-    // eslint-disable-next-line @typescript-eslint/explicit-module-boundary-types
-    public constructor(vue: any, container: Container)
+    public constructor(vueApp: App, container: Container)
     {
-        given(vue, "vue").ensureHasValue();
+        given(vueApp, "vueApp").ensureHasValue().ensureIsObject();
+        this._vueApp = vueApp;
+
         given(container, "container").ensureHasValue();
-        this._vue = vue;
         this._container = container;
     }
 
@@ -31,14 +33,11 @@ export class ComponentManager
 
     public bootstrap(): void
     {
-        // let componentFactory = new ComponentFactory();
-
         this._registrations.forEach(registration =>
         {
-            // this._vue.component(registration.element, componentFactory.create(registration));
-
-            // eslint-disable-next-line @typescript-eslint/no-unsafe-call
-            this._vue.component(registration.element, (<any>registration.viewModel).___componentOptions);
+            const componentFactory = new ComponentFactory();
+            this._vueApp.component(registration.element, componentFactory.create(registration));
+            // this._vueApp.component(registration.element, (<any>registration.viewModel).___componentOptions);
         });
     }
 

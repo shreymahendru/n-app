@@ -1,7 +1,6 @@
-import { DisplayService } from "./display-service.js";
+import type { DisplayService } from "./display-service.js";
 import { DisplayType } from "./display-type.js";
-// import * as $ from "jquery";
-import { Observable, Observer } from "@nivinjoseph/n-util";
+import { type Observable, Observer } from "@nivinjoseph/n-util";
 
 
 export class DefaultDisplayService implements DisplayService

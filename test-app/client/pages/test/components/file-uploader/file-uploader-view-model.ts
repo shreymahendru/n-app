@@ -1,10 +1,10 @@
 import { given } from "@nivinjoseph/n-defensive";
 import { inject } from "@nivinjoseph/n-ject";
-import { ComponentViewModel, element, EventAggregator, template } from "../../../../../../src/index.js";
+import { ComponentViewModel, element, type EventAggregator, template } from "../../../../../../src/index.js";
 import "./file-uploader-view.scss";
 
 
-@template(require("./file-uploader-view.html"))
+@template(require("./file-uploader-view.html?raw"))
 @element("file-uploader")
 @inject("EventAggregator")
 export class FileUploaderViewModel extends ComponentViewModel

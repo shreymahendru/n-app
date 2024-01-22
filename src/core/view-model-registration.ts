@@ -1,12 +1,11 @@
 import { given } from "@nivinjoseph/n-defensive";
 import { ApplicationException } from "@nivinjoseph/n-exception";
 import "@nivinjoseph/n-ext";
-import { ClassDefinition } from "@nivinjoseph/n-util";
-import { ComponentViewModel, ComponentViewModelClass } from "./component-view-model.js";
+import type { ComponentViewModelClass } from "./component-view-model.js";
 import { componentsSymbol } from "./components.js";
-import { PageViewModelClass } from "./page-view-model.js";
+import type { PageViewModelClass } from "./page-view-model.js";
 import { persistSymbol } from "./persist.js";
-import { RenderInfo, templateSymbol } from "./template.js";
+import { templateSymbol, type RenderInfo } from "./template.js";
 import { Utils } from "./utils.js";
 
 
@@ -15,7 +14,7 @@ export class ViewModelRegistration
     private readonly _name: string;
     private readonly _viewModel: PageViewModelClass<any> | ComponentViewModelClass<any>;
     private readonly _template: string | RenderInfo;
-    private readonly _components: ReadonlyArray<ClassDefinition<ComponentViewModel>> | null = null;
+    private readonly _components: ReadonlyArray<ComponentViewModelClass<any>> | null = null;
     private readonly _persist: boolean;
 
     private _isCreated = false;
@@ -51,7 +50,7 @@ export class ViewModelRegistration
 
         this._template = template;
 
-        const components = metadata[componentsSymbol] as ReadonlyArray<ClassDefinition<ComponentViewModel>> | undefined;
+        const components = metadata[componentsSymbol] as ReadonlyArray<ComponentViewModelClass<any>> | undefined;
         if (components != null)
             this._components = components;
 

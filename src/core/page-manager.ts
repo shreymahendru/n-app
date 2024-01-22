@@ -4,21 +4,20 @@ import { PageRegistration } from "./page-registration.js";
 import { ApplicationException } from "@nivinjoseph/n-exception";
 import { Page } from "./page.js";
 import { PageTreeBuilder } from "./page-tree-builder.js";
-import { Resolver, Resolution } from "./resolve.js";
+import type { Resolver, Resolution } from "./resolve.js";
 import { ComponentManager } from "./component-manager.js";
-import VueRouter from "vue-router";
-import { PageViewModelClass } from "./page-view-model.js";
+import { type Router, createRouter, createWebHashHistory, createWebHistory } from "vue-router";
+import type { PageViewModelClass } from "./page-view-model.js";
 
 
 export class PageManager
 {
-    private readonly _vueRouter: any;
     private readonly _container: Container;
     private readonly _componentManager: ComponentManager;
     private readonly _pageViewModelClasses = new Array<PageViewModelClass<any>>();
     private readonly _registrations = new Array<PageRegistration>();
     private readonly _resolvers = new Array<string>();
-    private _vueRouterInstance: VueRouter.default | null = null;
+    private _vueRouterInstance: Router | null = null;
     private _initialRoute: string | null = null;
     private _unknownRoute: string | null = null;
     // private _defaultPageTitle: string | null = null;
@@ -28,17 +27,15 @@ export class PageManager
 
     public get hasRegistrations(): boolean { return this._registrations.isNotEmpty; }
     public get useHistoryMode(): boolean { return this._useHistoryMode; }
-    public get vueRouterInstance(): VueRouter.default
+    public get vueRouterInstance(): Router
     {
         given(this, "this").ensure(t => t._vueRouterInstance != null, "not bootstrapped");
         return this._vueRouterInstance!;
     }
 
 
-    public constructor(vueRouter: unknown, container: Container, componentManager: ComponentManager)
+    public constructor(container: Container, componentManager: ComponentManager)
     {
-        given(vueRouter as object, "vueRouter").ensureHasValue();
-        this._vueRouter = vueRouter;
 
         given(container, "container").ensureHasValue().ensureIsObject();
         this._container = container;
@@ -142,19 +139,24 @@ export class PageManager
         if (this._initialRoute)
             vueRouterRoutes.push({ path: "/", redirect: this._initialRoute });
         if (this._unknownRoute)
-            vueRouterRoutes.push({ path: "*", redirect: this._unknownRoute });
-        const vueRouter = this._vueRouter;
-        const routerOptions: any = {
+            vueRouterRoutes.push({ path: "/:unknown(.*)", redirect: this._unknownRoute });
+
+        const routeHistory = this._useHistoryMode ? createWebHistory() : createWebHashHistory();
+
+        console.log("vueRouterRoutes", vueRouterRoutes);
+        this._vueRouterInstance = createRouter({
+            history: routeHistory,
             routes: vueRouterRoutes,
-            scrollBehavior: function (_to: any, _from: any, _savedPosition: any)
+            scrollBehavior: function (_, __, ___)
             {
-                return { x: 0, y: 0 };
+                return {
+                    top: 0,
+                    left: 0
+                };
             }
-        };
-        if (this._useHistoryMode)
-            routerOptions.mode = "history";
-        // eslint-disable-next-line @typescript-eslint/no-unsafe-call
-        this._vueRouterInstance = new vueRouter(routerOptions);
+        });
+
+        console.log(this._vueRouterInstance.getRoutes());
     }
 
     private _createPageTree(): ReadonlyArray<Page>
