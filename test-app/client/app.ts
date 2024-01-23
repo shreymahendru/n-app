@@ -9,6 +9,7 @@ import { TodoViewModel } from "./pages/todo/todo-view-model.js";
 import * as Routes from "./pages/routes.js";
 // import { BindingTestViewModel } from "./components/binding-test/binding-test-view-model";
 import { ScopedService } from "./services/scoped-service.js";
+import { RedirectViewModel } from "./pages/redirect/redirect-view-model.js";
 
 
 
@@ -30,7 +31,7 @@ class Installer implements ComponentInstaller
     }
 }
 
-const pages = [DashboardViewModel, TestViewModel, TodoViewModel];
+const pages = [DashboardViewModel, TestViewModel, TodoViewModel, RedirectViewModel];
 // const pages = [DashboardViewModel, TestViewModel];
 
 const dialogService = new DefaultDialogService({

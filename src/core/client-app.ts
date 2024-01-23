@@ -2,7 +2,7 @@
 // const Vue = require("vue");
 
 // public
-import { createApp, type App, type ComponentOptions, h } from "vue";
+import { createApp, type App, h, resolveComponent, type Plugin } from "vue";
 
 import { ConfigurationManager } from "@nivinjoseph/n-config";
 import { given } from "@nivinjoseph/n-defensive";
@@ -24,47 +24,12 @@ import { NFileSelectViewModel } from "../components/n-file-select/n-file-select-
 import { NExpandingContainerViewModel } from "../components/n-expanding-container/n-expanding-container-view-model.js";
 import { NScrollContainerViewModel } from "../components/n-scroll-container/n-scroll-container-view-model.js";
 
-// declare const makeHot: (options: any) => void;
-
-let makeHot: Function | null;
-
-// if ((<any>module).hot)
-// {
-//     makeHot = function (options: any): void
-//     {
-//         // console.log('is Hot');
-//         const api = require("vue-hot-reload-api");
-//         // eslint-disable-next-line @typescript-eslint/no-unsafe-call
-//         api.install(require("@nivinjoseph/vue"));
-
-//         if (!api.compatible)
-//             throw new Error("vue-hot-reload-api is not compatible with the version of Vue you are using.");
-
-//         // eslint-disable-next-line @typescript-eslint/no-unsafe-call
-//         (<any>module).hot.accept();
-
-//         // eslint-disable-next-line @typescript-eslint/no-unsafe-call
-//         if (!api.isRecorded("ClientAppRoot")) 
-//         {
-//             // eslint-disable-next-line @typescript-eslint/no-unsafe-call
-//             api.createRecord("ClientAppRoot", options);
-//             // console.log("creating record", "${id}");
-//         }
-//         else 
-//         {
-//             // eslint-disable-next-line @typescript-eslint/no-unsafe-call
-//             api.reload("ClientAppRoot", options);
-//             // console.log("updating record", "${id}");
-//         }
-//     };
-// }
 
 // public
 export class ClientApp
 {
     private readonly _appElementId: string;
     private readonly _rootComponentElement: string;
-    private readonly _options: object;
     private readonly _container: Container;
     private readonly _componentManager: ComponentManager;
     private readonly _pageManager: PageManager;
@@ -86,7 +51,7 @@ export class ClientApp
      * Check the dev dependencies in package.json
      */
 
-    public constructor(appElementId: string, rootComponentElement: string, options?: object)
+    public constructor(appElementId: string, rootComponentElement: string, rootComponentProps?: object)
     {
         given(appElementId, "appElementId").ensureHasValue().ensureIsString().ensure(t => t.startsWith("#"));
         this._appElementId = appElementId;
@@ -94,30 +59,15 @@ export class ClientApp
         given(rootComponentElement, "rootComponentElement").ensureHasValue().ensureIsString();
         this._rootComponentElement = rootComponentElement;
 
-        given(options as object, "options").ensureIsObject();
-        this._options = options ?? {};
+        given(rootComponentProps, "rootComponentProps").ensureIsObject();
 
         this._container = new Container();
 
         this._app = createApp({
-            template: `<router-view></router-view>`
+            render: () => h(resolveComponent(this._rootComponentElement), rootComponentProps)
         });
 
-
-        // this._app = createApp({
-        //     provide: function (): { rootScopeContainer: Container; }
-        //     {
-        //         return {
-        //             rootScopeContainer: this._container
-        //         };
-        //     }
-        // });
-
         this._componentManager = new ComponentManager(this._app, this._container);
-
-        // const router = createRouter({
-        //     history: 
-        // });
 
         this._componentManager.registerComponents(
             NFileSelectViewModel, NExpandingContainerViewModel, NScrollContainerViewModel
@@ -185,6 +135,15 @@ export class ClientApp
 
         given(route, "route").ensureHasValue().ensureIsString();
         this._pageManager.useAsUnknownRoute(route);
+        return this;
+    }
+
+    public usePlugin(plugin: Plugin, ...options: Array<any>): this
+    {
+        given(plugin, "plugin").ensureHasValue();
+
+        this._app.use(plugin, options);
+
         return this;
     }
 
@@ -288,6 +247,7 @@ export class ClientApp
             // Vue.config.devtools = true;
             // Vue.config.performance = true;
             // Vue.config.productionTip = true;
+            this._app.config.performance = true;
         }
         else
         {
@@ -295,6 +255,7 @@ export class ClientApp
             // Vue.config.devtools = false;
             // Vue.config.performance = false;
             // Vue.config.productionTip = false;
+            this._app.config.performance = false;
         }
 
         // console.log(`Bootstrapping in ${ConfigurationManager.getConfig("env")} mode.`);
@@ -339,38 +300,5 @@ export class ClientApp
     private _configureContainer(): void
     {
         this._container.bootstrap();
-    }
-
-    // @ts-expect-error not used atm
-    private _configureRoot(): void
-    {
-        const container = this._container;
-
-        const componentOptions: ComponentOptions = {
-            el: this._appElementId,
-
-            render: () => h(this._rootComponentElement),
-            // render: (createElement: Function) => createElement(this._rootComponentElement),
-            // router: this._pageManager.vueRouterInstance,
-            provide: function (): { rootScopeContainer: Container; }
-            {
-                return {
-                    rootScopeContainer: container
-                };
-            },
-            ...this._options
-        };
-
-
-        if (makeHot)
-        {
-            makeHot(componentOptions);
-            console.log(`🔥 Hot Reload enabled`);
-        }
-
-        // this._app
-
-        // eslint-disable-next-line @typescript-eslint/no-unsafe-call
-        // this._app = new Vue(componentOptions);
     }
 }

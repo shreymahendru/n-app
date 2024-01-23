@@ -32,17 +32,6 @@ export class PageViewModel extends BaseViewModel
         return routeArgs ? routeArgs.queryArgs : null;
     }
 
-    public static createComponentOptions(component: PageViewModelClass<any>, defaultPageTitle: string | null, defaultPageMetadata: ReadonlyArray<MetaDetail> | null): object
-    {
-        given(component, "component").ensureHasValue().ensureIsFunction();
-        given(defaultPageTitle as string, "defaultPageTitle").ensureIsString();
-        given(defaultPageMetadata as Array<MetaDetail>, "defaultPageMetadata").ensureIsArray();
-
-        const registration = new PageRegistration(component, defaultPageTitle, defaultPageMetadata);
-        const factory = new PageComponentFactory();
-        return factory.create(registration);
-    }
-
     // override
     protected onEnter(...params: Array<any>): void
     {

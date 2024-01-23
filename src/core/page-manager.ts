@@ -143,7 +143,6 @@ export class PageManager
 
         const routeHistory = this._useHistoryMode ? createWebHistory() : createWebHashHistory();
 
-        console.log("vueRouterRoutes", vueRouterRoutes);
         this._vueRouterInstance = createRouter({
             history: routeHistory,
             routes: vueRouterRoutes,
@@ -155,8 +154,6 @@ export class PageManager
                 };
             }
         });
-
-        console.log(this._vueRouterInstance.getRoutes());
     }
 
     private _createPageTree(): ReadonlyArray<Page>
@@ -168,58 +165,47 @@ export class PageManager
 
     private _configureResolves(): void
     {
-        // eslint-disable-next-line @typescript-eslint/no-unsafe-call
-        this._vueRouterInstance!.beforeEach((to: any, from: any, next: Function) =>
+        this._vueRouterInstance!.beforeEach(async (to, from) =>
         {
-            const registrationName = to.name + "ViewModel";
+            const registrationName = to.name!.toString();
             const registration = this._registrations.find(t => t.name === registrationName);
             if (registration == null)
                 throw new ApplicationException(`Unable to find PageRegistration with name '${registrationName}'`);
             registration.resolvedValues = null;
+            
             if (registration.resolvers && registration.resolvers.length > 0)
             {
                 const resolvers = registration.resolvers.map(t => this._container.resolve<Resolver>(t.name));
-                resolvers
-                    .mapAsync(async t =>
+                const resolutions = await resolvers
+                    .mapAsync(t =>
                     {
-                        try 
-                        {
-                            const resolution = await t.resolve(from, to);
-                            return resolution;
-                        }
-                        catch (error)
-                        {
-                            return false;
-                        }
-                    })
-                    .then(resolutions =>
-                    {
-                        if (resolutions.some(t => t === false))
-                        {
-                            next(false);
-                            return;
-                        }
-
-                        const redirectRes = resolutions.find(t => !!(<Resolution>t).redirect);
-                        if (redirectRes && redirectRes.redirect)
-                        {
-                            next(redirectRes.redirect);
-                            return;
-                        }
-
-                        // eslint-disable-next-line @typescript-eslint/no-unsafe-return
-                        registration.resolvedValues = resolutions.filter(t => (<any>t).value != null).map(t => (<Resolution>t).value);
-                        next();
-                    })
-                    .catch(() =>
-                    {
-                        next(false);
+                        // don't need to catch this error adn return false
+                        // now if an error is thrown then it will cancel the navigation.
+                        // also the error will be reported to the router, 
+                        // which can be caught and logged from the global handler and won't be swallowed 
+                        return t.resolve(from, to);
+                        //     try 
+                        //     {
+                        //         const resolution = await t.resolve(from, to);
+                        //         return resolution;
+                        //     }
+                        //     catch (error)
+                        //     {
+                        //         return false;
+                        //     }
                     });
+
+                const redirectResolution = resolutions.find(t => !!t.redirect);
+                if (redirectResolution != null && redirectResolution.redirect != null)
+                    return {
+                        path: redirectResolution.redirect
+                    };
+
+                // eslint-disable-next-line @typescript-eslint/no-unsafe-return
+                registration.resolvedValues = resolutions.where(t => t.value != null).map(t => t.value);
             }
-            else
-            {
-                next();
-            }
+
+            return true;
         });
     }
 

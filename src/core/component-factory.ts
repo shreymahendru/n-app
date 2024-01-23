@@ -13,7 +13,6 @@ export class ComponentFactory
     public create(registration: ComponentRegistration): Object
     {
         given(registration, "registration").ensureHasValue();
-
         const component: ComponentOptions = {
             name: registration.name,
             props: this._createComponentPropsOptions(registration),

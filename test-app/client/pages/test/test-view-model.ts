@@ -65,6 +65,11 @@ export class TestViewModel extends PageViewModel
         console.log(player.nationality);
     }
 
+    public redirectTest(): void
+    {
+        this._navigationService.navigate(Routes.redirect);
+    }
+
     protected override onCreate(): void
     {
         super.onCreate();

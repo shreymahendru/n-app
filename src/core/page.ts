@@ -2,7 +2,6 @@ import { given } from "@nivinjoseph/n-defensive";
 import { PageRegistration } from "./page-registration.js";
 import type { RouteRecordRaw, RouteRecordRedirect, RouteRecordSingleViewWithChildren } from "vue-router";
 import { PageComponentFactory } from "./page-component-factory.js";
-// import { PageComponentFactory } from "./page-component-factory";
 
 
 export class Page
@@ -71,7 +70,7 @@ export class Page
 
         const component = factory.create(this.registration!);
         const vueRouterRoute: RouteRecordRaw = {
-            name: this._registration!.name.replace("ViewModel", ""),
+            name: this._registration!.name,
             path: this._createRoute(),
             component,
             children: []
@@ -79,7 +78,6 @@ export class Page
 
         if (this._registration!.redirect)
         {
-            // FIXME: check if this even works...
             (vueRouterRoute as unknown as RouteRecordRedirect).redirect = (to): string =>
             {
                 // we can do this because redirect has to be a nested route

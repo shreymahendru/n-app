@@ -36,7 +36,7 @@ export class PageRegistration extends ViewModelRegistration
 
     public constructor(page: PageViewModelClass<any>, defaultPageTitle: string | null, defaultPageMetas: ReadonlyArray<MetaDetail> | null)
     {
-        given(page as Function, "page").ensureHasValue().ensureIsFunction();
+        given(page, "page").ensureHasValue().ensureIsFunction();
         given(defaultPageTitle, "defaultPageTitle").ensureIsString();
         given(defaultPageMetas, "defaultPageMetas").ensureIsArray();
 

@@ -146,6 +146,112 @@ export class PageComponentFactory
                 return {
                     vm: vm.nAppVm
                 };
+            },
+
+            /* The Full Navigation Resolution Flow
+             Navigation triggered.
+             Call beforeRouteLeave guards in deactivated components.
+             Call global beforeEach guards.
+             Call beforeRouteUpdate guards in reused components.
+             Call beforeEnter in route configs.
+             Resolve async route components.
+             Call beforeRouteEnter in activated components.
+             Call global beforeResolve guards.
+             Navigation is confirmed.
+             Call global afterEach hooks.
+             DOM updates triggered.
+             Call callbacks passed to next in beforeRouteEnter guards with instantiated instances. 
+             */
+            beforeRouteEnter: function (to, _, next)
+            {
+                // called before the route that renders this component is confirmed.
+                // does NOT have access to `this` component instance,
+                // because it has not been created yet when this guard is called!
+
+                const routeArgs: RouteArgs = RouteArgs.create(registration.route, to);
+                setDocumentMetadata();
+
+                // The beforeRouteEnter guard does NOT have access to this,
+                // because the guard is called before the navigation is confirmed,
+                // thus the new entering component has not even been created yet.
+
+                // However, you can access the instance by passing a callback to next.
+                // The callback will be called when the navigation is confirmed, 
+                // and the component instance will be passed to the callback as the argument
+                next((vueVm) =>
+                {
+                    setDocumentMetadata();
+
+                    const vm = (vueVm as any).nAppVm;
+
+                    vm.__routeArgs = routeArgs;
+
+                    if (vm.onEnter)
+                    {
+                        if (routeArgs.routeArgs.isNotEmpty)
+                            // eslint-disable-next-line @typescript-eslint/no-unsafe-call
+                            vm.onEnter(
+                                ...routeArgs.routeArgs,
+                                ...registration.resolvedValues != null ? registration.resolvedValues : []
+                            );
+                        else
+                            // eslint-disable-next-line @typescript-eslint/no-unsafe-call
+                            vm.onEnter();
+                    }
+                });
+            },
+
+            beforeRouteUpdate: function (to, from)
+            {
+                // called when the route that renders this component has changed, but this component is reused in the new route.
+                // For example, given a route with params `/users/:id`, when we navigate between `/users/1` and `/users/2`,
+                // the same `UserDetails` component instance will be reused, and this hook will be called when that happens.
+                // Because the component is mounted while this happens, the navigation guard has access to `this` component instance.
+
+                const toRouteArgs = RouteArgs.create(registration.route, to);
+                const fromRouteArgs = RouteArgs.create(registration.route, from);
+
+                if (toRouteArgs.equals(fromRouteArgs))
+                {
+                    setDocumentMetadata();
+                    return true;
+                }
+
+                const vm = this.nAppVm;
+                if (vm.onLeave)    
+                {
+                    // eslint-disable-next-line @typescript-eslint/no-unsafe-call
+                    vm.onLeave();
+                }
+
+                vm.__routeArgs = toRouteArgs;
+
+                if (vm.onEnter)
+                {
+                    if (toRouteArgs.routeArgs.isNotEmpty)
+                        // eslint-disable-next-line @typescript-eslint/no-unsafe-call
+                        vm.onEnter(
+                            ...toRouteArgs.routeArgs,
+                            ...registration.resolvedValues != null ? registration.resolvedValues : []
+                        );
+                    else
+                        // eslint-disable-next-line @typescript-eslint/no-unsafe-call
+                        vm.onEnter();
+                }
+
+                setDocumentMetadata();
+
+                return true;
+            },
+            beforeRouteLeave: function (_, __)
+            {
+                const vm = this.nAppVm;
+
+                if (vm.onLeave)
+                    // eslint-disable-next-line @typescript-eslint/no-unsafe-call
+                    vm.onLeave();
+
+                return true;
             }
         };
 
@@ -154,165 +260,6 @@ export class PageComponentFactory
         else
             component.render = registration.template.render;
 
-
-
-
-
-        /* The Full Navigation Resolution Flow
-                Navigation triggered
-                Call leave guards in deactivated components
-                Call global beforeEach guards
-                Call beforeRouteUpdate guards in reused components (2.2+)
-                Call beforeEnter in route configs
-                Resolve async route components
-                Call beforeRouteEnter in activated components
-                Call global beforeResolve guards (2.5+)
-                Navigation confirmed.
-                Call global afterEach hooks.
-                DOM updates triggered.
-                Call callbacks passed to next in beforeRouteEnter guards with instantiated instances.
-         */
-
-        component.beforeRouteEnter = function (to: any, _from: any, next: Function): void
-        {
-            // called before the route that renders this component is confirmed.
-            // does NOT have access to `this` component instance,
-            // because it has not been created yet when this guard is called!
-
-            let routeArgs: RouteArgs | null = null;
-
-            try 
-            {
-                routeArgs = RouteArgs.create(registration.route, to);
-            }
-            catch (error)
-            {
-                console.error(error);
-                next(false);
-                return;
-            }
-
-            setDocumentMetadata();
-            next((vueModel: any) =>
-            {
-                setDocumentMetadata();
-                const vm = vueModel.nAppVm;
-                vm.__routeArgs = routeArgs;
-                // console.log("invoked on enter", routeArgs);
-
-                // if ((<any>module).hot)
-                //     PageHmrHelper.track(registration, routeArgs!);
-
-                if (vm.onEnter)
-                    if (routeArgs!.routeArgs.isNotEmpty)
-                        // eslint-disable-next-line @typescript-eslint/no-unsafe-call
-                        vm.onEnter(...routeArgs!.routeArgs,
-                            ...registration.resolvedValues ? registration.resolvedValues : []
-                        );
-                    else
-                        // eslint-disable-next-line @typescript-eslint/no-unsafe-call
-                        vm.onEnter();
-            });
-        };
-
-        component.beforeRouteUpdate = function (to: any, from: any, next: Function): void
-        {
-            // called when the route that renders this component has changed,
-            // but this component is reused in the new route.
-            // For example, for a route with dynamic params /foo/:id, when we
-            // navigate between /foo/1 and /foo/2, the same Foo component instance
-            // will be reused, and this hook will be called when that happens.
-            // has access to `this` component instance.
-
-            let routeArgs: RouteArgs | null = null;
-            try 
-            {
-                routeArgs = RouteArgs.create(registration.route, to);
-            }
-            catch (error)
-            {
-                console.error(error);
-                next(false);
-                return;
-            }
-
-            let fromRouteArgs: RouteArgs | null = null;
-            try 
-            {
-                fromRouteArgs = RouteArgs.create(registration.route, from);
-            }
-            catch (error) 
-            {
-                console.error(error);
-                fromRouteArgs = new RouteArgs({}, {}, []);
-            }
-
-            if (routeArgs.equals(fromRouteArgs))
-            {
-                setDocumentMetadata();
-                next();
-                return;
-            }
-
-            const vm = this.nAppVm;
-            if (vm.onLeave)    
-            {
-                try 
-                {
-                    // eslint-disable-next-line @typescript-eslint/no-unsafe-call
-                    vm.onLeave();
-                }
-                catch (error)
-                {
-                    next(false);
-                    return;
-                }
-            }
-
-            vm.__routeArgs = routeArgs;
-            // console.log("invoked on update", routeArgs);
-            // if ((<any>module).hot)
-            //     PageHmrHelper.track(registration, routeArgs);
-
-            if (vm.onEnter)
-                if (routeArgs.routeArgs.length > 0)
-                    // eslint-disable-next-line @typescript-eslint/no-unsafe-call
-                    vm.onEnter(...routeArgs.routeArgs,
-                        ...registration.resolvedValues ? registration.resolvedValues : []
-                    );
-                else
-                    // eslint-disable-next-line @typescript-eslint/no-unsafe-call
-                    vm.onEnter();
-
-            setDocumentMetadata();
-            next();
-        };
-
-        component.beforeRouteLeave = function (_to: any, _from: any, next: Function): void
-        {
-            // called when the route that renders this component is about to
-            // be navigated away from.
-            // has access to `this` component instance.
-
-            const vm = this.nAppVm;
-            if (vm.onLeave)
-            {
-                try 
-                {
-                    // eslint-disable-next-line @typescript-eslint/no-unsafe-call
-                    vm.onLeave();
-                }
-                catch (error)
-                {
-                    next(false);
-                    return;
-                }
-            }
-
-            next();
-        };
-
-        // eslint-disable-next-line @typescript-eslint/no-unsafe-return
         return component;
     }
 }

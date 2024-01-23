@@ -25,7 +25,9 @@
         <component-a :num="id" :sport="player"></component-a>
         <component-a :num="id" :sport="player"></component-a>
     </div> -->
-
+    
+    <button class="button" @click="redirectTest">Redirect test</button>
+    
     <non-reorderable-list :list-items="players">
         <template #list-item-1="pro">
             <p>{{pro.item.data.name}}</p>
