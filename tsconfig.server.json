@@ -5,5 +5,11 @@
         "src/**/*",
         // "test-app/client/**/*"
         "test-app/client/**/*"
+    ],
+    
+    "include": [
+        "./test-app/controllers/**/*",
+        "./test-app/server.ts",
+        "./src/plugins/**/*"
     ]
 }

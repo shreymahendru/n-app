@@ -12,7 +12,9 @@
         "plugin:require-extensions/recommended"
     ],
     "parserOptions": {
-        "project": "tsconfig.json"
+        "project": [
+            "tsconfig.json"
+        ]
     },
     "rules": {
         "quotes": "off",

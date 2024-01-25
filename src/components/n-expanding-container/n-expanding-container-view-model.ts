@@ -6,7 +6,7 @@ import { TypeHelper } from "@nivinjoseph/n-util";
 import "./n-expanding-container-view.scss";
 
 
-@template(require("./n-expanding-container-view.html?raw"))
+@template(require("./n-expanding-container-view.html"))
 @element("n-expanding-container")
 @bind({
     "constrainX?": "boolean",

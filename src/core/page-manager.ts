@@ -1,13 +1,13 @@
 import { given } from "@nivinjoseph/n-defensive";
-import { Container } from "@nivinjoseph/n-ject";
-import { PageRegistration } from "./page-registration.js";
 import { ApplicationException } from "@nivinjoseph/n-exception";
-import { Page } from "./page.js";
-import { PageTreeBuilder } from "./page-tree-builder.js";
-import type { Resolver, Resolution } from "./resolve.js";
+import { Container } from "@nivinjoseph/n-ject";
+import { createRouter, createWebHashHistory, createWebHistory, type Router } from "vue-router";
 import { ComponentManager } from "./component-manager.js";
-import { type Router, createRouter, createWebHashHistory, createWebHistory } from "vue-router";
+import { PageRegistration } from "./page-registration.js";
+import { PageTreeBuilder } from "./page-tree-builder.js";
 import type { PageViewModelClass } from "./page-view-model.js";
+import { Page } from "./page.js";
+import type { Resolver } from "./resolve.js";
 
 
 export class PageManager

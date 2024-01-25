@@ -9,7 +9,7 @@ import { TypeHelper } from "@nivinjoseph/n-util";
 import { given } from "@nivinjoseph/n-defensive";
 
 
-@template(require("./n-scroll-container-view.html?raw"))
+@template(require("./n-scroll-container-view.html"))
 @element("n-scroll-container")
 @bind({
     "onlyX?": "boolean",

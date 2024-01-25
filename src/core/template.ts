@@ -7,14 +7,14 @@ import type { PageViewModel, PageViewModelClass } from "./page-view-model.js";
 export const templateSymbol = Symbol.for("@nivinjoseph/n-app/template");
 
 // public
-export function template<This extends (PageViewModel | ComponentViewModel)>(template: string | RenderInfo): TemplateViewModelDecorator<This>
+export function template<This extends (PageViewModel | ComponentViewModel)>(template: string | Function): TemplateViewModelDecorator<This>
 {
     given(template, "template").ensureHasValue();
 
     if (typeof template === "string")
         given(template, "template").ensureIsString();
     else
-        given(template, "template").ensureIsObject();
+        given(template, "template").ensureIsFunction();
 
 
     const decorator: TemplateViewModelDecorator<This> = (_, context) =>
@@ -31,9 +31,6 @@ export function template<This extends (PageViewModel | ComponentViewModel)>(temp
 
     return decorator;
 }
-
-
-export type RenderInfo = { render: Function; staticRenderFns: Array<Function>; };
 
 
 export type TemplateDecoratorTarget<This extends (ComponentViewModel | PageViewModel)> = This extends ComponentViewModel

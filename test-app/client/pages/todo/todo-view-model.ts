@@ -8,7 +8,7 @@ import { UpdateTodoViewModel } from "./update-todo/update-todo-view-model.js";
 
 
 @pages(ListTodosViewModel, CreateTodoViewModel, UpdateTodoViewModel)
-@template(require("./todo-view.html?raw"))
+@template(require("./todo-view.html"))
 @route(Routes.todo, Routes.listTodos)
 @resolve(TestResolverFoo)
 export class TodoViewModel extends BasePageViewModel

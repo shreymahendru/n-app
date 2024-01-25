@@ -4,7 +4,7 @@ import { ComponentViewModel, element, type EventAggregator, template } from "../
 import "./file-uploader-view.scss";
 
 
-@template(require("./file-uploader-view.html?raw"))
+@template(require("./file-uploader-view.html"))
 @element("file-uploader")
 @inject("EventAggregator")
 export class FileUploaderViewModel extends ComponentViewModel
@@ -31,7 +31,7 @@ export class FileUploaderViewModel extends ComponentViewModel
 
     public uploadFile(): void
     {
-        this._eventAggregator.publish("openFileSelect", "fileField");
+        this._eventAggregator.publish("openFileSelect", "foo");
     }
 
     // public onFileSelected(val: FileInfo): void

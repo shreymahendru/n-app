@@ -12,7 +12,7 @@ import { FileUploaderViewModel } from "./components/file-uploader/file-uploader-
 
 
 @components(ComponentAViewModel, NonReorderableListViewModel, FileUploaderViewModel)
-@template(require("./test-view.html?raw"))
+@template(require("./test-view.html"))
 @route(Routes.test)
 @meta({ $key: "name", name: "description", content: "This is test" })
 @inject("TodoRepository", "NavigationService", "EventAggregator")

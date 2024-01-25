@@ -1,12 +1,11 @@
-import { PageRegistration } from "./page-registration.js";
-import { RouteArgs } from "./route-args.js";
-import type { Scope } from "@nivinjoseph/n-ject";
 import { given } from "@nivinjoseph/n-defensive";
-import { Utilities } from "./utilities.js";
 import { ApplicationException } from "@nivinjoseph/n-exception";
-import { type ComponentOptions, type Ref, type UnwrapRef, inject, provide, ref } from "vue";
+import type { Scope } from "@nivinjoseph/n-ject";
+import { inject, provide, ref, type ComponentOptions, type Ref, type UnwrapRef } from "vue";
+import { PageRegistration } from "./page-registration.js";
 import { PageViewModel } from "./page-view-model.js";
-import type { ComponentViewModel } from "./component-view-model.js";
+import { RouteArgs } from "./route-args.js";
+import { Utilities } from "./utilities.js";
 
 
 export class PageComponentFactory
@@ -30,11 +29,11 @@ export class PageComponentFactory
             });
         };
 
-
+        let Test: any;
         const component: ComponentOptions = {
             name: registration.name,
 
-            setup: function <T extends ComponentViewModel>(): { nAppVm: Ref<UnwrapRef<T>>; }
+            setup: function <T extends PageViewModel>(): { nAppVm: Ref<UnwrapRef<T>>; }
             {
                 let container: Scope | undefined = inject("rootScopeContainer");
                 if (container == null)
@@ -141,10 +140,11 @@ export class PageComponentFactory
             data: function (vm)
             {
                 // console.log("data", vm);
-                // don't need this here but exposing it so we can check the properties 
+                // don't need this here but exposing it so we can check the properties
                 // when using vue dev tools in the browsers.
                 return {
-                    vm: vm.nAppVm
+                    vm: vm.nAppVm,
+                    bruh: Test
                 };
             },
 
@@ -258,7 +258,7 @@ export class PageComponentFactory
         if (typeof registration.template === "string")
             component.template = registration.template;
         else
-            component.render = registration.template.render;
+            component.render = registration.template;
 
         return component;
     }

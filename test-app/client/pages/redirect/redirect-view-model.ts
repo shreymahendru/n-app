@@ -4,7 +4,7 @@ import * as Routes from "../routes.js";
 import "./redirect-view.scss";
 
 
-@template(require("./redirect-view.html?raw"))
+@template(require("./redirect-view.html"))
 @route(Routes.redirect)
 @resolve(RedirectResolver)
 export class RedirectViewModel extends PageViewModel

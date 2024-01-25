@@ -10,7 +10,7 @@ import "./dashboard-view.scss";
 
 
 @components(BindingTestViewModel)
-@template(require("./dashboard-view.html?raw"))
+@template(require("./dashboard-view.html"))
 @route(Routes.dashboard)
 @title("Dashboard")
 @inject("DialogService", "EventAggregator", "NavigationService", "StorageService", "ScopedService")

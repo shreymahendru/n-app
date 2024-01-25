@@ -22,8 +22,7 @@ export interface FileInfo
     nativeFile: File;
 }
 
-
-@template(require("./n-file-select-view.html?raw"))
+@template(require("./n-file-select-view.html"))
 @element("n-file-select")
 @bind({
     id: "string",
@@ -65,9 +64,11 @@ export class NFileSelectViewModel extends ComponentViewModel
 
             const sub = this._eventAggregator.subscribe("openFileSelect", (identifier) =>
             {
+                console.log(id, identifier);
                 if (identifier !== id)
                     return;
 
+                console.log(this._inputElement);
                 this._inputElement.click();
             });
 

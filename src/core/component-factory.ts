@@ -135,7 +135,7 @@ export class ComponentFactory
         if (typeof registration.template === "string")
             component.template = registration.template;
         else
-            component.render = registration.template.render;
+            component.render = registration.template;
 
         return component;
     }
