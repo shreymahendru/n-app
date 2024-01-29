@@ -6,4 +6,4 @@ export
 {
     ViteNAppBabelPlugin,
     ViteNAppViewPlugin
-}
+};

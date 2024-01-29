@@ -11,7 +11,8 @@
         },
         "./plugins": {
             "type": "./dist/plugins/index.d.ts",
-            "default": "./dist/plugins/index.js"
+            "node": "./dist/plugins/index.js", 
+            "default": null
         }
     },
     "scripts": {
