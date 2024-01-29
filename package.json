@@ -20,7 +20,7 @@
         "ts-lint": "eslint . --ext .ts",
         "ts-compile-test-app-server": "tsc -p tsconfig.server.json",
         "ts-compile-test-app-client": "tsc -p tsconfig.client.json",
-        "ts-compile-test-app-server-watch": "yarn ts-compile-server -w --preserveWatchOutput",
+        "ts-compile-test-app-server-watch": "yarn ts-compile-test-app-server -w --preserveWatchOutput",
         "ts-build": "yarn ts-compile && yarn ts-lint",
         "ts-build-dist": "yarn ts-build && tsc -p ./dist",
         "clean-src": "find ./src -name '*.js' -delete -o -name '*.map' -delete",

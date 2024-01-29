@@ -262,7 +262,6 @@ export class DefaultDialogService implements DialogService
         };
 
         const target = document.getElementById("spinnerLocation");
-        console.log(window.Spinner);
         // eslint-disable-next-line @typescript-eslint/no-unsafe-call
         this._spinner = new window.Spinner(opts).spin(target);
 

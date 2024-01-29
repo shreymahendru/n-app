@@ -64,11 +64,9 @@ export class NFileSelectViewModel extends ComponentViewModel
 
             const sub = this._eventAggregator.subscribe("openFileSelect", (identifier) =>
             {
-                console.log(id, identifier);
                 if (identifier !== id)
                     return;
 
-                console.log(this._inputElement);
                 this._inputElement.click();
             });
 
