@@ -1,12 +1,13 @@
 import { given } from "@nivinjoseph/n-defensive";
 import { ApplicationException } from "@nivinjoseph/n-exception";
 import type { Scope } from "@nivinjoseph/n-ject";
-import { inject, ref, type ComponentOptions, type Ref, type UnwrapRef } from "vue";
+import { inject, ref, type ComponentOptions as VueComponentOptions, type Ref, type UnwrapRef } from "vue";
 import type { BaseViewModel } from "../../core/base-view-model.js";
 import type { ComponentViewModelClass } from "../../core/component-view-model.js";
 import { Utilities } from "../../core/utilities.js";
 import { ViewModelRegistration } from "../../core/view-model-registration.js";
 import type { ComponentService } from "./component-service.js";
+import type { ComponentOptions } from "./component-options.js";
 
 
 export class DefaultComponentService implements ComponentService
@@ -27,7 +28,7 @@ export class DefaultComponentService implements ComponentService
         given(registration, "registration").ensureHasValue().ensureIsType(ViewModelRegistration);
         given(cache, "cache").ensureHasValue().ensureIsBoolean();
 
-        const component: ComponentOptions = {
+        const component: VueComponentOptions = {
             setup: function <T extends BaseViewModel>(): { nAppVm: Ref<UnwrapRef<T>>; }
             {
                 // console.log("setup for ", registration.name, this);
@@ -127,6 +128,23 @@ export class DefaultComponentService implements ComponentService
                 this.nAppVm._ctx.$options.computed = null;
                 // this.vm._ctx = null;
                 this.nAppVm = null;
+            },
+            data: function (vm)
+            {
+                // console.log("data", vm);
+                // don't need this here but exposing it so we can check the properties 
+                // when using vue dev tools in the browsers.
+                return {
+                    vm: vm.nAppVm
+                };
+            },
+            activated: function () 
+            {
+                // console.log("activated", registration.name);
+            },
+            deactivated: function () 
+            {
+                // console.log("deactivated", registration.name);
             }
         };
 

@@ -33,13 +33,7 @@ export function ViteNAppViewPlugin(options: { isDev: boolean; }): Plugin
 
             if (source.endsWith("-view.html"))
             {
-                console.log("here");
-                console.log("source", source);
-                console.log("importer", importer);
-                console.log("options", options);
-
                 const resolution = await this.resolve(source, importer, options);
-                console.log(resolution);
 
                 if (resolution == null || resolution.external)
                     return resolution;
@@ -65,11 +59,7 @@ export function ViteNAppViewPlugin(options: { isDev: boolean; }): Plugin
                     source: html,
                     id,
                     filename: id,
-                    isProd: true,
-                    preprocessCustomRequire: (id) =>
-                    {
-                        console.log("preprocessCustomRequire", id);
-                    }
+                    isProd: true
                 });
 
 
@@ -98,11 +88,7 @@ export default render;
                 source: code,
                 id: "name.js",
                 filename: "name.js",
-                isProd: false,
-                preprocessCustomRequire: (id) =>
-                {
-                    console.log("preprocessCustomRequire", id);
-                }
+                isProd: false
             });
 
             compiledTemplate.code = `

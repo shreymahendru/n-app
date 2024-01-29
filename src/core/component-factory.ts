@@ -121,6 +121,14 @@ export class ComponentFactory
                 // this.vm._ctx = null;
                 this.nAppVm = null;
             },
+            activated: function () 
+            {
+                // console.log("activated", registration.name);
+            },
+            deactivated: function () 
+            {
+                // console.log("deactivated", registration.name);
+            },
             data: function (vm)
             {
                 // console.log("data", vm);

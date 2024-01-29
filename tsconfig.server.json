@@ -6,10 +6,15 @@
         // "test-app/client/**/*"
         "test-app/client/**/*"
     ],
-    
     "include": [
         "./test-app/controllers/**/*",
         "./test-app/server.ts",
         "./src/plugins/**/*"
-    ]
+    ],
+    "compilerOptions": {
+        "target": "ES2017",
+        "lib": [
+            "ES2023"
+        ],  
+    },
 }

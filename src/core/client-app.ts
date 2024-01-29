@@ -1,6 +1,3 @@
-// import Vue from "@nivinjoseph/vue";
-// const Vue = require("vue");
-
 // public
 import { createApp, type App, h, resolveComponent, type Plugin } from "vue";
 
@@ -35,7 +32,7 @@ export class ClientApp
     private readonly _pageManager: PageManager;
     private readonly _app: App;
     private _isDialogServiceRegistered = false;
-    private _errorTrackingConfigurationCallback: ((vueRouter: Router) => void) | null = null;
+    private _errorTrackingConfigurationHandler: AppErrorHandler | null = null;
     private _isBootstrapped = false;
 
 
@@ -193,13 +190,13 @@ export class ClientApp
     //     return this;
     // }
 
-    public configureErrorTracking(callback: (vueRouter: any) => void): this
+    public configureErrorTracking(handler: AppErrorHandler): this
     {
-        given(callback, "callback").ensureHasValue().ensureIsFunction();
+        given(handler, "handler").ensureHasValue().ensureIsFunction();
 
         given(this, "this").ensure(t => !t._isBootstrapped, "already bootstrapped");
 
-        this._errorTrackingConfigurationCallback = callback;
+        this._errorTrackingConfigurationHandler = handler;
         return this;
     }
 
@@ -221,11 +218,7 @@ export class ClientApp
 
         this._app.mount(this._appElementId);
 
-
-        // this._configureRoot();
-
         this._isBootstrapped = true;
-        // this._pageManager.handleInitialRoute();
     }
 
     public retrieveRouterInstance(): object
@@ -257,13 +250,6 @@ export class ClientApp
             // Vue.config.productionTip = false;
             this._app.config.performance = false;
         }
-
-        // console.log(`Bootstrapping in ${ConfigurationManager.getConfig("env")} mode.`);
-
-        // Vue.config.silent = false;
-        // Vue.config.devtools = true;
-        // Vue.config.performance = true;
-        // Vue.config.productionTip = true;
     }
 
 
@@ -279,8 +265,8 @@ export class ClientApp
 
     private _configureErrorTracking(): void
     {
-        if (this._errorTrackingConfigurationCallback != null)
-            this._errorTrackingConfigurationCallback(this._pageManager.vueRouterInstance);
+        if (this._errorTrackingConfigurationHandler != null)
+            this._errorTrackingConfigurationHandler(this._pageManager.vueRouterInstance, this._app);
     }
 
     private _configureCoreServices(): void
@@ -302,3 +288,5 @@ export class ClientApp
         this._container.bootstrap();
     }
 }
+
+export type AppErrorHandler = (vueRouter: Router, vueApp: App) => void;

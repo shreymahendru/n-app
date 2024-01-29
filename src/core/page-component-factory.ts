@@ -29,7 +29,6 @@ export class PageComponentFactory
             });
         };
 
-        let Test: any;
         const component: ComponentOptions = {
             name: registration.name,
 
@@ -137,14 +136,21 @@ export class PageComponentFactory
                 // this.vm._ctx = null;
                 this.nAppVm = null;
             },
+            activated: function () 
+            {
+                // console.log("activated", registration.name);
+            },
+            deactivated: function () 
+            {
+                // console.log("deactivated", registration.name);
+            },
             data: function (vm)
             {
                 // console.log("data", vm);
                 // don't need this here but exposing it so we can check the properties
                 // when using vue dev tools in the browsers.
                 return {
-                    vm: vm.nAppVm,
-                    bruh: Test
+                    vm: vm.nAppVm
                 };
             },
 

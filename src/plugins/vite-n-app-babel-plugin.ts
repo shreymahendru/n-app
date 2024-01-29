@@ -8,8 +8,6 @@ export function ViteNAppBabelPlugin(): Plugin
         name: "vite-n-app-babel-plugin",
         async transform(code, id, _): Promise<TransformResult | null>
         {
-            console.log("id", id);
-
             if (! /\.(ts)$/.test(id))
                 return null;
 

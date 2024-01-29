@@ -23,19 +23,22 @@ export class DashboardViewModel extends BasePageViewModel
     private readonly _navigationService: NavigationService;
     // @ts-expect-error: not used atm
     private readonly _storageService: StorageService;
-    // @ts-expect-error: not used atm
     private readonly _scopedService: ScopedService;
 
 
     private readonly _message = "Dashboard view";
     private _score = 10;
     private _fooParentValue: string | null;
+    private _version: string | null = null;
     // private _isActive = false;
 
     public get score(): number { return this._score; }
 
 
     public get message(): string { return this._message; }
+
+    public get version(): string | null { return this._version; }
+    public get scopedServiceValue(): number { return this._scopedService.value; }
 
 
     public get fooParentValue(): string | null { return this._fooParentValue; }
@@ -114,6 +117,19 @@ export class DashboardViewModel extends BasePageViewModel
         await Delay.seconds(3);
 
         this._dialogService.hideLoadingScreen();
+    }
+
+    protected override async onCreate(): Promise<void>
+    {
+        super.onCreate();
+
+
+        const response = await fetch("/api/version");
+
+        const data = await response.json();
+        this._version = data.version;
+
+        this._scopedService.configureValue(10);
     }
 }
 

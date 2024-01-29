@@ -12,10 +12,13 @@ import { ViteNAppViewPlugin } from "./src/plugins/vite-n-app-view-plugin.js";
 import { nodePolyfills } from "vite-plugin-node-polyfills";
 import checker from "vite-plugin-checker";
 
+
 const VitePluginRequire: typeof vitePluginRequireRaw = (vitePluginRequireRaw as any).default;
 
-const env = ConfigurationManager.getConfig<string>("env");
+const env = ConfigurationManager.requireStringConfig("env");
 console.log("VITE ENV", env);
+
+const baseServerUrl = ConfigurationManager.requireStringConfig("baseUrl");
 
 const isDev = env === "dev";
 
@@ -26,6 +29,18 @@ export default defineConfig({
     build: {
         minify: false,
         cssMinify: false
+    },
+    server: {
+        host: "0.0.0.0",
+        port: 5173,
+        proxy: {
+            "/api": {
+
+                target: baseServerUrl,
+                changeOrigin: true,
+                secure: false
+            }
+        }
     },
     optimizeDeps: {
         esbuildOptions: {
