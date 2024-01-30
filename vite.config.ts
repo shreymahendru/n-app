@@ -26,9 +26,25 @@ const isDev = env === "dev";
 export default defineConfig({
     appType: "spa",
     root: "./test-app/client/",
+    esbuild: {
+        drop: ["debugger"],
+        keepNames: true,
+        minifySyntax: true
+    },
     build: {
-        minify: false,
-        cssMinify: false
+        minify: "esbuild",
+        cssMinify: true
+        // This does not seem to be working.. 
+        // 
+        // terserOptions: {
+        //     keep_fnames: true,
+        //     keep_classnames: true,
+        //     mangle: true,
+        //     safari10: true,
+        //     output: {
+        //         comments: false
+        //     }
+        // }
     },
     server: {
         host: "0.0.0.0",

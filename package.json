@@ -68,7 +68,12 @@
         "@vue/compiler-sfc": "^3.4.15",
         "autoprefixer": "^10.4.17",
         "sass": "^1.52.0",
-        "typescript": "^5.3.3"
+        "typescript": "^5.3.3",
+        "vite": "^5.0.10",
+        "vite-plugin-checker": "^0.6.2",
+        "vite-plugin-inspect": "^0.8.2",
+        "vite-plugin-require": "^1.1.14",
+        "vite-plugin-top-level-await": "^1.4.1"
     },
     "devDependencies": {
         "@babel/core": "^7.23.7",
@@ -96,13 +101,13 @@
         "feather-icons": "^4.29.1",
         "madge": "^6.1.0",
         "sass": "^1.52.0",
+        "terser": "^5.27.0",
         "typescript": "^5.3.3",
         "vite": "^5.0.10",
         "vite-plugin-checker": "^0.6.2",
         "vite-plugin-inspect": "^0.8.2",
         "vite-plugin-node-polyfills": "^0.19.0",
         "vite-plugin-require": "^1.1.14",
-        "vite-plugin-require-transform": "^1.0.21",
         "vite-plugin-top-level-await": "^1.4.1"
     },
     "dependencies": {

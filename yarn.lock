@@ -69,7 +69,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@babel/generator@npm:^7.15.4, @babel/generator@npm:^7.22.5, @babel/generator@npm:^7.23.6":
+"@babel/generator@npm:^7.15.4, @babel/generator@npm:^7.23.6":
   version: 7.23.6
   resolution: "@babel/generator@npm:7.23.6"
   dependencies:
@@ -356,7 +356,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@babel/parser@npm:^7.0.0, @babel/parser@npm:^7.1.0, @babel/parser@npm:^7.15.6, @babel/parser@npm:^7.20.7, @babel/parser@npm:^7.21.4, @babel/parser@npm:^7.22.15, @babel/parser@npm:^7.22.5, @babel/parser@npm:^7.23.6":
+"@babel/parser@npm:^7.0.0, @babel/parser@npm:^7.1.0, @babel/parser@npm:^7.15.6, @babel/parser@npm:^7.20.7, @babel/parser@npm:^7.21.4, @babel/parser@npm:^7.22.15, @babel/parser@npm:^7.23.6":
   version: 7.23.6
   resolution: "@babel/parser@npm:7.23.6"
   bin:
@@ -1359,7 +1359,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@babel/traverse@npm:^7.15.4, @babel/traverse@npm:^7.22.5, @babel/traverse@npm:^7.23.7":
+"@babel/traverse@npm:^7.15.4, @babel/traverse@npm:^7.23.7":
   version: 7.23.7
   resolution: "@babel/traverse@npm:7.23.7"
   dependencies:
@@ -1746,13 +1746,13 @@ __metadata:
     madge: "npm:^6.1.0"
     sass: "npm:^1.52.0"
     simplebar: "npm:^5.3.6"
+    terser: "npm:^5.27.0"
     typescript: "npm:^5.3.3"
     vite: "npm:^5.0.10"
     vite-plugin-checker: "npm:^0.6.2"
     vite-plugin-inspect: "npm:^0.8.2"
     vite-plugin-node-polyfills: "npm:^0.19.0"
     vite-plugin-require: "npm:^1.1.14"
-    vite-plugin-require-transform: "npm:^1.0.21"
     vite-plugin-top-level-await: "npm:^1.4.1"
     vue: "npm:^3.3.11"
     vue-router: "npm:^4.2.5"
@@ -1770,6 +1770,11 @@ __metadata:
     autoprefixer: ^10.4.17
     sass: ^1.52.0
     typescript: ^5.3.3
+    vite: ^5.0.10
+    vite-plugin-checker: ^0.6.2
+    vite-plugin-inspect: ^0.8.2
+    vite-plugin-require: ^1.1.14
+    vite-plugin-top-level-await: ^1.4.1
   languageName: unknown
   linkType: soft
 
@@ -9461,7 +9466,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"terser@npm:^5.26.0":
+"terser@npm:^5.26.0, terser@npm:^5.27.0":
   version: 5.27.0
   resolution: "terser@npm:5.27.0"
   dependencies:
@@ -10009,18 +10014,6 @@ __metadata:
   peerDependencies:
     vite: ^2.0.0 || ^3.0.0 || ^4.0.0 || ^5.0.0
   checksum: 807ab14d94a693a3f9ba1e46258eaf8bce9e663d0a5f6a31f43c82d1a95ae0df1a03855e103bf50fa08f7485ffbe201623bf7c78d2ba91075ec5eae1e8a42555
-  languageName: node
-  linkType: hard
-
-"vite-plugin-require-transform@npm:^1.0.21":
-  version: 1.0.21
-  resolution: "vite-plugin-require-transform@npm:1.0.21"
-  dependencies:
-    "@babel/generator": "npm:^7.22.5"
-    "@babel/parser": "npm:^7.22.5"
-    "@babel/traverse": "npm:^7.22.5"
-    "@babel/types": "npm:^7.22.5"
-  checksum: 4f04958aaae791351fc8509917844d09b7e8f7d462fc373a165062df78fe49af3befea2c6a0f47b1a4f39117a33f9bc56b1bd6908948b0bb7aacd596b8f3d370
   languageName: node
   linkType: hard
 
