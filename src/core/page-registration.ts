@@ -9,6 +9,9 @@ import { ViewModelRegistration } from "./view-model-registration.js";
 import type { PageViewModelClass } from "./page-view-model.js";
 import { pagesSymbol } from "./pages.js";
 import { resolveSymbol, type ResolveDecoratorMetadata } from "./resolve.js";
+import { ComponentRegistration } from "./component-registration.js";
+import type { ComponentViewModelClass } from "./component-view-model.js";
+import { componentsSymbol } from "./components.js";
 
 
 export class PageRegistration extends ViewModelRegistration
@@ -19,6 +22,7 @@ export class PageRegistration extends ViewModelRegistration
     private readonly _metadata: ReadonlyArray<MetaDetail>;
     private readonly _resolvers: ReadonlyArray<ResolveDecoratorMetadata> | null = null;
     private readonly _pages: ReadonlyArray<PageViewModelClass<any>> | null = null;
+    private readonly _localComponentRegistrations = new Array<ComponentRegistration>();
 
     private _resolvedValues: ReadonlyArray<any> | null = null;
 
@@ -29,6 +33,8 @@ export class PageRegistration extends ViewModelRegistration
     public get metadata(): ReadonlyArray<MetaDetail> { return this._metadata; }
     public get resolvers(): ReadonlyArray<ResolveDecoratorMetadata> | null { return this._resolvers; }
     public get pages(): ReadonlyArray<PageViewModelClass<any>> | null { return this._pages; }
+    public get localComponentRegistrations(): Array<ComponentRegistration> { return this._localComponentRegistrations; }
+    
 
     public get resolvedValues(): ReadonlyArray<any> | null { return this._resolvedValues; }
     public set resolvedValues(value: ReadonlyArray<any> | null) { this._resolvedValues = value; }
@@ -72,41 +78,22 @@ export class PageRegistration extends ViewModelRegistration
         const pages = metadata[pagesSymbol] as ReadonlyArray<PageViewModelClass<any>> | undefined;
         if (pages != null)
             this._pages = pages;
+        
+        const components = metadata[componentsSymbol] as ReadonlyArray<ComponentViewModelClass<any>> | undefined;
+        if (components != null && components.isNotEmpty)
+        {
+            components.forEach(component =>
+            {
+                const registration = new ComponentRegistration(component);
+
+                if (this._localComponentRegistrations.some(t => t.name === registration.name))
+                    throw new ApplicationException(`Duplicate Local Component registration with name '${registration.name}' for Page '${this.name}'.`);
+
+                if (this._localComponentRegistrations.some(t => t.element === registration.element))
+                    throw new ApplicationException(`Duplicate Local Component registration with element '${registration.element}' for Page '${this.name}'`);
+
+                this._localComponentRegistrations.push(registration);
+            });
+        }
     }
-
-
-    // public reload(page: Function): void
-    // {
-    //     given(page, "page").ensureHasValue().ensureIsFunction();
-
-    //     super.reload(page);
-
-    //     if (!Reflect.hasOwnMetadata(appRouteSymbol, this.viewModel))
-    //         throw new ApplicationException(`PageViewModel '${this.name}' does not have @route applied.`);
-
-    //     const routeData = Reflect.getOwnMetadata(appRouteSymbol, this.viewModel);
-
-    //     this._route = new RouteInfo(routeData.route);
-    //     this._redirect = routeData.redirect;
-
-    //     let title = this._title || null;
-    //     if (Reflect.hasOwnMetadata(titleSymbol, this.viewModel))
-    //         title = Reflect.getOwnMetadata(titleSymbol, this.viewModel);
-
-    //     this._title = title;
-
-    //     const metas = this._metadata ? Object.entries(this._metadata).map(t => ({name: t[0], content: t[1]})) : [];
-    //     if (Reflect.hasOwnMetadata(metaSymbol, this.viewModel))
-    //         metas.push(...Reflect.getOwnMetadata(metaSymbol, this.viewModel));
-
-    //     this._metadata = metas
-    //         .reduce((acc: any, t) =>
-    //         {
-    //             acc[t.name] = t.content;
-    //             return acc;
-    //         }, {});
-
-    //     if (Reflect.hasOwnMetadata(resolveSymbol, this.viewModel))
-    //         this._resolvers = Reflect.getOwnMetadata(resolveSymbol, this.viewModel);
-    // }
 }

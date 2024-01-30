@@ -69,13 +69,9 @@ export class ClientApp
         this._componentManager.registerComponents(
             NFileSelectViewModel, NExpandingContainerViewModel, NScrollContainerViewModel
         );
-        this._pageManager = new PageManager(this._container, this._componentManager);
+        this._pageManager = new PageManager(this._container);
 
         this._app.config.performance = false;
-        // Vue.config.silent = false;
-        // Vue.config.devtools = false;
-        // Vue.config.performance = false;
-        // Vue.config.productionTip = false;
     }
 
 
@@ -144,51 +140,13 @@ export class ClientApp
         return this;
     }
 
-    // /**
-    //  * @deprecated
-    //  */
-    // public useAsDefaultPageTitle(title: string): this
-    // {
-    //     if (this._isBootstrapped)
-    //         throw new InvalidOperationException("useAsDefaultPageTitle");
-
-    //     given(title, "title").ensureHasValue().ensureIsString();
-    //     this._pageManager.useAsDefaultPageTitle(title);
-    //     return this;
-    // }
-
-    // /**
-    //  * @deprecated
-    //  */
-    // public useAsDefaultPageMetadata(...metas: Array<{ name: string; content: string; }>): this
-    // {
-    //     if (this._isBootstrapped)
-    //         throw new InvalidOperationException("useAsDefaultPageMetadata");
-
-    //     given(metas, "metas").ensureHasValue().ensureIsArray().ensure(t => t.length > 0);
-    //     this._pageManager.useAsDefaultPageMetadata(metas);
-    //     return this;
-    // }
-
     public useHistoryModeRouting(): this
     {
         given(this, "this").ensure(t => !t._isBootstrapped, "already bootstrapped");
 
-        // if (this._initialRoute)
-        //     throw new InvalidOperationException("Cannot use history mode with initial route.");
-
         this._pageManager.useHistoryModeRouting();
         return this;
     }
-
-    // public enableDevMode(): this
-    // {
-    //     if (this._isbootstrapped)
-    //         throw new InvalidOperationException("enableDevMode");
-
-    //     Config.enableDev(Vue);
-    //     return this;
-    // }
 
     public configureErrorTracking(handler: AppErrorHandler): this
     {
@@ -203,8 +161,6 @@ export class ClientApp
     public bootstrap(): void
     {
         given(this, "this").ensure(t => !t._isBootstrapped, "already bootstrapped");
-
-        // this._app = createApp()
 
         this._configureGlobalConfig();
         this._configurePages();
@@ -235,19 +191,10 @@ export class ClientApp
         if (ConfigurationManager.getConfig("env") === "dev")
         {
             console.log("Bootstrapping in DEV mode.");
-
-            // Vue.config.silent = false;
-            // Vue.config.devtools = true;
-            // Vue.config.performance = true;
-            // Vue.config.productionTip = true;
             this._app.config.performance = true;
         }
         else
         {
-            // Vue.config.silent = true;
-            // Vue.config.devtools = false;
-            // Vue.config.performance = false;
-            // Vue.config.productionTip = false;
             this._app.config.performance = false;
         }
     }

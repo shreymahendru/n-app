@@ -37,7 +37,6 @@ export class ComponentManager
         {
             const componentFactory = new ComponentFactory();
             this._vueApp.component(registration.element, componentFactory.create(registration));
-            // this._vueApp.component(registration.element, (<any>registration.viewModel).___componentOptions);
         });
     }
 
@@ -54,12 +53,19 @@ export class ComponentManager
 
         this._registrations.push(registration);
 
+        this._registerComponentViewModel(registration);
+    }
+
+    private _registerComponentViewModel(registration: ComponentRegistration): void
+    {
         if (registration.persist)
             this._container.registerSingleton(registration.name, registration.viewModel);
         else
             this._container.registerTransient(registration.name, registration.viewModel);
-
-        if (registration.components != null && registration.components.isNotEmpty)
-            this.registerComponents(...registration.components);
+        
+        // registering local components
+        if (registration.localComponentRegistrations.isNotEmpty)
+            registration.localComponentRegistrations
+                .forEach(t => this._registerComponentViewModel(t));
     }
 }

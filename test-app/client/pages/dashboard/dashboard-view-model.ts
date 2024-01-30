@@ -6,10 +6,11 @@ import { components, route, template, title, type DialogService, type EventAggre
 import { BasePageViewModel } from "./../base-page-view-model.js";
 import * as Routes from "./../routes.js";
 import "./dashboard-view.scss";
+import { LocalPageComponentViewModel } from "./components/local-page-component/local-page-component-view-model.js";
 // import { Delay } from "@nivinjoseph/n-util";
 
 
-@components(BindingTestViewModel)
+@components(BindingTestViewModel, LocalPageComponentViewModel)
 @template(require("./dashboard-view.html"))
 @route(Routes.dashboard)
 @title("Dashboard")
@@ -30,6 +31,9 @@ export class DashboardViewModel extends BasePageViewModel
     private _score = 10;
     private _fooParentValue: string | null;
     private _version: string | null = null;
+    private readonly _obj: { name: string; } = {
+        name: "asd"
+    };
     // private _isActive = false;
 
     public get score(): number { return this._score; }
@@ -47,6 +51,8 @@ export class DashboardViewModel extends BasePageViewModel
         console.log("setting", value);
         this._fooParentValue = value;
     }
+
+    public get obj(): { name: string; } { return this._obj; }
 
 
     public constructor(dialogService: DialogService, evenAggregator: EventAggregator,

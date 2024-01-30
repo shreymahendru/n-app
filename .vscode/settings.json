@@ -51,6 +51,7 @@
         "simplebar",
         "Toastr",
         "todos",
-        "Topbar"
+        "Topbar",
+        "tsbuildinfo"
     ]
 }

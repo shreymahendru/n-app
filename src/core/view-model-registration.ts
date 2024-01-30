@@ -2,7 +2,6 @@ import { given } from "@nivinjoseph/n-defensive";
 import { ApplicationException } from "@nivinjoseph/n-exception";
 import "@nivinjoseph/n-ext";
 import type { ComponentViewModelClass } from "./component-view-model.js";
-import { componentsSymbol } from "./components.js";
 import type { PageViewModelClass } from "./page-view-model.js";
 import { persistSymbol } from "./persist.js";
 import { templateSymbol } from "./template.js";
@@ -14,7 +13,6 @@ export class ViewModelRegistration
     private readonly _name: string;
     private readonly _viewModel: PageViewModelClass<any> | ComponentViewModelClass<any>;
     private readonly _template: string | Function;
-    private readonly _components: ReadonlyArray<ComponentViewModelClass<any>> | null = null;
     private readonly _persist: boolean;
 
     private _isCreated = false;
@@ -23,7 +21,6 @@ export class ViewModelRegistration
     public get name(): string { return this._name; }
     public get viewModel(): PageViewModelClass<any> | ComponentViewModelClass<any> { return this._viewModel; }
     public get template(): string | Function { return this._template; }
-    public get components(): ReadonlyArray<ComponentViewModelClass<any>> | null { return this._components; }
     public get persist(): boolean { return this._persist; }
 
     public get isCreated(): boolean { return this._isCreated; }
@@ -50,10 +47,6 @@ export class ViewModelRegistration
 
         this._template = template;
 
-        const components = metadata[componentsSymbol] as ReadonlyArray<ComponentViewModelClass<any>> | undefined;
-        if (components != null)
-            this._components = components;
-
         const shouldPersist = metadata[persistSymbol] as boolean | undefined;
         if (shouldPersist)
             this._persist = true;
@@ -65,21 +58,4 @@ export class ViewModelRegistration
     {
         this._isCreated = true;
     }
-
-
-    // public reload(viewModel: Function): void
-    // {
-    //     given(viewModel, "viewModel").ensureHasValue();
-
-    //     this._name = (" " + (<Object>viewModel).getTypeName().trim()).substr(1); // Shrey: Safari de-optimization
-    //     if (!this._name.endsWith("ViewModel"))
-    //         throw new ApplicationException(`Registered ViewModel '${this._name}' violates ViewModel naming convention.`);
-
-    //     this._viewModel = viewModel;
-
-    //     if (!Reflect.hasOwnMetadata(templateSymbol, this._viewModel))
-    //         throw new ApplicationException(`ViewModel'${this.name}' does not have @template applied.`);
-
-    //     this._template = Reflect.getOwnMetadata(templateSymbol, this._viewModel);
-    // }
 }

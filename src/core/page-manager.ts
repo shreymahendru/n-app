@@ -2,26 +2,23 @@ import { given } from "@nivinjoseph/n-defensive";
 import { ApplicationException } from "@nivinjoseph/n-exception";
 import { Container } from "@nivinjoseph/n-ject";
 import { createRouter, createWebHashHistory, createWebHistory, type Router } from "vue-router";
-import { ComponentManager } from "./component-manager.js";
 import { PageRegistration } from "./page-registration.js";
 import { PageTreeBuilder } from "./page-tree-builder.js";
 import type { PageViewModelClass } from "./page-view-model.js";
 import { Page } from "./page.js";
 import type { Resolver } from "./resolve.js";
+import type { ComponentRegistration } from "./component-registration.js";
 
 
 export class PageManager
 {
     private readonly _container: Container;
-    private readonly _componentManager: ComponentManager;
     private readonly _pageViewModelClasses = new Array<PageViewModelClass<any>>();
     private readonly _registrations = new Array<PageRegistration>();
     private readonly _resolvers = new Array<string>();
     private _vueRouterInstance: Router | null = null;
     private _initialRoute: string | null = null;
     private _unknownRoute: string | null = null;
-    // private _defaultPageTitle: string | null = null;
-    // private _defaultPageMetas: ReadonlyArray<MetaDetail> = null;
     private _useHistoryMode = false;
 
 
@@ -34,14 +31,11 @@ export class PageManager
     }
 
 
-    public constructor(container: Container, componentManager: ComponentManager)
+    public constructor(container: Container)
     {
 
         given(container, "container").ensureHasValue().ensureIsObject();
         this._container = container;
-
-        given(componentManager, "componentManager").ensureHasValue().ensureIsObject();
-        this._componentManager = componentManager;
     }
 
 
@@ -62,24 +56,6 @@ export class PageManager
         this._unknownRoute = route.trim();
     }
 
-    // /**
-    //  * @deprecated
-    //  */
-    // public useAsDefaultPageTitle(title: string): void
-    // {
-    //     given(title, "title").ensureHasValue().ensureIsString();
-    //     this._defaultPageTitle = title.trim();
-    // }
-
-    // /**
-    //  * @deprecated
-    //  */
-    // public useAsDefaultPageMetadata(metas: ReadonlyArray<{ name: string; content: string; }>): void
-    // {
-    //     given(metas, "metas").ensureHasValue().ensureIsArray().ensure(t => t.length > 0);
-    //     this._defaultPageMetas = [...metas];
-    // }
-
     public useHistoryModeRouting(): void
     {
         this._useHistoryMode = true;
@@ -93,13 +69,11 @@ export class PageManager
 
         this._createRouting();
         this._configureResolves();
-        // this.configureInitialRoute();
     }
 
 
     private _registerPage(pageViewModelClass: PageViewModelClass<any>): void
     {
-        // const registration = new PageRegistration(pageViewModelClass, this._defaultPageTitle, this._defaultPageMetas);
         const registration = new PageRegistration(pageViewModelClass, null, null);
 
         if (this._registrations.some(t => t.name === registration.name))
@@ -125,8 +99,11 @@ export class PageManager
                 this._resolvers.push(t.name);
             });
 
-        if (registration.components && registration.components.isNotEmpty)
-            this._componentManager.registerComponents(...registration.components);
+        if (registration.localComponentRegistrations.isNotEmpty)
+        {
+            registration.localComponentRegistrations
+                .forEach(t => this._registerLocalComponentViewModel(t));
+        }
 
         if (registration.pages && registration.pages.isNotEmpty)
             registration.pages.forEach(t => this._registerPage(t));
@@ -172,7 +149,7 @@ export class PageManager
             if (registration == null)
                 throw new ApplicationException(`Unable to find PageRegistration with name '${registrationName}'`);
             registration.resolvedValues = null;
-            
+
             if (registration.resolvers && registration.resolvers.length > 0)
             {
                 const resolvers = registration.resolvers.map(t => this._container.resolve<Resolver>(t.name));
@@ -209,43 +186,17 @@ export class PageManager
         });
     }
 
-    // public handleInitialRoute(): void
-    // {
-    //     if (!this._initialRoute || this._initialRoute.isEmptyOrWhiteSpace())
-    //         return;
+    private _registerLocalComponentViewModel(registration: ComponentRegistration): void
+    {
+        if (registration.persist)
+            this._container.registerSingleton(registration.name, registration.viewModel);
+        else
+            this._container.registerTransient(registration.name, registration.viewModel);
 
-    //     if (this._useHistoryMode)
-    //     {
-    //         if (!window.location.pathname || window.location.pathname.toString().isEmptyOrWhiteSpace() ||
-    //             window.location.pathname.toString().trim() === "/" || window.location.pathname.toString().trim() === "null")
-    //             this._vueRouterInstance.replace(this._initialRoute);
-
-    //         return;
-    //     }
-
-    //     if (!window.location.hash)
-    //     {
-    //         if (this._initialRoute)
-    //             window.location.hash = "#" + this._initialRoute;
-    //     }
-    //     else
-    //     {
-    //         let hashVal = window.location.hash.trim();
-    //         if (hashVal.length === 1)
-    //         {
-    //             if (this._initialRoute)
-    //                 window.location.hash = "#" + this._initialRoute;
-    //         }
-    //         else
-    //         {
-    //             hashVal = hashVal.substr(1);
-    //             if (hashVal === "/")
-    //             {
-    //                 if (this._initialRoute)
-    //                     window.location.hash = "#" + this._initialRoute;
-    //             }
-    //         }
-    //     }
-    // }
+        // registering local components
+        if (registration.localComponentRegistrations.isNotEmpty)
+            registration.localComponentRegistrations
+                .forEach(t => this._registerLocalComponentViewModel(t));
+    }
 }
 

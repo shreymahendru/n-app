@@ -6,11 +6,12 @@ import { PageRegistration } from "./page-registration.js";
 import { PageViewModel } from "./page-view-model.js";
 import { RouteArgs } from "./route-args.js";
 import { Utilities } from "./utilities.js";
+import { ComponentFactory } from "./component-factory.js";
 
 
 export class PageComponentFactory
 {
-    public create(registration: PageRegistration): Object
+    public create(registration: PageRegistration): ComponentOptions
     {
         given(registration, "registration").ensureHasValue();
 
@@ -32,6 +33,7 @@ export class PageComponentFactory
         const component: ComponentOptions = {
             name: registration.name,
 
+            // This might break when updating vue. UPDATE WITH CAUTION!
             setup: function <T extends PageViewModel>(): { nAppVm: Ref<UnwrapRef<T>>; }
             {
                 let container: Scope | undefined = inject("rootScopeContainer");
@@ -80,7 +82,7 @@ export class PageComponentFactory
 
             created: function () 
             {
-                if (this.nAppVm.onCreate) // TODO: why would the vm not have onCreate?
+                if (this.nAppVm.onCreate)
                 {
                     if (registration.persist && registration.isCreated)
                     {
@@ -265,6 +267,20 @@ export class PageComponentFactory
             component.template = registration.template;
         else
             component.render = registration.template;
+
+        if (registration.localComponentRegistrations.isNotEmpty)
+        {
+            const componentFactory = new ComponentFactory();
+
+            const components = registration.localComponentRegistrations
+                .reduce<Record<string, ComponentOptions>>((acc, t) =>
+                {
+                    acc[t.element] = componentFactory.create(t);
+                    return acc;
+                }, {});
+
+            component.components = components;
+        }
 
         return component;
     }
