@@ -119,8 +119,8 @@
         "@nivinjoseph/n-util": "^2.0.1",
         "jquery": "^3.7.1",
         "simplebar": "^5.3.6",
-        "vue": "^3.3.11",
-        "vue-router": "^4.2.5"
+        "vue": "3.3.11",
+        "vue-router": "4.2.5"
     },
     "engineStrict": true,
     "engines": {
