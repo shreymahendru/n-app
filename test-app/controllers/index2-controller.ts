@@ -6,17 +6,18 @@ const env = ConfigurationManager.getConfig("env");
 console.log("evn", env);
 const isDev = env === "dev";
 
-@route("/*")
+@route("/abc")
 @httpGet
 @view(isDev ? "~/test-app/client/index.html" : "~/test-app/client/dist/index.html")
-export class IndexController extends Controller
+export class Index2Controller extends Controller
 {
     public async execute(): Promise<any>
     {
-        console.log("hti");
+        console.log("hit abc");
         return {
             config: {
-                "testConfig": "value"
+                "testConfig": "value",
+                "isAbc": true
             }
         };
     }

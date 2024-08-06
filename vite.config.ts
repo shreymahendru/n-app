@@ -34,8 +34,8 @@ export default defineConfig({
     build: {
         minify: "esbuild",
         cssMinify: true
-        // This does not seem to be working.. 
-        // 
+        // This does not seem to be working..
+        //
         // terserOptions: {
         //     keep_fnames: true,
         //     keep_classnames: true,
@@ -54,7 +54,12 @@ export default defineConfig({
 
                 target: baseServerUrl,
                 changeOrigin: true,
-                secure: false
+                secure: false,
+                rewrite(path)
+                {
+                    console.log("path to server", path);
+                    return path;
+                },
             }
         }
     },
@@ -71,12 +76,57 @@ export default defineConfig({
         }
     },
     plugins: [
+        {
+            name: "asd",
+            enforce: "pre",
+            order: "pre",
+            async transformIndexHtml(html, ctx)
+            {
+                const url = `${baseServerUrl}${ctx.originalUrl}`;
+                console.log("url ======", url);
+                const data = await fetch(url);
+                const newHtml = await data.text();
+                // console.log("data", await data.text());
+
+                // console.log("ctx", ctx.originalUrl, ctx.path);
+                // console.log("html", html);
+                // console.log("newHtml", newHtml);
+                //<script type="module" src="/@vite/client"></script>
+                return {
+                    html: newHtml,
+                    tags: [
+                        {
+                            injectTo: "head",
+                            tag: "script",
+                            attrs: {
+                                type: "module",
+                                src: "/@vite/client"
+                            }
+                        }
+                    ]
+                };
+            },
+            configureServer(server)
+            {
+                server.middlewares.use(
+                    (req, res, next) =>
+                    {
+                        console.log("request ===", req.url, req.method)
+                        if (req.url === '/')
+                        {
+                            // req.url = '/some/path/to/your/index.html';
+                        }
+                        next();
+                    }
+                )
+            }
+        },
         Inspect({
             build: true,
             outputDir: ".vite-inspect"
         }),
-        // this is just so the warning are not thrown on the console. 
-        // this is happening because of the n-config during import analysis 
+        // this is just so the warning are not thrown on the console.
+        // this is happening because of the n-config during import analysis
         nodePolyfills({
             include: [
                 "path",

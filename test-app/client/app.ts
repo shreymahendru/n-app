@@ -10,9 +10,11 @@ import * as Routes from "./pages/routes.js";
 // import { BindingTestViewModel } from "./components/binding-test/binding-test-view-model";
 import { ScopedService } from "./services/scoped-service.js";
 import { RedirectViewModel } from "./pages/redirect/redirect-view-model.js";
+import { ConfigurationManager } from "@nivinjoseph/n-config";
 
 
-
+console.log(ConfigurationManager.getConfig("testConfig"));
+console.log(ConfigurationManager.getConfig("isAbc"));
 // Vue.material.registerTheme("default", {
 //     primary: "blue",
 //     accent: "red",
@@ -49,7 +51,7 @@ const app = new ClientApp("#app", "router-view")
     .registerPages(...pages)
     .useHistoryModeRouting()
     .useAsInitialRoute(Routes.dashboard)
-    .useAsUnknownRoute(Routes.test)
+    .useAsUnknownRoute(Routes.dashboard)
     // .useAsDefaultPageTitle("fooo")
     // .useAsDefaultPageMetadata({name: "description", content: "this is the default description"})
     ;
