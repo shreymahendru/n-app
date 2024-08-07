@@ -3,7 +3,7 @@ import { fileURLToPath, URL } from "node:url";
 import { ConfigurationManager } from "@nivinjoseph/n-config";
 import inject from "@rollup/plugin-inject";
 import autoprefixer from "autoprefixer";
-import { defineConfig } from "vite";
+import { defineConfig, type PluginOption, type ViteDevServer } from "vite";
 import Inspect from "vite-plugin-inspect";
 import vitePluginRequireRaw from "vite-plugin-require";
 import topLevelAwait from "vite-plugin-top-level-await";
@@ -23,6 +23,66 @@ const baseServerUrl = ConfigurationManager.requireStringConfig("baseUrl");
 const isDev = env === "dev";
 
 
+let devServer: ViteDevServer | null = null;
+
+const serverPlugin: () => PluginOption = () =>
+{
+    return {
+        name: "server-plugin",
+        enforce: "pre",
+        transformIndexHtml: {
+            order: "pre",
+            handler: async (html, _ctx): Promise<any> =>
+            {
+                if (!isDev)
+                    return html;
+
+                return {
+                    html: html,
+                    tags: [
+                        {
+                            injectTo: "head",
+                            tag: "script",
+                            attrs: {
+                                type: "module",
+                                src: "/@vite/client"
+                            }
+                        }
+                    ]
+                };
+            }
+        },
+        // load: async (id): Promise<any> =>
+        // {
+        //     console.log("load", id);
+        //     return;
+        // },
+        configureServer(server): void
+        {
+            devServer = server;
+
+            server.middlewares.use(
+                (req, _res, next) =>
+                {
+                    const fileExtensions = [".ts", ".js", "?import", ".html", ".scss", ".mjs", ".svg", ".png", ".css", ".ico"];
+                    const url = new URL(req.url!, baseServerUrl);
+                    const lastSegment = url.pathname.split("/").takeLast();
+
+
+                    if (fileExtensions.every(t => !lastSegment.endsWith(t)) && !req.url!.contains("@vite")
+                        && !req.url!.contains("/api"))
+                    {
+                        req.url = `/fallbackIndexHtml${req.url}`;
+                        console.log("request ===", req.url, req.method, req.originalUrl);
+                    }
+                    next();
+                }
+            );
+        }
+    };
+};
+
+
 export default defineConfig({
     appType: "spa",
     root: "./test-app/client/",
@@ -34,6 +94,7 @@ export default defineConfig({
     build: {
         minify: "esbuild",
         cssMinify: true
+
         // This does not seem to be working..
         //
         // terserOptions: {
@@ -45,6 +106,7 @@ export default defineConfig({
         //         comments: false
         //     }
         // }
+
     },
     server: {
         host: "0.0.0.0",
@@ -57,9 +119,68 @@ export default defineConfig({
                 secure: false,
                 rewrite(path)
                 {
-                    console.log("path to server", path);
+                    // console.log("path to server", path);
                     return path;
+                }
+            },
+            "^/fallbackIndexHtml/.*": {
+                target: baseServerUrl,
+                changeOrigin: true,
+                secure: false,
+                selfHandleResponse: true,
+                configure: (proxy, opt) =>
+                {
+
+                    // proxy.on("")
+                    // opt.buffer
+
+                    proxy.on("error", (err, _req, _res) =>
+                    {
+                        console.log("proxy error", err);
+                    });
+                    proxy.on("proxyReq", (_proxyReq, req, _res) =>
+                    {
+                        // proxyReq.on("")
+                        console.log("Sending Request to the Target:", req.method, req.url);
+                    });
+                    proxy.on("proxyRes", (proxyRes, req, res) =>
+                    {
+                        console.log("Received Response from the Target:", proxyRes.statusCode, req.url);
+
+                        const chunks: Array<Buffer> = [];
+                        proxyRes.on("data", (chunk) =>
+                        {
+                            // console.log(chunks);
+                            chunks.push(chunk);
+                        });
+
+
+                        proxyRes.on("end", () =>
+                        {
+                            const body = Buffer.concat(chunks).toString();
+                            // this
+                            devServer!.transformIndexHtml(req.url!, body).then(html =>
+                            {
+                                res.write(html);
+                                res.end();
+                            }).catch(e => console.error(e));
+                        });
+
+
+
+                        // const data = Buffer.concat(buffer);
+                        // const data = res.on("")
+                        // eslint-disable-next-line @typescript-eslint/no-unsafe-call
+                        // console.log("data", data.toString("utf-8"));
+                        // console.log(res.)
+                    });
                 },
+                rewrite(path)
+                {
+                    const rewritten = path.replace(/^\/fallbackIndexHtml/, "");
+                    console.log("fallback", path, rewritten);
+                    return rewritten;
+                }
             }
         }
     },
@@ -71,56 +192,13 @@ export default defineConfig({
     css: {
         postcss: {
             plugins: [
+                // @ts-expect-error chill
                 autoprefixer()
             ]
         }
     },
     plugins: [
-        {
-            name: "asd",
-            enforce: "pre",
-            order: "pre",
-            async transformIndexHtml(html, ctx)
-            {
-                const url = `${baseServerUrl}${ctx.originalUrl}`;
-                console.log("url ======", url);
-                const data = await fetch(url);
-                const newHtml = await data.text();
-                // console.log("data", await data.text());
-
-                // console.log("ctx", ctx.originalUrl, ctx.path);
-                // console.log("html", html);
-                // console.log("newHtml", newHtml);
-                //<script type="module" src="/@vite/client"></script>
-                return {
-                    html: newHtml,
-                    tags: [
-                        {
-                            injectTo: "head",
-                            tag: "script",
-                            attrs: {
-                                type: "module",
-                                src: "/@vite/client"
-                            }
-                        }
-                    ]
-                };
-            },
-            configureServer(server)
-            {
-                server.middlewares.use(
-                    (req, res, next) =>
-                    {
-                        console.log("request ===", req.url, req.method)
-                        if (req.url === '/')
-                        {
-                            // req.url = '/some/path/to/your/index.html';
-                        }
-                        next();
-                    }
-                )
-            }
-        },
+        serverPlugin(),
         Inspect({
             build: true,
             outputDir: ".vite-inspect"
@@ -161,13 +239,13 @@ export default defineConfig({
         __VUE_OPTIONS_API__: true,
         __VUE_PROD_DEVTOOLS__: false,
         __VUE_PROD_HYDRATION_MISMATCH_DETAILS__: false
-
     },
     resolve: {
         alias: {
             "@": fileURLToPath(new URL("./test-app/client", import.meta.url)),
             // ...isDev ? { "vue": "vue/dist/vue.esm-bundler.js" } : {},
-            "feather": "feather-icons/dist/feather-sprite.svg"
+            "feather": "feather-icons/dist/feather-sprite.svg",
+            "source-map-js": "source-map"
         }
     }
 });

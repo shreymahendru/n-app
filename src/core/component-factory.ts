@@ -18,7 +18,7 @@ export class ComponentFactory
             props: this._createComponentPropsOptions(registration),
 
             // This might break when updating vue. UPDATE WITH CAUTION!
-            setup: function <T extends ComponentViewModel>(): { nAppVm: Ref<UnwrapRef<T>>; } 
+            setup: function <T extends ComponentViewModel>(): { nAppVm: Ref<UnwrapRef<T>>; }
             {
                 // console.log("setup for ", registration.name, this);
 
@@ -64,9 +64,9 @@ export class ComponentFactory
                 (<any>vm)._events = registration.events;
             },
 
-            created: function () 
+            created: function ()
             {
-                if (this.nAppVm.onCreate) 
+                if (this.nAppVm.onCreate)
                 {
                     if (registration.persist && registration.isCreated)
                     {
@@ -122,18 +122,18 @@ export class ComponentFactory
                 // this.vm._ctx = null;
                 this.nAppVm = null;
             },
-            activated: function () 
+            activated: function ()
             {
                 // console.log("activated", registration.name);
             },
-            deactivated: function () 
+            deactivated: function ()
             {
                 // console.log("deactivated", registration.name);
             },
             data: function (vm)
             {
                 // console.log("data", vm);
-                // don't need this here but exposing it so we can check the properties 
+                // don't need this here but exposing it so we can check the properties
                 // when using vue dev tools in the browsers.
                 return {
                     vm: vm.nAppVm
@@ -159,7 +159,7 @@ export class ComponentFactory
             component.components = components;
         }
 
-        console.log(component);
+        // console.log(component);
         return component;
     }
 

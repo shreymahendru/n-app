@@ -13,7 +13,6 @@ export class IndexController extends Controller
 {
     public async execute(): Promise<any>
     {
-        console.log("hti");
         return {
             config: {
                 "testConfig": "value"

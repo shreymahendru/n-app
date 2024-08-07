@@ -1,23 +1,23 @@
 import { ConfigurationManager } from "@nivinjoseph/n-config";
-import { Controller, httpGet, route, view } from "@nivinjoseph/n-web";
+import { Controller, httpPost, route, view } from "@nivinjoseph/n-web";
 
 
 const env = ConfigurationManager.getConfig("env");
 console.log("evn", env);
 const isDev = env === "dev";
 
-@route("/abc")
-@httpGet
+@route("/index2")
+@httpPost
 @view(isDev ? "~/test-app/client/index.html" : "~/test-app/client/dist/index.html")
 export class Index2Controller extends Controller
 {
-    public async execute(): Promise<any>
+    public async execute(model: Object): Promise<any>
     {
-        console.log("hit abc");
         return {
             config: {
                 "testConfig": "value",
-                "isAbc": true
+                "isAbc": true,
+                "postData": model
             }
         };
     }

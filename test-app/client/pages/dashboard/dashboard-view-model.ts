@@ -7,6 +7,7 @@ import { BasePageViewModel } from "./../base-page-view-model.js";
 import * as Routes from "./../routes.js";
 import "./dashboard-view.scss";
 import { LocalPageComponentViewModel } from "./components/local-page-component/local-page-component-view-model.js";
+import { ConfigurationManager } from "@nivinjoseph/n-config";
 // import { Delay } from "@nivinjoseph/n-util";
 
 
@@ -20,7 +21,6 @@ export class DashboardViewModel extends BasePageViewModel
     private readonly _dialogService: DialogService;
     // @ts-expect-error: not used atm
     private readonly _eventAggregator: EventAggregator;
-    // @ts-expect-error: not used atm
     private readonly _navigationService: NavigationService;
     // @ts-expect-error: not used atm
     private readonly _storageService: StorageService;
@@ -115,6 +115,11 @@ export class DashboardViewModel extends BasePageViewModel
         // this._isActive = false;
     }
 
+    public async navigatePost(): Promise<void>
+    {
+        this._navigationService.navigateSitePostSameTab("http://localhost:5173/index2", { a: 1, b: 2 });
+    }
+
     public async loading(): Promise<void>
     {
         console.log("loading clicked");
@@ -129,6 +134,8 @@ export class DashboardViewModel extends BasePageViewModel
     {
         super.onCreate();
 
+        console.log(ConfigurationManager.getConfig("isAbc"));
+        console.log(ConfigurationManager.getConfig("postData"));
 
         const response = await fetch("/api/version");
 
