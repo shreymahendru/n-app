@@ -1933,6 +1933,7 @@ __metadata:
     feather-icons: "npm:^4.29.1"
     jquery: "npm:^3.7.1"
     madge: "npm:^6.1.0"
+    postcss: "npm:^8.4.41"
     sass: "npm:^1.77.8"
     simplebar: "npm:^5.3.6"
     terser: "npm:^5.27.0"
@@ -1952,13 +1953,9 @@ __metadata:
     "@babel/plugin-transform-runtime": ^7.23.7
     "@babel/preset-env": ^7.25.3
     "@babel/runtime": ^7.25.0
-    "@types/babel__core": ^7
-    "@types/babel__plugin-transform-runtime": ^7
-    "@types/babel__preset-env": ^7
     "@vue/compiler-sfc": ^3.4.36
     autoprefixer: ^10.4.20
     sass: ^1.77.8
-    typescript: ^5.3.3
     vite: ^5.3.5
     vite-plugin-checker: ^0.7.2
     vite-plugin-inspect: ^0.8.5
@@ -8515,7 +8512,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"postcss@npm:^8.4.40":
+"postcss@npm:^8.4.40, postcss@npm:^8.4.41":
   version: 8.4.41
   resolution: "postcss@npm:8.4.41"
   dependencies:
