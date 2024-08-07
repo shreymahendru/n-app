@@ -128,7 +128,7 @@ export default defineConfig({
                 changeOrigin: true,
                 secure: false,
                 selfHandleResponse: true,
-                configure: (proxy, opt) =>
+                configure: (proxy, _opt) =>
                 {
 
                     // proxy.on("")
