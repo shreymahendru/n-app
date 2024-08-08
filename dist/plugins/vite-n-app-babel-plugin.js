@@ -1,13 +1,17 @@
 import {} from "vite";
 import babel from "@babel/core";
+import { PluginHelpers } from "./plugin-helpers.js";
 export function ViteNAppBabelPlugin() {
     return {
         name: "vite-n-app-babel-plugin",
         async transform(code, id, _) {
-            if (!/\.(ts)$/.test(id))
-                return null;
-            if (id.split("/").some(t => t === "node_modules"))
-                return null;
+            const isNappViewModel = PluginHelpers.isNappViewModel(id);
+            if (!isNappViewModel) {
+                if (!/\.(ts)$/.test(id))
+                    return null;
+                if (id.split("/").some(t => t === "node_modules"))
+                    return null;
+            }
             // @ts-expect-error chill
             return babel.transform(code, {
                 filename: id,

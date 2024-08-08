@@ -1,5 +1,6 @@
 import { type Plugin, type TransformResult } from "vite";
 import babel from "@babel/core";
+import { PluginHelpers } from "./plugin-helpers.js";
 
 
 export function ViteNAppBabelPlugin(): Plugin
@@ -8,11 +9,16 @@ export function ViteNAppBabelPlugin(): Plugin
         name: "vite-n-app-babel-plugin",
         async transform(code, id, _): Promise<TransformResult | null>
         {
-            if (! /\.(ts)$/.test(id))
-                return null;
+            const isNappViewModel = PluginHelpers.isNappViewModel(id);
 
-            if (id.split("/").some(t => t === "node_modules"))
-                return null;
+            if (!isNappViewModel)
+            {
+                if (! /\.(ts)$/.test(id))
+                    return null;
+
+                if (id.split("/").some(t => t === "node_modules"))
+                    return null;
+            }
 
             // @ts-expect-error chill
             return babel.transform(code, {

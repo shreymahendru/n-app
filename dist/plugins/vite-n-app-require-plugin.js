@@ -1,7 +1,8 @@
+import generateRaw from "@babel/generator";
 import { parse } from "@babel/parser";
 import traverseRaw from "@babel/traverse";
-import generateRaw from "@babel/generator";
-import { importDeclaration, importDefaultSpecifier, stringLiteral, identifier, newExpression, expressionStatement, memberExpression } from "@babel/types";
+import { identifier, importDeclaration, importDefaultSpecifier, stringLiteral } from "@babel/types";
+import { PluginHelpers } from "./plugin-helpers.js";
 const traverse = traverseRaw.default;
 const generate = generateRaw.default;
 export function ViteNAppRequirePlugin(opts) {
@@ -20,21 +21,20 @@ export function ViteNAppRequirePlugin(opts) {
             }
         },
         async transform(code, id) {
+            const isNappViewModel = PluginHelpers.isNappViewModel(id);
             //  Exclude files in node_modules
-            if (/\/node_modules\//g.test(id)) {
-                const isNappComponent = id.contains("n-app/dist/components/");
-                if (!isNappComponent)
-                    return null;
+            if (!isNappViewModel && /\/node_modules\//g.test(id)) {
+                return null;
             }
             let newCode = code;
             let newMap = null; // 没有更改源代码时为 null
-            if (fileRegex.test(id)) {
+            if (fileRegex.test(id) || isNappViewModel) {
                 // const isVueFile: Boolean = /(.vue)$/.test(id);
-                const plugins = ["jsx"];
+                // const plugins = ["jsx"];
                 const ast = parse(code, {
-                    sourceType: "module",
+                    sourceType: "module"
                     // 更新版本的 babel/parse 只能配置为二维数组，第二个选项为配置
-                    plugins: plugins
+                    // plugins: plugins as any
                 });
                 traverse(ast, {
                     enter(path) {
@@ -151,34 +151,37 @@ export function ViteNAppRequirePlugin(opts) {
                                         }
                                     }
                                     // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
-                                    else if (translateType === "importMetaUrl") {
-                                        // 改为 import.meta.url ...
-                                        const metaObj = memberExpression(memberExpression(identifier("import"), identifier("meta")), identifier("url"));
-                                        const importAst = newExpression(identifier("URL"), [stringLiteral(stringVal), metaObj]);
-                                        const hrefObj = expressionStatement(memberExpression(importAst, identifier("href")));
-                                        // eslint-disable-next-line no-useless-escape
-                                        const strCode = generate(hrefObj, {}).code.replace(/\;$/, "");
-                                        // log("importAst", strCode);
-                                        switch (arg?.type) {
-                                            case "StringLiteral":
-                                                path.container.arguments[0].value = strCode;
-                                                if (path.container.arguments[0].extra) {
-                                                    path.container.arguments[0].extra.raw = strCode;
-                                                    path.container.arguments[0].extra.rawValue = strCode;
-                                                }
-                                                break;
-                                            case "Identifier":
-                                                path.container.arguments[0].name = strCode;
-                                                break;
-                                            case "BinaryExpression":
-                                                // 直接改成变量
-                                                path.container.arguments[0] = identifier(strCode);
-                                                break;
-                                            default:
-                                                // eslint-disable-next-line @typescript-eslint/no-throw-literal
-                                                throw `Unsupported type: ${arg?.type}`;
-                                        }
-                                    }
+                                    // else if (translateType === "importMetaUrl")
+                                    // {
+                                    //     // 改为 import.meta.url ...
+                                    //     const metaObj = memberExpression(memberExpression(identifier("import"), identifier("meta")), identifier("url"));
+                                    //     const importAst = newExpression(identifier("URL"), [stringLiteral(stringVal), metaObj]);
+                                    //     const hrefObj = expressionStatement(memberExpression(importAst, identifier("href")));
+                                    //     // eslint-disable-next-line no-useless-escape
+                                    //     const strCode = generate(hrefObj as any, {}).code.replace(/\;$/, "");
+                                    //     // log("importAst", strCode);
+                                    //     switch (arg?.type)
+                                    //     {
+                                    //         case "StringLiteral":
+                                    //             (path.container as Record<string, any>).arguments[0].value = strCode;
+                                    //             if ((path.container as Record<string, any>).arguments[0].extra)
+                                    //             {
+                                    //                 (path.container as Record<string, any>).arguments[0].extra.raw = strCode;
+                                    //                 (path.container as Record<string, any>).arguments[0].extra.rawValue = strCode;
+                                    //             }
+                                    //             break;
+                                    //         case "Identifier":
+                                    //             (path.container as Record<string, any>).arguments[0].name = strCode;
+                                    //             break;
+                                    //         case "BinaryExpression":
+                                    //             // 直接改成变量
+                                    //             (path.container as Record<string, any>).arguments[0] = identifier(strCode);
+                                    //             break;
+                                    //         default:
+                                    //             // eslint-disable-next-line @typescript-eslint/no-throw-literal
+                                    //             throw `Unsupported type: ${arg?.type}`;
+                                    //     }
+                                    // }
                                 }
                             }
                         }
