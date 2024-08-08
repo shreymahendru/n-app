@@ -5,15 +5,14 @@ import inject from "@rollup/plugin-inject";
 import autoprefixer from "autoprefixer";
 import { defineConfig, type PluginOption, type ViteDevServer } from "vite";
 import Inspect from "vite-plugin-inspect";
-import vitePluginRequireRaw from "vite-plugin-require";
 import topLevelAwait from "vite-plugin-top-level-await";
 import { ViteNAppBabelPlugin } from "./src/plugins/vite-n-app-babel-plugin.js";
 import { ViteNAppViewPlugin } from "./src/plugins/vite-n-app-view-plugin.js";
 import { nodePolyfills } from "vite-plugin-node-polyfills";
 import checker from "vite-plugin-checker";
+import { ViteNAppRequirePlugin } from "./src/plugins/vite-n-app-require-plugin.js";
 
 
-const VitePluginRequire: typeof vitePluginRequireRaw = (vitePluginRequireRaw as any).default;
 
 const env = ConfigurationManager.requireStringConfig("env");
 console.log("VITE ENV", env);
@@ -68,12 +67,12 @@ const serverPlugin: () => PluginOption = () =>
                     const url = new URL(req.url!, baseServerUrl);
                     const lastSegment = url.pathname.split("/").takeLast();
 
-
                     if (fileExtensions.every(t => !lastSegment.endsWith(t)) && !req.url!.contains("@vite")
                         && !req.url!.contains("/api"))
                     {
+                        console.log("request ===", req.url, req.method, req.originalUrl, lastSegment);
                         req.url = `/fallbackIndexHtml${req.url}`;
-                        console.log("request ===", req.url, req.method, req.originalUrl);
+                        // console.log("request ===", req.url, req.method, req.originalUrl);
                     }
                     next();
                 }
@@ -220,11 +219,15 @@ export default defineConfig({
             // The function to generate import names of top-level await promise in each chunk module
             promiseImportName: i => `__tla_${i}`
         }),
-        VitePluginRequire({
+        ViteNAppRequirePlugin({
             translateType: "import",
-            fileRegex: /-view-model.ts$/,
-            log: (a) => console.log(a)
+            fileRegex: /-view-model.ts$/
         }),
+        // VitePluginRequire({
+        //     translateType: "import",
+        //     fileRegex: /-view-model.ts$/,
+        //     log: (a) => console.log(a)
+        // }),
         inject({
             $: "jquery"
         }),
