@@ -6,10 +6,10 @@ import { PluginHelpers } from "./plugin-helpers.js";
 const traverse = traverseRaw.default;
 const generate = generateRaw.default;
 export function ViteNAppRequirePlugin(opts) {
-    const { fileRegex = /(.jsx?|.tsx?|.vue)$/, translateType = "import" } = opts || {};
+    const { fileRegex = /-view-model\.(ts|js)$/, translateType = "import" } = opts || {};
     let sourcemap;
     return {
-        name: "vite-plugin-require",
+        name: "vite-plugin-n-app-require",
         configResolved(resolvedConfig) {
             // dev model default true
             const isDev = resolvedConfig.env.MODE === "development";
@@ -29,8 +29,6 @@ export function ViteNAppRequirePlugin(opts) {
             let newCode = code;
             let newMap = null; // 没有更改源代码时为 null
             if (fileRegex.test(id) || isNappViewModel) {
-                // const isVueFile: Boolean = /(.vue)$/.test(id);
-                // const plugins = ["jsx"];
                 const ast = parse(code, {
                     sourceType: "module"
                     // 更新版本的 babel/parse 只能配置为二维数组，第二个选项为配置

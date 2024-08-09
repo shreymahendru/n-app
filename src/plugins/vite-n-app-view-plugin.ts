@@ -16,21 +16,6 @@ export function ViteNAppViewPlugin(options: { isDev: boolean; }): Plugin
         // eslint-disable-next-line @typescript-eslint/explicit-function-return-type
         resolveId: async function (source, importer, options)
         {
-            if (isDev)
-            {
-                if (source.endsWith("-view.html"))
-                {
-                    const resolution = await this.resolve(source, importer, options);
-
-                    if (resolution == null || resolution.external)
-                        return resolution;
-
-                    return `${resolution.id}`;
-                }
-
-                return null;
-            }
-
             if (source.endsWith("-view.html"))
             {
                 const resolution = await this.resolve(source, importer, options);
@@ -38,66 +23,62 @@ export function ViteNAppViewPlugin(options: { isDev: boolean; }): Plugin
                 if (resolution == null || resolution.external)
                     return resolution;
 
-                return `${resolution.id}.js`;
+                return isDev ? `${resolution.id}` : `${resolution.id}.js`;
             }
 
             return null;
         },
 
-        // @ts-expect-error chill
         // eslint-disable-next-line @typescript-eslint/explicit-function-return-type
         load: async function (id, _)
         {
+            console.log("load", id);
             if (isDev)
                 return;
 
-            if (id.endsWith("-view.html.js"))
-            {
-                const html = await readFile(id.substring(0, id.length - 3), "utf-8");
+            if (!id.endsWith("-view.html.js"))
+                return;
 
-                const compiledTemplate = compileTemplate({
-                    source: html,
-                    id,
-                    filename: id,
-                    isProd: true
-                });
+            const html = await readFile(id.substring(0, id.length - 3), "utf-8");
+            const complied = createRenderFunction(id, html, isDev);
 
-
-                compiledTemplate.code = `
-${compiledTemplate.code}
-
-export default render;
-`;
-
-                return compiledTemplate;
-            }
-
-            return null;
+            return complied;
         },
-        // @ts-expect-error chill
+
         // eslint-disable-next-line @typescript-eslint/explicit-function-return-type
         transform: function (code, id, _)
         {
+            console.log("transform", id);
             if (!isDev)
                 return;
 
             if (!htmlViewFiles.test(id))
                 return;
 
-            const compiledTemplate = compileTemplate({
-                source: code,
-                id: "name.js",
-                filename: "name.js",
-                isProd: false
-            });
+            return createRenderFunction(id, code, isDev);
+        }
+    };
+}
 
-            compiledTemplate.code = `
+function createRenderFunction(id: string, html: string, isDev: boolean): { code: string; map: any; }
+{
+    const compiledTemplate = compileTemplate({
+        source: html,
+        id,
+        filename: id.split("/").takeLast().split("?").takeFirst(),
+        isProd: !isDev
+    });
+
+
+    const code = `
 ${compiledTemplate.code}
 
 export default render;
 `;
 
-            return compiledTemplate;
-        }
+
+    return {
+        code,
+        map: compiledTemplate.map
     };
 }

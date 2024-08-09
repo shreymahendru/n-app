@@ -19,6 +19,7 @@ export function ViteNAppBabelPlugin(): Plugin
                 if (id.split("/").some(t => t === "node_modules"))
                     return null;
             }
+            // console.log("transforming", id);
 
             // @ts-expect-error chill
             return babel.transform(code, {

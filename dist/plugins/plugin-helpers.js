@@ -3,7 +3,7 @@ export class PluginHelpers {
         const isComponentFile = id.contains("n-app/dist/components/");
         if (!isComponentFile)
             return false;
-        const isViewModel = id.contains("-view-model.js");
+        const isViewModel = id.contains("-view-model.js") || id.contains("-view-model.ts");
         return isViewModel;
     }
 }

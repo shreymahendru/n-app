@@ -220,8 +220,7 @@ export default defineConfig({
             promiseImportName: i => `__tla_${i}`
         }),
         ViteNAppRequirePlugin({
-            translateType: "import",
-            fileRegex: /-view-model.ts$/
+            translateType: "import"
         }),
         // VitePluginRequire({
         //     translateType: "import",

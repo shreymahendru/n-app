@@ -17,10 +17,10 @@ export function ViteNAppRequirePlugin(opts?: {
     translateType?: "importMetaUrl" | "import";
 }): Plugin
 {
-    const { fileRegex = /(.jsx?|.tsx?|.vue)$/, translateType = "import" } = opts || {};
+    const { fileRegex = /-view-model\.(ts|js)$/, translateType = "import" } = opts || {};
     let sourcemap: boolean;
     return {
-        name: "vite-plugin-require",
+        name: "vite-plugin-n-app-require",
         configResolved(resolvedConfig: any): void
         {
             // dev model default true
@@ -47,8 +47,6 @@ export function ViteNAppRequirePlugin(opts?: {
             let newMap = null; // 没有更改源代码时为 null
             if (fileRegex.test(id) || isNappViewModel)
             {
-                // const isVueFile: Boolean = /(.vue)$/.test(id);
-                // const plugins = ["jsx"];
 
                 const ast = parse(code, {
                     sourceType: "module"
